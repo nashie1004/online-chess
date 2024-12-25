@@ -120,6 +120,13 @@ export class MainGame extends Scene{
     }
 
     showPossibleMoves(name: PieceNames, x: number, y: number){
+        // reset preview
+        this.previewBoard.forEach((row, rowIdx) => {
+            row.forEach((_, colIdx) => {
+                this.previewBoard[colIdx][rowIdx].setVisible(false);
+            })
+        })
+
         const validator = new MoveValidator(this.board, name);
         let validMoves: IValidMove[] = [];
 
@@ -153,7 +160,7 @@ export class MainGame extends Scene{
         // shows the actual valid moves to the user
         validMoves.forEach(item => {
             const prev = this.previewBoard[item.x][item.y].visible;
-            this.previewBoard[item.x][item.y].setVisible(!prev);
+            this.previewBoard[item.x][item.y].setVisible(prev === false ? true : false);
         })
     }
 

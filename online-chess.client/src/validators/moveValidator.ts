@@ -46,43 +46,54 @@ export default class MoveValidator{
     
     bishop(x: number, y: number): IValidMove[]{
         const retVal: IValidMove[] = [];
+
+        let row = 0;
+        let col = 0;
+
+        // Top Left: -x, -y
+        row = y;
+        col = x;
+        while (row >= 0 && col >= 0){
+            retVal.push({ x: col, y: row})
+            row--;
+            col--;
+        }
         
-        let rowCount = 0;
-        let colCount = 0;
-
-        this.board.forEach((rows, rowIdx) => {
-            rows.forEach((_, colIdx) => {
-                /**
-                 * - Top Left: -x, -y
-                 * - Bottom Left: -x, +y
-                 * - Top Right: +x, -y
-                 * - Bottom Right: +x, +y
-                 */
-
-
-                // current: 4, 4
-                // top left
-                if (colIdx - 1 >= 0 && rowIdx - 1 >= 0){
-                    // this.board[colIdx][rowIdx]
-                    retVal.push({ x: colIdx - 1, y: rowIdx - 1  })
-
-                    rowCount--;
-                    colCount--;
-                }
-            })
-        });
+        // Bottom Left: -x, +y
+        row = y;
+        col = x;
+        while (row <= 7 && col >= 0){
+            retVal.push({ x: col, y: row})
+            row++;
+            col--;
+        }
+        
+        // Top Right: +x, -y
+        row = y;
+        col = x;
+        while (row >= 0 && col <= 7){
+            retVal.push({ x: col, y: row})
+            row--;
+            col++;
+        }
+        
+        // Bottom Right: +x, +y
+        row = y;
+        col = x;
+        while (row <= 7 && col <= 7){
+            retVal.push({ x: col, y: row})
+            row++;
+            col++;
+        }
 
         return retVal;
     }
     
     queen(x: number, y: number): IValidMove[]{
-        const retVal: IValidMove[] = [];
+        let retVal: IValidMove[] = [];
         
-        this.board.forEach((rows, rowIdx) => {
-            rows.forEach((_, colIdx) => {
-                // TODO
-            })
-        });
+        retVal = [...this.rook(x, y)]
+        retVal = [...retVal, ...this.bishop(x, y)]
 
         return retVal;
     }
