@@ -1,5 +1,6 @@
 import { GameObjects, Scene } from "phaser";
 import bg from "../../assets/ChessBoard.png"
+import previewMove from "../../assets/preview.png"
 
 import wPawn from "../../assets/Chess - white casual/Pawn.png"
 import wRook from "../../assets/Chess - white casual/Rook.png"
@@ -14,6 +15,7 @@ import bKnight from "../../assets/Chess - black casual/Knight.png"
 import bBishop from "../../assets/Chess - black casual/Bishop.png"
 import bQueen from "../../assets/Chess - black casual/Queen.png"
 import bKing from "../../assets/Chess - black casual/King.png"
+import pieces from "../../pieces";
 
 export class MainGame extends Scene{
     /**
@@ -23,6 +25,7 @@ export class MainGame extends Scene{
      */
     private tileSize: number;
     private board: (null | GameObjects.Sprite)[][]
+    private previewBoard: (GameObjects.Sprite)[][]
 
     constructor() {
         super();
@@ -32,10 +35,15 @@ export class MainGame extends Scene{
         this.board = Array.from({ length: 8}).map(_ => {
             return new Array(8).fill(null);
         })
+
+        this.previewBoard = Array.from({ length: 8}).map(_ => {
+            return new Array(8);
+        })
     }
 
     preload(){
         this.load.image("bg", bg);
+        this.load.image("previewMove", previewMove)
         
         this.load.spritesheet("wPawn", wPawn, { frameWidth: 96, frameHeight: 96 });
         this.load.spritesheet("wRook", wRook, { frameWidth: 96, frameHeight: 96 });
@@ -55,62 +63,46 @@ export class MainGame extends Scene{
 
         // each square is 96 x 96
         this.add.image(0, 0, "bg").setOrigin(0, 0).setScale(6);
-
+        // this.add.image(0, 0, "previewMove").setOrigin(0, 0).setScale(3)
+        
         // create pieces
 
-        // 1.1 Black
-        this.board[0][0] = this.createIndividualPiece("bRook", 0, 0);
-        this.board[1][0] = this.createIndividualPiece("bKnight", 1, 0);
-        this.board[2][0] = this.createIndividualPiece("bBishop", 2, 0);
-        this.board[3][0] = this.createIndividualPiece("bQueen", 3, 0);
-        this.board[4][0] = this.createIndividualPiece("bKing", 4, 0);
-        this.board[5][0] = this.createIndividualPiece("bBishop", 5, 0);
-        this.board[6][0] = this.createIndividualPiece("bKnight", 6, 0);
-        this.board[7][0] = this.createIndividualPiece("bRook", 7, 0);
-        
-        this.board[0][1] = this.createIndividualPiece("bPawn", 0, 1);
-        this.board[1][1] = this.createIndividualPiece("bPawn", 1, 1);
-        this.board[2][1] = this.createIndividualPiece("bPawn", 2, 1);
-        this.board[3][1] = this.createIndividualPiece("bPawn", 3, 1);
-        this.board[4][1] = this.createIndividualPiece("bPawn", 4, 1);
-        this.board[5][1] = this.createIndividualPiece("bPawn", 5, 1);
-        this.board[6][1] = this.createIndividualPiece("bPawn", 6, 1);
-        this.board[7][1] = this.createIndividualPiece("bPawn", 7, 1);
+        // 1. preview moves 
+        this.board.forEach((row, rowIdx) => {
+            row.forEach((col, colIdx) => {
+                const preview = this.add
+                    .sprite(colIdx * this.tileSize, rowIdx * this.tileSize, "previewMove")
+                    .setOrigin(0, 0)
+                    .setScale(3)
+                    .setDepth(2)
+                    .setVisible(true)
+                    ;
+                this.previewBoard[colIdx][rowIdx] = preview;
+            })
+        })
 
-        // 1.2. White
-        this.board[0][7] = this.createIndividualPiece("wRook", 0, 7);
-        this.board[1][7] = this.createIndividualPiece("wKnight", 1, 7);
-        this.board[2][7] = this.createIndividualPiece("wBishop", 2, 7);
-        this.board[3][7] = this.createIndividualPiece("wQueen", 3, 7);
-        this.board[4][7] = this.createIndividualPiece("wKing", 4, 7);
-        this.board[5][7] = this.createIndividualPiece("wBishop", 5, 7);
-        this.board[6][7] = this.createIndividualPiece("wKnight", 6, 7);
-        this.board[7][7] = this.createIndividualPiece("wRook", 7, 7);
-        
-        this.board[0][6] = this.createIndividualPiece("wPawn", 0, 6);
-        this.board[1][6] = this.createIndividualPiece("wPawn", 1, 6);
-        this.board[2][6] = this.createIndividualPiece("wPawn", 2, 6);
-        this.board[3][6] = this.createIndividualPiece("wPawn", 3, 6);
-        this.board[4][6] = this.createIndividualPiece("wPawn", 4, 6);
-        this.board[5][6] = this.createIndividualPiece("wPawn", 5, 6);
-        this.board[6][6] = this.createIndividualPiece("wPawn", 6, 6);
-        this.board[7][6] = this.createIndividualPiece("wPawn", 7, 6);
+        // 2. actual pieces
+        pieces.forEach(piece => {
+            const { name, x, y } = piece;
+            this.board[x][y] = this.createIndividualPiece(name, x, y);
+        })
 
         console.log(this.board)
 
         // Drag event
-        /*
-        this.input.on("drag", (pointer, gameObject, dragX, dragY) => {
+        
+        this.input.on("drag", (pointer: Phaser.Input.Pointer, gameObject, dragX: number, dragY: number) => {
             
             dragX = Phaser.Math.Snap.To(dragX, this.tileSize);
             dragY = Phaser.Math.Snap.To(dragY, this.tileSize);
 
             gameObject.setPosition(dragX, dragY);
         })
-        */
+        
     }
 
     createIndividualPiece(spriteUrl: string, x: number, y: number, name?: string) : GameObjects.Sprite {
+
         return this.add
         .sprite(x * this.tileSize, y * this.tileSize, spriteUrl, 1)
         .setOrigin(0, 0)
@@ -121,8 +113,15 @@ export class MainGame extends Scene{
         // .on("clicked", this.clickEvent, this)
         .on("pointerover", function(){ this.setTint(0x98DEC7) })
         .on("pointerout", function(){ this.clearTint() })
-        .on("pointerdown", function(e){ console.log(e) })
+        .on("pointerdown", (e: Phaser.Input.Pointer) => { 
+            console.log(e) 
+            this.showPossibleMoves();
+        })
         ;
+    }
+
+    showPossibleMoves(){
+        // TODO
     }
 
     update(){
