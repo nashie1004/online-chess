@@ -15,7 +15,7 @@ export default class MoveValidator{
         this.pieceName = pieceName;
     }
 
-    rook(x: number, y: number): IValidMove[]{
+    public rook(x: number, y: number): IValidMove[]{
         const retVal: IValidMove[] = [];
 
         /**
@@ -62,7 +62,7 @@ export default class MoveValidator{
         return retVal;
     }
 
-    knight(x: number, y: number): IValidMove[]{
+    public knight(x: number, y: number): IValidMove[]{
         const retVal: IValidMove[] = [];
         
         /**
@@ -112,7 +112,7 @@ export default class MoveValidator{
         return retVal;
     }
     
-    bishop(x: number, y: number): IValidMove[]{
+    public bishop(x: number, y: number): IValidMove[]{
         const retVal: IValidMove[] = [];
 
         const directions = [
@@ -158,7 +158,7 @@ export default class MoveValidator{
         return retVal;
     }
     
-    queen(x: number, y: number): IValidMove[]{
+    public queen(x: number, y: number): IValidMove[]{
         let retVal: IValidMove[] = [];
         
         retVal = [...this.rook(x, y), ...this.bishop(x, y)]
@@ -166,7 +166,7 @@ export default class MoveValidator{
         return retVal;
     }
     
-    king(x: number, y: number): IValidMove[]{
+    public king(x: number, y: number): IValidMove[]{
         const retVal: IValidMove[] = [];
         
         /**
@@ -213,14 +213,37 @@ export default class MoveValidator{
         return retVal;
     }
     
-    pawn(x: number, y: number): IValidMove[]{
+    public pawn(x: number, y: number): IValidMove[]{
         const retVal: IValidMove[] = [];
+        const isWhite = this.pieceName.toString()[0] === "w";
+        const directionY = isWhite ? -1 : 1;
         
-        this.board.forEach((rows, rowIdx) => {
-            rows.forEach((_, colIdx) => {
-                // TODO
-            })
-        });
+        // 1. normal 1 square forward
+        if (y <= 7 || y >= 0){
+            const col = x;
+            const row = y + (directionY * 1);
+
+            // block pawn from moving
+            if (!this.board[col][row]) retVal.push({ x: col, y: row, isCapture: false });
+
+        }
+
+        // 2. one time only 2 squares forward
+        if (
+            (y <= 7 || y >= 0) &&
+            (isWhite && y === 6) ||
+            (!isWhite && y === 1)
+        ){
+            const col = x;
+            const row = y + (directionY * 2);
+
+            // block pawn from moving
+            const blockage = this.board[col][y + (directionY * 1)]
+            if (!blockage) {
+                retVal.push({ x: col, y: row, isCapture: false });
+            }
+
+        }
 
         return retVal;
     }
