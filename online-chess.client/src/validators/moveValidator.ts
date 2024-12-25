@@ -47,9 +47,28 @@ export default class MoveValidator{
     bishop(x: number, y: number): IValidMove[]{
         const retVal: IValidMove[] = [];
         
+        let rowCount = 0;
+        let colCount = 0;
+
         this.board.forEach((rows, rowIdx) => {
             rows.forEach((_, colIdx) => {
-                // TODO
+                /**
+                 * - Top Left: -x, -y
+                 * - Bottom Left: -x, +y
+                 * - Top Right: +x, -y
+                 * - Bottom Right: +x, +y
+                 */
+
+
+                // current: 4, 4
+                // top left
+                if (colIdx - 1 >= 0 && rowIdx - 1 >= 0){
+                    // this.board[colIdx][rowIdx]
+                    retVal.push({ x: colIdx - 1, y: rowIdx - 1  })
+
+                    rowCount--;
+                    colCount--;
+                }
             })
         });
 
