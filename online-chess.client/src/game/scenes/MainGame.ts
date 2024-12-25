@@ -17,6 +17,8 @@ import bQueen from "../../assets/Chess - black casual/Queen.png"
 import bKing from "../../assets/Chess - black casual/King.png"
 import pieces from "../../pieces";
 import { gameOptions, PieceNames } from "../../utils/constants";
+import MoveValidator from "../../validators/moveValidator";
+import { IValidMove } from "../../utils/types";
 
 const pieceImages = {
     [PieceNames.wPawn]: wPawn,
@@ -100,69 +102,59 @@ export class MainGame extends Scene{
     }
 
     createIndividualPiece(name: PieceNames, x: number, y: number) : GameObjects.Sprite {
-
         return this.add
-        .sprite(x * this.tileSize, y * this.tileSize, name.toString(), 1)
-        .setOrigin(0, 0)
-        .setScale(3)
-        // .setName(`${name}-${x}-${y}`)
-        .setInteractive({  cursor: "pointer" })
-        // .setInteractive({ draggable: true, cursor: "pointer" })
-        // .on("clicked", this.clickEvent, this)
-        .on("pointerover", function(){ this.setTint(0x98DEC7) })
-        .on("pointerout", function(){ this.clearTint() })
-        .on("pointerdown", (e: Phaser.Input.Pointer) => { 
-            this.showPossibleMoves(name, x, y);
-        })
-        ;
+            .sprite(x * this.tileSize, y * this.tileSize, name.toString(), 1)
+            .setOrigin(0, 0)
+            .setScale(3)
+            // .setName(`${name}-${x}-${y}`)
+            .setName(name)
+            .setInteractive({  cursor: "pointer" })
+            // .setInteractive({ draggable: true, cursor: "pointer" })
+            // .on("clicked", this.clickEvent, this)
+            .on("pointerover", function(){ this.setTint(0x98DEC7) })
+            .on("pointerout", function(){ this.clearTint() })
+            .on("pointerdown", (e: Phaser.Input.Pointer) => { 
+                this.showPossibleMoves(name, x, y);
+            })
+            ;
     }
 
     showPossibleMoves(name: PieceNames, x: number, y: number){
+        const validator = new MoveValidator(this.board, name);
+        let validMoves: IValidMove[] = [];
+
         switch(name){
             case PieceNames.bRook:
-                this.previewBoard.forEach((rows, rowIdx) => {
-                    rows.forEach((_, colIdx) => {
-                        if (rowIdx === y){
-                            this.previewBoard[colIdx][rowIdx].setVisible(
-                                !this.previewBoard[colIdx][rowIdx].visible
-                            );
-                        }
-                        if (colIdx === x){
-                            this.previewBoard[colIdx][rowIdx].setVisible(
-                                !this.previewBoard[colIdx][rowIdx].visible
-                            );
-                        }
-                    })
-                });
-
-                break;
             case PieceNames.wRook:
+                validMoves = validator.rook(x, y);
                 break;
             case PieceNames.bKnight:
-                break;
             case PieceNames.wKnight:
+                validMoves = validator.knight(x, y);
                 break;
             case PieceNames.bBishop:
-                break;
             case PieceNames.wBishop:
+                validMoves = validator.bishop(x, y);
                 break;
             case PieceNames.bQueen:
-                break;
             case PieceNames.wQueen:
+                validMoves = validator.queen(x, y);
                 break;
             case PieceNames.bKing:
-                break;
             case PieceNames.wKing:
+                validMoves = validator.king(x, y);
                 break;
             case PieceNames.bPawn:
-                break;
             case PieceNames.wPawn:
+                validMoves = validator.pawn(x, y);
                 break;
         }
 
-        // test only
-        // const isVisible = this.previewBoard[x][y].visible;
-        // this.previewBoard[x][y].setVisible(!isVisible);
+        // shows the actual valid moves to the user
+        validMoves.forEach(item => {
+            const prev = this.previewBoard[item.x][item.y].visible;
+            this.previewBoard[item.x][item.y].setVisible(!prev);
+        })
     }
 
     update(){

@@ -6,7 +6,7 @@ const pieces: IPiece[] = [
     // 1.1. Black Officers
     { name: PieceNames.bRook, x: 0, y: 0 },
     { name: PieceNames.bKnight, x: 1, y: 0 },
-    { name: PieceNames.bBishop, x: 2, y: 0 },
+    { name: PieceNames.bBishop, x: 4, y: 4 },
     { name: PieceNames.bQueen, x: 3, y: 0 },
     { name: PieceNames.bKing, x: 4, y: 0 },
     { name: PieceNames.bBishop, x: 5, y: 0 },

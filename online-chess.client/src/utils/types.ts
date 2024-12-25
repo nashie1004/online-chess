@@ -5,3 +5,8 @@ export interface IPiece{
     x: number,
     y: number
 }
+
+export interface IValidMove{
+    x: number,
+    y: number
+}
