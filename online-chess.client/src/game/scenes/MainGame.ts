@@ -123,7 +123,9 @@ export class MainGame extends Scene{
         // reset preview
         this.previewBoard.forEach((row, rowIdx) => {
             row.forEach((_, colIdx) => {
-                this.previewBoard[colIdx][rowIdx].setVisible(false);
+                if (this.previewBoard[colIdx][rowIdx].visible){
+                    this.previewBoard[colIdx][rowIdx].setVisible(false);
+                }
             })
         })
 
@@ -160,7 +162,7 @@ export class MainGame extends Scene{
         // shows the actual valid moves to the user
         validMoves.forEach(item => {
             const prev = this.previewBoard[item.x][item.y].visible;
-            this.previewBoard[item.x][item.y].setVisible(prev === false ? true : false);
+            this.previewBoard[item.x][item.y].setVisible(!prev)
         })
     }
 

@@ -47,44 +47,44 @@ export default class MoveValidator{
     bishop(x: number, y: number): IValidMove[]{
         const retVal: IValidMove[] = [];
 
-        let row = 0;
-        let col = 0;
+        const directions = [
+            { x: -1, y: -1 } // Top Left: -x, -y
+            ,{ x: -1, y: 1 } // Bottom Left: -x, +y
+            ,{ x: 1, y: -1 } // Top Right: +x, -y
+            ,{ x: 1, y: 1 } // Bottom Right: +x, +y
+        ]
 
-        // Top Left: -x, -y
-        row = y;
-        col = x;
-        while (row >= 0 && col >= 0){
-            retVal.push({ x: col, y: row})
-            row--;
-            col--;
-        }
-        
-        // Bottom Left: -x, +y
-        row = y;
-        col = x;
-        while (row <= 7 && col >= 0){
-            retVal.push({ x: col, y: row})
-            row++;
-            col--;
-        }
-        
-        // Top Right: +x, -y
-        row = y;
-        col = x;
-        while (row >= 0 && col <= 7){
-            retVal.push({ x: col, y: row})
-            row--;
-            col++;
-        }
-        
-        // Bottom Right: +x, +y
-        row = y;
-        col = x;
-        while (row <= 7 && col <= 7){
-            retVal.push({ x: col, y: row})
-            row++;
-            col++;
-        }
+        directions.forEach(direction => {
+            let row = 0;
+            let col = 0;
+    
+            row = y;
+            col = x;
+            while (row >= 0 && col >= 0 && row <= 7 && col <= 7){
+                row += direction.y;
+                col += direction.x;
+
+                const currTile = this.board[col][row]
+
+                if (
+                    (col !== x && row !== y) // Not the actual square
+                    &&
+                    currTile // Square is occupied
+                ){
+                    if (this.isAFriendPiece(currTile.name)){ // a friend
+                        break;
+                    } 
+                    else{
+                        retVal.push({ x: col, y: row}) // an opponent
+                        break;
+                    }
+                }
+                
+                retVal.push({ x: col, y: row})
+            }
+        })
+
+        console.log(retVal)
 
         return retVal;
     }
@@ -120,5 +120,14 @@ export default class MoveValidator{
         });
 
         return retVal;
+    }
+
+    private isAFriendPiece(name: string): boolean{
+        const whitePieces = [
+            PieceNames.wRook.toString(), PieceNames.wKnight.toString(), PieceNames.wBishop.toString()
+            ,PieceNames.wQueen.toString(), PieceNames.wKing.toString(), PieceNames.wPawn.toString()
+        ]
+
+        return whitePieces.includes(this.pieceName.toString()) && whitePieces.includes(name.toString());
     }
 }
