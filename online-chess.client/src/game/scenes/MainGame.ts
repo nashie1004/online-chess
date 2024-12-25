@@ -44,9 +44,11 @@ export class MainGame extends Scene{
     private tileSize: number;
     private board: (null | GameObjects.Sprite)[][]
     private previewBoard: (GameObjects.Sprite)[][] // has a visible property
+    private test: boolean;
 
     constructor() {
         super();
+        this.test = false;
         this.tileSize = gameOptions.tileSize; // 96
         
         // creates 8x8 grid
@@ -98,7 +100,14 @@ export class MainGame extends Scene{
 
             gameObject.setPosition(dragX, dragY);
         })
+
         
+        this.input.keyboard.on('keydown-A', event =>
+        {
+
+            console.log('Hello from the A Key!');
+            this.test = true
+        });
     }
 
     createIndividualPiece(name: PieceNames, x: number, y: number) : GameObjects.Sprite {
@@ -108,8 +117,8 @@ export class MainGame extends Scene{
             .setScale(3)
             // .setName(`${name}-${x}-${y}`)
             .setName(name)
-            .setInteractive({  cursor: "pointer" })
-            // .setInteractive({ draggable: true, cursor: "pointer" })
+            //.setInteractive({  cursor: "pointer" })
+             .setInteractive({ draggable: true, cursor: "pointer" })
             // .on("clicked", this.clickEvent, this)
             .on("pointerover", function(){ this.setTint(0x98DEC7) })
             .on("pointerout", function(){ this.clearTint() })
@@ -168,5 +177,22 @@ export class MainGame extends Scene{
 
     update(){
         // const test = this.cursor;
+        if (this.test){
+            const group = this.add.group();
+    
+            //  Add an existing Image into the group:
+    
+            const blackrook = this.board[0][0];
+
+            if (blackrook){
+
+                group.add(blackrook);
+        
+                //  Any action done to the group is now reflected by the Image
+                //  For example this will set the position of the image to 400 x 300
+                Phaser.Actions.SetXY(group.getChildren(), 400, 300);
+            }
+            
+        }
     }
 }
