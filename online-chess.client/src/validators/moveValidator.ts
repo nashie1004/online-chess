@@ -25,32 +25,41 @@ export default class MoveValidator{
          * Bottom: 0, +y
          */
 
-        let row = 0
-        let col = 0
-        
-        // Top
-        row = y;
-        col = x;
-        while (row >= 0 && row <= 7){
-            row--;
-            if (row === y && col === x) continue;
-            if (row < 0 || row >= 8) break;
+        const directions = [
+            { x: 0, y: -1 },
+            { x: -1, y: 0 },
+            { x: 1, y: 0 },
+            { x: 0, y: 1 },
+        ]
 
-            const currTile = this.board[col][row];
-
-            if (currTile){
-                console.log(currTile)
-                if(this.isAFriendPiece(currTile.name)){
-                    break;
+        directions.forEach(direction => {
+            
+            let row = y
+            let col = x
+            
+            while (row >= 0 && row <= 7 && col >= 0 && col <= 7 ){
+                row += direction.y;
+                col += direction.x;
+                if (row === y && col === x) continue; // same time
+                if (row < 0 || row >= 8 || col < 0 || col >= 8) break; // out of bounds
+    
+                const currTile = this.board[col][row];
+    
+                if (currTile){
+                    if(this.isAFriendPiece(currTile.name)){
+                        break;
+                    }
+                    else{
+                        retVal.push({ x: col, y: row })
+                        break;
+                    }
                 }
-                else{
-                    retVal.push({ x: col, y: row })
-                    break;
-                }
+    
+                retVal.push({ x: col, y: row })
             }
+        })
 
-            retVal.push({ x: col, y: row })
-        }
+        console.log(retVal)
 
         return retVal;
     }
@@ -148,11 +157,9 @@ export default class MoveValidator{
     }
 
     private isAFriendPiece(name: string): boolean{
-        const whitePieces = [
-            PieceNames.wRook.toString(), PieceNames.wKnight.toString(), PieceNames.wBishop.toString()
-            ,PieceNames.wQueen.toString(), PieceNames.wKing.toString(), PieceNames.wPawn.toString()
-        ]
+        const bothWhite = name[0] === "w" && this.pieceName.toString()[0] === "w"
+        const bothBlack = name[0] === "b" && this.pieceName.toString()[0] === "b"
 
-        return whitePieces.includes(this.pieceName.toString()) && whitePieces.includes(name.toString());
+        return bothWhite || bothBlack
     }
 }
