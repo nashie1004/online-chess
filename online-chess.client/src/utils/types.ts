@@ -8,5 +8,6 @@ export interface IPiece{
 
 export interface IValidMove{
     x: number,
-    y: number
+    y: number,
+    isCapture: boolean
 }
