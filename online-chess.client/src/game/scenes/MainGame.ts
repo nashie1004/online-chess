@@ -96,11 +96,10 @@ export class MainGame extends Scene{
         this.board[6][6] = this.createIndividualPiece("wPawn", 6, 6);
         this.board[7][6] = this.createIndividualPiece("wPawn", 7, 6);
 
-        // Drag and click event
-        this.input.on("gameobjectup", function(pointer, gameObject){
-            gameObject.emit("clicked", gameObject);
-        }, this)
+        console.log(this.board)
 
+        // Drag event
+        /*
         this.input.on("drag", (pointer, gameObject, dragX, dragY) => {
             
             dragX = Phaser.Math.Snap.To(dragX, this.tileSize);
@@ -108,11 +107,7 @@ export class MainGame extends Scene{
 
             gameObject.setPosition(dragX, dragY);
         })
-    }
-
-    clickEvent(obj: Phaser.GameObjects.GameObject){
-        //console.log(obj)
-        // obj.setInteractive({ draggable: true })
+        */
     }
 
     createIndividualPiece(spriteUrl: string, x: number, y: number, name?: string) : GameObjects.Sprite {
@@ -121,10 +116,12 @@ export class MainGame extends Scene{
         .setOrigin(0, 0)
         .setScale(3)
         // .setName(name)
-        .setInteractive({ draggable: true, cursor: "pointer" })
-        .on("clicked", this.clickEvent, this)
+        .setInteractive({  cursor: "pointer" })
+        // .setInteractive({ draggable: true, cursor: "pointer" })
+        // .on("clicked", this.clickEvent, this)
         .on("pointerover", function(){ this.setTint(0x98DEC7) })
         .on("pointerout", function(){ this.clearTint() })
+        .on("pointerdown", function(e){ console.log(e) })
         ;
     }
 
