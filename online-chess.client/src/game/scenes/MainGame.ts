@@ -16,29 +16,26 @@ import bBishop from "../../assets/Chess - black casual/Bishop.png"
 import bQueen from "../../assets/Chess - black casual/Queen.png"
 import bKing from "../../assets/Chess - black casual/King.png"
 import pieces from "../../pieces";
+import { PieceName } from "../../utils/types";
 
 export class MainGame extends Scene{
     /**
      * === Sizes ===
      * Board: 128 x 128 => 768 x 768
-     * Squre: 32 x 32 => 96 x 96
+     * Square: 32 x 32 => 96 x 96
      */
     private tileSize: number;
     private board: (null | GameObjects.Sprite)[][]
-    private previewBoard: (GameObjects.Sprite)[][]
+    private previewBoard: (GameObjects.Sprite)[][] // has a visible property
 
     constructor() {
         super();
         this.tileSize = 96;
         
         // creates 8x8 grid
-        this.board = Array.from({ length: 8}).map(_ => {
-            return new Array(8).fill(null);
-        })
+        this.board = Array.from({ length: 8}).map(_ => new Array(8).fill(null));
 
-        this.previewBoard = Array.from({ length: 8}).map(_ => {
-            return new Array(8);
-        })
+        this.previewBoard = Array.from({ length: 8}).map(_ => new Array(8));
     }
 
     preload(){
@@ -63,21 +60,20 @@ export class MainGame extends Scene{
 
         // each square is 96 x 96
         this.add.image(0, 0, "bg").setOrigin(0, 0).setScale(6);
-        // this.add.image(0, 0, "previewMove").setOrigin(0, 0).setScale(3)
         
         // create pieces
 
         // 1. preview moves 
         this.board.forEach((row, rowIdx) => {
             row.forEach((col, colIdx) => {
-                const preview = this.add
+                this.previewBoard[colIdx][rowIdx] = this.add
                     .sprite(colIdx * this.tileSize, rowIdx * this.tileSize, "previewMove")
+                    .setName(`previewMove-${colIdx}-${rowIdx}`)
                     .setOrigin(0, 0)
                     .setScale(3)
                     .setDepth(2)
-                    .setVisible(true)
+                    .setVisible(false)
                     ;
-                this.previewBoard[colIdx][rowIdx] = preview;
             })
         })
 
@@ -87,10 +83,9 @@ export class MainGame extends Scene{
             this.board[x][y] = this.createIndividualPiece(name, x, y);
         })
 
-        console.log(this.board)
-
-        // Drag event
+        console.log(this.previewBoard)
         
+        // Drag event
         this.input.on("drag", (pointer: Phaser.Input.Pointer, gameObject, dragX: number, dragY: number) => {
             
             dragX = Phaser.Math.Snap.To(dragX, this.tileSize);
@@ -101,27 +96,29 @@ export class MainGame extends Scene{
         
     }
 
-    createIndividualPiece(spriteUrl: string, x: number, y: number, name?: string) : GameObjects.Sprite {
+    createIndividualPiece(name: PieceName, x: number, y: number) : GameObjects.Sprite {
 
         return this.add
-        .sprite(x * this.tileSize, y * this.tileSize, spriteUrl, 1)
+        .sprite(x * this.tileSize, y * this.tileSize, name, 1)
         .setOrigin(0, 0)
         .setScale(3)
-        // .setName(name)
+        .setName(`${name}-${x}-${y}`)
         .setInteractive({  cursor: "pointer" })
         // .setInteractive({ draggable: true, cursor: "pointer" })
         // .on("clicked", this.clickEvent, this)
         .on("pointerover", function(){ this.setTint(0x98DEC7) })
         .on("pointerout", function(){ this.clearTint() })
         .on("pointerdown", (e: Phaser.Input.Pointer) => { 
-            console.log(e) 
-            this.showPossibleMoves();
+            this.showPossibleMoves(name, x, y);
         })
         ;
     }
 
-    showPossibleMoves(){
+    showPossibleMoves(name: PieceName, x: number, y: number){
         // TODO
+        const isVisible = this.previewBoard[x][y].visible;
+        this.previewBoard[0][0].setVisible(!isVisible);
+        console.log(this.previewBoard[0][0].visible, isVisible)
     }
 
     update(){

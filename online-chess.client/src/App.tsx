@@ -1,5 +1,4 @@
 import { useEffect, useLayoutEffect, useRef } from "react"
-import { GameOver } from "./game/scenes/GameOver";
 import { MainGame } from "./game/scenes/MainGame";
 
 export default function App(){

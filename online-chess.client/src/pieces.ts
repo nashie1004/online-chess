@@ -1,8 +1,5 @@
-interface IPiece{
-    name: string,
-    x: number,
-    y: number
-}
+import { IPiece } from "./utils/types";
+
 
 const pieces: IPiece[] = [
     // 1.1. Black Officers
