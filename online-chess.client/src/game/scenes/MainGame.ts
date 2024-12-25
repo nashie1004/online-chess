@@ -178,7 +178,7 @@ export class MainGame extends Scene{
     update(){
         // const test = this.cursor;
         if (this.test){
-            const group = this.add.group();
+            // const group = this.add.group();
     
             //  Add an existing Image into the group:
     
@@ -186,11 +186,18 @@ export class MainGame extends Scene{
 
             if (blackrook){
 
-                group.add(blackrook);
+                // group.add(blackrook);
         
                 //  Any action done to the group is now reflected by the Image
                 //  For example this will set the position of the image to 400 x 300
-                Phaser.Actions.SetXY(group.getChildren(), 400, 300);
+                // Phaser.Actions.SetXY(group.getChildren(), 400, 300);
+
+                this.tweens.add({
+                    targets: [blackrook],
+                    x: 6 * this.tileSize,
+                    ease: "Expo.easeInOuts",
+                    duration: 100,
+                })
             }
             
         }
