@@ -12,3 +12,9 @@ export enum PieceNames{
     bQueen = "bQueen",
     bKing = "bKing"
 }
+
+export const gameOptions = {
+    tileSize: 96,
+    width: 768,
+    height: 768
+}

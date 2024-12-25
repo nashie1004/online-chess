@@ -16,7 +16,7 @@ import bBishop from "../../assets/Chess - black casual/Bishop.png"
 import bQueen from "../../assets/Chess - black casual/Queen.png"
 import bKing from "../../assets/Chess - black casual/King.png"
 import pieces from "../../pieces";
-import { PieceNames } from "../../utils/constants";
+import { gameOptions, PieceNames } from "../../utils/constants";
 
 const pieceImages = {
     [PieceNames.wPawn]: wPawn,
@@ -45,7 +45,7 @@ export class MainGame extends Scene{
 
     constructor() {
         super();
-        this.tileSize = 96;
+        this.tileSize = gameOptions.tileSize; // 96
         
         // creates 8x8 grid
         this.board = Array.from({ length: 8}).map(_ => new Array(8).fill(null));
@@ -120,28 +120,49 @@ export class MainGame extends Scene{
     showPossibleMoves(name: PieceNames, x: number, y: number){
         switch(name){
             case PieceNames.bRook:
+                this.previewBoard.forEach((rows, rowIdx) => {
+                    rows.forEach((_, colIdx) => {
+                        if (rowIdx === y){
+                            this.previewBoard[colIdx][rowIdx].setVisible(
+                                !this.previewBoard[colIdx][rowIdx].visible
+                            );
+                        }
+                        if (colIdx === x){
+                            this.previewBoard[colIdx][rowIdx].setVisible(
+                                !this.previewBoard[colIdx][rowIdx].visible
+                            );
+                        }
+                    })
+                });
+
+                break;
             case PieceNames.wRook:
                 break;
             case PieceNames.bKnight:
+                break;
             case PieceNames.wKnight:
                 break;
             case PieceNames.bBishop:
+                break;
             case PieceNames.wBishop:
                 break;
             case PieceNames.bQueen:
+                break;
             case PieceNames.wQueen:
                 break;
             case PieceNames.bKing:
+                break;
             case PieceNames.wKing:
                 break;
             case PieceNames.bPawn:
+                break;
             case PieceNames.wPawn:
                 break;
         }
 
         // test only
-        const isVisible = this.previewBoard[x][y].visible;
-        this.previewBoard[x][y].setVisible(!isVisible);
+        // const isVisible = this.previewBoard[x][y].visible;
+        // this.previewBoard[x][y].setVisible(!isVisible);
     }
 
     update(){
