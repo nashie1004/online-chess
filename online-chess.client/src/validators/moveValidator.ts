@@ -18,19 +18,43 @@ export default class MoveValidator{
     rook(x: number, y: number): IValidMove[]{
         const retVal: IValidMove[] = [];
 
-        this.board.forEach((rows, rowIdx) => {
-            rows.forEach((_, colIdx) => {
-                if (rowIdx === y){
-                    retVal.push({ x: colIdx, y: rowIdx });
-                }
-                if (colIdx === x){
-                    retVal.push({ x: colIdx, y: rowIdx });
-                }
-            })
-        });
+        /**
+         * Top: 0, -y
+         * Left: -x, 0
+         * Right: +x, 0
+         * Bottom: 0, +y
+         */
+
+        let row = 0
+        let col = 0
         
+        // Top
+        row = y;
+        col = x;
+        while (row >= 0 && row <= 7){
+            row--;
+            if (row === y && col === x) continue;
+            if (row < 0 || row >= 8) break;
+
+            const currTile = this.board[col][row];
+
+            if (currTile){
+                console.log(currTile)
+                if(this.isAFriendPiece(currTile.name)){
+                    break;
+                }
+                else{
+                    retVal.push({ x: col, y: row })
+                    break;
+                }
+            }
+
+            retVal.push({ x: col, y: row })
+        }
+
         return retVal;
     }
+
 
     knight(x: number, y: number): IValidMove[]{
         const retVal: IValidMove[] = [];
@@ -64,6 +88,9 @@ export default class MoveValidator{
                 row += direction.y;
                 col += direction.x;
 
+                // still at within the board
+                if (row < 0 || col < 0 || row >= 8 || col >= 8) continue;
+
                 const currTile = this.board[col][row]
 
                 if (
@@ -83,8 +110,6 @@ export default class MoveValidator{
                 retVal.push({ x: col, y: row})
             }
         })
-
-        console.log(retVal)
 
         return retVal;
     }

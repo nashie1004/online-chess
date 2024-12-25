@@ -25,7 +25,7 @@ const pieces: IPiece[] = [
     { name: PieceNames.wRook, x: 0, y: 7 },
     { name: PieceNames.wKnight, x: 1, y: 7 },
     { name: PieceNames.wBishop, x: 4, y: 4 },
-    { name: PieceNames.wQueen, x: 3, y: 7 },
+    { name: PieceNames.wQueen, x: 3, y: 4 },
     { name: PieceNames.wKing, x: 4, y: 7 },
     { name: PieceNames.wBishop, x: 5, y: 7 },
     { name: PieceNames.wKnight, x: 6, y: 7 },
