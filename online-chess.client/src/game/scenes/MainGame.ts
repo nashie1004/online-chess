@@ -16,7 +16,22 @@ import bBishop from "../../assets/Chess - black casual/Bishop.png"
 import bQueen from "../../assets/Chess - black casual/Queen.png"
 import bKing from "../../assets/Chess - black casual/King.png"
 import pieces from "../../pieces";
-import { PieceName } from "../../utils/types";
+import { PieceNames } from "../../utils/constants";
+
+const pieceImages = {
+    [PieceNames.wPawn]: wPawn,
+    [PieceNames.wRook]: wRook,
+    [PieceNames.wKnight]: wKnight,
+    [PieceNames.wBishop]: wBishop,
+    [PieceNames.wQueen]: wQueen,
+    [PieceNames.wKing]: wKing,
+    [PieceNames.bPawn]: bPawn,
+    [PieceNames.bRook]: bRook,
+    [PieceNames.bKnight]: bKnight,
+    [PieceNames.bBishop]: bBishop,
+    [PieceNames.bQueen]: bQueen,
+    [PieceNames.bKing]: bKing,
+};
 
 export class MainGame extends Scene{
     /**
@@ -41,20 +56,10 @@ export class MainGame extends Scene{
     preload(){
         this.load.image("bg", bg);
         this.load.image("previewMove", previewMove)
-        
-        this.load.spritesheet("wPawn", wPawn, { frameWidth: 96, frameHeight: 96 });
-        this.load.spritesheet("wRook", wRook, { frameWidth: 96, frameHeight: 96 });
-        this.load.spritesheet("wKnight", wKnight, { frameWidth: 96, frameHeight: 96 });
-        this.load.spritesheet("wBishop", wBishop, { frameWidth: 96, frameHeight: 96 });
-        this.load.spritesheet("wQueen", wQueen, { frameWidth: 96, frameHeight: 96 });
-        this.load.spritesheet("wKing", wKing, { frameWidth: 96, frameHeight: 96 });
-        
-        this.load.spritesheet("bPawn", bPawn, { frameWidth: 96, frameHeight: 96 });
-        this.load.spritesheet("bRook", bRook, { frameWidth: 96, frameHeight: 96 });
-        this.load.spritesheet("bKnight", bKnight, { frameWidth: 96, frameHeight: 96 });
-        this.load.spritesheet("bBishop", bBishop, { frameWidth: 96, frameHeight: 96 });
-        this.load.spritesheet("bQueen", bQueen, { frameWidth: 96, frameHeight: 96 });
-        this.load.spritesheet("bKing", bKing, { frameWidth: 96, frameHeight: 96 });
+
+        Object.entries(pieceImages).forEach(([pieceName, imagePath]) => {
+            this.load.spritesheet(pieceName, imagePath, { frameWidth: 96, frameHeight: 96 });
+        })
     }
     create(){
 
@@ -65,10 +70,10 @@ export class MainGame extends Scene{
 
         // 1. preview moves 
         this.board.forEach((row, rowIdx) => {
-            row.forEach((col, colIdx) => {
+            row.forEach((_, colIdx) => {
                 this.previewBoard[colIdx][rowIdx] = this.add
                     .sprite(colIdx * this.tileSize, rowIdx * this.tileSize, "previewMove")
-                    .setName(`previewMove-${colIdx}-${rowIdx}`)
+                    // .setName(`previewMove-${colIdx}-${rowIdx}`)
                     .setOrigin(0, 0)
                     .setScale(3)
                     .setDepth(2)
@@ -83,10 +88,8 @@ export class MainGame extends Scene{
             this.board[x][y] = this.createIndividualPiece(name, x, y);
         })
 
-        console.log(this.previewBoard)
-        
         // Drag event
-        this.input.on("drag", (pointer: Phaser.Input.Pointer, gameObject, dragX: number, dragY: number) => {
+        this.input.on("drag", (_: Phaser.Input.Pointer, gameObject, dragX: number, dragY: number) => {
             
             dragX = Phaser.Math.Snap.To(dragX, this.tileSize);
             dragY = Phaser.Math.Snap.To(dragY, this.tileSize);
@@ -96,13 +99,13 @@ export class MainGame extends Scene{
         
     }
 
-    createIndividualPiece(name: PieceName, x: number, y: number) : GameObjects.Sprite {
+    createIndividualPiece(name: PieceNames, x: number, y: number) : GameObjects.Sprite {
 
         return this.add
-        .sprite(x * this.tileSize, y * this.tileSize, name, 1)
+        .sprite(x * this.tileSize, y * this.tileSize, name.toString(), 1)
         .setOrigin(0, 0)
         .setScale(3)
-        .setName(`${name}-${x}-${y}`)
+        // .setName(`${name}-${x}-${y}`)
         .setInteractive({  cursor: "pointer" })
         // .setInteractive({ draggable: true, cursor: "pointer" })
         // .on("clicked", this.clickEvent, this)
@@ -114,11 +117,31 @@ export class MainGame extends Scene{
         ;
     }
 
-    showPossibleMoves(name: PieceName, x: number, y: number){
-        // TODO
+    showPossibleMoves(name: PieceNames, x: number, y: number){
+        switch(name){
+            case PieceNames.bRook:
+            case PieceNames.wRook:
+                break;
+            case PieceNames.bKnight:
+            case PieceNames.wKnight:
+                break;
+            case PieceNames.bBishop:
+            case PieceNames.wBishop:
+                break;
+            case PieceNames.bQueen:
+            case PieceNames.wQueen:
+                break;
+            case PieceNames.bKing:
+            case PieceNames.wKing:
+                break;
+            case PieceNames.bPawn:
+            case PieceNames.wPawn:
+                break;
+        }
+
+        // test only
         const isVisible = this.previewBoard[x][y].visible;
-        this.previewBoard[0][0].setVisible(!isVisible);
-        console.log(this.previewBoard[0][0].visible, isVisible)
+        this.previewBoard[x][y].setVisible(!isVisible);
     }
 
     update(){

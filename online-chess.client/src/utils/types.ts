@@ -1,10 +1,7 @@
-export type PieceName = 
-    "wPawn" | "wRook" | "wKnight" | "wBishop"
-    | "wQueen" | "wKing" | "bPawn" | "bRook"
-    | "bKnight" | "bBishop" | "bQueen" | "bKing"
+import { PieceNames } from "./constants";
 
 export interface IPiece{
-    name: PieceName,
+    name: PieceNames,
     x: number,
     y: number
 }
