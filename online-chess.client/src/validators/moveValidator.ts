@@ -169,11 +169,46 @@ export default class MoveValidator{
     king(x: number, y: number): IValidMove[]{
         const retVal: IValidMove[] = [];
         
-        this.board.forEach((rows, rowIdx) => {
-            rows.forEach((_, colIdx) => {
-                // TODO
-            })
-        });
+        /**
+         * top left = -1, -1
+         * top mid = 0, -1
+         * top right = 1, -1
+         * mid left = -1, 0
+         * mid right = 1, 0
+         * bottom left = -1, 1
+         * bottom mid = 0, 1
+         * bottom right = 1, 1
+         */
+        const directions = [
+            { x: -1, y: -1 }
+            ,{ x: 0, y: -1 }
+            ,{ x: 1, y: -1 }
+            ,{ x: -1, y: 0 }
+            ,{ x: 1, y: 0 }
+            ,{ x: -1, y: 1 }
+            ,{ x: 0, y: 1 }
+            ,{ x: 1, y: 1 }
+        ]
+
+        directions.forEach(direction => {
+            const col = x + direction.x;
+            const row = y + direction.y;
+
+            if (col < 0 || col >= 8 || row < 0 || row >= 8) return; // out of bounds
+
+            const currTile = this.board[col][row];
+
+            if (currTile){
+                // friend
+                if (this.isAFriendPiece(currTile.name)) return;
+
+                // opponent
+                retVal.push({ x: col, y: row, isCapture: true })
+                return;
+            }
+
+            retVal.push({ x: col, y: row, isCapture: false })
+        })
 
         return retVal;
     }
