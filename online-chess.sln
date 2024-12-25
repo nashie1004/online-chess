@@ -1,0 +1,30 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35527.113 d17.12
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "online-chess.Server", "online-chess.Server\online-chess.Server.csproj", "{82F34E5E-9429-499A-9E5B-A1258757A81B}"
+EndProject
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "online-chess.client", "online-chess.client\online-chess.client.esproj", "{80C350BF-CFA0-4228-8B4A-D930F2ED5732}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{82F34E5E-9429-499A-9E5B-A1258757A81B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{82F34E5E-9429-499A-9E5B-A1258757A81B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{82F34E5E-9429-499A-9E5B-A1258757A81B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{82F34E5E-9429-499A-9E5B-A1258757A81B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80C350BF-CFA0-4228-8B4A-D930F2ED5732}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80C350BF-CFA0-4228-8B4A-D930F2ED5732}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80C350BF-CFA0-4228-8B4A-D930F2ED5732}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{80C350BF-CFA0-4228-8B4A-D930F2ED5732}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80C350BF-CFA0-4228-8B4A-D930F2ED5732}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80C350BF-CFA0-4228-8B4A-D930F2ED5732}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
