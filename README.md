@@ -50,5 +50,5 @@ export default tseslint.config({
 ```
 
 
-# 
-https://wildlifestudios.itch.io/chess-set-pixel-art
+## Assets
+https://verzatiledev.itch.io/chess
