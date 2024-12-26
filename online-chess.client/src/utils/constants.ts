@@ -14,7 +14,7 @@ export enum PieceNames{
 }
 
 export const gameOptions = {
-    tileSize: 96,
-    width: 768,
-    height: 768
+    tileSize: 100,
+    width: 800,
+    height: 800
 }

@@ -1,5 +1,5 @@
 import { GameObjects, Scene } from "phaser";
-import bg from "../../assets/ChessBoard.png"
+import bg from "../../assets/lichess/wood4-800x800.jpg"
 import previewMove from "../../assets/preview.png"
 
 import wPawn from "../../assets/Chess - white casual/Pawn.png"
@@ -80,7 +80,7 @@ export class MainGame extends Scene{
     create(){
 
         // each square is 96 x 96
-        this.add.image(0, 0, "bg").setOrigin(0, 0).setScale(6);
+        this.add.image(0, 0, "bg").setOrigin(0, 0) //.setScale(6);
         
         // create pieces
 
