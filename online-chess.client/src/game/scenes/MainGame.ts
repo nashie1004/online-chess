@@ -18,7 +18,7 @@ import bKing from "../../assets/Chess - black casual/King.png"
 import pieces from "../../pieces";
 import { gameOptions, PieceNames } from "../../utils/constants";
 import MoveValidator from "../../validators/moveValidator";
-import { ICaptureHistory, IMoveHistory, ISelectedPiece, IValidMove } from "../../utils/types";
+import { ICaptureHistory, IMoveHistory, IMoveInfo, IValidMove } from "../../utils/types";
 
 const pieceImages = {
     [PieceNames.wPawn]: wPawn,
@@ -48,7 +48,7 @@ export class MainGame extends Scene{
     private tileSize: number;
     private readonly board: (null | GameObjects.Sprite)[][]
     private readonly previewBoard: (GameObjects.Sprite)[][] // has a visible property
-    private selectedPiece: ISelectedPiece | null;
+    private selectedPiece: IMoveInfo | null;
     private isWhitesTurn: boolean;
 
     constructor() {
@@ -67,6 +67,7 @@ export class MainGame extends Scene{
         this.previewBoard = Array.from({ length: 8}).map(_ => new Array(8));
     }
 
+    // Load assets
     preload(){
         this.load.image("bg", bg);
         this.load.image("previewMove", previewMove)
@@ -75,6 +76,7 @@ export class MainGame extends Scene{
             this.load.spritesheet(pieceName, imagePath, { frameWidth: 96, frameHeight: 96 });
         })
     }
+
     create(){
 
         // each square is 96 x 96
@@ -126,6 +128,18 @@ export class MainGame extends Scene{
                 ;
             this.board[x][y] = sprite;
         })
+
+        // reset if click out of a select piece
+        this.input.on("pointerdown", (_: Phaser.Input.Pointer, clickedSprite: GameObjects.Sprite[] | undefined) => {
+            if (!clickedSprite || !this.selectedPiece) {
+                return;
+            }
+            
+            // if there is a selected piece and the clicked area has no sprite
+            if (this.selectedPiece && clickedSprite.length < 1){
+                this.resetMoves();
+            }
+        })
     }
 
     resetMoves(){
@@ -142,8 +156,11 @@ export class MainGame extends Scene{
         })
     }
 
+    // gets available moves
     showPossibleMoves(name: PieceNames, x: number, y: number){
-        const actualCoordinates = this.findPieceCoordinates(`${name}-${x}-${y}`)
+        // actual coords
+        const fullPieceName = `${name}-${x}-${y}`;
+        const actualCoordinates = this.findPieceCoordinates(fullPieceName);
         x = actualCoordinates?.x ?? 0;
         y = actualCoordinates?.y ?? 0;
 
@@ -179,7 +196,7 @@ export class MainGame extends Scene{
         }
 
         // set selected piece
-        this.selectedPiece = { x, y };
+        this.selectedPiece = { x, y, pieceName: fullPieceName };
 
         // shows the actual valid moves to the user
         validMoves.forEach(item => {
@@ -188,6 +205,7 @@ export class MainGame extends Scene{
         })
     }
 
+    // move piece to desired square, saves capture and move history
     move(newX: number, newY: number){
         if (!this.selectedPiece) return;
         
@@ -195,6 +213,7 @@ export class MainGame extends Scene{
         const sprite = this.board[this.selectedPiece.x][this.selectedPiece.y];
         const isWhite = sprite?.name[0] === "w"
         const pieceName = sprite?.name ?? "";
+        this.isWhitesTurn = !isWhite;
 
         // old coordinate
         this.board[this.selectedPiece.x][this.selectedPiece.y] = null; 
@@ -240,9 +259,6 @@ export class MainGame extends Scene{
 
         // reset
         this.resetMoves();
-
-        // console.log(this.moveHistory)
-        console.log(this.captureHistory)
     }
 
     // find by name 
@@ -262,6 +278,13 @@ export class MainGame extends Scene{
     }
 
     update(){
+        // TODO: handle movehistory, capturehistory and who will move next
+        if (this.isWhitesTurn){
+            // console.info(`White's turn to move`)
+        } else {
+            // console.info(`Black's turn to move`)
+        }
+
         //this.input.on("pointerdown", (pointer: Phaser.Input.Pointer, gameObjects) => {
             // console.log(pointer.x / this.tileSize, pointer.y / this.tileSize, this.selectedPiece.validMoves)
             

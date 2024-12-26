@@ -13,12 +13,12 @@ export interface IValidMove{
     isCapture: boolean
 }
 
-export interface ISelectedPiece{
-    x: number,
-    y: number
-}
+// export interface ISelectedPiece{
+//     x: number,
+//     y: number
+// }
 
-interface IMoveInfo{
+export interface IMoveInfo{
     x: number,
     y: number,
     pieceName: string
