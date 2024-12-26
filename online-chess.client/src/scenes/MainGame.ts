@@ -166,7 +166,7 @@ export class MainGame extends Scene{
         y = actualCoordinates?.y ?? 0;
 
         // validate
-        const validator = new MoveValidator(this.board, name);
+        const validator = new MoveValidator(this.board, name, this.moveHistory);
         let validMoves: IValidMove[] = [];
 
         switch(name){

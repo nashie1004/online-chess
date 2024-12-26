@@ -1,6 +1,6 @@
 import { GameObjects } from "phaser";
 import { PieceNames } from "../utils/constants";
-import { IValidMove } from "../utils/types";
+import { IMoveHistory, IMoveInfo, IValidMove } from "../utils/types";
 
 /**
  * Helper class for validating moves
@@ -9,10 +9,12 @@ import { IValidMove } from "../utils/types";
 export default class MoveValidator{
     private readonly board: (GameObjects.Sprite | null)[][] = []
     private readonly pieceName: PieceNames = PieceNames.wPawn;
+    private readonly moveHistory: IMoveHistory;
 
-    constructor(board: (GameObjects.Sprite | null)[][], pieceName: PieceNames) {
+    constructor(board: (GameObjects.Sprite | null)[][], pieceName: PieceNames, moveHistory: IMoveHistory) {
         this.board = board;
         this.pieceName = pieceName;
+        this.moveHistory = moveHistory;
     }
 
     public rook(x: number, y: number): IValidMove[]{
@@ -271,14 +273,40 @@ export default class MoveValidator{
             }
         })
 
+        // 4. en passant
+        
+        // get the opponent's latest move and
+        // if both sides already have 1 move
+        if (
+            this.moveHistory.black.length > 0 && this.moveHistory.white.length > 0  
+        ){
+            let latestMove: IMoveInfo;
+            const rank = isWhite ? 3 : 4;
+
+            if (isWhite){
+                latestMove = this.moveHistory.black[this.moveHistory.black.length - 1].new
+            } else {
+                latestMove = this.moveHistory.white[this.moveHistory.white.length - 1].new
+            }
+    
+            // if the latest move is a pawn, and the row is 3 (for white) or 5 (for black)
+            // allow capture
+            if (
+                (latestMove.y === rank) && latestMove.pieceName.toLowerCase().indexOf("pawn")
+            ){
+                validMoves.push({ x: latestMove.x, y: y + captureYDirection, isCapture: true });
+                console.log(validMoves[validMoves.length - 1])
+            }
+        }
+
         return validMoves;
     }
 
     private isAFriendPiece(name: string): boolean{
-        const bothWhite = name[0] === "w" && this.pieceName.toString()[0] === "w"
-        const bothBlack = name[0] === "b" && this.pieceName.toString()[0] === "b"
+        const bothWhite = name[0] === "w" && this.pieceName.toString()[0] === "w";
+        const bothBlack = name[0] === "b" && this.pieceName.toString()[0] === "b";
 
-        return bothWhite || bothBlack
+        return bothWhite || bothBlack;
     }
 
     private isOutOfBounds(col: number, row: number){
