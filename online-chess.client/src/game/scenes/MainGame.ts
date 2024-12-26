@@ -1,47 +1,17 @@
 import { GameObjects, Scene } from "phaser";
-import bg from "../../assets/lichess/wood4-800x800.jpg"
-import previewMove from "../../assets/lichess/indicator9.png"
-
-import wPawn from "../../assets/lichess/wP.svg?raw?raw"
-import wRook from "../../assets/lichess/wR.svg?raw"
-import wKnight from "../../assets/lichess/wN.svg?raw"
-import wBishop from "../../assets/lichess/wB.svg?raw"
-import wQueen from "../../assets/lichess/wQ.svg?raw"
-import wKing from "../../assets/lichess/wK.svg?raw"
-
-import bPawn from "../../assets/lichess/bP.svg?raw"
-import bRook from "../../assets/lichess/bR.svg?raw"
-import bKnight from "../../assets/lichess/bN.svg?raw"
-import bBishop from "../../assets/lichess/bB.svg?raw"
-import bQueen from "../../assets/lichess/bQ.svg?raw"
-import bKing from "../../assets/lichess/bK.svg?raw"
-
+import bg from "../../assets/wood4-800x800.jpg"
+import previewMove from "../../assets/indicator.png"
+import move from "../../assets/sounds/Move.ogg"
+import capture from "../../assets/sounds/Capture.ogg"
+import select from "../../assets/sounds/Select.ogg"
 import pieces from "../../pieces";
-import { gameOptions, PieceNames } from "../../utils/constants";
+import { gameOptions, PieceNames, pieceImages } from "../../utils/constants";
 import MoveValidator from "../../validators/moveValidator";
 import { ICaptureHistory, IMoveHistory, IMoveInfo, IValidMove } from "../../utils/types";
 
-const pieceImages = {
-    [PieceNames.wPawn]: wPawn,
-    [PieceNames.wRook]: wRook,
-    [PieceNames.wKnight]: wKnight,
-    [PieceNames.wBishop]: wBishop,
-    [PieceNames.wQueen]: wQueen,
-    [PieceNames.wKing]: wKing,
-    [PieceNames.bPawn]: bPawn,
-    [PieceNames.bRook]: bRook,
-    [PieceNames.bKnight]: bKnight,
-    [PieceNames.bBishop]: bBishop,
-    [PieceNames.bQueen]: bQueen,
-    [PieceNames.bKing]: bKing,
-};
-
 export class MainGame extends Scene{
     /**
-     * === Sizes ===
-     * Board: 128 x 128 => 768 x 768
-     * Square: 32 x 32 => 96 x 96
-     * 
+     * Board: 800 x 800, Square: 100
      * unique name = piecename + x + y, example: 'wPawn-0-6'
      */
     private moveHistory: IMoveHistory;
@@ -72,19 +42,23 @@ export class MainGame extends Scene{
     preload(){
         this.load.image("bg", bg);
         this.load.image("previewMove", previewMove)
+        this.load.audio("move", move);
+        this.load.audio("capture", capture);
+        this.load.audio("select", select);
 
         Object.entries(pieceImages).forEach(([pieceName, imagePath]) => {
             const blob = new Blob([imagePath], { type: 'image/svg+xml' });
             const url = URL.createObjectURL(blob);
             this.load.svg(pieceName, url, { width: this.tileSize, height: this.tileSize })
-            // this.load.spritesheet(pieceName, imagePath, { frameWidth: 96, frameHeight: 96 });
         })
     }
 
     create(){
 
-        // each square is 96 x 96
-        this.add.image(0, 0, "bg").setOrigin(0, 0) //.setScale(6);
+        this.add.image(0, 0, "bg").setOrigin(0, 0) ;
+        const move = this.sound.add("move");
+        const capture = this.sound.add("capture");
+        const select = this.sound.add("select");
         
         // create pieces
 
@@ -101,7 +75,10 @@ export class MainGame extends Scene{
                     .setInteractive({ cursor: "pointer" })
                     .on("pointerover", () => { previewMove.setTint(0x98DEC7) })
                     .on("pointerout", () => { previewMove.clearTint() })
-                    .on("pointerdown", () => this.move(colIdx, rowIdx), this)
+                    .on("pointerdown", () => {
+                        const hasCapture = this.move(colIdx, rowIdx);
+                        hasCapture ? capture.play() : move.play();
+                    }, this)
                     .setAlpha(.5)
                     ;
 
@@ -125,6 +102,7 @@ export class MainGame extends Scene{
                     sprite.clearTint()
                  })
                 .on("pointerdown", () => {
+                    select.play();
                     this.resetMoves();
                     this.showPossibleMoves(name, x, y);
                 })
@@ -210,7 +188,9 @@ export class MainGame extends Scene{
 
     // move piece to desired square, saves capture and move history
     move(newX: number, newY: number){
-        if (!this.selectedPiece) return;
+        let hasCapture = false;
+
+        if (!this.selectedPiece) return hasCapture;
         
         // current piece to move
         const sprite = this.board[this.selectedPiece.x][this.selectedPiece.y];
@@ -233,6 +213,7 @@ export class MainGame extends Scene{
             }
 
             opponentPiece.destroy();
+            hasCapture = true;
         }
 
         // new coordinate
@@ -262,6 +243,7 @@ export class MainGame extends Scene{
 
         // reset
         this.resetMoves();
+        return hasCapture;
     }
 
     // find by name 
@@ -288,19 +270,5 @@ export class MainGame extends Scene{
             // console.info(`Black's turn to move`)
         }
 
-        //this.input.on("pointerdown", (pointer: Phaser.Input.Pointer, gameObjects) => {
-            // console.log(pointer.x / this.tileSize, pointer.y / this.tileSize, this.selectedPiece.validMoves)
-            
-          //  if (!this.selectedPiece.piece) return;
-
-            // this.tweens.add({
-            //     targets: [this.selectedPiece.piece],
-            //     x: pointer.x, // Math.ceil(pointer.x) * this.tileSize,
-            //     y: pointer.y, //Math.ceil(pointer.y) * this.tileSize,
-            //     ease: "Expo.easeInOuts",
-            //     duration: 100,
-            // })
-            //const test = Phaser.Math.Snap
-        //})
     }
 }
