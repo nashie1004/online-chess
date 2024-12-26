@@ -1,53 +1,31 @@
-# React + TypeScript + Vite
+# Online-Chess
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Todo
 
-Currently, two official plugins are available:
+chess logic
+1. pawn capture
+2. pawn move
+3. pawn en passant
+4. pawn promotion
+5. king king-side castling
+6. king queen-side castling
+7. king danger squares after move function
+8. king pins after move function
+9. check validator after move function
+10. checkmate validator after move function
+11. show timer
+12. you won
+13. you lose
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+ui
+1. move history (with notation)
+2. capture history (with svg)
+3. chat bar styling
+4. side bar styling
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
-
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+others/minimal
+1. rotate board
+2. show notation on chessboard 
 
 ## Assets 
 - https://github.com/lichess-org/lila/blob/master/public/piece/alpha/
