@@ -168,16 +168,22 @@ export class MainGame extends Scene{
     }
 
     move(newX: number, newY: number){
-        // const 
-        // this.board[newX][newY]
+        const sprite = this.board[this.selectedPiece.x][this.selectedPiece.y];
+        
+        // old coordinate
+        this.board[this.selectedPiece.x][this.selectedPiece.y] = null 
+        // new coordinate
+        this.board[newX][newY] = sprite;
 
         this.tweens.add({
-            targets: [this.board[this.selectedPiece.x][this.selectedPiece.y]],
+            targets: [sprite],
             x: newX * this.tileSize, 
             y: newY * this.tileSize, 
             ease: "Expo.easeInOuts",
             duration: 100,
         })
+
+        this.selectedPiece = { x: 0, y: 0 }
     }
 
     update(){
