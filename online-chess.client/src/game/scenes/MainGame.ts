@@ -1,6 +1,6 @@
 import { GameObjects, Scene } from "phaser";
 import bg from "../../assets/lichess/wood4-800x800.jpg"
-import previewMove from "../../assets/preview.png"
+import previewMove from "../../assets/lichess/indicator9.png"
 
 import wPawn from "../../assets/lichess/wP.svg?raw?raw"
 import wRook from "../../assets/lichess/wR.svg?raw"
@@ -96,13 +96,13 @@ export class MainGame extends Scene{
                     .sprite(colIdx * this.tileSize, rowIdx * this.tileSize, "previewMove")
                     .setName(`previewMove-${colIdx}-${rowIdx}`)
                     .setOrigin(0, 0)
-                    .setScale(3)
-                    .setDepth(2)
+                    .setDepth(1)
                     .setVisible(false)
                     .setInteractive({ cursor: "pointer" })
                     .on("pointerover", () => { previewMove.setTint(0x98DEC7) })
                     .on("pointerout", () => { previewMove.clearTint() })
                     .on("pointerdown", () => this.move(colIdx, rowIdx), this)
+                    .setAlpha(.5)
                     ;
 
                 this.previewBoard[colIdx][rowIdx] = previewMove;

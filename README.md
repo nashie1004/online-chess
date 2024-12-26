@@ -49,7 +49,8 @@ export default tseslint.config({
 })
 ```
 
-
 ## Assets 
-https://github.com/lichess-org/lila/blob/master/public/piece/alpha/bB.svg
-https://github.com/lichess-org/lila/blob/master/public/images/board/wood4.jpg
+- https://github.com/lichess-org/lila/blob/master/public/piece/alpha/
+- https://github.com/lichess-org/lila/blob/master/public/images/board/wood4.jpg
+- https://www.piskelapp.com/
+
