@@ -2,19 +2,20 @@ import { GameObjects, Scene } from "phaser";
 import bg from "../../assets/lichess/wood4-800x800.jpg"
 import previewMove from "../../assets/preview.png"
 
-import wPawn from "../../assets/Chess - white casual/Pawn.png"
-import wRook from "../../assets/Chess - white casual/Rook.png"
-import wKnight from "../../assets/Chess - white casual/Knight.png"
-import wBishop from "../../assets/Chess - white casual/Bishop.png"
-import wQueen from "../../assets/Chess - white casual/Queen.png"
-import wKing from "../../assets/Chess - white casual/King.png"
+import wPawn from "../../assets/lichess/wP.svg?raw?raw"
+import wRook from "../../assets/lichess/wR.svg?raw"
+import wKnight from "../../assets/lichess/wN.svg?raw"
+import wBishop from "../../assets/lichess/wB.svg?raw"
+import wQueen from "../../assets/lichess/wQ.svg?raw"
+import wKing from "../../assets/lichess/wK.svg?raw"
 
-import bPawn from "../../assets/Chess - black casual/Pawn.png"
-import bRook from "../../assets/Chess - black casual/Rook.png"
-import bKnight from "../../assets/Chess - black casual/Knight.png"
-import bBishop from "../../assets/Chess - black casual/Bishop.png"
-import bQueen from "../../assets/Chess - black casual/Queen.png"
-import bKing from "../../assets/Chess - black casual/King.png"
+import bPawn from "../../assets/lichess/bP.svg?raw"
+import bRook from "../../assets/lichess/bR.svg?raw"
+import bKnight from "../../assets/lichess/bN.svg?raw"
+import bBishop from "../../assets/lichess/bB.svg?raw"
+import bQueen from "../../assets/lichess/bQ.svg?raw"
+import bKing from "../../assets/lichess/bK.svg?raw"
+
 import pieces from "../../pieces";
 import { gameOptions, PieceNames } from "../../utils/constants";
 import MoveValidator from "../../validators/moveValidator";
@@ -73,7 +74,10 @@ export class MainGame extends Scene{
         this.load.image("previewMove", previewMove)
 
         Object.entries(pieceImages).forEach(([pieceName, imagePath]) => {
-            this.load.spritesheet(pieceName, imagePath, { frameWidth: 96, frameHeight: 96 });
+            const blob = new Blob([imagePath], { type: 'image/svg+xml' });
+            const url = URL.createObjectURL(blob);
+            this.load.svg(pieceName, url, { width: this.tileSize, height: this.tileSize })
+            // this.load.spritesheet(pieceName, imagePath, { frameWidth: 96, frameHeight: 96 });
         })
     }
 
@@ -112,7 +116,6 @@ export class MainGame extends Scene{
             const sprite = this.add
                 .sprite(x * this.tileSize, y * this.tileSize, name.toString(), 1)
                 .setOrigin(0, 0)
-                .setScale(3)
                 .setName(`${name}-${x}-${y}`)
                 .setInteractive({  cursor: "pointer" }) 
                 .on("pointerover", () => { 
