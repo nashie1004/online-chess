@@ -3,6 +3,9 @@ import { MainGame } from "./scenes/MainGame";
 import { gameOptions } from "./utils/constants";
 import { eventEmitter } from "./eventEmitter";
 import { ICaptureHistory, IMoveHistory } from "./utils/types";
+import { chessBoardNotation } from "./utils/helpers";
+
+const board = chessBoardNotation();
 
 export default function App(){
     const gameRef = useRef<Phaser.Game | null>();
@@ -49,8 +52,8 @@ export default function App(){
             <ul>
                 {moveHistory.white.map((move, idx) => {
                     return <li key={idx}>
-                        <span>Old: {move.new.pieceName} - {move.new.x} - {move.new.y}</span>
-                        <span>, New: {move.old.pieceName} - {move.old.x} - {move.old.y}</span>
+                        <span>Old: {move.new.pieceName} - {board[move.old.x][move.old.y]}</span>
+                        <span>, New: {move.old.pieceName} - {board[move.new.x][move.new.y]}</span>
                     </li>
                 })}
             </ul>
@@ -58,8 +61,8 @@ export default function App(){
             <ul>
                 {moveHistory.black.map((move, idx) => {
                     return <li key={idx}>
-                        <span>Old: {move.new.pieceName} - {move.new.x} - {move.new.y}</span>
-                        <span>, New: {move.old.pieceName} - {move.old.x} - {move.old.y}</span>
+                        <span>Old: {move.new.pieceName} - {board[move.old.x][move.old.y]}</span>
+                        <span>, New: {move.old.pieceName} - {board[move.new.x][move.new.y]}</span>
                     </li>
                 })}
             </ul>
@@ -69,7 +72,7 @@ export default function App(){
             <ul>
                 {captureHistory.white.map((capture, idx) => {
                     return <li key={idx}>
-                        {capture.pieceName} - {capture.x} - {capture.y}
+                        {capture.pieceName} - {board[capture.x][capture.y]}
                     </li>
                 })}
             </ul>
@@ -77,7 +80,7 @@ export default function App(){
             <ul>
                 {captureHistory.black.map((capture, idx) => {
                     return <li key={idx}>
-                        {capture.pieceName} - {capture.x} - {capture.y}
+                        {capture.pieceName} - {board[capture.x][capture.y]}
                     </li>
                 })}
             </ul>

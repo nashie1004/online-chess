@@ -47,3 +47,5 @@ export const pieceImages = {
     [PieceNames.bQueen]: bQueen,
     [PieceNames.bKing]: bKing,
 };
+
+
