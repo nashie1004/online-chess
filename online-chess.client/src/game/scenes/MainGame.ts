@@ -31,7 +31,7 @@ export class MainGame extends Scene{
         this.moveHistory = { white: [], black: [] };
         this.selectedPiece = null;
         
-        this.tileSize = gameOptions.tileSize; // 96
+        this.tileSize = gameOptions.tileSize; // 100
         
         // creates 8x8 grid
         this.board = Array.from({ length: 8}).map(_ => new Array(8).fill(null));
@@ -96,17 +96,36 @@ export class MainGame extends Scene{
                 .setName(`${name}-${x}-${y}`)
                 .setInteractive({  cursor: "pointer" }) 
                 .on("pointerover", () => { 
+                    
+                    // not allowed to move
+                    if (
+                        (name[0] !== "w" && this.isWhitesTurn) || 
+                        (name[0] !== "b" && !this.isWhitesTurn) 
+                    ){
+                        return;
+                    } 
+                    
                     sprite.setTint(0x98DEC7) 
                 })
                 .on("pointerout", () => { 
                     sprite.clearTint()
                  })
                 .on("pointerdown", () => {
+
+                    // not allowed to move
+                    if (
+                        (name[0] !== "w" && this.isWhitesTurn) || 
+                        (name[0] !== "b" && !this.isWhitesTurn) 
+                    ){
+                        return;
+                    } 
+                    
+                    // show available moves
                     select.play();
                     this.resetMoves();
                     this.showPossibleMoves(name, x, y);
                 })
-                ;
+;
             this.board[x][y] = sprite;
         })
 
