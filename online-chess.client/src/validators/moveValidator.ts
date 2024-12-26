@@ -281,8 +281,6 @@ export default class MoveValidator{
             this.moveHistory.black.length > 0 && this.moveHistory.white.length > 0  
         ){
             let latestMove: IMoveInfo;
-            const rank = isWhite ? 3 : 4;
-
             if (isWhite){
                 latestMove = this.moveHistory.black[this.moveHistory.black.length - 1].new
             } else {
@@ -292,7 +290,8 @@ export default class MoveValidator{
             // if the latest move is a pawn, and the row is 3 (for white) or 5 (for black)
             // allow capture
             if (
-                (latestMove.y === rank) && latestMove.pieceName.toLowerCase().indexOf("pawn")
+                ((latestMove.y === 3 && isWhite) || (latestMove.y === 4 && !isWhite))
+                && latestMove.pieceName.toLowerCase().indexOf("pawn")
             ){
                 validMoves.push({ x: latestMove.x, y: y + captureYDirection, isCapture: true });
                 console.log(validMoves[validMoves.length - 1])
