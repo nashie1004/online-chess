@@ -98,28 +98,17 @@ export class MainGame extends Scene{
                 .sprite(x * this.tileSize, y * this.tileSize, name.toString(), 1)
                 .setOrigin(0, 0)
                 .setScale(3)
-                .setName(name)
+                .setName(`${name}-${x}-${y}`)
                 .setInteractive({  cursor: "pointer" }) //.setInteractive({ draggable: true, cursor: "pointer" })
                 .on("pointerover", function(){ this.setTint(0x98DEC7) })
                 .on("pointerout", function(){ this.clearTint() })
-                .on("pointerdown", (a, b, c) => {
-                    console.log(x, y, this.board[x][y])
-                    this.resetPreviews();
+                .on("pointerdown", () => {
                     this.showPossibleMoves(name, x, y);
                 });
         })
-
-        // Drag event
-        // this.input.on("drag", (_: Phaser.Input.Pointer, gameObject, dragX: number, dragY: number) => {
-            
-        //     dragX = Phaser.Math.Snap.To(dragX, this.tileSize);
-        //     dragY = Phaser.Math.Snap.To(dragY, this.tileSize);
-
-        //     gameObject.setPosition(dragX, dragY);
-        // })
     }
 
-    resetPreviews(){
+    showPossibleMoves(name: PieceNames, x: number, y: number){
         // reset preview
         this.previewBoard.forEach((row, rowIdx) => {
             row.forEach((_, colIdx) => {
@@ -128,13 +117,13 @@ export class MainGame extends Scene{
                 }
             })
         })
-    }
 
-    showPossibleMoves(name: PieceNames, x: number, y: number){
         // reset selected piece
         this.selectedPiece = { x: 0, y: 0 };
 
-        console.log(x, y)
+        const actualCoordinates = this.findPieceCoordinates(`${name}-${x}-${y}`)
+        x = actualCoordinates?.x ?? 0;
+        y = actualCoordinates?.y ?? 0;
 
         // validate
         const validator = new MoveValidator(this.board, name);
@@ -194,6 +183,22 @@ export class MainGame extends Scene{
         })
 
         this.selectedPiece = { x: 0, y: 0 }
+    }
+
+    // find by name 
+    findPieceCoordinates(uniqueName: string){
+        for (let i = 0; i < this.board.length; i++){
+            for(let j = 0; j < this.board[i].length; j++){
+             
+                const currTile = this.board[j][i];
+
+                // empty tle
+                if (!currTile) continue;
+                
+                // found coords
+                if (currTile.name === uniqueName) return ({ x: j, y: i })
+            }
+        }
     }
 
     update(){
