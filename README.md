@@ -50,5 +50,6 @@ export default tseslint.config({
 ```
 
 
-## Assets
-https://verzatiledev.itch.io/chess
+## Assets 
+https://github.com/lichess-org/lila/blob/master/public/piece/alpha/bB.svg
+https://github.com/lichess-org/lila/blob/master/public/images/board/wood4.jpg
