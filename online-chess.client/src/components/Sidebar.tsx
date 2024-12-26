@@ -14,7 +14,7 @@ export default function Sidebar({
 }: ISidebar) {
   return (
     <aside>
-            <h2>{isWhitesTurn ? "White's" : "Black's"} turn to move.</h2>
+            <h2>{isWhitesTurn ? "White" : "Black"} turn.</h2>
             <hr />
             <h3>Move History</h3>
             <h5>White</h5>

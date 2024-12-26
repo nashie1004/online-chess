@@ -16,7 +16,7 @@ export default class MoveValidator{
     }
 
     public rook(x: number, y: number): IValidMove[]{
-        const retVal: IValidMove[] = [];
+        const validMoves: IValidMove[] = [];
 
         /**
          * Top: 0, -y
@@ -41,7 +41,7 @@ export default class MoveValidator{
                 row += direction.y;
                 col += direction.x;
                 if (row === y && col === x) continue; // same tile
-                if (row < 0 || row >= 8 || col < 0 || col >= 8) break; // out of bounds
+                if (this.isOutOfBounds(col, row)) break; // out of bounds
     
                 const currTile = this.board[col][row];
     
@@ -50,20 +50,20 @@ export default class MoveValidator{
                         break;
                     }
                     else{
-                        retVal.push({ x: col, y: row, isCapture: true })
+                        validMoves.push({ x: col, y: row, isCapture: true })
                         break;
                     }
                 }
     
-                retVal.push({ x: col, y: row, isCapture: false })
+                validMoves.push({ x: col, y: row, isCapture: false })
             }
         })
 
-        return retVal;
+        return validMoves;
     }
 
     public knight(x: number, y: number): IValidMove[]{
-        const retVal: IValidMove[] = [];
+        const validMoves: IValidMove[] = [];
         
         /**
          * top left 1 = x: -1, y: -2
@@ -92,7 +92,7 @@ export default class MoveValidator{
             const row = y + direction.y
 
             // check if out of bounds
-            if (col >= 8 || row >= 8 || col < 0 || row < 0) return;
+            if (this.isOutOfBounds(col, row)) return;
 
             const currTile = this.board[col][row];
 
@@ -101,19 +101,19 @@ export default class MoveValidator{
                     return;
                 }
                 else{
-                    retVal.push({ x: col, y: row, isCapture: true })
+                    validMoves.push({ x: col, y: row, isCapture: true })
                     return;
                 }
             }
 
-            retVal.push({ x: col, y: row, isCapture: false })
+            validMoves.push({ x: col, y: row, isCapture: false })
         })
         
-        return retVal;
+        return validMoves;
     }
     
     public bishop(x: number, y: number): IValidMove[]{
-        const retVal: IValidMove[] = [];
+        const validMoves: IValidMove[] = [];
 
         const directions = [
             { x: -1, y: -1 } // Top Left: -x, -y
@@ -133,7 +133,7 @@ export default class MoveValidator{
                 col += direction.x;
 
                 // still within the board
-                if (row < 0 || col < 0 || row >= 8 || col >= 8) continue;
+                if (this.isOutOfBounds(col, row)) continue;
 
                 const currTile = this.board[col][row]
 
@@ -146,28 +146,28 @@ export default class MoveValidator{
                         break;
                     } 
                     else{
-                        retVal.push({ x: col, y: row, isCapture: true }) // an opponent
+                        validMoves.push({ x: col, y: row, isCapture: true }) // an opponent
                         break;
                     }
                 }
                 
-                retVal.push({ x: col, y: row, isCapture: false})
+                validMoves.push({ x: col, y: row, isCapture: false})
             }
         })
 
-        return retVal;
+        return validMoves;
     }
     
     public queen(x: number, y: number): IValidMove[]{
-        let retVal: IValidMove[] = [];
+        let validMoves: IValidMove[] = [];
         
-        retVal = [...this.rook(x, y), ...this.bishop(x, y)]
+        validMoves = [...this.rook(x, y), ...this.bishop(x, y)]
 
-        return retVal;
+        return validMoves;
     }
     
     public king(x: number, y: number): IValidMove[]{
-        const retVal: IValidMove[] = [];
+        const validMoves: IValidMove[] = [];
         
         /**
          * top left = -1, -1
@@ -194,7 +194,7 @@ export default class MoveValidator{
             const col = x + direction.x;
             const row = y + direction.y;
 
-            if (col < 0 || col >= 8 || row < 0 || row >= 8) return; // out of bounds
+            if (this.isOutOfBounds(col, row)) return; // out of bounds
 
             const currTile = this.board[col][row];
 
@@ -203,28 +203,28 @@ export default class MoveValidator{
                 if (this.isAFriendPiece(currTile.name)) return;
 
                 // opponent
-                retVal.push({ x: col, y: row, isCapture: true })
+                validMoves.push({ x: col, y: row, isCapture: true })
                 return;
             }
 
-            retVal.push({ x: col, y: row, isCapture: false })
+            validMoves.push({ x: col, y: row, isCapture: false })
         })
 
-        return retVal;
+        return validMoves;
     }
     
     public pawn(x: number, y: number): IValidMove[]{
-        const retVal: IValidMove[] = [];
+        const validMoves: IValidMove[] = [];
         const isWhite = this.pieceName.toString()[0] === "w";
-        const directionY = isWhite ? -1 : 1;
+        const captureYDirection = isWhite ? -1 : 1;
         
         // 1. normal 1 square forward
         if (y <= 7 || y >= 0){
             const col = x;
-            const row = y + (directionY * 1);
+            const row = y + (captureYDirection * 1);
 
             // block pawn from moving
-            if (!this.board[col][row]) retVal.push({ x: col, y: row, isCapture: false });
+            if (!this.board[col][row]) validMoves.push({ x: col, y: row, isCapture: false });
 
         }
 
@@ -235,17 +235,43 @@ export default class MoveValidator{
             (!isWhite && y === 1)
         ){
             const col = x;
-            const row = y + (directionY * 2);
+            const row = y + (captureYDirection * 2);
 
             // block pawn from moving
-            const blockage = this.board[col][y + (directionY * 1)]
+            const blockage = this.board[col][y + (captureYDirection * 1)]
             if (!blockage) {
-                retVal.push({ x: col, y: row, isCapture: false });
+                validMoves.push({ x: col, y: row, isCapture: false });
             }
 
         }
 
-        return retVal;
+        // 3. check diagonal capture
+        let captureDirection = [
+            { x: -1, y: captureYDirection } // top left
+            ,{ x: 1, y: captureYDirection } // top right
+        ]
+
+        captureDirection.forEach(direction => {
+            const row = y + direction.y;
+            const col = x + direction.x;
+            
+            if (
+                col >= 0 && col >= 0 
+                &&
+                row <= 7 && row <= 7
+            ){
+                if (this.isOutOfBounds(col, row)) return;
+
+                const currTile = this.board[col][row]
+
+                if (currTile && !this.isAFriendPiece(currTile.name)) 
+                {
+                    validMoves.push({ x: col, y: row, isCapture: true });
+                }
+            }
+        })
+
+        return validMoves;
     }
 
     private isAFriendPiece(name: string): boolean{
@@ -253,5 +279,9 @@ export default class MoveValidator{
         const bothBlack = name[0] === "b" && this.pieceName.toString()[0] === "b"
 
         return bothWhite || bothBlack
+    }
+
+    private isOutOfBounds(col: number, row: number){
+        return col > 7 || row > 7 || 0 > col || 0 > row;
     }
 }
