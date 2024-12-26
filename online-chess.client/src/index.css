@@ -148,7 +148,19 @@ button:focus-visible {
   }
 }
 
+/*
+Custom CSS
+*/
 
 #app{
   display: flex;
+  gap: 1rem;
+}
+
+#app aside{
+  text-align: start;
+}
+
+#app aside h2{
+  text-align: center;
 }

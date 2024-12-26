@@ -1,13 +1,14 @@
 import { GameObjects, Scene } from "phaser";
-import bg from "../../assets/wood4-800x800.jpg"
-import previewMove from "../../assets/indicator.png"
-import move from "../../assets/sounds/Move.ogg"
-import capture from "../../assets/sounds/Capture.ogg"
-import select from "../../assets/sounds/Select.ogg"
-import pieces from "../../pieces";
-import { gameOptions, PieceNames, pieceImages } from "../../utils/constants";
-import MoveValidator from "../../validators/moveValidator";
-import { ICaptureHistory, IMoveHistory, IMoveInfo, IValidMove } from "../../utils/types";
+import bg from "../assets/wood4-800x800.jpg"
+import previewMove from "../assets/indicator.png"
+import move from "../assets/sounds/Move.ogg"
+import capture from "../assets/sounds/Capture.ogg"
+import select from "../assets/sounds/Select.ogg"
+import pieces from "../pieces";
+import { gameOptions, PieceNames, pieceImages } from "../utils/constants";
+import MoveValidator from "../validators/moveValidator";
+import { ICaptureHistory, IMoveHistory, IMoveInfo, IValidMove } from "../utils/types";
+import { eventEmitter } from "../eventEmitter";
 
 export class MainGame extends Scene{
     /**
@@ -216,6 +217,7 @@ export class MainGame extends Scene{
         const isWhite = sprite?.name[0] === "w"
         const pieceName = sprite?.name ?? "";
         this.isWhitesTurn = !isWhite;
+        eventEmitter.emit("isWhitesTurn", !isWhite)
 
         // old coordinate
         this.board[this.selectedPiece.x][this.selectedPiece.y] = null; 
