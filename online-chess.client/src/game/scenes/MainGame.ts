@@ -18,7 +18,7 @@ import bKing from "../../assets/Chess - black casual/King.png"
 import pieces from "../../pieces";
 import { gameOptions, PieceNames } from "../../utils/constants";
 import MoveValidator from "../../validators/moveValidator";
-import { IMoveHistory, ISelectedPiece, IValidMove } from "../../utils/types";
+import { ICaptureHistory, IMoveHistory, ISelectedPiece, IValidMove } from "../../utils/types";
 
 const pieceImages = {
     [PieceNames.wPawn]: wPawn,
@@ -40,17 +40,26 @@ export class MainGame extends Scene{
      * === Sizes ===
      * Board: 128 x 128 => 768 x 768
      * Square: 32 x 32 => 96 x 96
+     * 
+     * unique name = piecename + x + y, example: 'wPawn-0-6'
      */
     private moveHistory: IMoveHistory;
+    private captureHistory: ICaptureHistory;
     private tileSize: number;
-    private board: (null | GameObjects.Sprite)[][]
-    private previewBoard: (GameObjects.Sprite)[][] // has a visible property
-    private selectedPiece: ISelectedPiece;
+    private readonly board: (null | GameObjects.Sprite)[][]
+    private readonly previewBoard: (GameObjects.Sprite)[][] // has a visible property
+    private selectedPiece: ISelectedPiece | null;
+    private isWhitesTurn: boolean;
 
     constructor() {
         super();
+
+        // game state
+        this.isWhitesTurn = true;
+        this.captureHistory = { white: [], black: [] }
         this.moveHistory = { white: [], black: [] };
-        this.selectedPiece = { x: 0, y: 0 };
+        this.selectedPiece = null;
+        
         this.tileSize = gameOptions.tileSize; // 96
         
         // creates 8x8 grid
@@ -76,7 +85,8 @@ export class MainGame extends Scene{
         // 1. preview moves 
         this.board.forEach((row, rowIdx) => {
             row.forEach((_, colIdx) => {
-                this.previewBoard[colIdx][rowIdx] = this.add
+
+                const previewMove =  this.add
                     .sprite(colIdx * this.tileSize, rowIdx * this.tileSize, "previewMove")
                     .setName(`previewMove-${colIdx}-${rowIdx}`)
                     .setOrigin(0, 0)
@@ -84,31 +94,44 @@ export class MainGame extends Scene{
                     .setDepth(2)
                     .setVisible(false)
                     .setInteractive({ cursor: "pointer" })
-                    .on("pointerover", function(){ this.setTint(0x98DEC7) })
-                    .on("pointerout", function(){ this.clearTint() })
+                    .on("pointerover", () => { previewMove.setTint(0x98DEC7) })
+                    .on("pointerout", () => { previewMove.clearTint() })
                     .on("pointerdown", () => this.move(colIdx, rowIdx), this)
                     ;
+
+                this.previewBoard[colIdx][rowIdx] = previewMove;
             })
         })
 
         // 2. actual pieces
         pieces.forEach(piece => {
             const { name, x, y } = piece;
-            this.board[x][y] = this.add
+
+            const sprite = this.add
                 .sprite(x * this.tileSize, y * this.tileSize, name.toString(), 1)
                 .setOrigin(0, 0)
                 .setScale(3)
                 .setName(`${name}-${x}-${y}`)
-                .setInteractive({  cursor: "pointer" }) //.setInteractive({ draggable: true, cursor: "pointer" })
-                .on("pointerover", function(){ this.setTint(0x98DEC7) })
-                .on("pointerout", function(){ this.clearTint() })
+                .setInteractive({  cursor: "pointer" }) 
+                .on("pointerover", () => { 
+                    sprite.setTint(0x98DEC7) 
+                })
+                .on("pointerout", () => { 
+                    sprite.clearTint()
+                 })
                 .on("pointerdown", () => {
+                    this.resetMoves();
                     this.showPossibleMoves(name, x, y);
-                });
+                })
+                ;
+            this.board[x][y] = sprite;
         })
     }
 
-    showPossibleMoves(name: PieceNames, x: number, y: number){
+    resetMoves(){
+        // reset selected piece
+        this.selectedPiece = null;
+
         // reset preview
         this.previewBoard.forEach((row, rowIdx) => {
             row.forEach((_, colIdx) => {
@@ -117,10 +140,9 @@ export class MainGame extends Scene{
                 }
             })
         })
+    }
 
-        // reset selected piece
-        this.selectedPiece = { x: 0, y: 0 };
-
+    showPossibleMoves(name: PieceNames, x: number, y: number){
         const actualCoordinates = this.findPieceCoordinates(`${name}-${x}-${y}`)
         x = actualCoordinates?.x ?? 0;
         y = actualCoordinates?.y ?? 0;
@@ -167,13 +189,47 @@ export class MainGame extends Scene{
     }
 
     move(newX: number, newY: number){
-        const sprite = this.board[this.selectedPiece.x][this.selectedPiece.y];
+        if (!this.selectedPiece) return;
         
+        // current piece to move
+        const sprite = this.board[this.selectedPiece.x][this.selectedPiece.y];
+        const isWhite = sprite?.name[0] === "w"
+        const pieceName = sprite?.name ?? "";
+
         // old coordinate
-        this.board[this.selectedPiece.x][this.selectedPiece.y] = null 
+        this.board[this.selectedPiece.x][this.selectedPiece.y] = null; 
+        
+        // if there is an opponent piece in the desired square, capture it
+        const opponentPiece = this.board[newX][newY]
+        if (opponentPiece){
+
+            // save to capture history
+            if (isWhite){
+                this.captureHistory.white.push({ x: newX, y: newY, pieceName: opponentPiece.name })
+            } else {
+                this.captureHistory.black.push({ x: newX, y: newY, pieceName: opponentPiece.name })
+            }
+
+            opponentPiece.destroy();
+        }
+
         // new coordinate
         this.board[newX][newY] = sprite;
 
+        // save to move history
+        if (isWhite){
+            this.moveHistory.white.push({
+                old: { pieceName, x: this.selectedPiece.x, y: this.selectedPiece.y },
+                new: { pieceName, x: newX, y: newY },
+            });
+        } else {
+            this.moveHistory.black.push({
+                old: { pieceName, x: this.selectedPiece.x, y: this.selectedPiece.y },
+                new: { pieceName, x: newX, y: newY },
+            });
+        }
+
+        // display move to the user
         this.tweens.add({
             targets: [sprite],
             x: newX * this.tileSize, 
@@ -182,7 +238,11 @@ export class MainGame extends Scene{
             duration: 100,
         })
 
-        this.selectedPiece = { x: 0, y: 0 }
+        // reset
+        this.resetMoves();
+
+        // console.log(this.moveHistory)
+        console.log(this.captureHistory)
     }
 
     // find by name 
@@ -192,7 +252,7 @@ export class MainGame extends Scene{
              
                 const currTile = this.board[j][i];
 
-                // empty tle
+                // empty tile
                 if (!currTile) continue;
                 
                 // found coords

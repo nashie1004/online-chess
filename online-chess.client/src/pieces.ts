@@ -23,7 +23,7 @@ const pieces: IPiece[] = [
     { name: PieceNames.bPawn, x: 7, y: 1 },
     // 2.1 White Officers
     { name: PieceNames.wRook, x: 0, y: 7 },
-    { name: PieceNames.wKnight, x: 4, y: 5 },
+    { name: PieceNames.wKnight, x: 1, y: 7 },
     { name: PieceNames.wBishop, x: 2, y: 7 },
     { name: PieceNames.wQueen, x: 3, y: 7 },
     { name: PieceNames.wKing, x: 4, y: 7 },

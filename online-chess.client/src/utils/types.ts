@@ -18,13 +18,23 @@ export interface ISelectedPiece{
     y: number
 }
 
+interface IMoveInfo{
+    x: number,
+    y: number,
+    pieceName: string
+}
+
 interface IMove{
-    squareX: string,
-    squareY: string,
-    piece: string
+    old: IMoveInfo;
+    new: IMoveInfo;
 }
 
 export interface IMoveHistory{
     white: IMove[];
     black: IMove[];
 }   
+
+export interface ICaptureHistory{
+    white: IMoveInfo[]
+    black: IMoveInfo[]
+}
