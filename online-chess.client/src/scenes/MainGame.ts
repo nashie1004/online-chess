@@ -217,7 +217,6 @@ export class MainGame extends Scene{
         const isWhite = sprite?.name[0] === "w"
         const pieceName = sprite?.name ?? "";
         this.isWhitesTurn = !isWhite;
-        eventEmitter.emit("isWhitesTurn", !isWhite)
 
         // old coordinate
         this.board[this.selectedPiece.x][this.selectedPiece.y] = null; 
@@ -252,6 +251,11 @@ export class MainGame extends Scene{
                 new: { pieceName, x: newX, y: newY },
             });
         }
+
+        // transfer data from phaser to react
+        eventEmitter.emit("setIsWhitesTurn", !isWhite)
+        eventEmitter.emit("setMoveHistory", this.moveHistory)
+        eventEmitter.emit("setCaptureHistory", this.captureHistory)
 
         // display move to the user
         this.tweens.add({
@@ -290,6 +294,10 @@ export class MainGame extends Scene{
         } else {
             // console.info(`Black's turn to move`)
         }
+
+    }
+
+    resetGame(){
 
     }
 }
