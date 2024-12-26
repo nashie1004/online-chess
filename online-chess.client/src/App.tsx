@@ -3,9 +3,8 @@ import { MainGame } from "./scenes/MainGame";
 import { gameOptions } from "./utils/constants";
 import { eventEmitter } from "./eventEmitter";
 import { ICaptureHistory, IMoveHistory } from "./utils/types";
-import { chessBoardNotation } from "./utils/helpers";
-
-const board = chessBoardNotation();
+import Sidebar from "./components/Sidebar";
+import Chatbar from "./components/Chatbar";
 
 export default function App(){
     const gameRef = useRef<Phaser.Game | null>();
@@ -28,8 +27,8 @@ export default function App(){
         }
 
         eventEmitter.on("setIsWhitesTurn", (data: boolean) => setIsWhitesTurn(data))
-        eventEmitter.on("setMoveHistory", (data: IMoveHistory) => setMoveHistory(data))
-        eventEmitter.on("setCaptureHistory", (data: ICaptureHistory) => setCaptureHistory(data))
+        // eventEmitter.on("setMoveHistory", (data: IMoveHistory) => setMoveHistory(data))
+        // eventEmitter.on("setCaptureHistory", (data: ICaptureHistory) => setCaptureHistory(data))
 
         // cleanup phaser
         return () => {
@@ -41,55 +40,16 @@ export default function App(){
     }, [])
  
     return <div id="app">
+        <Sidebar
+            isWhitesTurn={isWhitesTurn}
+            moveHistory={moveHistory}
+            captureHistory={captureHistory}
+          />
         <main className="game-container" id="game-container"> 
 
         </main>
-        <aside>
-            <h3>{isWhitesTurn ? "White's" : "Black's"} turn to move.</h3>
-            <hr />
-            <h3>Move History</h3>
-            <h5>White</h5>
-            <ul>
-                {moveHistory.white.map((move, idx) => {
-                    return <li key={idx}>
-                        <span>Old: {move.new.pieceName} - {board[move.old.x][move.old.y]}</span>
-                        <span>, New: {move.old.pieceName} - {board[move.new.x][move.new.y]}</span>
-                    </li>
-                })}
-            </ul>
-            <h5>Black</h5>
-            <ul>
-                {moveHistory.black.map((move, idx) => {
-                    return <li key={idx}>
-                        <span>Old: {move.new.pieceName} - {board[move.old.x][move.old.y]}</span>
-                        <span>, New: {move.old.pieceName} - {board[move.new.x][move.new.y]}</span>
-                    </li>
-                })}
-            </ul>
-            <hr />
-            <h3>Capture History</h3>
-            <h5>White</h5>
-            <ul>
-                {captureHistory.white.map((capture, idx) => {
-                    return <li key={idx}>
-                        {capture.pieceName} - {board[capture.x][capture.y]}
-                    </li>
-                })}
-            </ul>
-            <h5>Black</h5>
-            <ul>
-                {captureHistory.black.map((capture, idx) => {
-                    return <li key={idx}>
-                        {capture.pieceName} - {board[capture.x][capture.y]}
-                    </li>
-                })}
-            </ul>
-            <hr />
-            <h3>Chat</h3>
-            <div>
-                <button>Resign</button>
-                <button>Request a Draw</button>
-            </div>
-        </aside>
+        <Chatbar
+            
+        />
     </div>
 }
