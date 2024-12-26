@@ -18,7 +18,7 @@ import bKing from "../../assets/Chess - black casual/King.png"
 import pieces from "../../pieces";
 import { gameOptions, PieceNames } from "../../utils/constants";
 import MoveValidator from "../../validators/moveValidator";
-import { IValidMove } from "../../utils/types";
+import { ISelectedPiece, IValidMove } from "../../utils/types";
 
 const pieceImages = {
     [PieceNames.wPawn]: wPawn,
@@ -44,16 +44,15 @@ export class MainGame extends Scene{
     private tileSize: number;
     private board: (null | GameObjects.Sprite)[][]
     private previewBoard: (GameObjects.Sprite)[][] // has a visible property
-    private test: boolean;
+    private selectedPiece: ISelectedPiece;
 
     constructor() {
         super();
-        this.test = false;
+        this.selectedPiece = { x: 0, y: 0 };
         this.tileSize = gameOptions.tileSize; // 96
         
         // creates 8x8 grid
         this.board = Array.from({ length: 8}).map(_ => new Array(8).fill(null));
-
         this.previewBoard = Array.from({ length: 8}).map(_ => new Array(8));
     }
 
@@ -82,6 +81,8 @@ export class MainGame extends Scene{
                     .setScale(3)
                     .setDepth(2)
                     .setVisible(false)
+                    .setInteractive()
+                    .on("pointerdown", () => this.move(colIdx, rowIdx), this)
                     ;
             })
         })
@@ -89,46 +90,33 @@ export class MainGame extends Scene{
         // 2. actual pieces
         pieces.forEach(piece => {
             const { name, x, y } = piece;
-            this.board[x][y] = this.createIndividualPiece(name, x, y);
+            this.board[x][y] = this.add
+                .sprite(x * this.tileSize, y * this.tileSize, name.toString(), 1)
+                .setOrigin(0, 0)
+                .setScale(3)
+                .setName(name)
+                .setInteractive({  cursor: "pointer" }) //.setInteractive({ draggable: true, cursor: "pointer" })
+                .on("pointerover", function(){ this.setTint(0x98DEC7) })
+                .on("pointerout", function(){ this.clearTint() })
+                .on("pointerdown", (e: Phaser.Input.Pointer) => { 
+                    this.showPossibleMoves(name, x, y);
+                });
         })
 
         // Drag event
-        this.input.on("drag", (_: Phaser.Input.Pointer, gameObject, dragX: number, dragY: number) => {
+        // this.input.on("drag", (_: Phaser.Input.Pointer, gameObject, dragX: number, dragY: number) => {
             
-            dragX = Phaser.Math.Snap.To(dragX, this.tileSize);
-            dragY = Phaser.Math.Snap.To(dragY, this.tileSize);
+        //     dragX = Phaser.Math.Snap.To(dragX, this.tileSize);
+        //     dragY = Phaser.Math.Snap.To(dragY, this.tileSize);
 
-            gameObject.setPosition(dragX, dragY);
-        })
-
-        
-        this.input.keyboard.on('keydown-A', event =>
-        {
-
-            console.log('Hello from the A Key!');
-            this.test = true
-        });
-    }
-
-    createIndividualPiece(name: PieceNames, x: number, y: number) : GameObjects.Sprite {
-        return this.add
-            .sprite(x * this.tileSize, y * this.tileSize, name.toString(), 1)
-            .setOrigin(0, 0)
-            .setScale(3)
-            // .setName(`${name}-${x}-${y}`)
-            .setName(name)
-            //.setInteractive({  cursor: "pointer" })
-             .setInteractive({ draggable: true, cursor: "pointer" })
-            // .on("clicked", this.clickEvent, this)
-            .on("pointerover", function(){ this.setTint(0x98DEC7) })
-            .on("pointerout", function(){ this.clearTint() })
-            .on("pointerdown", (e: Phaser.Input.Pointer) => { 
-                this.showPossibleMoves(name, x, y);
-            })
-            ;
+        //     gameObject.setPosition(dragX, dragY);
+        // })
     }
 
     showPossibleMoves(name: PieceNames, x: number, y: number){
+        // reset selected piece
+        this.selectedPiece = { x: 0, y: 0 };
+
         // reset preview
         this.previewBoard.forEach((row, rowIdx) => {
             row.forEach((_, colIdx) => {
@@ -138,6 +126,7 @@ export class MainGame extends Scene{
             })
         })
 
+        // validate
         const validator = new MoveValidator(this.board, name);
         let validMoves: IValidMove[] = [];
 
@@ -168,6 +157,9 @@ export class MainGame extends Scene{
                 break;
         }
 
+        // set selected piece
+        this.selectedPiece = { x, y };
+
         // shows the actual valid moves to the user
         validMoves.forEach(item => {
             const prev = this.previewBoard[item.x][item.y].visible;
@@ -175,31 +167,33 @@ export class MainGame extends Scene{
         })
     }
 
+    move(newX: number, newY: number){
+        // const 
+        // this.board[newX][newY]
+
+        this.tweens.add({
+            targets: [this.board[this.selectedPiece.x][this.selectedPiece.y]],
+            x: newX * this.tileSize, 
+            y: newY * this.tileSize, 
+            ease: "Expo.easeInOuts",
+            duration: 100,
+        })
+    }
+
     update(){
-        // const test = this.cursor;
-        if (this.test){
-            // const group = this.add.group();
-    
-            //  Add an existing Image into the group:
-    
-            const blackrook = this.board[0][0];
-
-            if (blackrook){
-
-                // group.add(blackrook);
-        
-                //  Any action done to the group is now reflected by the Image
-                //  For example this will set the position of the image to 400 x 300
-                // Phaser.Actions.SetXY(group.getChildren(), 400, 300);
-
-                this.tweens.add({
-                    targets: [blackrook],
-                    x: 6 * this.tileSize,
-                    ease: "Expo.easeInOuts",
-                    duration: 100,
-                })
-            }
+        //this.input.on("pointerdown", (pointer: Phaser.Input.Pointer, gameObjects) => {
+            // console.log(pointer.x / this.tileSize, pointer.y / this.tileSize, this.selectedPiece.validMoves)
             
-        }
+          //  if (!this.selectedPiece.piece) return;
+
+            // this.tweens.add({
+            //     targets: [this.selectedPiece.piece],
+            //     x: pointer.x, // Math.ceil(pointer.x) * this.tileSize,
+            //     y: pointer.y, //Math.ceil(pointer.y) * this.tileSize,
+            //     ease: "Expo.easeInOuts",
+            //     duration: 100,
+            // })
+            //const test = Phaser.Math.Snap
+        //})
     }
 }
