@@ -17,3 +17,14 @@ export interface ISelectedPiece{
     x: number,
     y: number
 }
+
+interface IMove{
+    squareX: string,
+    squareY: string,
+    piece: string
+}
+
+export interface IMoveHistory{
+    white: IMove[];
+    black: IMove[];
+}   

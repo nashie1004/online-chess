@@ -18,7 +18,7 @@ import bKing from "../../assets/Chess - black casual/King.png"
 import pieces from "../../pieces";
 import { gameOptions, PieceNames } from "../../utils/constants";
 import MoveValidator from "../../validators/moveValidator";
-import { ISelectedPiece, IValidMove } from "../../utils/types";
+import { IMoveHistory, ISelectedPiece, IValidMove } from "../../utils/types";
 
 const pieceImages = {
     [PieceNames.wPawn]: wPawn,
@@ -41,6 +41,7 @@ export class MainGame extends Scene{
      * Board: 128 x 128 => 768 x 768
      * Square: 32 x 32 => 96 x 96
      */
+    private moveHistory: IMoveHistory;
     private tileSize: number;
     private board: (null | GameObjects.Sprite)[][]
     private previewBoard: (GameObjects.Sprite)[][] // has a visible property
@@ -48,6 +49,7 @@ export class MainGame extends Scene{
 
     constructor() {
         super();
+        this.moveHistory = { white: [], black: [] };
         this.selectedPiece = { x: 0, y: 0 };
         this.tileSize = gameOptions.tileSize; // 96
         
@@ -76,12 +78,14 @@ export class MainGame extends Scene{
             row.forEach((_, colIdx) => {
                 this.previewBoard[colIdx][rowIdx] = this.add
                     .sprite(colIdx * this.tileSize, rowIdx * this.tileSize, "previewMove")
-                    // .setName(`previewMove-${colIdx}-${rowIdx}`)
+                    .setName(`previewMove-${colIdx}-${rowIdx}`)
                     .setOrigin(0, 0)
                     .setScale(3)
                     .setDepth(2)
                     .setVisible(false)
-                    .setInteractive()
+                    .setInteractive({ cursor: "pointer" })
+                    .on("pointerover", function(){ this.setTint(0x98DEC7) })
+                    .on("pointerout", function(){ this.clearTint() })
                     .on("pointerdown", () => this.move(colIdx, rowIdx), this)
                     ;
             })
@@ -98,7 +102,9 @@ export class MainGame extends Scene{
                 .setInteractive({  cursor: "pointer" }) //.setInteractive({ draggable: true, cursor: "pointer" })
                 .on("pointerover", function(){ this.setTint(0x98DEC7) })
                 .on("pointerout", function(){ this.clearTint() })
-                .on("pointerdown", (e: Phaser.Input.Pointer) => { 
+                .on("pointerdown", (a, b, c) => {
+                    console.log(x, y, this.board[x][y])
+                    this.resetPreviews();
                     this.showPossibleMoves(name, x, y);
                 });
         })
@@ -113,10 +119,7 @@ export class MainGame extends Scene{
         // })
     }
 
-    showPossibleMoves(name: PieceNames, x: number, y: number){
-        // reset selected piece
-        this.selectedPiece = { x: 0, y: 0 };
-
+    resetPreviews(){
         // reset preview
         this.previewBoard.forEach((row, rowIdx) => {
             row.forEach((_, colIdx) => {
@@ -125,6 +128,13 @@ export class MainGame extends Scene{
                 }
             })
         })
+    }
+
+    showPossibleMoves(name: PieceNames, x: number, y: number){
+        // reset selected piece
+        this.selectedPiece = { x: 0, y: 0 };
+
+        console.log(x, y)
 
         // validate
         const validator = new MoveValidator(this.board, name);
