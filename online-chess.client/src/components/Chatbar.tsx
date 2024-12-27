@@ -3,6 +3,12 @@ export default function Chatbar() {
   return (
     <div>
         <div>
+            <button>Rook</button>
+            <button>Knight</button>
+            <button>Bishop</button>
+            <button>Queen</button>
+        </div>
+        <div>
             <button>Resign</button>
             <button>Request a Draw</button>
         </div>

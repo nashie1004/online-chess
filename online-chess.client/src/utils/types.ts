@@ -16,6 +16,7 @@ export interface IValidMove{
 //     x: number,
 //     y: number
 // }
+export type PromoteTo = "rook" | "knight" | "bishop" | "queen";
 
 export interface IMoveInfo{
     x: number,

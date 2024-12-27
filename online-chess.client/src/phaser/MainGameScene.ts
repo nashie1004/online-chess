@@ -6,7 +6,7 @@ import capture from "../assets/sounds/Capture.ogg"
 import select from "../assets/sounds/Select.ogg"
 import pieces from "../utils/constants";
 import { gameOptions, PieceNames, pieceImages } from "../utils/constants";
-import { ICaptureHistory, IMoveHistory, IMoveInfo, IValidMove } from "../utils/types";
+import { ICaptureHistory, IMoveHistory, IMoveInfo, IValidMove, PromoteTo } from "../utils/types";
 import { eventEmitter } from "./eventEmitter";
 import RookValidator from "../validators/piece/rookValidator";
 import KnightValidator from "../validators/piece/knightValidator";
@@ -27,10 +27,10 @@ export class MainGameScene extends Scene{
     private readonly previewBoard: (GameObjects.Sprite)[][] // has a visible property
     private selectedPiece: IMoveInfo | null;
     private isWhitesTurn: boolean;
-    private promoteTo: "rook" | "knight" | "bishop" | "queen";
+    private promoteTo: PromoteTo;
 
     constructor() {
-        super();
+        super({ key: "MainGame" });
 
         // game state
         this.isWhitesTurn = true;
@@ -289,9 +289,15 @@ export class MainGameScene extends Scene{
             && sprite
         ){
             // recreate sprite from pawn to queen
-            const newName = isWhite ? sprite.name.replace("wPawn", "wQueen") : sprite.name.replace("bPawn", "bQueen");
-            sprite.setName(newName + newX + newY);
-            sprite.setTexture(isWhite ? "wQueen" : "bQueen");
+
+            setTimeout(() => {
+                const newName = isWhite ? sprite.name.replace(PieceNames.wPawn, PieceNames.wQueen) : sprite.name.replace(PieceNames.bPawn, PieceNames.bQueen);
+                sprite.setName(newName + newX + newY);
+                sprite.setTexture(isWhite ? PieceNames.wQueen : PieceNames.bQueen);
+    
+                this.scene.switch("PromotionPicker");
+            }, 350);
+
         }
 
         // save to move history
