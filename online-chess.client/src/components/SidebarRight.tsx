@@ -38,7 +38,7 @@ export default function SidebarRight() {
       <h5 className='mb-3 text-center border-bottom border-secondary pb-3'>
         Actions
       </h5>
-      <h6>Promote to:</h6>
+      <h6>Promote pawn to:</h6>
       <div className="btn-group mb-3 d-flex" role="group" aria-label="Basic outlined example">
       {
         pieces.map((piece, idx) => {

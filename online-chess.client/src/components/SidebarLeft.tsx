@@ -22,8 +22,8 @@ export default function SidebarLeft() {
             <h5 className='mb-3 text-center border-bottom border-secondary pb-3'>
                 Move History
             </h5>
-            <div style={{ height: "350px", overflowY: "scroll" }} className='px-4 py-3 border border-secondary'>
-                <table className='table table-sm table-striped'>
+            <div style={{ height: "350px", overflowY: "scroll" }} className='border border-secondary'>
+                <table className='table table-sm'>
                     <thead>
                         <tr className=''>
                             <th scope='col'>#</th>
@@ -48,36 +48,36 @@ export default function SidebarLeft() {
             <h5 className='mb-3 text-center border-bottom border-secondary py-3'>
                 Captures
             </h5>
-            <h6>White:</h6>
-            <ul className='d-flex'>
-                {captureHistory.white.map((capture, idx) => {
-                    const name = capture.pieceName.split("-")[0] as PieceNames
-                    const svgUrl = `data:image/svg+xml;base64,${btoa(pieceImages[name])}`;
-                    return <>
-                        <img 
-                            key={idx}
-                            src={svgUrl} 
-                            alt={capture.pieceName} 
-                            style={{ width: 50, height: 50, }} 
-                        />
-                    </>
-                })}
-            </ul>
-            <h5>Black:</h5>
-            <ul className='d-flex'>
-                {captureHistory.black.map((capture, idx) => {
-                    const name = capture.pieceName.split("-")[0] as PieceNames
-                    const svgUrl = `data:image/svg+xml;base64,${btoa(pieceImages[name])}`;
-                    return <div className='p-2'>
-                        <img 
-                            key={idx}
-                            src={svgUrl} 
-                            alt={capture.pieceName} 
-                            style={{ width: 50, height: 50, }} 
-                        />
-                    </div>
-                })}
-            </ul>
+            <div className='d-flex bg-body-tertiary p-2'>
+                <div>
+                    {captureHistory.white.map((capture, idx) => {
+                        const name = capture.pieceName.split("-")[0] as PieceNames
+                        const svgUrl = `data:image/svg+xml;base64,${btoa(pieceImages[name])}`;
+                        return <>
+                            <img 
+                                key={idx}
+                                src={svgUrl} 
+                                alt={capture.pieceName} 
+                                style={{ width: 35, height: 35, }} 
+                            />
+                        </>
+                    })}
+                </div>
+                <div>
+                    {captureHistory.black.map((capture, idx) => {
+                        const name = capture.pieceName.split("-")[0] as PieceNames
+                        const svgUrl = `data:image/svg+xml;base64,${btoa(pieceImages[name])}`;
+                        return <>
+                            <img 
+                                key={idx}
+                                src={svgUrl} 
+                                alt={capture.pieceName} 
+                                style={{ width: 35, height: 35, }} 
+                            />
+                        </>
+                    })}
+                </div>
+            </div>
         </div>       
     </aside>
   )
