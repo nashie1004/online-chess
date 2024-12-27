@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from "react"
-import { MainGame } from "./phaser/MainGame";
+import { MainGameScene } from "./phaser/MainGameScene";
+
 import { gameOptions } from "./utils/constants";
 import { eventEmitter } from "./phaser/eventEmitter";
 import { ICaptureHistory, IMoveHistory } from "./utils/types";
 import Sidebar from "./components/Sidebar";
 import Chatbar from "./components/Chatbar";
+import { PromotionPickerScene } from "./phaser/PromotionPickerScene";
 
 export default function App(){
     const gameRef = useRef<Phaser.Game | null>();
@@ -22,7 +24,7 @@ export default function App(){
                 height: gameOptions.height,
                 parent: 'game-container',
                 backgroundColor: '#028af8',
-                scene: [ MainGame ],
+                scene: [ MainGameScene, PromotionPickerScene ],
             });
         }
 

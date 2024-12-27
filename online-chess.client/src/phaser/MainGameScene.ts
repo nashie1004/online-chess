@@ -15,7 +15,7 @@ import QueenValidator from "../validators/piece/queenValidator";
 import KingValidator from "../validators/piece/kingValidator";
 import PawnValidator from "../validators/piece/pawnValidator";
 
-export class MainGame extends Scene{
+export class MainGameScene extends Scene{
     /**
      * Board: 800 x 800, Square: 100
      * unique name = piecename + x + y, example: 'wPawn-0-6'
@@ -27,6 +27,7 @@ export class MainGame extends Scene{
     private readonly previewBoard: (GameObjects.Sprite)[][] // has a visible property
     private selectedPiece: IMoveInfo | null;
     private isWhitesTurn: boolean;
+    private promoteTo: "rook" | "knight" | "bishop" | "queen";
 
     constructor() {
         super();
@@ -36,6 +37,7 @@ export class MainGame extends Scene{
         this.captureHistory = { white: [], black: [] }
         this.moveHistory = { white: [], black: [] };
         this.selectedPiece = null;
+        this.promoteTo = "queen";
         
         this.tileSize = gameOptions.tileSize; // 100
         
@@ -266,8 +268,8 @@ export class MainGame extends Scene{
                 // since our current moved pawn is in the same y square value as the opponent
                 // , (means the pawn is behind the opponent pawn) just subtract/add y direction
                 const opponentPiece = this.board[validCapture.x][validCapture.y - pawnValidator.captureYDirection];
-
-                if (opponentPiece){
+                
+                if (opponentPiece && validCapture.x === newX && validCapture.y === newY){
                     opponentPiece.destroy();
                     hasCapture = true;
                 }
