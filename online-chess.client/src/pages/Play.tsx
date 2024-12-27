@@ -44,12 +44,12 @@ export default function Main(){
         };
     }, [])
  
-    return <div id="app">
+    return <div id="app"> 
         <Sidebar />
         <main className="game-container" id="game-container"> 
 
         </main>
-        <div>
+        <div id="sidebar-right">
             <PromotionPicker />
             <Chatbar />
         </div>

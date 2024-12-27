@@ -82,7 +82,7 @@ const pieces: IPiece[] = [
     { name: PieceNames.wPawn, x: 0, y: 6 },
     { name: PieceNames.wPawn, x: 1, y: 6 },
     { name: PieceNames.wPawn, x: 2, y: 6 },
-    { name: PieceNames.wPawn, x: 3, y: 2 },
+    { name: PieceNames.wPawn, x: 3, y: 6 },
     { name: PieceNames.wPawn, x: 4, y: 6 },
     { name: PieceNames.wPawn, x: 5, y: 6 },
     { name: PieceNames.wPawn, x: 6, y: 6 },

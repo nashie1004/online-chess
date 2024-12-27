@@ -3,6 +3,7 @@ import Main from "./pages/Play";
 import Play from "./pages/Play";
 import NotFound from "./pages/NotFound";
 import PhaserContext from "./context/PhaserContext";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 export default function App(){
     return <>

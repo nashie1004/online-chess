@@ -33,6 +33,7 @@ export default function PromotionPicker() {
       {
         pieces.map((piece, idx) => {
           return <button 
+            className="btn btn-primary"
             key={idx} 
             onClick={() => {
               setPromoteTo(piece.key);
