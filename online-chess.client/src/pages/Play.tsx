@@ -3,11 +3,12 @@ import { MainGameScene } from "../phaser/MainGameScene";
 
 import { gameOptions } from "../utils/constants";
 import { eventEmitter } from "../phaser/eventEmitter";
-import Sidebar from "../components/Sidebar";
+import SidebarLeft from "../components/SidebarLeft";
 import Chatbar from "../components/Chatbar";
 import usePhaser from "../hooks/usePhaser";
 import PromotionPicker from "../components/PromotionPicker";
 import { IMoveHistory , ICaptureHistory} from "../utils/types";
+import SidebarRight from "../components/SidebarRight";
 
 export default function Main(){
     const gameRef = useRef<Phaser.Game | null>();
@@ -45,12 +46,9 @@ export default function Main(){
     }, [])
  
     return <div id="app"> 
-        <Sidebar />
-        <main id="game-container">
+        <SidebarLeft />
+        <main id="game-container" className="d-flex justify-content-center align-items-center">
         </main>
-        <div id="sidebar-right">
-            <PromotionPicker />
-            <Chatbar />
-        </div>
+        <SidebarRight />
     </div>
 }

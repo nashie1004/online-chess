@@ -4,7 +4,7 @@ import { chessBoardNotation } from '../utils/helpers';
 
 const board = chessBoardNotation();
 
-export default function Sidebar() {
+export default function SidebarLeft() {
     const {
         isWhitesTurn,
         moveHistory,
@@ -12,22 +12,21 @@ export default function Sidebar() {
     } = usePhaser();
 
     return (
-    <aside id="sidebar-left" className='p-4 d-flex justify-content-center align-items center'>
-        <div className='bg-light-subtle p-4' style={{ width: "100%" }} >
+    <aside id="sidebar-left" className='p-4 d-flex justify-content-center align-items-center'>
+        <div className='p-4 border bg-dark-subtle border-secondary rounded-end' style={{ width: "100%" }} >
             <div className="alert alert-light bg-success" role="alert">
-                <h2 className='text-center'>
-                    {isWhitesTurn ? "White" : "Black"} turn.
-                </h2>
+                <h4 className='text-center'>
+                    {isWhitesTurn ? "White" : "Black"}'s turn.
+                </h4>
             </div>
-            <hr />
-            <h2 className='mb-3'>
-                <span className="badge text-bg-secondary">Move History</span>
-            </h2>
-            <div style={{ height: "400px", overflowY: "scroll" }}>
-                <table className='table table-striped table-sm'>
+            <h5 className='mb-3 text-center border-bottom border-secondary pb-3'>
+                Move History
+            </h5>
+            <div style={{ height: "350px", overflowY: "scroll" }} className='px-4 py-3 border border-secondary'>
+                <table className='table table-sm table-striped'>
                     <thead>
                         <tr className=''>
-                            <th scope='col'></th>
+                            <th scope='col'>#</th>
                             <th scope='col'>White</th>
                             <th scope='col'>Black</th>
                         </tr>
@@ -46,11 +45,10 @@ export default function Sidebar() {
                     </tbody>
                 </table>
             </div>
-            <hr />
-            <h2 className='mb-3'>
-                <span className="badge text-bg-secondary">Capture History</span>
-            </h2>
-            <h5>White:</h5>
+            <h5 className='mb-3 text-center border-bottom border-secondary py-3'>
+                Captures
+            </h5>
+            <h6>White:</h6>
             <ul className='d-flex'>
                 {captureHistory.white.map((capture, idx) => {
                     const name = capture.pieceName.split("-")[0] as PieceNames
