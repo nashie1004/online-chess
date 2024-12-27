@@ -46,8 +46,7 @@ export default function Main(){
  
     return <div id="app"> 
         <Sidebar />
-        <main className="game-container" id="game-container"> 
-
+        <main id="game-container">
         </main>
         <div id="sidebar-right">
             <PromotionPicker />

@@ -6,6 +6,7 @@ body{
   min-height: 100vh;
 }
 #app{
+  min-height: 100vh;
   display: flex;
   gap: 2rem;
 }
@@ -14,15 +15,13 @@ body{
   min-height: 100%;
 }
 
-#app #sidebar-left{
+#app #sidebar-left, #app #sidebar-right{
   text-align: start;
-  width: 30%;
-  max-width: 500px;
+  /* width: 30%; */
+  /* max-width: 500px; */
+  width: 500px;
 }
 
-#app #sidebar-left h2{
-}
-
-#app #game-container{
-
+#app #sidebar-left, #app #game-container, #app #sidebar-left{
+  min-height: 100%;
 }

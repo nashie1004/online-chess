@@ -1,19 +1,22 @@
 
 export default function Chatbar() {
   return (
-    <div>
+    <div className="card text-bg-dark">
         <br />
         <div>
             <button>Resign</button>
+            <button type="button" className="btn btn-secondary btn-lg">Draw</button>
             <button>Request a Draw</button>
         </div>
         <br />
         <h3>Chat bar</h3>
-        <ul>
-            <li>Lorem ipsum dolor sit amet.</li>
-            <li>Nisi ullam rem itaque aperiam.</li>
-            <li>Non inventore laborum doloremque suscipit?</li>
-        </ul>
+        <div>
+          <ul className="list-group">
+              <li className="list-group-item">Lorem ipsum dolor sit amet.</li>
+              <li className="list-group-item">Lorem ipsum dolor sit amet.</li>
+              <li className="list-group-item">Lorem ipsum dolor sit amet.</li>
+          </ul>
+        </div>
     </div>
   )
 }
