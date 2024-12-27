@@ -6,7 +6,7 @@ import capture from "../assets/sounds/Capture.ogg"
 import select from "../assets/sounds/Select.ogg"
 import pieces from "../utils/constants";
 import { gameOptions, PieceNames, pieceImages } from "../utils/constants";
-import { ICaptureHistory, IMoveHistory, IMoveInfo, IValidMove, PromoteTo } from "../utils/types";
+import { IMoveInfo, IPhaserContextValues, IValidMove, PromoteTo } from "../utils/types";
 import { eventEmitter } from "./eventEmitter";
 import RookValidator from "../validators/piece/rookValidator";
 import KnightValidator from "../validators/piece/knightValidator";
@@ -20,24 +20,26 @@ export class MainGameScene extends Scene{
      * Board: 800 x 800, Square: 100
      * unique name = piecename + x + y, example: 'wPawn-0-6'
      */
-    private moveHistory: IMoveHistory;
-    private captureHistory: ICaptureHistory;
     private tileSize: number;
     private readonly board: (null | GameObjects.Sprite)[][]
     private readonly previewBoard: (GameObjects.Sprite)[][] // has a visible property
     private selectedPiece: IMoveInfo | null;
-    private isWhitesTurn: boolean;
-    private promoteTo: PromoteTo;
-
+    private reactState: IPhaserContextValues;
+    
     constructor() {
         super({ key: "MainGame" });
 
+        // sync react and phaser state
+        this.reactState = {
+            isWhitesTurn: true,
+            moveHistory: { white: [], black: [] },
+            captureHistory: { white: [], black: [] },
+            promoteTo: "queen",
+            isColorWhite: true
+        }        
+
         // game state
-        this.isWhitesTurn = true;
-        this.captureHistory = { white: [], black: [] }
-        this.moveHistory = { white: [], black: [] };
         this.selectedPiece = null;
-        this.promoteTo = "queen";
         
         this.tileSize = gameOptions.tileSize; // 100
         
@@ -107,8 +109,8 @@ export class MainGameScene extends Scene{
                     
                     // not allowed to move
                     if (
-                        (name[0] !== "w" && this.isWhitesTurn) || 
-                        (name[0] !== "b" && !this.isWhitesTurn) 
+                        (name[0] !== "w" && this.reactState.isWhitesTurn) || 
+                        (name[0] !== "b" && !this.reactState.isWhitesTurn) 
                     ){
                         return;
                     } 
@@ -122,8 +124,8 @@ export class MainGameScene extends Scene{
 
                     // not allowed to move
                     if (
-                        (name[0] !== "w" && this.isWhitesTurn) || 
-                        (name[0] !== "b" && !this.isWhitesTurn) 
+                        (name[0] !== "w" && this.reactState.isWhitesTurn) || 
+                        (name[0] !== "b" && !this.reactState.isWhitesTurn) 
                     ){
                         return;
                     } 
@@ -156,7 +158,7 @@ export class MainGameScene extends Scene{
         })
 
         // sync / listen to upcoming react state changes
-        eventEmitter.on("setPromoteTo", (promoteTo: PromoteTo) => this.promoteTo = promoteTo);
+        eventEmitter.on("setPromoteTo", (promoteTo: PromoteTo) => this.reactState.promoteTo = promoteTo);
     }
 
     resetMoves(){
@@ -187,27 +189,27 @@ export class MainGameScene extends Scene{
         switch(name){
             case PieceNames.bRook:
             case PieceNames.wRook:
-                validMoves = (new RookValidator({ x, y, name }, this.board, this.moveHistory)).validMoves();
+                validMoves = (new RookValidator({ x, y, name }, this.board, this.reactState.moveHistory)).validMoves();
                 break;
             case PieceNames.bKnight:
             case PieceNames.wKnight:
-                validMoves = (new KnightValidator({ x, y, name }, this.board, this.moveHistory)).validMoves();
+                validMoves = (new KnightValidator({ x, y, name }, this.board, this.reactState.moveHistory)).validMoves();
                 break;
             case PieceNames.bBishop:
             case PieceNames.wBishop:
-                validMoves = (new BishopValidator({ x, y, name }, this.board, this.moveHistory)).validMoves();
+                validMoves = (new BishopValidator({ x, y, name }, this.board, this.reactState.moveHistory)).validMoves();
                 break;
             case PieceNames.bQueen:
             case PieceNames.wQueen:
-                validMoves = (new QueenValidator({ x, y, name }, this.board, this.moveHistory)).validMoves();
+                validMoves = (new QueenValidator({ x, y, name }, this.board, this.reactState.moveHistory)).validMoves();
                 break;
             case PieceNames.bKing:
             case PieceNames.wKing:
-                validMoves = (new KingValidator({ x, y, name }, this.board, this.moveHistory)).validMoves();
+                validMoves = (new KingValidator({ x, y, name }, this.board, this.reactState.moveHistory)).validMoves();
                 break;
             case PieceNames.bPawn:
             case PieceNames.wPawn:
-                validMoves = (new PawnValidator({ x, y, name }, this.board, this.moveHistory)).validMoves();
+                validMoves = (new PawnValidator({ x, y, name }, this.board, this.reactState.moveHistory)).validMoves();
                 break;
             }
             
@@ -231,7 +233,7 @@ export class MainGameScene extends Scene{
         const sprite = this.board[this.selectedPiece.x][this.selectedPiece.y];
         const isWhite = sprite?.name[0] === "w"
         const pieceName = sprite?.name ?? "";
-        this.isWhitesTurn = !isWhite;
+        this.reactState.isWhitesTurn = !isWhite;
 
         // old coordinate
         this.board[this.selectedPiece.x][this.selectedPiece.y] = null; 
@@ -245,9 +247,9 @@ export class MainGameScene extends Scene{
 
             // save to capture history
             if (isWhite){
-                this.captureHistory.white.push({ x: newX, y: newY, pieceName: opponentPiece.name })
+                this.reactState.captureHistory.white.push({ x: newX, y: newY, pieceName: opponentPiece.name })
             } else {
-                this.captureHistory.black.push({ x: newX, y: newY, pieceName: opponentPiece.name })
+                this.reactState.captureHistory.black.push({ x: newX, y: newY, pieceName: opponentPiece.name })
             }
 
             opponentPiece.destroy();
@@ -262,7 +264,7 @@ export class MainGameScene extends Scene{
             // get the previous pawn' square before moving diagonally
             const pawnValidator = new PawnValidator(
                 { x: this.selectedPiece.x, y: this.selectedPiece.y, name: isWhite ? PieceNames.wPawn : PieceNames.bPawn }
-                 , this.board, this.moveHistory
+                 , this.board, this.reactState.moveHistory
             );
 
             const validCapture = pawnValidator.validEnPassantCapture();
@@ -292,7 +294,7 @@ export class MainGameScene extends Scene{
             && sprite
         ){
             // change sprite name and image/texture from pawn to queen
-            switch(this.promoteTo){
+            switch(this.reactState.promoteTo){
                 case "rook":
                     sprite.setName((isWhite ? PieceNames.wRook : PieceNames.bRook) + `-${newX}-${newY}`);
                     sprite.setTexture(isWhite ? PieceNames.wRook : PieceNames.bRook);
@@ -315,12 +317,12 @@ export class MainGameScene extends Scene{
 
         // save to move history
         if (isWhite){
-            this.moveHistory.white.push({
+            this.reactState.moveHistory.white.push({
                 old: { pieceName, x: this.selectedPiece.x, y: this.selectedPiece.y },
                 new: { pieceName, x: newX, y: newY },
             });
         } else {
-            this.moveHistory.black.push({
+            this.reactState.moveHistory.black.push({
                 old: { pieceName, x: this.selectedPiece.x, y: this.selectedPiece.y },
                 new: { pieceName, x: newX, y: newY },
             });
@@ -328,8 +330,8 @@ export class MainGameScene extends Scene{
 
         // transfer data from phaser to react
         eventEmitter.emit("setIsWhitesTurn", !isWhite)
-        eventEmitter.emit("setMoveHistory", this.moveHistory)
-        eventEmitter.emit("setCaptureHistory", this.captureHistory)
+        eventEmitter.emit("setMoveHistory", this.reactState.moveHistory)
+        eventEmitter.emit("setCaptureHistory", this.reactState.captureHistory)
 
         // display move to the user
         this.tweens.add({
@@ -363,7 +365,7 @@ export class MainGameScene extends Scene{
 
     update(){
         // TODO: handle movehistory, capturehistory and who will move next
-        if (this.isWhitesTurn){
+        if (this.reactState.isWhitesTurn){
             // console.info(`White's turn to move`)
         } else {
             // console.info(`Black's turn to move`)

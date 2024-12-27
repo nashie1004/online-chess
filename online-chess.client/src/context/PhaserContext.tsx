@@ -1,18 +1,6 @@
 import { createContext, ReactNode, useState } from 'react'
-import { IMoveHistory, ICaptureHistory, PromoteTo } from '../utils/types';
+import { IMoveHistory, ICaptureHistory, PromoteTo, IPhaserContext } from '../utils/types';
 
-interface IPhaserContext{
-    isWhitesTurn: boolean;
-    moveHistory: IMoveHistory;
-    captureHistory: ICaptureHistory;
-    promoteTo: PromoteTo;
-    isColorWhite: boolean
-    setIsWhitesTurn: (val: boolean) => void;
-    setMoveHistory: (val: IMoveHistory) => void;
-    setCaptureHistory: (val: ICaptureHistory) => void;
-    setPromoteTo: (val: PromoteTo) => void;
-    setIsColorWhite: (val: boolean) => void;
-}
 
 interface PhaserContextProps{
     children: ReactNode

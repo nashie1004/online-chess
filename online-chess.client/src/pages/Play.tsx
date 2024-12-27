@@ -7,13 +7,14 @@ import Sidebar from "../components/Sidebar";
 import Chatbar from "../components/Chatbar";
 import usePhaser from "../hooks/usePhaser";
 import PromotionPicker from "../components/PromotionPicker";
+import { IMoveHistory , ICaptureHistory} from "../utils/types";
 
 export default function Main(){
     const gameRef = useRef<Phaser.Game | null>();
     const {
-        isWhitesTurn, setIsWhitesTurn,
-        moveHistory,
-        captureHistory
+        setIsWhitesTurn
+        , setMoveHistory
+        , setCaptureHistory
     } = usePhaser();
 
     useEffect(() => {
@@ -31,8 +32,8 @@ export default function Main(){
         }
 
         eventEmitter.on("setIsWhitesTurn", (data: boolean) => setIsWhitesTurn(data))
-        //eventEmitter.on("setPromoteTo", (data: PromoteTo) => setPromoteTo(data))
-        // eventEmitter.on("setCaptureHistory", (data: ICaptureHistory) => setCaptureHistory(data))
+        eventEmitter.on("setMoveHistory", (data: IMoveHistory) => setMoveHistory(data))
+        eventEmitter.on("setCaptureHistory", (data: ICaptureHistory) => setCaptureHistory(data))
 
         // cleanup phaser
         return () => {

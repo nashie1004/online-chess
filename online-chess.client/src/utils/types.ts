@@ -38,3 +38,19 @@ export interface ICaptureHistory{
     white: IMoveInfo[]
     black: IMoveInfo[]
 }
+
+export interface IPhaserContextValues{
+    isWhitesTurn: boolean;
+    moveHistory: IMoveHistory;
+    captureHistory: ICaptureHistory;
+    promoteTo: PromoteTo;
+    isColorWhite: boolean
+}
+
+export interface IPhaserContext extends IPhaserContextValues{
+    setIsWhitesTurn: (val: boolean) => void;
+    setMoveHistory: (val: IMoveHistory) => void;
+    setCaptureHistory: (val: ICaptureHistory) => void;
+    setPromoteTo: (val: PromoteTo) => void;
+    setIsColorWhite: (val: boolean) => void;
+}

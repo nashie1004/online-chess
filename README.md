@@ -6,7 +6,7 @@ chess logic
 ~~1. pawn capture~~
 ~~2. pawn move~~
 ~~3. pawn en passant~~
-4. pawn promotion
+~~4. pawn promotion~~
 5. king king-side castling
 6. king queen-side castling
 7. king danger squares after move function
