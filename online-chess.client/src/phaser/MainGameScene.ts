@@ -154,6 +154,9 @@ export class MainGameScene extends Scene{
                 this.resetMoves();
             }
         })
+
+        // sync / listen to upcoming react state changes
+        eventEmitter.on("setPromoteTo", (promoteTo: PromoteTo) => this.promoteTo = promoteTo);
     }
 
     resetMoves(){
@@ -288,16 +291,26 @@ export class MainGameScene extends Scene{
             && ((newY === 0 && isWhite) || newY === 7 && !isWhite)
             && sprite
         ){
-            // recreate sprite from pawn to queen
-
-            setTimeout(() => {
-                const newName = isWhite ? sprite.name.replace(PieceNames.wPawn, PieceNames.wQueen) : sprite.name.replace(PieceNames.bPawn, PieceNames.bQueen);
-                sprite.setName(newName + newX + newY);
-                sprite.setTexture(isWhite ? PieceNames.wQueen : PieceNames.bQueen);
-    
-                this.scene.switch("PromotionPicker");
-            }, 350);
-
+            // change sprite name and image/texture from pawn to queen
+            switch(this.promoteTo){
+                case "rook":
+                    sprite.setName((isWhite ? PieceNames.wRook : PieceNames.bRook) + `-${newX}-${newY}`);
+                    sprite.setTexture(isWhite ? PieceNames.wRook : PieceNames.bRook);
+                    break;
+                case "knight":
+                    sprite.setName((isWhite ? PieceNames.wKnight : PieceNames.bKnight) + `-${newX}-${newY}`);
+                    sprite.setTexture(isWhite ? PieceNames.wKnight : PieceNames.bKnight);
+                    break;
+                case "bishop":
+                    sprite.setName((isWhite ? PieceNames.wBishop : PieceNames.bBishop) + `-${newX}-${newY}`);
+                    sprite.setTexture(isWhite ? PieceNames.wBishop : PieceNames.bBishop);
+                    break;
+                case "queen":
+                    sprite.setName((isWhite ? PieceNames.wQueen : PieceNames.bQueen) + `-${newX}-${newY}`);
+                    sprite.setTexture(isWhite ? PieceNames.wQueen : PieceNames.bQueen);
+                    break;
+                }
+                
         }
 
         // save to move history

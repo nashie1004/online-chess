@@ -2,17 +2,12 @@
 export default function Chatbar() {
   return (
     <div>
-        <div>
-            <button>Rook</button>
-            <button>Knight</button>
-            <button>Bishop</button>
-            <button>Queen</button>
-        </div>
+        <br />
         <div>
             <button>Resign</button>
             <button>Request a Draw</button>
         </div>
-        <hr />
+        <br />
         <h3>Chat bar</h3>
         <ul>
             <li>Lorem ipsum dolor sit amet.</li>

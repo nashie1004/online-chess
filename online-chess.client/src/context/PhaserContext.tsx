@@ -6,10 +6,12 @@ interface IPhaserContext{
     moveHistory: IMoveHistory;
     captureHistory: ICaptureHistory;
     promoteTo: PromoteTo;
+    isColorWhite: boolean
     setIsWhitesTurn: (val: boolean) => void;
     setMoveHistory: (val: IMoveHistory) => void;
     setCaptureHistory: (val: ICaptureHistory) => void;
     setPromoteTo: (val: PromoteTo) => void;
+    setIsColorWhite: (val: boolean) => void;
 }
 
 interface PhaserContextProps{
@@ -21,6 +23,7 @@ export const phaserContext = createContext<IPhaserContext>({
     , moveHistory: { white: [], black: [] }, setMoveHistory: () => {}
     , captureHistory: { white: [], black: [] }, setCaptureHistory: () => {}
     , promoteTo: "queen", setPromoteTo: () => {}
+    , isColorWhite: true, setIsColorWhite: () => {}
 })
 
 export default function PhaserContext(
@@ -30,12 +33,14 @@ export default function PhaserContext(
     const [moveHistory, setMoveHistory] = useState<IMoveHistory>({ white: [], black: [] });
     const [captureHistory, setCaptureHistory] = useState<ICaptureHistory>({ white: [], black: [] });
     const [promoteTo, setPromoteTo] = useState<PromoteTo>("queen");
+    const [isColorWhite, setIsColorWhite] = useState<boolean>(true);
 
     const data: IPhaserContext = {
         isWhitesTurn, setIsWhitesTurn, 
         moveHistory, setMoveHistory,
         captureHistory, setCaptureHistory,
-        promoteTo, setPromoteTo
+        promoteTo, setPromoteTo,
+        isColorWhite, setIsColorWhite
     }
 
   return (

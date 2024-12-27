@@ -6,6 +6,7 @@ import { eventEmitter } from "../phaser/eventEmitter";
 import Sidebar from "../components/Sidebar";
 import Chatbar from "../components/Chatbar";
 import usePhaser from "../hooks/usePhaser";
+import PromotionPicker from "../components/PromotionPicker";
 
 export default function Main(){
     const gameRef = useRef<Phaser.Game | null>();
@@ -30,7 +31,7 @@ export default function Main(){
         }
 
         eventEmitter.on("setIsWhitesTurn", (data: boolean) => setIsWhitesTurn(data))
-        // eventEmitter.on("setMoveHistory", (data: IMoveHistory) => setMoveHistory(data))
+        //eventEmitter.on("setPromoteTo", (data: PromoteTo) => setPromoteTo(data))
         // eventEmitter.on("setCaptureHistory", (data: ICaptureHistory) => setCaptureHistory(data))
 
         // cleanup phaser
@@ -43,16 +44,13 @@ export default function Main(){
     }, [])
  
     return <div id="app">
-        <Sidebar
-            isWhitesTurn={isWhitesTurn}
-            moveHistory={moveHistory}
-            captureHistory={captureHistory}
-          />
+        <Sidebar />
         <main className="game-container" id="game-container"> 
 
         </main>
-        <Chatbar
-            
-        />
+        <div>
+            <PromotionPicker />
+            <Chatbar />
+        </div>
     </div>
 }

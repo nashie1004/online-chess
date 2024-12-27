@@ -1,18 +1,18 @@
+import usePhaser from '../hooks/usePhaser';
 import { chessBoardNotation } from '../utils/helpers';
-import { IMoveHistory, ICaptureHistory } from '../utils/types';
 
 const board = chessBoardNotation();
 
-interface ISidebar{
-    isWhitesTurn: boolean;
-    moveHistory: IMoveHistory;
-    captureHistory: ICaptureHistory;
-}
+export default function Sidebar() {
+    const {
+        isWhitesTurn,
+        moveHistory,
+        captureHistory
+    } = usePhaser();
 
-export default function Sidebar({
-    isWhitesTurn, moveHistory, captureHistory
-}: ISidebar) {
-  return (
+    return (
+
+
     <aside>
             <h2>{isWhitesTurn ? "White" : "Black"} turn.</h2>
             <hr />
