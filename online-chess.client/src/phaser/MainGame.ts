@@ -200,7 +200,6 @@ export class MainGame extends Scene{
                 break;
             }
             
-            console.log(validMoves)
         // set selected piece
         this.selectedPiece = { x, y, pieceName: fullPieceName };
 
@@ -212,7 +211,7 @@ export class MainGame extends Scene{
     }
 
     // move piece to desired square, saves capture and move history
-    move(newX: number, newY: number){
+    move(newX: number, newY: number): boolean{
         let hasCapture = false;
 
         if (!this.selectedPiece) return hasCapture;
@@ -226,11 +225,10 @@ export class MainGame extends Scene{
         // old coordinate
         this.board[this.selectedPiece.x][this.selectedPiece.y] = null; 
         
+        // === Start Capture === //
+        // 1. Normal Capture
         // if there is an opponent piece in the desired square, capture it
-        const opponentPiece = this.board[newX][newY]
-        
-        // 12/27/2024 2:08AM DOING - All capture are on the opponent's square, en passant is a special case
-        // console.log(`old: ${this.selectedPiece.x}, ${this.selectedPiece.y} ===== new: ${newX}, ${newY} ===== ${pieceName}`)
+        const opponentPiece = this.board[newX][newY];
         
         if (opponentPiece){ 
 
@@ -244,6 +242,34 @@ export class MainGame extends Scene{
             opponentPiece.destroy();
             hasCapture = true;
         }
+
+        // 2. En Passant Capture
+        
+        // check if pawn type
+        if (pieceName.toLowerCase().indexOf("pawn") >= 0){
+            
+            // get the previous pawn' square before moving diagonally
+            const pawnValidator = new PawnValidator(
+                { x: this.selectedPiece.x, y: this.selectedPiece.y, name: isWhite ? PieceNames.wPawn : PieceNames.bPawn }
+                 , this.board, this.moveHistory
+            );
+
+            const validCapture = pawnValidator.validEnPassantCapture();
+            
+            if (validCapture){
+                // since our current moved pawn is in the same y square value as the opponent
+                // , (means the pawn is behind the opponent pawn) just subtract/add y direction
+                const opponentPiece = this.board[validCapture.x][validCapture.y - pawnValidator.captureYDirection];
+
+                if (opponentPiece){
+                    opponentPiece.destroy();
+                    hasCapture = true;
+                }
+            }
+
+        }
+
+        // === End Capture === //
 
         // new coordinate
         this.board[newX][newY] = sprite;
