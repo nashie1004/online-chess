@@ -1,5 +1,5 @@
-import { PieceNames } from "./utils/constants";
-import { IPiece } from "./utils/types";
+import { PieceNames } from "./constants";
+import { IPiece } from "./types";
 
 
 const pieces: IPiece[] = [

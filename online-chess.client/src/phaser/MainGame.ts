@@ -4,11 +4,16 @@ import previewMove from "../assets/indicator.png"
 import move from "../assets/sounds/Move.ogg"
 import capture from "../assets/sounds/Capture.ogg"
 import select from "../assets/sounds/Select.ogg"
-import pieces from "../pieces";
+import pieces from "../utils/pieces";
 import { gameOptions, PieceNames, pieceImages } from "../utils/constants";
-import MoveValidator from "../validators/moveValidator";
 import { ICaptureHistory, IMoveHistory, IMoveInfo, IValidMove } from "../utils/types";
-import { eventEmitter } from "../eventEmitter";
+import { eventEmitter } from "./eventEmitter";
+import RookValidator from "../validators/piece/rookValidator";
+import KnightValidator from "../validators/piece/knightValidator";
+import BishopValidator from "../validators/piece/bishopValidator";
+import QueenValidator from "../validators/piece/queenValidator";
+import KingValidator from "../validators/piece/kingValidator";
+import PawnValidator from "../validators/piece/pawnValidator";
 
 export class MainGame extends Scene{
     /**
@@ -166,36 +171,36 @@ export class MainGame extends Scene{
         y = actualCoordinates?.y ?? 0;
 
         // validate
-        const validator = new MoveValidator(this.board, name, this.moveHistory);
         let validMoves: IValidMove[] = [];
 
         switch(name){
             case PieceNames.bRook:
             case PieceNames.wRook:
-                validMoves = validator.rook(x, y);
+                validMoves = (new RookValidator({ x, y, name }, this.board, this.moveHistory)).validMoves();
                 break;
             case PieceNames.bKnight:
             case PieceNames.wKnight:
-                validMoves = validator.knight(x, y);
+                validMoves = (new KnightValidator({ x, y, name }, this.board, this.moveHistory)).validMoves();
                 break;
             case PieceNames.bBishop:
             case PieceNames.wBishop:
-                validMoves = validator.bishop(x, y);
+                validMoves = (new BishopValidator({ x, y, name }, this.board, this.moveHistory)).validMoves();
                 break;
             case PieceNames.bQueen:
             case PieceNames.wQueen:
-                validMoves = validator.queen(x, y);
+                validMoves = (new QueenValidator({ x, y, name }, this.board, this.moveHistory)).validMoves();
                 break;
             case PieceNames.bKing:
             case PieceNames.wKing:
-                validMoves = validator.king(x, y);
+                validMoves = (new KingValidator({ x, y, name }, this.board, this.moveHistory)).validMoves();
                 break;
             case PieceNames.bPawn:
             case PieceNames.wPawn:
-                validMoves = validator.pawn(x, y);
+                validMoves = (new PawnValidator({ x, y, name }, this.board, this.moveHistory)).validMoves();
                 break;
-        }
-
+            }
+            
+            console.log(validMoves)
         // set selected piece
         this.selectedPiece = { x, y, pieceName: fullPieceName };
 
@@ -223,7 +228,11 @@ export class MainGame extends Scene{
         
         // if there is an opponent piece in the desired square, capture it
         const opponentPiece = this.board[newX][newY]
-        if (opponentPiece){
+        
+        // 12/27/2024 2:08AM DOING - All capture are on the opponent's square, en passant is a special case
+        // console.log(`old: ${this.selectedPiece.x}, ${this.selectedPiece.y} ===== new: ${newX}, ${newY} ===== ${pieceName}`)
+        
+        if (opponentPiece){ 
 
             // save to capture history
             if (isWhite){

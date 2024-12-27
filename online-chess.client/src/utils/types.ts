@@ -24,7 +24,7 @@ export interface IMoveInfo{
     pieceName: string
 }
 
-interface IMove{
+export interface IMove{
     old: IMoveInfo;
     new: IMoveInfo;
 }

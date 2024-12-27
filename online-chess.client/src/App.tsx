@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react"
-import { MainGame } from "./scenes/MainGame";
+import { MainGame } from "./phaser/MainGame";
 import { gameOptions } from "./utils/constants";
-import { eventEmitter } from "./eventEmitter";
+import { eventEmitter } from "./phaser/eventEmitter";
 import { ICaptureHistory, IMoveHistory } from "./utils/types";
 import Sidebar from "./components/Sidebar";
 import Chatbar from "./components/Chatbar";
