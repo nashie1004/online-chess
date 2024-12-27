@@ -1,4 +1,3 @@
-import { GameObjects } from "phaser";
 import { PieceNames } from "./constants";
 
 export interface IPiece{

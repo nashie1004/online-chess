@@ -4,7 +4,7 @@ import previewMove from "../assets/indicator.png"
 import move from "../assets/sounds/Move.ogg"
 import capture from "../assets/sounds/Capture.ogg"
 import select from "../assets/sounds/Select.ogg"
-import pieces from "../utils/pieces";
+import pieces from "../utils/constants";
 import { gameOptions, PieceNames, pieceImages } from "../utils/constants";
 import { ICaptureHistory, IMoveHistory, IMoveInfo, IValidMove } from "../utils/types";
 import { eventEmitter } from "./eventEmitter";
@@ -125,11 +125,17 @@ export class MainGame extends Scene{
                     ){
                         return;
                     } 
+
+                    // use latest sprite name
+                    // since on this.move() > pawn promotion the sprite name gets change
+                    const pieceName = sprite.name.split("-")[0] as PieceNames
+                    const pieceX = Number(sprite.name.split("-")[1])
+                    const pieceY = Number(sprite.name.split("-")[2])
                     
                     // show available moves
                     select.play();
                     this.resetMoves();
-                    this.showPossibleMoves(name, x, y);
+                    this.showPossibleMoves(pieceName, pieceX, pieceY);
                 })
 ;
             this.board[x][y] = sprite;
@@ -273,6 +279,18 @@ export class MainGame extends Scene{
 
         // new coordinate
         this.board[newX][newY] = sprite;
+
+        // check if pawn and promotable
+        if (
+            (pieceName.toLowerCase().indexOf("pawn") >= 0)
+            && ((newY === 0 && isWhite) || newY === 7 && !isWhite)
+            && sprite
+        ){
+            // recreate sprite from pawn to queen
+            const newName = isWhite ? sprite.name.replace("wPawn", "wQueen") : sprite.name.replace("bPawn", "bQueen");
+            sprite.setName(newName + newX + newY);
+            sprite.setTexture(isWhite ? "wQueen" : "bQueen");
+        }
 
         // save to move history
         if (isWhite){
