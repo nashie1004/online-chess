@@ -29,7 +29,9 @@ export default class PawnValidator extends BasePieceValidator{
             const row = y + (this.captureYDirection * 1);
 
             // block pawn from moving
-            if (!this.board[col][row]) validMoves.push({ x: col, y: row, isCapture: false });
+            if (!this.isOutOfBounds(col, row)){
+                if (!this.board[col][row]) validMoves.push({ x: col, y: row, isCapture: false });
+            } 
 
         }
 
@@ -82,7 +84,7 @@ export default class PawnValidator extends BasePieceValidator{
         if (enPassantCapture){
             validMoves.push(enPassantCapture);
         }
-      
+        
         return validMoves;
     }
 
