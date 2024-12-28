@@ -35,7 +35,7 @@ export class MainGameScene extends Scene{
             moveHistory: { white: [], black: [] },
             captureHistory: { white: [], black: [] },
             promoteTo: "queen",
-            isColorWhite: true
+            isColorWhite: true // player's color of choice
         }        
 
         // game state
@@ -318,6 +318,58 @@ export class MainGameScene extends Scene{
                 }
                 
         }
+
+        /** === Start Castle ==== */
+        // check if king piece and the move is a kingside castling
+        if (pieceName.toLowerCase().indexOf("king") >= 0){
+            const kingValidator = new KingValidator(
+                { 
+                    x: this.selectedPiece.x, y: this.selectedPiece.y
+                    , name: isWhite ? PieceNames.wKing : PieceNames.bKing
+                    , uniqueName: pieceName 
+                }
+                 , this.board, this.reactState.moveHistory
+            );   
+
+            const validKingSide = kingValidator.validKingSideCastling(this.selectedPiece.x, this.selectedPiece.y);
+            const validQueenSide = kingValidator.validQueenSideCastling(this.selectedPiece.x, this.selectedPiece.y);
+            
+            // check what castle side
+            // if the new king position is the same as a valid castle position
+            let isKingSideCastle: boolean | null = null;
+
+            if (validKingSide && validKingSide.x === newX && validKingSide.y === newY){
+                isKingSideCastle = true;
+            } else if (validQueenSide && validQueenSide.x === newX && validQueenSide.y === newY){
+                isKingSideCastle = false;
+            }
+
+            // if a castle move is actually performed
+            if (isKingSideCastle !== null)
+            {
+                const rook = { 
+                    oldX: (isKingSideCastle ? this.selectedPiece.x + 3 : this.selectedPiece.x - 4)
+                    , newX: (isKingSideCastle ? (this.selectedPiece.x + 3) - 2 : (this.selectedPiece.x - 4) + 3)
+                    , y: this.selectedPiece.y 
+                };
+
+                const rookSprite = this.board[rook.oldX][rook.y];
+
+                // change coords
+                this.board[rook.oldX][rook.y] = null; 
+                this.board[rook.newX][rook.y] = rookSprite;
+                
+                // display rook move to the user
+                this.tweens.add({
+                    targets: [rookSprite],
+                    x: rook.newX * this.tileSize, 
+                    y: rook.y * this.tileSize, 
+                    ease: "Expo.easeInOuts",
+                    duration: 100,
+                }) 
+            } 
+        }
+        /** === End Castle ==== */
 
         // save to move history
         if (isWhite){
