@@ -89,7 +89,7 @@ export default class KingValidator extends BasePieceValidator{
         const rookX = x + 3; 
         const rookY = y;       
 
-        if (!this.board[rookY][rookX]) return null; // rook is captured or rook has moved from inital position
+        if (!this.board[rookX][rookY]) return null; // rook is captured or rook has moved from inital position
 
         // 3. if there are no blockage (knight, bishop)
         const bishopSquare = this.board[x + 1][y];
@@ -140,5 +140,16 @@ export default class KingValidator extends BasePieceValidator{
         }
 
         return { x: x - 2, y, isCapture: false };
+    }
+
+    /**
+     * todo
+     */
+    validateCheck(){
+
+    }
+
+    validateCheckMate(){
+        //
     }
 }
