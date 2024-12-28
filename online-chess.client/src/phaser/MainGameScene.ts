@@ -4,6 +4,7 @@ import previewMove from "../assets/indicator.png"
 import move from "../assets/sounds/Move.ogg"
 import capture from "../assets/sounds/Capture.ogg"
 import select from "../assets/sounds/Select.ogg"
+import check from "../assets/sounds/Check.mp3"
 import pieces from "../utils/constants";
 import { gameOptions, PieceNames, pieceImages } from "../utils/constants";
 import { IBothKingsPosition, IKingState, IMoveInfo, IPhaserContextValues, IValidMove, PromoteTo } from "../utils/types";
@@ -59,6 +60,7 @@ export class MainGameScene extends Scene{
         this.load.audio("move", move);
         this.load.audio("capture", capture);
         this.load.audio("select", select);
+        this.load.audio("check", check);
 
         Object.entries(pieceImages).forEach(([pieceName, imagePath]) => {
             const blob = new Blob([imagePath], { type: 'image/svg+xml' });
@@ -89,10 +91,7 @@ export class MainGameScene extends Scene{
                     .setInteractive({ cursor: "pointer" })
                     .on("pointerover", () => { previewMove.setTint(0x98DEC7) })
                     .on("pointerout", () => { previewMove.clearTint() })
-                    .on("pointerdown", () => {
-                        const hasCapture = this.move(colIdx, rowIdx);
-                        hasCapture ? capture.play() : move.play();
-                    }, this)
+                    .on("pointerdown", () => this.move(colIdx, rowIdx), this)
                     .setAlpha(.5)
                     ;
 
@@ -267,10 +266,16 @@ export class MainGameScene extends Scene{
         
         this.mSaveMoveHistory(isWhite, pieceName, this.selectedPiece, newX, newY);
 
-        // TODO: validate check and checkmate
-        const isCheck = this.mValidateCheck(sprite, isWhite, newX, newY);
-        if (isCheck){
-            this.mValidateCheckmate();
+        // if the move is a king, update private king pos state - this is used by the this.mValidateCheck() function
+        if (sprite.name.toLowerCase().indexOf("king") >= 0){
+            if (isWhite){
+                this.bothKingsPosition.white.x = newX;
+                this.bothKingsPosition.white.y = newY;
+            } 
+            else {
+                this.bothKingsPosition.black.x = newX;
+                this.bothKingsPosition.black.y = newY;
+            }
         }
 
         // transfer data from phaser to react
@@ -287,8 +292,25 @@ export class MainGameScene extends Scene{
             duration: 100,
         })
 
-        // reset
         this.resetMoves();
+
+        // validate check and checkmate
+        const isCheck = this.mValidateCheck(sprite, isWhite, newX, newY);
+        if (isCheck){
+            const isCheckMate = this.mValidateCheckmate();
+            if (isCheckMate){
+            }
+        }
+
+        // play sound
+        if (isCheck){
+            const king = isWhite ? this.bothKingsPosition.black : this.bothKingsPosition.white;
+            this.sound.play("check");
+            this.board[king.x][king.y]?.preFX?.addGlow(0xE44C6A, 10, 2);
+        } else {
+            hasCapture ? this.sound.play("capture") : this.sound.play("move");
+        }
+
         return hasCapture;
     }
 
@@ -486,6 +508,6 @@ export class MainGameScene extends Scene{
     }
 
     mValidateCheckmate(){
-
+        return false;
     }
 }

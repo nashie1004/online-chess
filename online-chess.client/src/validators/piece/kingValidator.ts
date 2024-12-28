@@ -193,13 +193,13 @@ export default class KingValidator extends BasePieceValidator{
             const currTile = this.board[move.x][move.y];
             if (!currTile) return;
 
-            // tile is not empty and has an enemny knight in it
+            // tile is not empty and has an enemny piece in it
             if (move.x === enemyX && move.y === enemyY){
                 const enemyPieceIsWhite = currTile.name[0] === "w";
                 
                 if ((!kingIsWhite && enemyPieceIsWhite) || (kingIsWhite && !enemyPieceIsWhite)){
                     hasACheck = true;
-                    console.info(`${pieceName} check: `, currTile, move)
+                    console.info(`${pieceName} check: `, currTile.name, move)
                 }
             }
         });
