@@ -245,35 +245,15 @@ export class MainGameScene extends Scene{
         // old coordinate
         this.board[this.selectedPiece.x][this.selectedPiece.y] = null; 
         
-        // === Start Capture === //
-        // 1. Normal Capture
-        // if there is an opponent piece in the desired square, capture it
-        const opponentPiece = this.board[newX][newY];
-        
-        if (opponentPiece){ 
-
-            // save to capture history
-            if (isWhite){
-                this.reactState.captureHistory.white.push({ x: newX, y: newY, pieceName: opponentPiece.name })
-            } else {
-                this.reactState.captureHistory.black.push({ x: newX, y: newY, pieceName: opponentPiece.name })
-            }
-
-            opponentPiece.destroy();
-            hasCapture = true;
-        }
-
-        // 2. En Passant Capture
+        hasCapture = this.mNormalCapture(newX, newY, isWhite)
         hasCapture = this.mEnPassantCapture(pieceName, this.selectedPiece, isWhite, newX, newY);
-
-        // === End Capture === //
 
         // new coordinate
         this.board[newX][newY] = sprite;
         
-        this.mPawnPromotable(pieceName, newX, newY, isWhite, sprite);
+        this.mPawnPromote(pieceName, newX, newY, isWhite, sprite);
 
-        this.mCastle(pieceName, this.selectedPiece, isWhite, newX, newY);
+        this.mKingCastle(pieceName, this.selectedPiece, isWhite, newX, newY);
         
         this.mSaveMoveHistory(isWhite, pieceName, this.selectedPiece, newX, newY);
 
@@ -322,9 +302,25 @@ export class MainGameScene extends Scene{
 
     }
 
-    /**
-     * - used by the move() function 
-     */
+    mNormalCapture(newX: number, newY: number, isWhite: boolean){
+        // if there is an opponent piece in the desired square, capture it
+        const opponentPiece = this.board[newX][newY];
+
+        if (opponentPiece){ 
+
+            // save to capture history
+            if (isWhite){
+                this.reactState.captureHistory.white.push({ x: newX, y: newY, pieceName: opponentPiece.name })
+            } else {
+                this.reactState.captureHistory.black.push({ x: newX, y: newY, pieceName: opponentPiece.name })
+            }
+
+            opponentPiece.destroy();
+            return true;
+        }
+
+        return false;
+    }   
 
     mEnPassantCapture(pieceName: string, selectedPiece: IMoveInfo, isWhite: boolean, newX: number, newY: number): boolean{
         
@@ -359,7 +355,7 @@ export class MainGameScene extends Scene{
         return false;
     }
 
-    mPawnPromotable(pieceName: string, newX: number, newY: number, isWhite: boolean, sprite: GameObjects.Sprite | null){
+    mPawnPromote(pieceName: string, newX: number, newY: number, isWhite: boolean, sprite: GameObjects.Sprite | null){
 
         // check if pawn and promotable
         if (
@@ -389,9 +385,9 @@ export class MainGameScene extends Scene{
         }
     }
 
-    mCastle(pieceName: string, selectedPiece: IMoveInfo, isWhite: boolean, newX: number, newY: number){
+    mKingCastle(pieceName: string, selectedPiece: IMoveInfo, isWhite: boolean, newX: number, newY: number){
         /** === Start Castle ==== */
-        // check if king piece and the move is a kingside castling
+        // check if king piece 
         if (pieceName.toLowerCase().indexOf("king") >= 0){
             const kingValidator = new KingValidator(
                 { 
