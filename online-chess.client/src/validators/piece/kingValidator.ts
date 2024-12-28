@@ -72,12 +72,18 @@ export default class KingValidator extends BasePieceValidator{
 
     // used by this class and MainGameScene.ts > this.move()
     validKingSideCastling(x: number, y: number): IValidMove | null {
-        console.log(this.moveHistory)
-
-        const origY = this.piece.name[0] === "w" ? 7 : 0;
-        
         // 1. if the king has already moved yet, invalid castling
-        if (x !== 4 && y !== origY) return null;
+        const isWhite = this.piece.name[0] === "w";
+        const history = isWhite ? this.moveHistory.white : this.moveHistory.black;
+        let kingHasMoved = false;
+
+        history.forEach(move => {
+            if (move.new.pieceName.toLowerCase().indexOf("king") >= 0){
+                kingHasMoved = true;
+            }
+        });
+    
+        if (kingHasMoved) return null;
         
         // 2. if the king side rook hasnt moved yet
         const rookX = x + 3; 
@@ -101,12 +107,19 @@ export default class KingValidator extends BasePieceValidator{
     }
     
     validQueenSideCastling(x: number, y: number): IValidMove | null {
-        const nameX = Number((this.piece.uniqueName ?? "").split("-")[1]);
-        const nameY = Number((this.piece.uniqueName ?? "").split("-")[2]);
-        
         // 1. if the king has already moved yet, invalid castling
-        if (x !== nameX && y !== nameY) return null;
-        
+        const isWhite = this.piece.name[0] === "w";
+        const history = isWhite ? this.moveHistory.white : this.moveHistory.black;
+        let kingHasMoved = false;
+
+        history.forEach(move => {
+            if (move.new.pieceName.toLowerCase().indexOf("king") >= 0){
+                kingHasMoved = true;
+            }
+        });
+     
+        if (kingHasMoved) return null;
+
         // 2. if the king side rook hasnt moved yet
         const rookX = x - 4; 
         const rookY = y;       
