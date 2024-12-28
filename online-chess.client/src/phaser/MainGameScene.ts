@@ -178,8 +178,8 @@ export class MainGameScene extends Scene{
     // gets available moves
     showPossibleMoves(name: PieceNames, x: number, y: number){
         // actual coords
-        const fullPieceName = `${name}-${x}-${y}`;
-        const actualCoordinates = this.findPieceCoordinates(fullPieceName);
+        const uniqueName = `${name}-${x}-${y}`;
+        const actualCoordinates = this.findPieceCoordinates(uniqueName);
         x = actualCoordinates?.x ?? 0;
         y = actualCoordinates?.y ?? 0;
 
@@ -189,32 +189,32 @@ export class MainGameScene extends Scene{
         switch(name){
             case PieceNames.bRook:
             case PieceNames.wRook:
-                validMoves = (new RookValidator({ x, y, name }, this.board, this.reactState.moveHistory)).validMoves();
+                validMoves = (new RookValidator({ x, y, name, uniqueName }, this.board, this.reactState.moveHistory)).validMoves();
                 break;
             case PieceNames.bKnight:
             case PieceNames.wKnight:
-                validMoves = (new KnightValidator({ x, y, name }, this.board, this.reactState.moveHistory)).validMoves();
+                validMoves = (new KnightValidator({ x, y, name, uniqueName }, this.board, this.reactState.moveHistory)).validMoves();
                 break;
             case PieceNames.bBishop:
             case PieceNames.wBishop:
-                validMoves = (new BishopValidator({ x, y, name }, this.board, this.reactState.moveHistory)).validMoves();
+                validMoves = (new BishopValidator({ x, y, name, uniqueName }, this.board, this.reactState.moveHistory)).validMoves();
                 break;
             case PieceNames.bQueen:
             case PieceNames.wQueen:
-                validMoves = (new QueenValidator({ x, y, name }, this.board, this.reactState.moveHistory)).validMoves();
+                validMoves = (new QueenValidator({ x, y, name, uniqueName }, this.board, this.reactState.moveHistory)).validMoves();
                 break;
             case PieceNames.bKing:
             case PieceNames.wKing:
-                validMoves = (new KingValidator({ x, y, name }, this.board, this.reactState.moveHistory)).validMoves();
+                validMoves = (new KingValidator({ x, y, name, uniqueName }, this.board, this.reactState.moveHistory)).validMoves();
                 break;
             case PieceNames.bPawn:
             case PieceNames.wPawn:
-                validMoves = (new PawnValidator({ x, y, name }, this.board, this.reactState.moveHistory)).validMoves();
+                validMoves = (new PawnValidator({ x, y, name, uniqueName }, this.board, this.reactState.moveHistory)).validMoves();
                 break;
             }
             
         // set selected piece
-        this.selectedPiece = { x, y, pieceName: fullPieceName };
+        this.selectedPiece = { x, y, pieceName: uniqueName };
 
         // shows the actual valid moves to the user
         validMoves.forEach(item => {
@@ -263,7 +263,11 @@ export class MainGameScene extends Scene{
             
             // get the previous pawn' square before moving diagonally
             const pawnValidator = new PawnValidator(
-                { x: this.selectedPiece.x, y: this.selectedPiece.y, name: isWhite ? PieceNames.wPawn : PieceNames.bPawn }
+                { 
+                    x: this.selectedPiece.x, y: this.selectedPiece.y
+                    , name: isWhite ? PieceNames.wPawn : PieceNames.bPawn
+                    , uniqueName: pieceName 
+                }
                  , this.board, this.reactState.moveHistory
             );
 

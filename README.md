@@ -18,10 +18,10 @@ chess logic
 13. you lose
 
 ui
-1. move history (with notation)
-2. capture history (with svg)
-3. chat bar styling
-4. side bar styling
+~~1. move history (with notation)~~
+~~2. capture history (with svg)~~
+~~3. chat bar styling~~
+~~4. side bar styling~~
 
 others/minimal
 1. rotate board

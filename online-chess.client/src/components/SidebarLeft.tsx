@@ -14,7 +14,7 @@ export default function SidebarLeft() {
     return (
     <aside id="sidebar-left" className='p-4 d-flex justify-content-center align-items-center'>
         <div className='p-4 border bg-dark-subtle border-secondary rounded-end' style={{ width: "100%" }} >
-            <div className="alert alert-light bg-success" role="alert">
+            <div className="alert alert-success" role="alert">
                 <h4 className='text-center'>
                     {isWhitesTurn ? "White" : "Black"}'s turn.
                 </h4>
