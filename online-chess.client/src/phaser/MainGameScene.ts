@@ -249,12 +249,14 @@ export class MainGameScene extends Scene{
         // old coordinate
         this.board[this.selectedPiece.x][this.selectedPiece.y] = null; 
         
-        hasCapture = this.mNormalCapture(newX, newY, isWhite)
-        hasCapture = this.mEnPassantCapture(pieceName, this.selectedPiece, isWhite, newX, newY);
+        // capture
+        if (this.mNormalCapture(newX, newY, isWhite)) hasCapture = true;
+        if (this.mEnPassantCapture(pieceName, this.selectedPiece, isWhite, newX, newY)) hasCapture = true;
 
         // new coordinate
         this.board[newX][newY] = sprite;
         
+        // some special logic
         this.mPawnPromote(pieceName, newX, newY, isWhite, sprite);
 
         this.mKingCastle(pieceName, this.selectedPiece, isWhite, newX, newY);

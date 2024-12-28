@@ -1,6 +1,8 @@
 import { GameObjects } from "phaser";
 import { IMoveHistory, IPiece, IValidMove } from "../../utils/types";
 import BasePieceValidator from "./basePieceValidator";
+import QueenValidator from "./queenValidator";
+import KnightValidator from "./knightValidator";
 
 export default class KingValidator extends BasePieceValidator{
     /**
@@ -143,10 +145,73 @@ export default class KingValidator extends BasePieceValidator{
     }
 
     /**
-     * todo
+     * 
+     * @param enemyX 
+     * @param enemyY 
+     * @param enemyName 
+     * @returns if the enemy parameters provided can attacks king 
      */
-    validateCheck(){
+    validateCheck(enemyX: number, enemyY: number, enemyName: string){
+        const isWhite = this.piece.name[0] === "w";
 
+        // 1. check if there is an enemey knight piece in those squares
+        const validKnightMoves = (new KnightValidator(this.piece, this.board, this.moveHistory)).validMoves();
+        let hasKnightCheck = false;
+        
+        validKnightMoves.forEach(move => {
+            const currTile = this.board[move.x][move.y];
+            
+            // tile is not empty and has an enemny knight in it
+            if (currTile && currTile.name.toLowerCase().indexOf("knight") >= 0){
+                const enemyPieceIsWhite = currTile.name[0] === "w";
+                if (
+                    (!isWhite && enemyPieceIsWhite) 
+                    || (isWhite && !enemyPieceIsWhite)
+                ){
+                    hasKnightCheck = true;
+                    console.log("knight check: ", currTile, move)
+                }
+
+            }
+        })
+        
+        if (hasKnightCheck) return true;
+
+        // 2. check if there is an enemey bishop, rook, pawn or queen piece in those squares
+        const validateQueenMoves = (new QueenValidator(this.piece, this.board, this.moveHistory)).validMoves();
+        let hasQueenCheck = false;
+        
+        validateQueenMoves.forEach(move => {
+            const currTile = this.board[move.x][move.y];
+
+            // tile is not empty
+            if (currTile){
+
+                const isABishop = currTile.name.toLowerCase().indexOf("bishop") >= 0;
+                const isABRook = currTile.name.toLowerCase().indexOf("rook") >= 0;
+                const isAQueen = currTile.name.toLowerCase().indexOf("queen") >= 0;
+                const isAPawn = currTile.name.toLowerCase().indexOf("pawn") >= 0;
+                
+                // an enemy piece in it
+                if (isABishop || isABRook || isAQueen || isAPawn){
+                    const enemyPieceIsWhite = currTile.name[0] === "w";
+
+                    if (
+                        (!isWhite && enemyPieceIsWhite) 
+                        || (isWhite && !enemyPieceIsWhite)
+                    ){
+                        hasKnightCheck = true;
+                        console.log("queen check: ", currTile, move)
+                    }
+    
+                }
+            }
+
+        })
+        
+        if (hasQueenCheck) return true;
+
+        return false;
     }
 
     validateCheckMate(){

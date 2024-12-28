@@ -8,16 +8,19 @@ export default function SidebarLeft() {
     const {
         isWhitesTurn,
         moveHistory,
-        captureHistory
+        captureHistory,
+        kingsState
     } = usePhaser();
 
     return (
     <aside id="sidebar-left" className='p-4 d-flex justify-content-center align-items-center'>
         <div className='p-4 border bg-dark-subtle border-secondary rounded-end' style={{ width: "100%" }} >
             <div className="alert alert-success" role="alert">
-                <h4 className='text-center'>
-                    {isWhitesTurn ? "White" : "Black"}'s turn.
-                </h4>
+                {kingsState.black.isInCheck ? <h6 className='text-center'>Black is in check</h6> : <></> }
+                {kingsState.white.isInCheck ? <h6 className='text-center'>White is in check</h6> : <></> }
+                {kingsState.black.isCheckMate ? <h6 className='text-center'>Black is checkmated</h6> : <></> }
+                {kingsState.white.isCheckMate ? <h6 className='text-center'>White is checkmated</h6> : <></> }
+                <h6 className='text-center'>{isWhitesTurn ? "White" : "Black"}'s turn.</h6>
             </div>
             <h5 className='mb-3 text-center border-bottom border-secondary pb-3'>
                 Move History
