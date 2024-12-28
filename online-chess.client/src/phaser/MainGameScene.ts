@@ -223,7 +223,14 @@ export class MainGameScene extends Scene{
         })
     }
 
-    // move piece to desired square, saves capture and move history
+    /**
+     * - move piece to desired square
+     * - saves capture history 
+     * - saves move history
+     * @param newX 
+     * @param newY 
+     * @returns if the move has capture
+     */
     move(newX: number, newY: number): boolean{
         let hasCapture = false;
 
@@ -290,34 +297,8 @@ export class MainGameScene extends Scene{
 
         // new coordinate
         this.board[newX][newY] = sprite;
-
-        // check if pawn and promotable
-        if (
-            (pieceName.toLowerCase().indexOf("pawn") >= 0)
-            && ((newY === 0 && isWhite) || newY === 7 && !isWhite)
-            && sprite
-        ){
-            // change sprite name and image/texture from pawn to queen
-            switch(this.reactState.promoteTo){
-                case "rook":
-                    sprite.setName((isWhite ? PieceNames.wRook : PieceNames.bRook) + `-${newX}-${newY}`);
-                    sprite.setTexture(isWhite ? PieceNames.wRook : PieceNames.bRook);
-                    break;
-                case "knight":
-                    sprite.setName((isWhite ? PieceNames.wKnight : PieceNames.bKnight) + `-${newX}-${newY}`);
-                    sprite.setTexture(isWhite ? PieceNames.wKnight : PieceNames.bKnight);
-                    break;
-                case "bishop":
-                    sprite.setName((isWhite ? PieceNames.wBishop : PieceNames.bBishop) + `-${newX}-${newY}`);
-                    sprite.setTexture(isWhite ? PieceNames.wBishop : PieceNames.bBishop);
-                    break;
-                case "queen":
-                    sprite.setName((isWhite ? PieceNames.wQueen : PieceNames.bQueen) + `-${newX}-${newY}`);
-                    sprite.setTexture(isWhite ? PieceNames.wQueen : PieceNames.bQueen);
-                    break;
-                }
-                
-        }
+        
+        this.mPawnPromotable(pieceName, newX, newY, isWhite, sprite);
 
         /** === Start Castle ==== */
         // check if king piece and the move is a kingside castling
@@ -429,7 +410,40 @@ export class MainGameScene extends Scene{
 
     }
 
-    resetGame(){
+    /**
+     * - used by the move() function 
+     */
+    mPawnPromotable(pieceName: string, newX: number, newY: number, isWhite: boolean, sprite: GameObjects.Sprite | null){
+
+        // check if pawn and promotable
+        if (
+            (pieceName.toLowerCase().indexOf("pawn") >= 0)
+            && ((newY === 0 && isWhite) || newY === 7 && !isWhite)
+            && sprite
+        ){
+            // change sprite name and image/texture from pawn to queen
+            switch(this.reactState.promoteTo){
+                case "rook":
+                    sprite.setName((isWhite ? PieceNames.wRook : PieceNames.bRook) + `-${newX}-${newY}`);
+                    sprite.setTexture(isWhite ? PieceNames.wRook : PieceNames.bRook);
+                    break;
+                case "knight":
+                    sprite.setName((isWhite ? PieceNames.wKnight : PieceNames.bKnight) + `-${newX}-${newY}`);
+                    sprite.setTexture(isWhite ? PieceNames.wKnight : PieceNames.bKnight);
+                    break;
+                case "bishop":
+                    sprite.setName((isWhite ? PieceNames.wBishop : PieceNames.bBishop) + `-${newX}-${newY}`);
+                    sprite.setTexture(isWhite ? PieceNames.wBishop : PieceNames.bBishop);
+                    break;
+                case "queen":
+                    sprite.setName((isWhite ? PieceNames.wQueen : PieceNames.bQueen) + `-${newX}-${newY}`);
+                    sprite.setTexture(isWhite ? PieceNames.wQueen : PieceNames.bQueen);
+                    break;
+                }
+        }
+    }
+
+    mCastle(){
 
     }
 }

@@ -7,15 +7,15 @@ chess logic
 ~~2. pawn move~~
 ~~3. pawn en passant~~
 ~~4. pawn promotion~~
-5. king king-side castling
-6. king queen-side castling
+~~5. king king-side castling~~
+~~6. king queen-side castling~~
 7. king danger squares after move function
 8. king pins after move function
 9. check validator after move function
 10. checkmate validator after move function
 11. show timer
-12. you won
-13. you lose
+12. you won / lose
+13. stalemate detection - if the piece value suffice
 
 ui
 ~~1. move history (with notation)~~
