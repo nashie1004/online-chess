@@ -40,12 +40,24 @@ export interface ICaptureHistory{
     black: IMoveInfo[]
 }
 
+export interface IKing{
+    isInCheck: boolean;
+    isCheckMate: boolean;
+}
+
+export interface IKingState{
+    white: IKing;
+    black: IKing;
+}
+
 export interface IPhaserContextValues{
     isWhitesTurn: boolean;
     moveHistory: IMoveHistory;
     captureHistory: ICaptureHistory;
     promoteTo: PromoteTo;
-    isColorWhite: boolean
+    isColorWhite: boolean;
+    isWhitesOrientation: boolean;
+    kingsState: IKingState
 }
 
 export interface IPhaserContext extends IPhaserContextValues{
@@ -54,4 +66,6 @@ export interface IPhaserContext extends IPhaserContextValues{
     setCaptureHistory: (val: ICaptureHistory) => void;
     setPromoteTo: (val: PromoteTo) => void;
     setIsColorWhite: (val: boolean) => void;
+    setIsWhitesOrientation: (val: boolean) => void;
+    setKingsState: (val: IKingState) => void;
 }

@@ -6,7 +6,7 @@ import capture from "../assets/sounds/Capture.ogg"
 import select from "../assets/sounds/Select.ogg"
 import pieces from "../utils/constants";
 import { gameOptions, PieceNames, pieceImages } from "../utils/constants";
-import { IMove, IMoveInfo, IPhaserContextValues, IValidMove, PromoteTo } from "../utils/types";
+import { IKingState, IMoveInfo, IPhaserContextValues, IValidMove, PromoteTo } from "../utils/types";
 import { eventEmitter } from "./eventEmitter";
 import RookValidator from "../validators/piece/rookValidator";
 import KnightValidator from "../validators/piece/knightValidator";
@@ -35,7 +35,9 @@ export class MainGameScene extends Scene{
             moveHistory: { white: [], black: [] },
             captureHistory: { white: [], black: [] },
             promoteTo: "queen",
-            isColorWhite: true // player's color of choice
+            isColorWhite: true, // player's color of choice
+            isWhitesOrientation: true,
+            kingsState: { white: { isCheckMate: false, isInCheck: false }, black: { isCheckMate: false, isInCheck: false } }
         }        
 
         // game state
@@ -158,7 +160,9 @@ export class MainGameScene extends Scene{
         })
 
         // sync / listen to upcoming react state changes
-        eventEmitter.on("setPromoteTo", (promoteTo: PromoteTo) => this.reactState.promoteTo = promoteTo);
+        eventEmitter.on("setPromoteTo", (data: PromoteTo) => this.reactState.promoteTo = data);
+        eventEmitter.on("setIsWhitesOrientation", (data: boolean) => this.reactState.isWhitesOrientation = data);
+        eventEmitter.on("setKingsState", (data: IKingState) => this.reactState.kingsState = data);
     }
 
     resetMoves(){

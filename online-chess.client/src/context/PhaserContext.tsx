@@ -1,5 +1,5 @@
 import { createContext, ReactNode, useState } from 'react'
-import { IMoveHistory, ICaptureHistory, PromoteTo, IPhaserContext } from '../utils/types';
+import { IMoveHistory, ICaptureHistory, PromoteTo, IPhaserContext, IKingState } from '../utils/types';
 
 
 interface PhaserContextProps{
@@ -12,6 +12,8 @@ export const phaserContext = createContext<IPhaserContext>({
     , captureHistory: { white: [], black: [] }, setCaptureHistory: () => {}
     , promoteTo: "queen", setPromoteTo: () => {}
     , isColorWhite: true, setIsColorWhite: () => {}
+    , isWhitesOrientation: true, setIsWhitesOrientation: () => {}
+    , kingsState: { white: { isCheckMate: false, isInCheck: false }, black: { isCheckMate: false, isInCheck: false } }, setKingsState: () => {}
 })
 
 export default function PhaserContext(
@@ -22,13 +24,17 @@ export default function PhaserContext(
     const [captureHistory, setCaptureHistory] = useState<ICaptureHistory>({ white: [], black: [] });
     const [promoteTo, setPromoteTo] = useState<PromoteTo>("queen");
     const [isColorWhite, setIsColorWhite] = useState<boolean>(true);
+    const [isWhitesOrientation, setIsWhitesOrientation] = useState<boolean>(true);
+    const [kingsState, setKingsState] = useState<IKingState>({ white: { isCheckMate: false, isInCheck: false }, black: { isCheckMate: false, isInCheck: false } });
 
     const data: IPhaserContext = {
         isWhitesTurn, setIsWhitesTurn, 
         moveHistory, setMoveHistory,
         captureHistory, setCaptureHistory,
         promoteTo, setPromoteTo,
-        isColorWhite, setIsColorWhite
+        isColorWhite, setIsColorWhite,
+        isWhitesOrientation, setIsWhitesOrientation,
+        kingsState, setKingsState
     }
 
   return (

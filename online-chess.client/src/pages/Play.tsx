@@ -1,12 +1,10 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef } from "react"
 import { MainGameScene } from "../phaser/MainGameScene";
 
 import { gameOptions } from "../utils/constants";
 import { eventEmitter } from "../phaser/eventEmitter";
 import SidebarLeft from "../components/SidebarLeft";
-import Chatbar from "../components/Chatbar";
 import usePhaser from "../hooks/usePhaser";
-import PromotionPicker from "../components/PromotionPicker";
 import { IMoveHistory , ICaptureHistory} from "../utils/types";
 import SidebarRight from "../components/SidebarRight";
 
