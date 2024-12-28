@@ -6,7 +6,7 @@ import capture from "../assets/sounds/Capture.ogg"
 import select from "../assets/sounds/Select.ogg"
 import pieces from "../utils/constants";
 import { gameOptions, PieceNames, pieceImages } from "../utils/constants";
-import { IMoveInfo, IPhaserContextValues, IValidMove, PromoteTo } from "../utils/types";
+import { IMove, IMoveInfo, IPhaserContextValues, IValidMove, PromoteTo } from "../utils/types";
 import { eventEmitter } from "./eventEmitter";
 import RookValidator from "../validators/piece/rookValidator";
 import KnightValidator from "../validators/piece/knightValidator";
@@ -264,34 +264,7 @@ export class MainGameScene extends Scene{
         }
 
         // 2. En Passant Capture
-        
-        // check if pawn type
-        if (pieceName.toLowerCase().indexOf("pawn") >= 0){
-            
-            // get the previous pawn' square before moving diagonally
-            const pawnValidator = new PawnValidator(
-                { 
-                    x: this.selectedPiece.x, y: this.selectedPiece.y
-                    , name: isWhite ? PieceNames.wPawn : PieceNames.bPawn
-                    , uniqueName: pieceName 
-                }
-                 , this.board, this.reactState.moveHistory
-            );
-
-            const validCapture = pawnValidator.validEnPassantCapture();
-            
-            if (validCapture){
-                // since our current moved pawn is in the same y square value as the opponent
-                // , (means the pawn is behind the opponent pawn) just subtract/add y direction
-                const opponentPiece = this.board[validCapture.x][validCapture.y - pawnValidator.captureYDirection];
-                
-                if (opponentPiece && validCapture.x === newX && validCapture.y === newY){
-                    opponentPiece.destroy();
-                    hasCapture = true;
-                }
-            }
-
-        }
+        hasCapture = this.mEnPassantCapture(pieceName, this.selectedPiece, isWhite, newX, newY);
 
         // === End Capture === //
 
@@ -401,6 +374,40 @@ export class MainGameScene extends Scene{
     /**
      * - used by the move() function 
      */
+
+    mEnPassantCapture(pieceName: string, selectedPiece: IMoveInfo, isWhite: boolean, newX: number, newY: number): boolean{
+        
+        // check if pawn type
+        if (pieceName.toLowerCase().indexOf("pawn") >= 0){
+            
+            // get the previous pawn' square before moving diagonally
+            const pawnValidator = new PawnValidator(
+                { 
+                    x: selectedPiece.x, y: selectedPiece.y
+                    , name: isWhite ? PieceNames.wPawn : PieceNames.bPawn
+                    , uniqueName: pieceName 
+                }
+                 , this.board, this.reactState.moveHistory
+            );
+
+            const validCapture = pawnValidator.validEnPassantCapture();
+            
+            if (validCapture){
+                // since our current moved pawn is in the same y square value as the opponent
+                // , (means the pawn is behind the opponent pawn) just subtract/add y direction
+                const opponentPiece = this.board[validCapture.x][validCapture.y - pawnValidator.captureYDirection];
+                
+                if (opponentPiece && validCapture.x === newX && validCapture.y === newY){
+                    opponentPiece.destroy();
+                    return true;
+                }
+            }
+
+        }
+
+        return false;
+    }
+
     mPawnPromotable(pieceName: string, newX: number, newY: number, isWhite: boolean, sprite: GameObjects.Sprite | null){
 
         // check if pawn and promotable
