@@ -3,6 +3,10 @@ import { IMoveHistory, IPiece, IValidMove } from "../../utils/types";
 import BasePieceValidator from "./basePieceValidator";
 import QueenValidator from "./queenValidator";
 import KnightValidator from "./knightValidator";
+import { PieceNames } from "../../utils/constants";
+import BishopValidator from "./bishopValidator";
+import PawnValidator from "./pawnValidator";
+import RookValidator from "./rookValidator";
 
 export default class KingValidator extends BasePieceValidator{
     /**
@@ -145,73 +149,64 @@ export default class KingValidator extends BasePieceValidator{
     }
 
     /**
-     * 
+     * - if the piece coords provided can attack the opposite king 
      * @param enemyX 
      * @param enemyY 
      * @param enemyName 
-     * @returns if the enemy parameters provided can attacks king 
+     * @returns if the king is in check
      */
-    validateCheck(enemyX: number, enemyY: number, enemyName: string){
-        const isWhite = this.piece.name[0] === "w";
+    validateCheck(enemyX: number, enemyY: number, enemyName: PieceNames){
+        const kingIsWhite = this.piece.name[0] === "w";
+        let validMoves: IValidMove[] = []
+        let pieceName = "pawn";
+        let hasACheck = false;
 
-        // 1. check if there is an enemey knight piece in those squares
-        const validKnightMoves = (new KnightValidator(this.piece, this.board, this.moveHistory)).validMoves();
-        let hasKnightCheck = false;
-        
-        validKnightMoves.forEach(move => {
+        switch(enemyName){
+            case PieceNames.bPawn:
+            case PieceNames.wPawn:
+                validMoves = (new PawnValidator(this.piece, this.board, this.moveHistory)).validMoves();
+                pieceName = "pawn";
+                break;
+            case PieceNames.bRook:
+            case PieceNames.wRook:
+                validMoves = (new RookValidator(this.piece, this.board, this.moveHistory)).validMoves();
+                pieceName = "rook";
+                break;
+            case PieceNames.bKnight:
+            case PieceNames.wKnight:
+                validMoves = (new KnightValidator(this.piece, this.board, this.moveHistory)).validMoves();
+                pieceName = "knight";
+                break;
+            case PieceNames.bBishop:
+            case PieceNames.wBishop:
+                validMoves = (new BishopValidator(this.piece, this.board, this.moveHistory)).validMoves();
+                pieceName = "bishop";
+                break;
+            case PieceNames.bQueen:
+            case PieceNames.wQueen:
+                validMoves = (new QueenValidator(this.piece, this.board, this.moveHistory)).validMoves();
+                pieceName = "queen";
+                break;
+        }
+
+        validMoves.forEach(move => {
             const currTile = this.board[move.x][move.y];
-            
+            if (!currTile) return;
+
             // tile is not empty and has an enemny knight in it
-            if (currTile && currTile.name.toLowerCase().indexOf("knight") >= 0){
+            if (move.x === enemyX && move.y === enemyY){
                 const enemyPieceIsWhite = currTile.name[0] === "w";
-                if (
-                    (!isWhite && enemyPieceIsWhite) 
-                    || (isWhite && !enemyPieceIsWhite)
-                ){
-                    hasKnightCheck = true;
-                    console.log("knight check: ", currTile, move)
-                }
-
-            }
-        })
-        
-        if (hasKnightCheck) return true;
-
-        // 2. check if there is an enemey bishop, rook, pawn or queen piece in those squares
-        const validateQueenMoves = (new QueenValidator(this.piece, this.board, this.moveHistory)).validMoves();
-        let hasQueenCheck = false;
-        
-        validateQueenMoves.forEach(move => {
-            const currTile = this.board[move.x][move.y];
-
-            // tile is not empty
-            if (currTile){
-
-                const isABishop = currTile.name.toLowerCase().indexOf("bishop") >= 0;
-                const isABRook = currTile.name.toLowerCase().indexOf("rook") >= 0;
-                const isAQueen = currTile.name.toLowerCase().indexOf("queen") >= 0;
-                const isAPawn = currTile.name.toLowerCase().indexOf("pawn") >= 0;
                 
-                // an enemy piece in it
-                if (isABishop || isABRook || isAQueen || isAPawn){
-                    const enemyPieceIsWhite = currTile.name[0] === "w";
-
-                    if (
-                        (!isWhite && enemyPieceIsWhite) 
-                        || (isWhite && !enemyPieceIsWhite)
-                    ){
-                        hasKnightCheck = true;
-                        console.log("queen check: ", currTile, move)
-                    }
-    
+                if ((!kingIsWhite && enemyPieceIsWhite) || (kingIsWhite && !enemyPieceIsWhite)){
+                    hasACheck = true;
+                    console.info(`${pieceName} check: `, currTile, move)
                 }
             }
-
-        })
+        });
         
-        if (hasQueenCheck) return true;
+        if (hasACheck) return true;
 
-        return false;
+        return hasACheck;
     }
 
     validateCheckMate(){

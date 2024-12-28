@@ -1,27 +1,22 @@
 import { PieceNames } from "./constants";
 
-export interface IPiece{
+export interface IBaseCoordinates{
+    x: number;
+    y: number;
+}
+
+export interface IPiece extends IBaseCoordinates{
     name: PieceNames,
-    x: number,
-    y: number,
     uniqueName?: string
 }
 
-export interface IValidMove{
-    x: number,
-    y: number,
+export interface IValidMove extends IBaseCoordinates{
     isCapture: boolean
 }
 
-// export interface ISelectedPiece{
-//     x: number,
-//     y: number
-// }
 export type PromoteTo = "rook" | "knight" | "bishop" | "queen";
 
-export interface IMoveInfo{
-    x: number,
-    y: number,
+export interface IMoveInfo extends IBaseCoordinates{
     pieceName: string
 }
 
@@ -68,4 +63,9 @@ export interface IPhaserContext extends IPhaserContextValues{
     setIsColorWhite: (val: boolean) => void;
     setIsWhitesOrientation: (val: boolean) => void;
     setKingsState: (val: IKingState) => void;
+}
+
+export interface IBothKingsPosition{
+    white: IBaseCoordinates;
+    black: IBaseCoordinates;
 }

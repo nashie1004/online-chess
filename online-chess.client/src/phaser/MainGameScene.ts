@@ -6,7 +6,7 @@ import capture from "../assets/sounds/Capture.ogg"
 import select from "../assets/sounds/Select.ogg"
 import pieces from "../utils/constants";
 import { gameOptions, PieceNames, pieceImages } from "../utils/constants";
-import { IKingState, IMoveInfo, IPhaserContextValues, IValidMove, PromoteTo } from "../utils/types";
+import { IBothKingsPosition, IKingState, IMoveInfo, IPhaserContextValues, IValidMove, PromoteTo } from "../utils/types";
 import { eventEmitter } from "./eventEmitter";
 import RookValidator from "../validators/piece/rookValidator";
 import KnightValidator from "../validators/piece/knightValidator";
@@ -25,6 +25,7 @@ export class MainGameScene extends Scene{
     private readonly previewBoard: (GameObjects.Sprite)[][] // has a visible property
     private selectedPiece: IMoveInfo | null;
     private reactState: IPhaserContextValues;
+    private bothKingsPosition: IBothKingsPosition;
     
     constructor() {
         super({ key: "MainGame" });
@@ -40,9 +41,10 @@ export class MainGameScene extends Scene{
             kingsState: { white: { isCheckMate: false, isInCheck: false }, black: { isCheckMate: false, isInCheck: false } }
         }        
 
-        // game state
+        // game internal state
         this.selectedPiece = null;
-        
+        this.bothKingsPosition = { white: { x: 4, y: 7 }, black: { x: 4, y: 0 } };
+
         this.tileSize = gameOptions.tileSize; // 100
         
         // creates 8x8 grid
@@ -242,6 +244,8 @@ export class MainGameScene extends Scene{
         
         // current piece to move
         const sprite = this.board[this.selectedPiece.x][this.selectedPiece.y];
+        if (!sprite) return false;
+        
         const isWhite = sprite?.name[0] === "w"
         const pieceName = sprite?.name ?? "";
         this.reactState.isWhitesTurn = !isWhite;
@@ -262,6 +266,12 @@ export class MainGameScene extends Scene{
         this.mKingCastle(pieceName, this.selectedPiece, isWhite, newX, newY);
         
         this.mSaveMoveHistory(isWhite, pieceName, this.selectedPiece, newX, newY);
+
+        // TODO: validate check and checkmate
+        const isCheck = this.mValidateCheck(sprite, isWhite, newX, newY);
+        if (isCheck){
+            this.mValidateCheckmate();
+        }
 
         // transfer data from phaser to react
         eventEmitter.emit("setIsWhitesTurn", !isWhite)
@@ -459,5 +469,23 @@ export class MainGameScene extends Scene{
                 new: { pieceName, x: newX, y: newY },
             });
         }
+    }
+
+    mValidateCheck(enemy: GameObjects.Sprite, isWhite: boolean, enemyX: number, enemyY: number){
+        const enemyName = enemy.name.split("-")[0] as PieceNames;
+        const king = isWhite ? this.bothKingsPosition.black : this.bothKingsPosition.white;
+        const kingPiece = isWhite ? PieceNames.bKing : PieceNames.wKing;
+
+        // compare the given enemy coordinates with the king
+        const checkValidator = new KingValidator(
+            { x: king.x, y: king.y, name: kingPiece, uniqueName: enemy.name }
+            , this.board, this.reactState.moveHistory
+        );
+
+        return checkValidator.validateCheck(enemyX, enemyY, enemyName);
+    }
+
+    mValidateCheckmate(){
+
     }
 }
