@@ -351,19 +351,7 @@ export class MainGameScene extends Scene{
             } 
         }
         /** === End Castle ==== */
-
-        // save to move history
-        if (isWhite){
-            this.reactState.moveHistory.white.push({
-                old: { pieceName, x: this.selectedPiece.x, y: this.selectedPiece.y },
-                new: { pieceName, x: newX, y: newY },
-            });
-        } else {
-            this.reactState.moveHistory.black.push({
-                old: { pieceName, x: this.selectedPiece.x, y: this.selectedPiece.y },
-                new: { pieceName, x: newX, y: newY },
-            });
-        }
+        this.mSaveMoveHistory(isWhite, pieceName, this.selectedPiece, newX, newY);
 
         // transfer data from phaser to react
         eventEmitter.emit("setIsWhitesTurn", !isWhite)
@@ -445,5 +433,21 @@ export class MainGameScene extends Scene{
 
     mCastle(){
 
+    }
+
+    mSaveMoveHistory(isWhite: boolean, pieceName: string, selectedPiece: IMoveInfo, newX: number, newY: number){
+
+        // save to move history
+        if (isWhite){
+            this.reactState.moveHistory.white.push({
+                old: { pieceName, x: selectedPiece.x, y: selectedPiece.y },
+                new: { pieceName, x: newX, y: newY },
+            });
+        } else {
+            this.reactState.moveHistory.black.push({
+                old: { pieceName, x: selectedPiece.x, y: selectedPiece.y },
+                new: { pieceName, x: newX, y: newY },
+            });
+        }
     }
 }
