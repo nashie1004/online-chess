@@ -223,7 +223,6 @@ export class MainGameScene extends Scene{
             // get attacker piece attack squares (rook, bishop, queen)
             // , filter out those attack squares with the king
             const dangerSquares = this.getInitialMoves(attackerSpriteName, attackerCoords.x, attackerCoords.y, attackerSprite.name)    
-
             if (name === PieceNames.wKing || name === PieceNames.bKing)
             {
                 initialValidMoves.forEach(kingMove => {
@@ -234,10 +233,16 @@ export class MainGameScene extends Scene{
                     } 
                 });
             }
-
+            
             // 3. block the attacker
 
-            initialValidMoves = actualValidMoves;
+            // this just removes any duplicate valid moves so that phaser setVisible will actually work
+            // https://stackoverflow.com/questions/2218999/how-to-remove-all-duplicates-from-an-array-of-objects
+            initialValidMoves = actualValidMoves.filter((value, index, self) =>
+                index === self.findIndex((t) => (
+                    t.x === value.x && t.y === value.y
+                ))
+            );
         }
         // === End check legal moves === //
 
