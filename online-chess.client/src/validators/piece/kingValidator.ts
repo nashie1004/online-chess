@@ -199,7 +199,7 @@ export default class KingValidator extends BasePieceValidator{
                 
                 if ((!kingIsWhite && enemyPieceIsWhite) || (kingIsWhite && !enemyPieceIsWhite)){
                     hasACheck = true;
-                    console.info(`${pieceName} check: `, currTile.name, move)
+                    // console.info(`${pieceName} check: `, currTile.name, move)
                 }
             }
         });

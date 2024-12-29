@@ -7,7 +7,7 @@ import select from "../assets/sounds/Select.ogg"
 import check from "../assets/sounds/Check.mp3"
 import pieces, { baseKingState } from "../utils/constants";
 import { gameOptions, PieceNames, pieceImages } from "../utils/constants";
-import { IBothKingsPosition, IKing, IKingState, IMoveInfo, IPhaserContextValues, IValidMove, PromoteTo } from "../utils/types";
+import { IBaseCoordinates, IBothKingsPosition, IKingState, IMoveInfo, IPhaserContextValues, IValidMove, PromoteTo } from "../utils/types";
 import { eventEmitter } from "./eventEmitter";
 import RookValidator from "../validators/piece/rookValidator";
 import KnightValidator from "../validators/piece/knightValidator";
@@ -187,8 +187,71 @@ export class MainGameScene extends Scene{
         y = actualCoordinates?.y ?? 0;
 
         // validate
-        let validMoves: IValidMove[] = [];
+        let initialValidMoves: IValidMove[] = [];
 
+        initialValidMoves = this.getInitialMoves(name, x, y, uniqueName);
+            
+        // set selected piece
+        this.selectedPiece = { x, y, pieceName: uniqueName };
+
+        // === Start check legal moves === //
+        // check if the king is in check, only allow moves for 
+        // the current piece that invalidates that check
+        if (this.reactState.kingsState.black.isInCheck || this.reactState.kingsState.white.isInCheck){
+            const isWhite = name[0] === "w";
+            
+            // get attacker information
+            const attackerCoords = isWhite ? this.reactState.kingsState.white.checkedBy : this.reactState.kingsState.black.checkedBy;
+            if (!attackerCoords) return; // this is actually invalid
+            const attackerSprite = this.board[attackerCoords.x][attackerCoords.y];
+            if (!attackerSprite) return; // this is actually invalid
+            const attackerSpriteName = attackerSprite.name.split("-")[0] as PieceNames;
+            
+            /**
+             * possible moves when in check are
+             * - move the king
+             * - block the attacker
+             * - capture the attacker
+             */
+            let actualValidMoves: IValidMove[] = [];
+
+            // 1. capture the attacker
+            initialValidMoves.forEach(move => {
+                if (attackerCoords.x === move.x && attackerCoords.y === move.y){
+                    actualValidMoves.push(move)
+                }
+            });
+
+            // 2. move the king
+            // get the attacker piece attack squares (rook, bishop, queen)
+            // filter out those attack squares with the king
+            const dangerSquares = this.getInitialMoves(attackerSpriteName, attackerCoords.x, attackerCoords.y, attackerSprite.name)    
+
+            if (name === PieceNames.wKing || name === PieceNames.bKing)
+            {
+                initialValidMoves.forEach(move => {
+                    const dangerSquare = dangerSquares.find(dangerSquare => dangerSquare.x === move.x && dangerSquare.y === move.y);
+                    
+                    if (!dangerSquare){
+                        actualValidMoves.push(move);
+                    } 
+                });
+            }
+
+            initialValidMoves = actualValidMoves;
+        }
+        // === End check legal moves === //
+
+        // shows the actual valid moves to the user
+        initialValidMoves.forEach(item => {
+            const prev = this.previewBoard[item.x][item.y].visible;
+            this.previewBoard[item.x][item.y].setVisible(!prev)
+        })
+    }
+
+    getInitialMoves(name: PieceNames, x: number, y: number, uniqueName: string){
+        let validMoves: IValidMove[] = [];
+        
         switch(name){
             case PieceNames.bRook:
             case PieceNames.wRook:
@@ -215,15 +278,7 @@ export class MainGameScene extends Scene{
                 validMoves = (new PawnValidator({ x, y, name, uniqueName }, this.board, this.reactState.moveHistory)).validMoves();
                 break;
             }
-            
-        // set selected piece
-        this.selectedPiece = { x, y, pieceName: uniqueName };
-
-        // shows the actual valid moves to the user
-        validMoves.forEach(item => {
-            const prev = this.previewBoard[item.x][item.y].visible;
-            this.previewBoard[item.x][item.y].setVisible(!prev)
-        })
+        return validMoves;
     }
 
     /**
@@ -264,16 +319,10 @@ export class MainGameScene extends Scene{
         
         this.mSaveMoveHistory(isWhite, pieceName, this.selectedPiece, newX, newY);
 
-        // if the move is a king, update private king pos state - this is used by the this.mValidateCheck() function
+        // if the move is a king, update private king pos state - this is used by the this.mKingInCheckOrCheckmate() function
         if (sprite.name.toLowerCase().indexOf("king") >= 0){
-            if (isWhite){
-                this.bothKingsPosition.white.x = newX;
-                this.bothKingsPosition.white.y = newY;
-            } 
-            else {
-                this.bothKingsPosition.black.x = newX;
-                this.bothKingsPosition.black.y = newY;
-            }
+            this.bothKingsPosition[isWhite ? "white" : "black"].x = newX;
+            this.bothKingsPosition[isWhite ? "white" : "black"].y = newY;
         }
 
         // transfer data from phaser to react
@@ -493,19 +542,23 @@ export class MainGameScene extends Scene{
 
         const isCheck = this.validateCheck(sprite, isWhite, newX, newY);
 
-        // 1. no check or checkmate
+        // 1. no check or no checkmate
         if (!isCheck){
+            this.reactState.kingsState.black.checkedBy = null;
+            this.reactState.kingsState.white.checkedBy = null;
+
             this.reactState.kingsState.black.isInCheck = false;
             this.reactState.kingsState.white.isInCheck = false;
             return 0;
         }
         
         // 2. check
-        this.reactState.kingsState.black.checkedBy = { x: newX, y: newY };
         
         if (isWhite){
+            this.reactState.kingsState.black.checkedBy = { x: newX, y: newY };
             this.reactState.kingsState.black.isInCheck = true;
         } else {
+            this.reactState.kingsState.white.checkedBy = { x: newX, y: newY };
             this.reactState.kingsState.white.isInCheck = true;
         }
 
@@ -514,9 +567,8 @@ export class MainGameScene extends Scene{
         kingSprite?.postFX?.addGlow(0xE44C6A, 10, 2);
 
         // 3. checkmate
-        const isCheckMate = this.validateCheckmate();
+        const isCheckMate = this.validateCheckmate(isWhite);
         if (isCheckMate){
-            
             if (isWhite){
                 this.reactState.kingsState.black.isCheckMate = true;
             } else {
@@ -542,8 +594,30 @@ export class MainGameScene extends Scene{
         return checkValidator.validateCheck(enemyX, enemyY, enemyName);
     }
 
-    validateCheckmate(){
-        return false;
+    // TODO
+    validateCheckmate(isWhite: boolean){
+        // todo 1: if king is in check, run through all legal moves and check if there is at least one legal move
+        // todo 2: if no more legal move, means checkmate
+        let checkMate = false;
+        return checkMate;
+        const friendPieces: IBaseCoordinates[] = [];
+
+        this.board.forEach((row, rowIdx) => {
+            row.forEach((sprite, colIdx) => {
+                if (sprite?.name[0] === "w" && isWhite){
+                    friendPieces.push({ x: colIdx, y: rowIdx });
+                } else if (sprite?.name[0] === "b" && !isWhite){
+                    friendPieces.push({ x: colIdx, y: rowIdx });
+                }
+            });
+        });
+
+        //
+        friendPieces.forEach(piece => {
+            // this.board[]
+        });
+
+        return checkMate;
     }
 
 }
