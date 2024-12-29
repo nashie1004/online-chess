@@ -76,7 +76,7 @@ export default class KingValidator extends BasePieceValidator{
         // check for danger squares
         // get all opponent pieces' moves, and check if there is an overlap with the king moves
         const isWhite = this.piece.name[0] === "w";
-        const dangerSquares: IValidMove[] = []
+        const dangerSquaresSet = new Set<string>();  // Use a Set for faster lookups
 
         for(let row = 0; row < this.board.length; row++){
             for(let col = 0; col < this.board[row].length; col++){
@@ -97,15 +97,17 @@ export default class KingValidator extends BasePieceValidator{
                 const pieceName = currTile.name.split("-")[0] as PieceNames;
                 const enemyMoves = this.switchPieceValidMoves({ x: col, y: row, name: pieceName, uniqueName: currTile.name }, pieceName);
                 
-                enemyMoves.forEach(enemyMove => dangerSquares.push(enemyMove));
+                enemyMoves.forEach(enemyMove => {
+                    if (enemyMove.x !== col && enemyMove.y !== row){
+                        dangerSquaresSet.add(`${enemyMove.x}-${enemyMove.y}`);
+                    }
+                });
             }
         }
 
         validMoves = validMoves.filter(j => {
             // if the enemy move and king move overlap, remove that as valid king move
-            if (!dangerSquares.find(i => i.x === j.x && i.y === j.y)){
-                return j;
-            }
+            return !dangerSquaresSet.has(`${j.x}-${j.y}`);
         });
 
         return validMoves;
