@@ -18,7 +18,7 @@ export default class KingValidator extends BasePieceValidator{
     }
     
     public override validMoves(): IValidMove[]{
-        const validMoves: IValidMove[] = [];
+        let validMoves: IValidMove[] = [];
         const x = this.piece.x;
         const y = this.piece.y;
 
@@ -72,6 +72,41 @@ export default class KingValidator extends BasePieceValidator{
         if (validQueenSideCastling){
             validMoves.push(validQueenSideCastling);
         }
+
+        // check for danger squares
+        // get all opponent pieces' moves, and check if there is an overlap with the king moves
+        const isWhite = this.piece.name[0] === "w";
+        const dangerSquares: IValidMove[] = []
+
+        for(let row = 0; row < this.board.length; row++){
+            for(let col = 0; col < this.board[row].length; col++){
+                const currTile = this.board[col][row];
+
+                // empty tile
+                if (!currTile) continue;
+                
+                // friend piece
+                if (
+                    (currTile.name[0] === "w" && isWhite) ||
+                    (currTile.name[0] === "b" && !isWhite)
+                ){
+                    continue;
+                }
+
+                // for each enemy piece, generate all possible moves
+                const pieceName = currTile.name.split("-")[0] as PieceNames;
+                const enemyMoves = this.switchPieceValidMoves({ x: col, y: row, name: pieceName, uniqueName: currTile.name }, pieceName);
+                
+                enemyMoves.forEach(enemyMove => dangerSquares.push(enemyMove));
+            }
+        }
+
+        validMoves = validMoves.filter(j => {
+            // if the enemy move and king move overlap, remove that as valid king move
+            if (!dangerSquares.find(i => i.x === j.x && i.y === j.y)){
+                return j;
+            }
+        });
 
         return validMoves;
     }
@@ -157,37 +192,8 @@ export default class KingValidator extends BasePieceValidator{
      */
     validateCheck(enemyX: number, enemyY: number, enemyName: PieceNames){
         const kingIsWhite = this.piece.name[0] === "w";
-        let validMoves: IValidMove[] = []
-        let pieceName = "pawn";
         let hasACheck = false;
-
-        switch(enemyName){
-            case PieceNames.bPawn:
-            case PieceNames.wPawn:
-                validMoves = (new PawnValidator(this.piece, this.board, this.moveHistory)).validMoves();
-                pieceName = "pawn";
-                break;
-            case PieceNames.bRook:
-            case PieceNames.wRook:
-                validMoves = (new RookValidator(this.piece, this.board, this.moveHistory)).validMoves();
-                pieceName = "rook";
-                break;
-            case PieceNames.bKnight:
-            case PieceNames.wKnight:
-                validMoves = (new KnightValidator(this.piece, this.board, this.moveHistory)).validMoves();
-                pieceName = "knight";
-                break;
-            case PieceNames.bBishop:
-            case PieceNames.wBishop:
-                validMoves = (new BishopValidator(this.piece, this.board, this.moveHistory)).validMoves();
-                pieceName = "bishop";
-                break;
-            case PieceNames.bQueen:
-            case PieceNames.wQueen:
-                validMoves = (new QueenValidator(this.piece, this.board, this.moveHistory)).validMoves();
-                pieceName = "queen";
-                break;
-        }
+        const validMoves: IValidMove[] = this.switchPieceValidMoves(this.piece, enemyName);
 
         validMoves.forEach(move => {
             const currTile = this.board[move.x][move.y];
@@ -209,7 +215,25 @@ export default class KingValidator extends BasePieceValidator{
         return hasACheck;
     }
 
-    validateCheckMate(){
-        //
+    private switchPieceValidMoves(piece: IPiece, enemyName: PieceNames){
+        switch(enemyName){
+            case PieceNames.bPawn:
+            case PieceNames.wPawn:
+                return (new PawnValidator(piece, this.board, this.moveHistory)).validMoves();
+            case PieceNames.bRook:
+            case PieceNames.wRook:
+                return (new RookValidator(piece, this.board, this.moveHistory)).validMoves();
+            case PieceNames.bKnight:
+            case PieceNames.wKnight:
+                return (new KnightValidator(piece, this.board, this.moveHistory)).validMoves();
+            case PieceNames.bBishop:
+            case PieceNames.wBishop:
+                return (new BishopValidator(piece, this.board, this.moveHistory)).validMoves();
+            case PieceNames.bQueen:
+            case PieceNames.wQueen:
+                return (new QueenValidator(piece, this.board, this.moveHistory)).validMoves();
+            default:  
+                return [];
+        }
     }
 }
