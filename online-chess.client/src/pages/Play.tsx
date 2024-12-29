@@ -5,7 +5,7 @@ import { gameOptions } from "../utils/constants";
 import { eventEmitter } from "../phaser/eventEmitter";
 import SidebarLeft from "../components/SidebarLeft";
 import usePhaser from "../hooks/usePhaser";
-import { IMoveHistory , ICaptureHistory} from "../utils/types";
+import { IMoveHistory , ICaptureHistory, IKingState} from "../utils/types";
 import SidebarRight from "../components/SidebarRight";
 
 export default function Main(){
@@ -14,6 +14,7 @@ export default function Main(){
         setIsWhitesTurn
         , setMoveHistory
         , setCaptureHistory
+        , setKingsState
     } = usePhaser();
 
     useEffect(() => {
@@ -33,6 +34,7 @@ export default function Main(){
         eventEmitter.on("setIsWhitesTurn", (data: boolean) => setIsWhitesTurn(data))
         eventEmitter.on("setMoveHistory", (data: IMoveHistory) => setMoveHistory(data))
         eventEmitter.on("setCaptureHistory", (data: ICaptureHistory) => setCaptureHistory(data))
+        eventEmitter.on("setKingsState", (data: IKingState) => setKingsState(data))
 
         // cleanup phaser
         return () => {

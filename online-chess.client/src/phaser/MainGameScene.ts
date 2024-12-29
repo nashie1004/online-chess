@@ -5,9 +5,9 @@ import move from "../assets/sounds/Move.ogg"
 import capture from "../assets/sounds/Capture.ogg"
 import select from "../assets/sounds/Select.ogg"
 import check from "../assets/sounds/Check.mp3"
-import pieces from "../utils/constants";
+import pieces, { baseKingState } from "../utils/constants";
 import { gameOptions, PieceNames, pieceImages } from "../utils/constants";
-import { IBothKingsPosition, IKingState, IMoveInfo, IPhaserContextValues, IValidMove, PromoteTo } from "../utils/types";
+import { IBothKingsPosition, IKing, IKingState, IMoveInfo, IPhaserContextValues, IValidMove, PromoteTo } from "../utils/types";
 import { eventEmitter } from "./eventEmitter";
 import RookValidator from "../validators/piece/rookValidator";
 import KnightValidator from "../validators/piece/knightValidator";
@@ -39,7 +39,7 @@ export class MainGameScene extends Scene{
             promoteTo: "queen",
             isColorWhite: true, // player's color of choice
             isWhitesOrientation: true,
-            kingsState: { white: { isCheckMate: false, isInCheck: false }, black: { isCheckMate: false, isInCheck: false } }
+            kingsState: baseKingState
         }        
 
         // game internal state
@@ -72,8 +72,6 @@ export class MainGameScene extends Scene{
     create(){
 
         this.add.image(0, 0, "bg").setOrigin(0, 0) ;
-        const move = this.sound.add("move");
-        const capture = this.sound.add("capture");
         const select = this.sound.add("select");
         
         // create pieces
@@ -236,7 +234,7 @@ export class MainGameScene extends Scene{
      * @param newY 
      * @returns if the move has capture
      */
-    move(newX: number, newY: number): boolean{
+    move(newX: number, newY: number){
         let hasCapture = false;
 
         if (!this.selectedPiece) return hasCapture;
@@ -294,24 +292,12 @@ export class MainGameScene extends Scene{
 
         this.resetMoves();
 
-        // validate check and checkmate
-        const isCheck = this.mValidateCheck(sprite, isWhite, newX, newY);
-        if (isCheck){
-            const isCheckMate = this.mValidateCheckmate();
-            if (isCheckMate){
-            }
-        }
+        // check for check or checkmate
+        const kingSafety = this.mKingInCheckOrCheckmate(sprite, isWhite, newX, newY);
 
         // play sound
-        if (isCheck){
-            const king = isWhite ? this.bothKingsPosition.black : this.bothKingsPosition.white;
-            this.sound.play("check");
-            this.board[king.x][king.y]?.preFX?.addGlow(0xE44C6A, 10, 2);
-        } else {
-            hasCapture ? this.sound.play("capture") : this.sound.play("move");
-        }
-
-        return hasCapture;
+        hasCapture ? this.sound.play("capture") : this.sound.play("move");
+        if (kingSafety !== 0) this.sound.play("check");
     }
 
     // find by name 
@@ -493,7 +479,56 @@ export class MainGameScene extends Scene{
         }
     }
 
-    mValidateCheck(enemy: GameObjects.Sprite, isWhite: boolean, enemyX: number, enemyY: number){
+    /**
+     * 
+     * @param sprite 
+     * @param isWhite 
+     * @param newX 
+     * @param newY 
+     * @returns 0 = no check or checkmate, 1 = check, 2 = checkmate
+     */
+    mKingInCheckOrCheckmate(sprite: GameObjects.Sprite, isWhite: boolean, newX: number, newY: number) : 0 | 1 | 2 {
+        this.board[this.bothKingsPosition.black.x][this.bothKingsPosition.black.y]?.resetPostPipeline(); 
+        this.board[this.bothKingsPosition.white.x][this.bothKingsPosition.white.y]?.resetPostPipeline(); 
+
+        const isCheck = this.validateCheck(sprite, isWhite, newX, newY);
+
+        // 1. no check or checkmate
+        if (!isCheck){
+            this.reactState.kingsState.black.isInCheck = false;
+            this.reactState.kingsState.white.isInCheck = false;
+            return 0;
+        }
+        
+        // 2. check
+        this.reactState.kingsState.black.checkedBy = { x: newX, y: newY };
+        
+        if (isWhite){
+            this.reactState.kingsState.black.isInCheck = true;
+        } else {
+            this.reactState.kingsState.white.isInCheck = true;
+        }
+
+        const king = isWhite ? this.bothKingsPosition.black : this.bothKingsPosition.white;
+        const kingSprite = this.board[king.x][king.y]; 
+        kingSprite?.postFX?.addGlow(0xE44C6A, 10, 2);
+
+        // 3. checkmate
+        const isCheckMate = this.validateCheckmate();
+        if (isCheckMate){
+            
+            if (isWhite){
+                this.reactState.kingsState.black.isCheckMate = true;
+            } else {
+                this.reactState.kingsState.white.isCheckMate = true;
+            }
+        }
+        
+        eventEmitter.emit("setKingsState", this.reactState.kingsState);
+        return (isCheckMate ? 2 : 1);
+    }
+    
+    validateCheck(enemy: GameObjects.Sprite, isWhite: boolean, enemyX: number, enemyY: number){
         const enemyName = enemy.name.split("-")[0] as PieceNames;
         const king = isWhite ? this.bothKingsPosition.black : this.bothKingsPosition.white;
         const kingPiece = isWhite ? PieceNames.bKing : PieceNames.wKing;
@@ -507,7 +542,8 @@ export class MainGameScene extends Scene{
         return checkValidator.validateCheck(enemyX, enemyY, enemyName);
     }
 
-    mValidateCheckmate(){
+    validateCheckmate(){
         return false;
     }
+
 }

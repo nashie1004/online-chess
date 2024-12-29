@@ -11,7 +11,7 @@ import bKnight from "../assets/pieces/bN.svg?raw"
 import bBishop from "../assets/pieces/bB.svg?raw"
 import bQueen from "../assets/pieces/bQ.svg?raw"
 import bKing from "../assets/pieces/bK.svg?raw"
-import { IPiece } from "./types"
+import { IKingState, IPiece } from "./types"
 
 export enum PieceNames{
     wPawn = "wPawn",
@@ -90,3 +90,9 @@ const pieces: IPiece[] = [
 ]
 
 export default pieces;
+
+
+export const baseKingState: IKingState = { 
+    white: { isCheckMate: false, isInCheck: false, checkedBy: null }
+    , black: { isCheckMate: false, isInCheck: false, checkedBy: null } 
+};
