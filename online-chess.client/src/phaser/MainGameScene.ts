@@ -187,16 +187,13 @@ export class MainGameScene extends Scene{
         y = actualCoordinates?.y ?? 0;
 
         // validate
-        let initialValidMoves: IValidMove[] = [];
-
-        initialValidMoves = this.getInitialMoves(name, x, y, uniqueName);
+        let initialValidMoves: IValidMove[] = this.getInitialMoves(name, x, y, uniqueName);
             
         // set selected piece
         this.selectedPiece = { x, y, pieceName: uniqueName };
 
         // === Start check legal moves === //
-        // check if the king is in check, only allow moves for 
-        // the current piece that invalidates that check
+        // check if the king is in check
         if (this.reactState.kingsState.black.isInCheck || this.reactState.kingsState.white.isInCheck){
             const isWhite = name[0] === "w";
             
@@ -213,36 +210,38 @@ export class MainGameScene extends Scene{
              * - block the attacker
              * - capture the attacker
              */
-            let actualValidMoves: IValidMove[] = [];
+            const actualValidMoves: IValidMove[] = [];
 
             // 1. capture the attacker
             initialValidMoves.forEach(move => {
                 if (attackerCoords.x === move.x && attackerCoords.y === move.y){
-                    actualValidMoves.push(move)
+                    actualValidMoves.push(move);
                 }
             });
 
             // 2. move the king
-            // get the attacker piece attack squares (rook, bishop, queen)
-            // filter out those attack squares with the king
+            // get attacker piece attack squares (rook, bishop, queen)
+            // , filter out those attack squares with the king
             const dangerSquares = this.getInitialMoves(attackerSpriteName, attackerCoords.x, attackerCoords.y, attackerSprite.name)    
 
             if (name === PieceNames.wKing || name === PieceNames.bKing)
             {
-                initialValidMoves.forEach(move => {
-                    const dangerSquare = dangerSquares.find(dangerSquare => dangerSquare.x === move.x && dangerSquare.y === move.y);
+                initialValidMoves.forEach(kingMove => {
+                    const dangerSquare = dangerSquares.find(dangerSquare => dangerSquare.x === kingMove.x && dangerSquare.y === kingMove.y);
                     
                     if (!dangerSquare){
-                        actualValidMoves.push(move);
+                        actualValidMoves.push(kingMove);
                     } 
                 });
             }
+
+            // 3. block the attacker
 
             initialValidMoves = actualValidMoves;
         }
         // === End check legal moves === //
 
-        // shows the actual valid moves to the user
+        // UI - shows the actual valid moves to the user
         initialValidMoves.forEach(item => {
             const prev = this.previewBoard[item.x][item.y].visible;
             this.previewBoard[item.x][item.y].setVisible(!prev)
