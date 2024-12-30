@@ -39,7 +39,7 @@ export default function SidebarLeft() {
     ];
     
     return (
-    <aside id="sidebar-left" className='p-4 d-flex justify-content-center align-items-center'>
+    <aside className='flex-1 p-4'>
     
       <Card className='' style={{ border: "1px solid rgba(177, 158, 191, 0.2)"}}>
 
@@ -82,7 +82,7 @@ export default function SidebarLeft() {
       <Divider />
       <CardBody>
         <ScrollShadow>
-            <div style={{ height: "350px", overflowY: "scroll" }}>
+            <div style={{ height: "200px", overflowY: "scroll" }}>
                 <Table aria-label="Example static collection table" isStriped>
                     <TableHeader>
                         <TableColumn>#</TableColumn>
@@ -110,29 +110,31 @@ export default function SidebarLeft() {
         </CardHeader>
         <Divider />
         <CardBody>
-            <div className='flex gap-4 p-3'>
-                {captureHistory.white.map((capture, idx) => {
-                    const name = capture.pieceName.split("-")[0] as PieceNames
-                    const svgUrl = `data:image/svg+xml;base64,${btoa(pieceImages[name])}`;
-                    return <Kbd key={idx}>
-                        <Image 
-                            src={svgUrl} 
-                            alt={capture.pieceName} 
-                            style={{ width: 35, height: 35, }} 
-                        />
-                    </Kbd>
-                })}
-                {captureHistory.black.map((capture, idx) => {
-                    const name = capture.pieceName.split("-")[0] as PieceNames
-                    const svgUrl = `data:image/svg+xml;base64,${btoa(pieceImages[name])}`;
-                    return <Kbd key={idx}>
-                        <Image 
-                            src={svgUrl} 
-                            alt={capture.pieceName} 
-                            style={{ width: 35, height: 35, }} 
-                        />
-                    </Kbd>
-                })}
+            <div style={{ height: "100px", overflowY: "scroll" }}>
+              <div className='flex gap-4 p-3'>
+                  {captureHistory.white.map((capture, idx) => {
+                      const name = capture.pieceName.split("-")[0] as PieceNames
+                      const svgUrl = `data:image/svg+xml;base64,${btoa(pieceImages[name])}`;
+                      return <Kbd key={idx}>
+                          <Image 
+                              src={svgUrl} 
+                              alt={capture.pieceName} 
+                              style={{ width: 35, height: 35, }} 
+                          />
+                      </Kbd>
+                  })}
+                  {captureHistory.black.map((capture, idx) => {
+                      const name = capture.pieceName.split("-")[0] as PieceNames
+                      const svgUrl = `data:image/svg+xml;base64,${btoa(pieceImages[name])}`;
+                      return <Kbd key={idx}>
+                          <Image 
+                              src={svgUrl} 
+                              alt={capture.pieceName} 
+                              style={{ width: 35, height: 35, }} 
+                          />
+                      </Kbd>
+                  })}
+              </div>
             </div>
         </CardBody>
     </Card>

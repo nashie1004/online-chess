@@ -1,5 +1,5 @@
-import { Navbar as NavbarMain, NavbarBrand, NavbarContent, NavbarItem, Button } from '@nextui-org/react'
-import { NavLink, Link } from 'react-router'
+import { Link, Navbar as NavbarMain, NavbarBrand, NavbarContent, NavbarItem, Button, Avatar, Chip } from '@nextui-org/react'
+import { NavLink,  useNavigate, useSearchParams, useLocation } from 'react-router'
 export const AcmeLogo = () => {
     return (
       <svg fill="none" height="36" viewBox="0 0 32 32" width="36">
@@ -12,8 +12,10 @@ export const AcmeLogo = () => {
       </svg>
     );
   };
-  ``
+  
 export default function Navbar() {
+    const url = useLocation();
+  console.log(url)
   return (
     <NavbarMain className="" isBordered>
       <NavbarBrand>
@@ -21,23 +23,33 @@ export default function Navbar() {
         <p className="font-bold text-inherit">ONLINE-CHESS.COM</p>
       </NavbarBrand>
       <NavbarContent className=" sm:flex gap-4" justify="center">
-        <NavbarItem>
-          <NavLink to="/">Home</NavLink>
-        </NavbarItem>
-        <NavbarItem>
-          <NavLink to="/play">Play</NavLink>
-        </NavbarItem>
-        <NavbarItem>
-        </NavbarItem>
+        {
+          [
+            { url: "/", name: "Home" },
+            { url: "/play", name: "Play" },
+            { url: "/profile", name: "Profile" },
+            { url: "/login", name: "Login" },
+            { url: "/register", name: "Register" },
+          ].map((item, idx) => {
+            return <NavbarItem key={idx} className={item.url === url.pathname ? "text-primary" : ""}>
+            <NavLink to={item.url}>{item.name}</NavLink>
+          </NavbarItem>
+          })
+        }
       </NavbarContent>
       <NavbarContent justify="end">
         <NavbarItem className="">
-          <Link href="#">Login</Link>
+          <Avatar showFallback src="https://images.unsplash.com/broken" />
         </NavbarItem>
         <NavbarItem>
-          <Button as={Link} color="primary" href="#" variant="flat">
-            Sign Up
-          </Button>
+            <NavbarItem>
+            <NavLink to="/">Log out</NavLink>
+            </NavbarItem>
+        </NavbarItem>
+        <NavbarItem>
+          <Chip color="warning" variant="bordered">
+            <NavLink to="https://github.com/nashie1004/online-chess">Source code on Github</NavLink>
+          </Chip>
         </NavbarItem>
       </NavbarContent>
     </NavbarMain>

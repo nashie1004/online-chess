@@ -48,10 +48,9 @@ export default function Main(){
         };
     }, [])
  
-    return <div id="app"> 
+    return <div className="flex"> 
         <SidebarLeft />
-        {/* <main className="flex items-center justify-center w-full flex-col"> */}
-        <main id="game-container">
+        <main id="game-container" style={{ maxWidth: "800px" }}>
           
         </main>
         <SidebarRight />

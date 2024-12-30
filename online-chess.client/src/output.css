@@ -3940,29 +3940,15 @@ video {
 Custom CSS
 */
 
-body{
+#app{
+  display: flex;
   min-height: 100vh;
   font-family: 'Inter', sans-serif;
+  flex-direction: column;
 }
 
-#app{
-  min-height: 100vh;
-  display: flex;
-  gap: 2rem;
-}
-
-#app > * {
-  min-height: 100%;
-}
-
-#app #sidebar-left, #app #sidebar-right{
-  text-align: start;
-  /* width: 30%; */
-  /* max-width: 500px; */
-  width: 500px;
-}
-
-#app #sidebar-left, #app #game-container, #app #sidebar-left{
+body main{
+  flex-grow: 1;
   min-height: 100%;
 }
 

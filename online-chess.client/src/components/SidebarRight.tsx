@@ -7,8 +7,7 @@ export default function SidebarRight() {
   const { isColorWhite, promoteTo, setPromoteTo } = usePhaser();
 
   return (
-    <div id="sidebar-right"  
-      className='p-4 d-flex justify-content-center align-items-center'>
+    <div className='flex-1 p-4'>
         <Card className=' bg-default-50' style={{ border: "1px solid rgba(177, 158, 191, 0.2)"}}>
           <CardHeader>
             <p>Player Information</p>
@@ -18,8 +17,6 @@ export default function SidebarRight() {
             <PlayerInfo />
           </CardBody>
         </Card>
-      <Spacer y={5} />
-      
     <Spacer y={5} />
     <Card className=' bg-default-50' style={{ border: "1px solid rgba(177, 158, 191, 0.2)"}}>
       <CardHeader>
