@@ -2,7 +2,30 @@
 
 ## Todo
 
-chess logic
+### Chess Logic
+#### king
+1 x ray checks / valid moves 
+2. discovered checks
+
+### detector
+2. king pins after move function
+2. checkmate validator after move function + you won /lose
+4. stalemate detection - if the piece value suffice
+6. opponent pawn diagonal capture invalidates a king valid move
+
+### Pages
+1. home / dashboard 
+2. lobby 
+3. play
+4. login
+5. register
+6. logout
+7. profile
+
+### C#
+1. backend - authentication
+2. backend - signal move state
+
 ~~1. pawn capture~~
 ~~2. pawn move~~
 ~~3. pawn en passant~~
@@ -13,13 +36,6 @@ chess logic
 ~~9. check validator after move function~~
 ~~11. show timer~~
 
-1. king pins after move function
-2. checkmate validator after move function
-3. you won / lose
-4. stalemate detection - if the piece value suffice
-5. x ray king legal moves detection
-6. opponent pawn diagonal capture invalidates a king valid move
-7. king legal moves
 
 ui
 ~~1. move history (with notation)~~

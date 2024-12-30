@@ -53,7 +53,7 @@ const columns = [
 export default function Home() {
   return (
     <div>
-      <h1>Leaderboard</h1>
+      <h1 className="text-large">Leaderboard</h1>
       <Table className="max-w-screen-sm" aria-label="Example table with dynamic content">
         <TableHeader columns={columns}>
           {(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}

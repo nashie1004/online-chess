@@ -15,7 +15,6 @@ export const AcmeLogo = () => {
   
 export default function Navbar() {
     const url = useLocation();
-  console.log(url)
   return (
     <NavbarMain className="" isBordered>
       <NavbarBrand>

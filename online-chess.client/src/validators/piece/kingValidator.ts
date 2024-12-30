@@ -74,39 +74,76 @@ export default class KingValidator extends BasePieceValidator{
         }
 
         // check for danger squares
-        // get all opponent pieces' moves, and check if there is an overlap with the king moves
-        const isWhite = this.piece.name[0] === "w";
+        // get all king initial 8 valid moves, foreach initial move
+        // run queen and knight validator, then check if any square has an overlap
+        const kingIsWhite = this.piece.name[0] === "w";
         const dangerSquaresSet = new Set<string>();  // Use a Set for faster lookups
 
-        for(let row = 0; row < this.board.length; row++){
-            for(let col = 0; col < this.board[row].length; col++){
-                const currTile = this.board[col][row];
+        const _this = this;
+        validMoves.forEach(initialValidMove => {
 
-                // empty tile
-                if (!currTile) continue;
-                
-                // friend piece
+            // for each of the king valid squares (assuming 8) simulate all rook, knight, bishop moves
+
+            // 1. rook
+            const rookSquares = (new RookValidator(
+                { x: initialValidMove.x, y: initialValidMove.y, name: (kingIsWhite ? PieceNames.wRook : PieceNames.bRook) }
+                , _this.board, _this.moveHistory)).validMoves();
+
+            rookSquares.forEach(square => {
+                const currTile = _this.board[square.x][square.y];
+                if (!currTile) return;
+                const currTileIsWhite = currTile.name[0] === "w";
+
                 if (
-                    (currTile.name[0] === "w" && isWhite) ||
-                    (currTile.name[0] === "b" && !isWhite)
+                    currTile.name.toLowerCase().indexOf("rook") >= 0 || 
+                    currTile.name.toLowerCase().indexOf("queen") >= 0  
+                    && ((kingIsWhite && !currTileIsWhite) || !kingIsWhite && currTileIsWhite) 
                 ){
-                    continue;
+                    dangerSquaresSet.add(`${initialValidMove.x}-${initialValidMove.y}`);
                 }
+            });
+            
+            // 2. bishop
+            const bishopSquares = (new BishopValidator(
+                { x: initialValidMove.x, y: initialValidMove.y, name: (kingIsWhite ? PieceNames.wRook : PieceNames.bRook) }
+                , _this.board, _this.moveHistory)).validMoves();
 
-                // for each enemy piece, generate all possible moves
-                const pieceName = currTile.name.split("-")[0] as PieceNames;
-                const enemyMoves = this.switchPieceValidMoves({ x: col, y: row, name: pieceName, uniqueName: currTile.name }, pieceName);
-                
-                enemyMoves.forEach(enemyMove => {
-                    if (enemyMove.x !== col && enemyMove.y !== row){
-                        dangerSquaresSet.add(`${enemyMove.x}-${enemyMove.y}`);
-                    }
-                });
-            }
-        }
+                bishopSquares.forEach(square => {
+                const currTile = _this.board[square.x][square.y];
+                if (!currTile) return;
+                const currTileIsWhite = currTile.name[0] === "w";
 
+                if (
+                    currTile.name.toLowerCase().indexOf("bishop") >= 0 || 
+                    currTile.name.toLowerCase().indexOf("queen") >= 0  
+                    && ((kingIsWhite && !currTileIsWhite) || !kingIsWhite && currTileIsWhite) 
+                ){
+                    dangerSquaresSet.add(`${initialValidMove.x}-${initialValidMove.y}`);
+                }
+            });
+            
+            // 3. knight
+            const knightSquares = (new KnightValidator(
+                { x: initialValidMove.x, y: initialValidMove.y, name: (kingIsWhite ? PieceNames.wRook : PieceNames.bRook) }
+                , _this.board, _this.moveHistory)).validMoves();
+
+                knightSquares.forEach(square => {
+                const currTile = _this.board[square.x][square.y];
+                if (!currTile) return;
+                const currTileIsWhite = currTile.name[0] === "w";
+
+                if (
+                    currTile.name.toLowerCase().indexOf("knight") >= 0  
+                    && ((kingIsWhite && !currTileIsWhite) || !kingIsWhite && currTileIsWhite) 
+                ){
+                    dangerSquaresSet.add(`${initialValidMove.x}-${initialValidMove.y}`);
+                }
+            });
+
+        });
+        
         validMoves = validMoves.filter(j => {
-            // if the enemy move and king move overlap, remove that as valid king move
+            // if their is an overlap, remove that as valid king move
             return !dangerSquaresSet.has(`${j.x}-${j.y}`);
         });
 
