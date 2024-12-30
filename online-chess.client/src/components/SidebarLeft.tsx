@@ -1,7 +1,7 @@
 import usePhaser from '../hooks/usePhaser';
 import { pieceImages, PieceNames } from '../utils/constants';
 import { chessBoardNotation } from '../utils/helpers';
-import {Card, CardHeader, CardBody,  Divider, Image, ScrollShadow, Spacer, Kbd, Button, Select, SelectItem} from "@nextui-org/react";
+import {Card, CardHeader, CardBody,  Divider, Image, ScrollShadow, Spacer, Kbd, Button, Select, SelectItem, Radio, RadioGroup} from "@nextui-org/react";
 import {Table, TableHeader, TableColumn, TableBody, TableRow, TableCell} from "@nextui-org/react";
 import { eventEmitter } from '../phaser/eventEmitter';
 
@@ -38,11 +38,11 @@ export default function SidebarLeft() {
     { key: "queen", path: isColorWhite ? wQueen : bQueen },
     ];
     
-
     return (
     <aside id="sidebar-left" className='p-4 d-flex justify-content-center align-items-center'>
     
-    <Card className="max-w-[400px]">
+      <Card className='' style={{ border: "1px solid rgba(177, 158, 191, 0.2)"}}>
+
       <CardHeader className="flex gap-3">
         <div className="flex flex-col">
           <p className="text-md">Game Configuration</p>
@@ -50,36 +50,32 @@ export default function SidebarLeft() {
       </CardHeader>
       <Divider />
       <CardBody>
-        <Select
-            className="max-w-xs"
-            defaultSelectedKeys={["queen"]}
-            label="Promote to"
-            placeholder="Queen"
-          >
-              {
-                pieces.map((piece, idx) => {
-                  return <SelectItem  
-                    key={idx} 
-                    className="max-w-xs"
-                    onPress={() => {
-                      setPromoteTo(piece.key);
-                      eventEmitter.emit("setPromoteTo", piece.key);
-                    }}>
-                    {piece.key}
-                    {/* <img src={piece.path} alt={piece.key} style={{ width: 50, height: 50, }}  /> */}
-                  </SelectItem>
-                })
-            }
-        </Select>
-        <Spacer y={2} />
+        <RadioGroup defaultValue="queen"  label="Promote pawn to:" orientation="horizontal" className='flex'>
+          {
+            pieces.map((piece, idx) => {
+              return <Radio 
+                className='flex-1'
+                key={idx} 
+                value={piece.key}
+                onClick={() => {
+                  setPromoteTo(piece.key);
+                  eventEmitter.emit("setPromoteTo", piece.key);
+                }}
+                >
+                {piece.key}
+              </Radio>
+            })
+          }
+        </RadioGroup>
+        <Spacer y={4} />
         <div className="flex gap-2">
-          <Button size="md" color='secondary'>Draw</Button>
-          <Button size="md" color="danger">Request a Draw</Button>
+          <Button size="md" className='flex-1' color='secondary'>Request a Draw</Button>
+          <Button size="md" className='flex-1' color="danger">Resign</Button>
         </div>
       </CardBody>
     </Card>
     <Spacer y={5} />
-    <Card >
+    <Card className='bg-default-50' style={{ border: "1px solid rgba(177, 158, 191, 0.2)"}}>
       <CardHeader className="flex gap-3">
           <p className="">Move History</p>
       </CardHeader>
@@ -108,7 +104,7 @@ export default function SidebarLeft() {
       </CardBody>
     </Card>   
     <Spacer y={5} />
-    <Card>
+    <Card className=' bg-default-50' style={{ border: "1px solid rgba(177, 158, 191, 0.2)"}}>
         <CardHeader>
             <p>Capture History</p>
         </CardHeader>

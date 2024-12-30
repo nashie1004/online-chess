@@ -9,6 +9,11 @@ Custom CSS
 body{
   min-height: 100vh;
   font-family: 'Inter', sans-serif;
+
+  /* background: none; */
+  /* background-color: #f0f0f0; */
+   /* background: linear-gradient(90deg, #04293A, #781D42);  */
+   background: linear-gradient(135deg, #085E7D, #1C0A00);
 }
 #app{
   min-height: 100vh;
