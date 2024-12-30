@@ -51,15 +51,8 @@ export default function Main(){
     return <div id="app"> 
         <SidebarLeft />
         {/* <main className="flex items-center justify-center w-full flex-col"> */}
-        <main className="">
-                {/* <Alert description radius={"sm"} title={`This is a sm radius alert`} /> */}
-            <Card>
-                <CardBody id="game-container" className="">
-                </CardBody>
-                <CardFooter>
-                    <PlayerInfo />
-                </CardFooter>
-            </Card>
+        <main id="game-container">
+          
         </main>
         <SidebarRight />
     </div>

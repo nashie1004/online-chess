@@ -1,4 +1,4 @@
-import { Alert, Avatar, Kbd } from '@nextui-org/react';
+import { Alert, Avatar, Chip, Kbd } from '@nextui-org/react';
 import React, { useEffect } from 'react'
 import useReactContext from '../../hooks/useReactContext';
 import UserIcon from './UserIcon';
@@ -30,18 +30,25 @@ export default function PlayerInfo() {
     }, [isWhitesTurn])
 
   return (
-    <div className="flex gap-4 items-center">
+    <div className="flex flex-col gap-4">
+        <div className='flex gap-2'>
+            <Chip size="md">{isWhitesTurn ? <>White's</> : <>Black's</>} turn to move</Chip>
+            {
+                kingsState.white.isInCheck || kingsState.black.isInCheck ? <Chip size='md'>
+                    {kingsState.white.isInCheck ? "White is in check" : ""}
+                    {kingsState.black.isInCheck ? "Black is in check" : ""}
+                </Chip> : <></> 
+            }
+        </div>
         <Alert 
             icon={<UserIcon />}
             description
             endContent={
                 <>
-                    <p>{kingsState.white.isInCheck ? <>White is in check</> : <></>}</p>
-                    <p>{isWhitesTurn ? "White" : "Black"}'s' turn</p>
                     <p>{timer.white} second(s)</p>
                 </>
             }
-            variant='solid'
+            variant={isWhitesTurn ? "solid" : "bordered"}
             title={"Player 1"}
         />
         <Alert 
@@ -49,12 +56,10 @@ export default function PlayerInfo() {
             description
             endContent={
                 <>
-                    <p>{kingsState.black.isInCheck ? <>Black is in check</> : <></>}</p>
-                    <p>{!isWhitesTurn ? "Black" : "White"}'s' turn</p>
                     <p>{timer.black} second(s)</p>
                 </>
             }
-            variant='solid'
+            variant={!isWhitesTurn ? "solid" : "bordered"}
             title={"Player 2"}
         />
     </div>
