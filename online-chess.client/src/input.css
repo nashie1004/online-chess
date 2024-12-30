@@ -1,9 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /*
 Custom CSS
 */
-
+  
 body{
   min-height: 100vh;
+  font-family: 'Inter', sans-serif;
 }
 #app{
   min-height: 100vh;

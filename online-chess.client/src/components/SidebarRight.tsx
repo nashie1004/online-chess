@@ -13,6 +13,7 @@ import bRook from "../assets/pieces/bR.svg"
 import bKnight from "../assets/pieces/bN.svg"
 import bBishop from "../assets/pieces/bB.svg"
 import bQueen from "../assets/pieces/bQ.svg"
+import { ButtonGroup, Button, RangeCalendar } from '@nextui-org/react';
 
 
 interface IPiece{
@@ -38,6 +39,18 @@ export default function SidebarRight() {
       <h5 className='mb-3 text-center border-bottom border-secondary pb-3'>
         Actions
       </h5>
+      <Button color="primary" className="font-sans" style={{ fontFamily: "Inter"}}>Button</Button>
+  <h1 className='font-mono'>
+    Hello world!
+  </h1>
+  <p>Lorem, ipsum dolor.</p>
+  <RangeCalendar />
+  
+      <ButtonGroup>
+        <Button className='font-sans'>One</Button>
+        <Button>Two</Button>
+        <Button>Three</Button>
+      </ButtonGroup>
       <h6>Promote pawn to:</h6>
       <div className="btn-group mb-3 d-flex" role="group" aria-label="Basic outlined example">
       {
