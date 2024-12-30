@@ -46,6 +46,11 @@ export interface IKingState{
     black: IKing;
 }
 
+export interface ITimer{
+    white: number;
+    black: number;
+}
+
 export interface IPhaserContextValues{
     isWhitesTurn: boolean;
     moveHistory: IMoveHistory;
@@ -53,7 +58,7 @@ export interface IPhaserContextValues{
     promoteTo: PromoteTo;
     isColorWhite: boolean;
     isWhitesOrientation: boolean;
-    kingsState: IKingState
+    kingsState: IKingState;
 }
 
 export interface IPhaserContext extends IPhaserContextValues{
@@ -64,6 +69,14 @@ export interface IPhaserContext extends IPhaserContextValues{
     setIsColorWhite: (val: boolean) => void;
     setIsWhitesOrientation: (val: boolean) => void;
     setKingsState: (val: IKingState) => void;
+}
+
+export interface IReactContextValues{
+    timer: ITimer;
+}
+
+export interface IReactContext extends IReactContextValues{
+    setTimer: React.Dispatch<React.SetStateAction<ITimer>>;
 }
 
 export interface IBothKingsPosition{

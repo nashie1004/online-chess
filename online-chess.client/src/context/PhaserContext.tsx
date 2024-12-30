@@ -1,7 +1,6 @@
 import { createContext, ReactNode, useState } from 'react'
-import { IMoveHistory, ICaptureHistory, PromoteTo, IPhaserContext, IKingState } from '../utils/types';
+import { IMoveHistory, ICaptureHistory, PromoteTo, IPhaserContext, IKingState, ITimer } from '../utils/types';
 import { baseKingState } from '../utils/constants';
-
 
 interface PhaserContextProps{
     children: ReactNode
@@ -35,7 +34,7 @@ export default function PhaserContext(
         promoteTo, setPromoteTo,
         isColorWhite, setIsColorWhite,
         isWhitesOrientation, setIsWhitesOrientation,
-        kingsState, setKingsState
+        kingsState, setKingsState,
     }
 
   return (

@@ -1,6 +1,9 @@
+import { useEffect } from 'react';
 import usePhaser from '../hooks/usePhaser';
 import { pieceImages, PieceNames } from '../utils/constants';
 import { chessBoardNotation } from '../utils/helpers';
+import useReactContext from '../hooks/useReactContext';
+import { IReactContext } from '../utils/types';
 
 const board = chessBoardNotation();
 
@@ -9,12 +12,35 @@ export default function SidebarLeft() {
         isWhitesTurn,
         moveHistory,
         captureHistory,
-        kingsState
+        kingsState,
     } = usePhaser();
+    const {timer, setTimer} = useReactContext();
+
+    useEffect(() => {
+        let intervalId: number;
+
+        if (isWhitesTurn){
+            intervalId = setInterval(() => {
+                setTimer(prev => ({ ...prev, white: prev.white + 1 }));
+            }, 1000)
+        } else {
+            intervalId = setInterval(() => {
+                setTimer(prev => ({ ...prev, black: prev.black + 1 }));
+            }, 1000)
+        }
+
+        return () => {
+            clearInterval(intervalId);
+        }
+    }, [isWhitesTurn])
 
     return (
     <aside id="sidebar-left" className='p-4 d-flex justify-content-center align-items-center'>
         <div className='p-4 border bg-dark-subtle border-secondary rounded-end' style={{ width: "100%" }} >
+            <div className="alert alert-success" role="alert">
+                <h6 className='text-center'>White: {timer.white} seconds</h6>
+                <h6 className='text-center'>Black: {timer.black} seconds</h6>
+            </div>
             <div className="alert alert-success" role="alert">
                 {kingsState.black.isInCheck ? <h6 className='text-center'>Black is in check</h6> : <></> }
                 {kingsState.white.isInCheck ? <h6 className='text-center'>White is in check</h6> : <></> }
