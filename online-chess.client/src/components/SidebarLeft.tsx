@@ -4,6 +4,10 @@ import { pieceImages, PieceNames } from '../utils/constants';
 import { chessBoardNotation } from '../utils/helpers';
 import useReactContext from '../hooks/useReactContext';
 import { IReactContext } from '../utils/types';
+// import { Card, CardHeader, Divider, CardBody, CardFooter } from '@nextui-org/react';
+// import { Link } from 'react-router';
+import {Card, CardHeader, CardBody, CardFooter, Divider, Link, Image, ScrollShadow, Spacer, Kbd} from "@nextui-org/react";
+import {Table, TableHeader, TableColumn, TableBody, TableRow, TableCell} from "@nextui-org/react";
 
 const board = chessBoardNotation();
 
@@ -14,100 +18,75 @@ export default function SidebarLeft() {
         captureHistory,
         kingsState,
     } = usePhaser();
-    const {timer, setTimer} = useReactContext();
-
-    useEffect(() => {
-        let intervalId: number;
-
-        if (isWhitesTurn){
-            intervalId = setInterval(() => {
-                setTimer(prev => ({ ...prev, white: prev.white + 1 }));
-            }, 1000)
-        } else {
-            intervalId = setInterval(() => {
-                setTimer(prev => ({ ...prev, black: prev.black + 1 }));
-            }, 1000)
-        }
-
-        return () => {
-            clearInterval(intervalId);
-        }
-    }, [isWhitesTurn])
-
+    
     return (
     <aside id="sidebar-left" className='p-4 d-flex justify-content-center align-items-center'>
-        <div className='p-4 border bg-dark-subtle border-secondary rounded-end' style={{ width: "100%" }} >
-            <div className="alert alert-success" role="alert">
-                <h6 className='text-center'>White: {timer.white} seconds</h6>
-                <h6 className='text-center'>Black: {timer.black} seconds</h6>
-            </div>
-            <div className="alert alert-success" role="alert">
-                {kingsState.black.isInCheck ? <h6 className='text-center'>Black is in check</h6> : <></> }
-                {kingsState.white.isInCheck ? <h6 className='text-center'>White is in check</h6> : <></> }
-                {kingsState.black.isCheckMate ? <h6 className='text-center'>Black is checkmated</h6> : <></> }
-                {kingsState.white.isCheckMate ? <h6 className='text-center'>White is checkmated</h6> : <></> }
-                <h6 className='text-center'>{isWhitesTurn ? "White" : "Black"}'s turn.</h6>
-            </div>
-            <h5 className='mb-3 text-center border-bottom border-secondary pb-3'>
-                Move History
-            </h5>
-            <div style={{ height: "350px", overflowY: "scroll" }} className='border border-secondary'>
-                <table className='table table-sm'>
-                    <thead>
-                        <tr className=''>
-                            <th scope='col'>#</th>
-                            <th scope='col'>White</th>
-                            <th scope='col'>Black</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {/* Get the maximum number of moves for white and black */}
+        <Card className="max-w-[400px]">
+      <CardHeader className="flex gap-3">
+        <Image
+          alt="nextui logo"
+          height={40}
+          radius="sm"
+          src="https://avatars.githubusercontent.com/u/86160567?s=200&v=4"
+          width={40}
+        />
+        <div className="flex flex-col">
+          <p className="text-md">Game History</p>
+          <p className="text-small text-default-500">Move and Capture History</p>
+        </div>
+      </CardHeader>
+      <Divider />
+      <CardBody>
+        <h2 className='mt-2'>Move History</h2>
+        <ScrollShadow>
+            <div style={{ height: "350px", overflowY: "scroll" }}>
+                <Table aria-label="Example static collection table" isStriped>
+                    <TableHeader>
+                        <TableColumn>#</TableColumn>
+                        <TableColumn>WHITE</TableColumn>
+                        <TableColumn>BLACK</TableColumn>
+                    </TableHeader>
+                    <TableBody>
                         {Array.from({ length: Math.max(moveHistory.white.length, moveHistory.black.length) }).map((_, idx) => (
-                            <tr key={idx}>
-                            <th scope='row'>{idx + 1}</th>
-                            {/* Display white's move if it exists */}
-                            <td>{moveHistory.white[idx] ? board[moveHistory.white[idx].new.x][moveHistory.white[idx].new.y] : '-'}</td>
-                            {/* Display black's move if it exists */}
-                            <td>{moveHistory.black[idx] ? board[moveHistory.black[idx].new.x][moveHistory.black[idx].new.y] : '-'}</td>
-                            </tr>
+                            <TableRow key={idx}>
+                                <TableCell scope='row'>{idx + 1}</TableCell>
+                                <TableCell>{moveHistory.white[idx] ? board[moveHistory.white[idx].new.x][moveHistory.white[idx].new.y] : '-'}</TableCell>
+                                <TableCell>{moveHistory.black[idx] ? board[moveHistory.black[idx].new.x][moveHistory.black[idx].new.y] : '-'}</TableCell>
+                            </TableRow>
                         ))}
-                    </tbody>
-                </table>
+                    </TableBody>
+                </Table>
             </div>
-            <h5 className='mb-3 text-center border-bottom border-secondary py-3'>
-                Captures
-            </h5>
-            <div className='d-flex bg-body-tertiary p-2'>
-                <div>
-                    {captureHistory.white.map((capture, idx) => {
-                        const name = capture.pieceName.split("-")[0] as PieceNames
-                        const svgUrl = `data:image/svg+xml;base64,${btoa(pieceImages[name])}`;
-                        return <>
-                            <img 
-                                key={idx}
-                                src={svgUrl} 
-                                alt={capture.pieceName} 
-                                style={{ width: 35, height: 35, }} 
-                            />
-                        </>
-                    })}
-                </div>
-                <div>
-                    {captureHistory.black.map((capture, idx) => {
-                        const name = capture.pieceName.split("-")[0] as PieceNames
-                        const svgUrl = `data:image/svg+xml;base64,${btoa(pieceImages[name])}`;
-                        return <>
-                            <img 
-                                key={idx}
-                                src={svgUrl} 
-                                alt={capture.pieceName} 
-                                style={{ width: 35, height: 35, }} 
-                            />
-                        </>
-                    })}
-                </div>
-            </div>
-        </div>       
+        </ScrollShadow>
+        <Spacer y={4}  />
+        <Divider />
+        <h2 className='mt-2'>Capture History</h2>
+        <div className='flex gap-4 p-3'>
+            {captureHistory.white.map((capture, idx) => {
+                const name = capture.pieceName.split("-")[0] as PieceNames
+                const svgUrl = `data:image/svg+xml;base64,${btoa(pieceImages[name])}`;
+                return <Kbd key={idx}>
+                    <Image 
+                        src={svgUrl} 
+                        alt={capture.pieceName} 
+                        style={{ width: 35, height: 35, }} 
+                    />
+                </Kbd>
+            })}
+            {captureHistory.black.map((capture, idx) => {
+                const name = capture.pieceName.split("-")[0] as PieceNames
+                const svgUrl = `data:image/svg+xml;base64,${btoa(pieceImages[name])}`;
+                return <Kbd key={idx}>
+                    <Image 
+                        src={svgUrl} 
+                        alt={capture.pieceName} 
+                        style={{ width: 35, height: 35, }} 
+                    />
+                </Kbd>
+            })}
+        </div>
+      </CardBody>
+    </Card>   
     </aside>
   )
 }

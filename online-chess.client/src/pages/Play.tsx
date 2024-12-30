@@ -7,6 +7,9 @@ import SidebarLeft from "../components/SidebarLeft";
 import usePhaser from "../hooks/usePhaser";
 import { IMoveHistory , ICaptureHistory, IKingState} from "../utils/types";
 import SidebarRight from "../components/SidebarRight";
+import { Alert, Avatar, Card, CardBody, CardFooter, CardHeader, Divider } from "@nextui-org/react";
+import UserIcon from "../components/ui/UserIcon";
+import PlayerInfo from "../components/ui/PlayerInfo";
 
 export default function Main(){
     const gameRef = useRef<Phaser.Game | null>();
@@ -47,7 +50,16 @@ export default function Main(){
  
     return <div id="app"> 
         <SidebarLeft />
-        <main id="game-container" className="d-flex justify-content-center align-items-center">
+        {/* <main className="flex items-center justify-center w-full flex-col"> */}
+        <main className="">
+                {/* <Alert description radius={"sm"} title={`This is a sm radius alert`} /> */}
+            <Card>
+                <CardBody id="game-container" className="">
+                </CardBody>
+                <CardFooter>
+                    <PlayerInfo />
+                </CardFooter>
+            </Card>
         </main>
         <SidebarRight />
     </div>
