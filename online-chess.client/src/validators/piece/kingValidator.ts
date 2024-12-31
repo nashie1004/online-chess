@@ -183,6 +183,76 @@ export default class KingValidator extends BasePieceValidator{
             }
         }
 
+        // 4. check if the king doesnt pass through a square under attack
+        // sqaure beside king, generate all possible moves in that new king position,  
+        const isUnderAttack ={ x: x + 1, y, isCapture: false };
+        const _this = this;
+        let rookSquareIsUnderAttack = false;
+
+        // 4.1. enemy rook and queen attacks that castling tile
+        const rookMoves = (new RookValidator({
+            x: isUnderAttack.x, y: isUnderAttack.y, name: isWhite ? PieceNames.wRook : PieceNames.bRook 
+        }, this.board, this.moveHistory)).validMoves();
+        
+        rookMoves.forEach(rookMove => {
+            const currTile = _this.board[rookMove.x][rookMove.y];
+            if (!currTile) return;
+
+            if (
+                (currTile.name[0] === "w" && !isWhite) ||
+                (currTile.name[0] === "b" && isWhite) &&
+                (
+                    currTile.name.toLowerCase().indexOf("queen") >= 0 || 
+                    currTile.name.toLowerCase().indexOf("rook") >= 0 
+                )
+            ){
+                rookSquareIsUnderAttack = true;
+            } 
+        });
+        
+        // 4.2. enemy bishop and queen attacks that castling tile
+        const bishopMoves = (new BishopValidator({
+            x: isUnderAttack.x, y: isUnderAttack.y, name: isWhite ? PieceNames.wRook : PieceNames.bRook 
+        }, this.board, this.moveHistory)).validMoves();
+        
+        bishopMoves.forEach(bishopMove => {
+            const currTile = _this.board[bishopMove.x][bishopMove.y];
+            if (!currTile) return;
+
+            if (
+                (currTile.name[0] === "w" && !isWhite) ||
+                (currTile.name[0] === "b" && isWhite) &&
+                (
+                    currTile.name.toLowerCase().indexOf("queen") >= 0 || 
+                    currTile.name.toLowerCase().indexOf("bishop") >= 0 
+                )
+            ){
+                rookSquareIsUnderAttack = true;
+            } 
+        });
+        
+        // 4.3. enemy knight attacks that castling tile
+        const knightMoves = (new KnightValidator({
+            x: isUnderAttack.x, y: isUnderAttack.y, name: isWhite ? PieceNames.wRook : PieceNames.bRook 
+        }, this.board, this.moveHistory)).validMoves();
+        
+        knightMoves.forEach(knightMove => {
+            const currTile = _this.board[knightMove.x][knightMove.y];
+            if (!currTile) return;
+
+            if (
+                (currTile.name[0] === "w" && !isWhite) ||
+                (currTile.name[0] === "b" && isWhite) &&
+                (
+                    currTile.name.toLowerCase().indexOf("knight") >= 0 
+                )
+            ){
+                rookSquareIsUnderAttack = true;
+            } 
+        });
+        
+        if (rookSquareIsUnderAttack) return null;
+
         return { x: x + 2, y, isCapture: false };
     }
     
@@ -218,6 +288,76 @@ export default class KingValidator extends BasePieceValidator{
                 return null
             }
         }
+        
+        // 4. check if the king doesnt pass through a square under attack
+        // sqaure beside king, generate all possible moves in that new king position,  
+        const isUnderAttack ={ x: x - 1, y, isCapture: false };
+        const _this = this;
+        let rookSquareIsUnderAttack = false;
+
+        // 4.1. enemy rook and queen attacks that castling tile
+        const rookMoves = (new RookValidator({
+            x: isUnderAttack.x, y: isUnderAttack.y, name: isWhite ? PieceNames.wRook : PieceNames.bRook 
+        }, this.board, this.moveHistory)).validMoves();
+        
+        rookMoves.forEach(rookMove => {
+            const currTile = _this.board[rookMove.x][rookMove.y];
+            if (!currTile) return;
+
+            if (
+                (currTile.name[0] === "w" && !isWhite) ||
+                (currTile.name[0] === "b" && isWhite) &&
+                (
+                    currTile.name.toLowerCase().indexOf("queen") >= 0 || 
+                    currTile.name.toLowerCase().indexOf("rook") >= 0 
+                )
+            ){
+                rookSquareIsUnderAttack = true;
+            } 
+        });
+        
+        // 4.2. enemy bishop and queen attacks that castling tile
+        const bishopMoves = (new BishopValidator({
+            x: isUnderAttack.x, y: isUnderAttack.y, name: isWhite ? PieceNames.wRook : PieceNames.bRook 
+        }, this.board, this.moveHistory)).validMoves();
+        
+        bishopMoves.forEach(bishopMove => {
+            const currTile = _this.board[bishopMove.x][bishopMove.y];
+            if (!currTile) return;
+
+            if (
+                (currTile.name[0] === "w" && !isWhite) ||
+                (currTile.name[0] === "b" && isWhite) &&
+                (
+                    currTile.name.toLowerCase().indexOf("queen") >= 0 || 
+                    currTile.name.toLowerCase().indexOf("bishop") >= 0 
+                )
+            ){
+                rookSquareIsUnderAttack = true;
+            } 
+        });
+        
+        // 4.3. enemy knight attacks that castling tile
+        const knightMoves = (new KnightValidator({
+            x: isUnderAttack.x, y: isUnderAttack.y, name: isWhite ? PieceNames.wRook : PieceNames.bRook 
+        }, this.board, this.moveHistory)).validMoves();
+        
+        knightMoves.forEach(knightMove => {
+            const currTile = _this.board[knightMove.x][knightMove.y];
+            if (!currTile) return;
+
+            if (
+                (currTile.name[0] === "w" && !isWhite) ||
+                (currTile.name[0] === "b" && isWhite) &&
+                (
+                    currTile.name.toLowerCase().indexOf("knight") >= 0 
+                )
+            ){
+                rookSquareIsUnderAttack = true;
+            } 
+        });
+        
+        if (rookSquareIsUnderAttack) return null;
 
         return { x: x - 2, y, isCapture: false };
     }
