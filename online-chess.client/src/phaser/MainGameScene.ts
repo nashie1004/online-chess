@@ -212,13 +212,13 @@ export class MainGameScene extends Scene{
         })
     }
 
-    getInitialMoves(name: PieceNames, x: number, y: number, uniqueName: string){
+    getInitialMoves(name: PieceNames, x: number, y: number, uniqueName: string, allowXRayOpponentKing?: boolean){
         let validMoves: IValidMove[] = [];
         
         switch(name){
             case PieceNames.bRook:
             case PieceNames.wRook:
-                validMoves = (new RookValidator({ x, y, name, uniqueName }, this.board, this.reactState.moveHistory)).validMoves();
+                validMoves = (new RookValidator({ x, y, name, uniqueName }, this.board, this.reactState.moveHistory, allowXRayOpponentKing ?? false)).validMoves();
                 break;
             case PieceNames.bKnight:
             case PieceNames.wKnight:
@@ -283,7 +283,8 @@ export class MainGameScene extends Scene{
                 // 2. move the king
                 // get attacker piece attack squares (rook, bishop, queen)
                 // , filter out those attack squares with the king
-                const attackerSquares = this.getInitialMoves(attackerSpriteName, attacker.x, attacker.y, attackerSprite.name)    
+                // and also include x ray (moves behind the king that is in check by attacker)
+                const attackerSquares = this.getInitialMoves(attackerSpriteName, attacker.x, attacker.y, attackerSprite.name, true)    
                 if (name === PieceNames.wKing || name === PieceNames.bKing)
                 {
                     initialValidMoves.forEach(kingMove => {
