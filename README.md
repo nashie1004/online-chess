@@ -3,21 +3,15 @@
 ## Todo
 
 ### Chess Logic
-#### king
-1. x ray checks
-2. discovered checks
-~~3. castling doesnt result in a check~~ 
-
-#### detector
+1. when king is in check - another option is to block the attacker
 2. king pins after move function
-2. checkmate validator after move function + you won /lose
+3. checkmate validator after validate check function
 4. stalemate detection - if the piece value suffice
-6. opponent pawn diagonal capture invalidates a king valid move
 
-### Pages
+### Pages / UI
 1. home / dashboard 
 2. lobby 
-3. play
+3. play - timer progress bar  
 4. login
 5. register
 6. logout
@@ -27,6 +21,11 @@
 1. backend - authentication
 2. backend - signal move state
 
+~~1. x ray checks'~~
+~~2. pawn diagoanl capture invalidates a king move~~
+~~2. pawn checks~~
+~~2. discovered checks~~
+~~3. castling doesnt result in a check~~ 
 ~~1. pawn capture~~
 ~~2. pawn move~~
 ~~3. pawn en passant~~

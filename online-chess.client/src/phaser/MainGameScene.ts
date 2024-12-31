@@ -205,6 +205,8 @@ export class MainGameScene extends Scene{
             initialValidMoves = actualValidMoves;
         }
 
+        // handle absolute king pins
+
         // UI - shows the actual valid moves to the user
         initialValidMoves.forEach(item => {
             const prev = this.previewBoard[item.x][item.y].visible;
@@ -250,79 +252,78 @@ export class MainGameScene extends Scene{
 
     possibleMovesIfKingInCheck(name: PieceNames, initialValidMoves: IValidMove[]){
         
-        // === Start check legal moves === //
-        // check if the king is in check
-        if (this.reactState.kingsState.black.isInCheck || this.reactState.kingsState.white.isInCheck){
-            const isWhite = name[0] === "w";
-            
-            // get attacker(s) information
-            const attackersCoords = isWhite ? this.reactState.kingsState.white.checkedBy : this.reactState.kingsState.black.checkedBy;
-            if (attackersCoords.length <= 0) return null; // no check
-
-            attackersCoords.forEach(attacker => {
-
-                const attackerSprite = this.board[attacker.x][attacker.y];
-                if (!attackerSprite) return null; // this is actually invalid
-                const attackerSpriteName = attackerSprite.name.split("-")[0] as PieceNames;
-                
-                /**
-                 * possible moves when in check are
-                 * - move the king
-                 * - block the attacker
-                 * - capture the attacker
-                 */
-                const actualValidMoves: IValidMove[] = [];
-    
-                // 1. capture the attacker (with any friend piece)
-                initialValidMoves.forEach(move => {
-                    if (attacker.x === move.x && attacker.y === move.y){
-                        actualValidMoves.push(move);
-                    }
-                });
-    
-                // 2. move the king
-                // get attacker piece attack squares (rook, bishop, queen)
-                // , filter out those attack squares with the king
-                // and also include x ray (moves behind the king that is in check by attacker)
-                const attackerSquares = this.getInitialMoves(attackerSpriteName, attacker.x, attacker.y, attackerSprite.name, true)    
-                if (name === PieceNames.wKing || name === PieceNames.bKing)
-                {
-                    initialValidMoves.forEach(kingMove => {
-                        const dangerSquare = attackerSquares.find(attackerSquare => attackerSquare.x === kingMove.x && attackerSquare.y === kingMove.y);
-                        
-                        if (!dangerSquare){
-                            actualValidMoves.push(kingMove);
-                        } 
-                    });
-                }
-                
-                // 3. block the attacker
-                // get the attacker attack squares
-    
-                // check the direction of the attacker (diagonal, horizontal, vertical)
-    
-                // get all friendly piece, for each friend piece run all possible moves and
-                // to see if one of their moves occupies/block that one or more of attacker squares
-    
-                // only friend pieces can block an attacker's attack
-                const kingInCheckColorIsWhite = this.reactState.kingsState.white.isInCheck;
-    
-    
-                // this just removes any duplicate valid moves so that phaser setVisible will actually work
-                // https://stackoverflow.com/questions/2218999/how-to-remove-all-duplicates-from-an-array-of-objects
-                initialValidMoves = actualValidMoves.filter((value, index, self) =>
-                    index === self.findIndex((t) => (
-                        t.x === value.x && t.y === value.y
-                    ))
-                );
-                
-            });
-
-
-            return initialValidMoves;
+        // both kings are not in check
+        if (!this.reactState.kingsState.black.isInCheck && this.reactState.kingsState.white.isInCheck!){
+            return null;
         }
 
-        return null;
+        // === Start check legal moves === //
+        const isWhite = name[0] === "w";
+        
+        // get attacker(s) information
+        const attackersCoords = isWhite ? this.reactState.kingsState.white.checkedBy : this.reactState.kingsState.black.checkedBy;
+        if (attackersCoords.length <= 0) return null; // no check
+
+        attackersCoords.forEach(attacker => {
+
+            const attackerSprite = this.board[attacker.x][attacker.y];
+            if (!attackerSprite) return null; // this is actually invalid
+            const attackerSpriteName = attackerSprite.name.split("-")[0] as PieceNames;
+            
+            /**
+             * possible moves when in check are
+             * - move the king
+             * - block the attacker
+             * - capture the attacker
+             */
+            const actualValidMoves: IValidMove[] = [];
+
+            // 1. capture the attacker (with any friend piece)
+            initialValidMoves.forEach(move => {
+                if (attacker.x === move.x && attacker.y === move.y){
+                    actualValidMoves.push(move);
+                }
+            });
+
+            // 2. move the king
+            // get attacker piece attack squares (rook, bishop, queen)
+            // , filter out those attack squares with the king
+            // and also include x ray (moves behind the king that is in check by attacker)
+            const attackerSquares = this.getInitialMoves(attackerSpriteName, attacker.x, attacker.y, attackerSprite.name, true)    
+            if (name === PieceNames.wKing || name === PieceNames.bKing)
+            {
+                initialValidMoves.forEach(kingMove => {
+                    const dangerSquare = attackerSquares.find(attackerSquare => attackerSquare.x === kingMove.x && attackerSquare.y === kingMove.y);
+                    
+                    if (!dangerSquare){
+                        actualValidMoves.push(kingMove);
+                    } 
+                });
+            }
+            
+            // 3. block the attacker
+            /**
+             * - get the attacker direction of attack (diagonal, horizontal, vertical)
+             * - for each square of the attackers line of attack, loop through via queenvalidator
+             * and knightvalidator to see if a friend piece can go/block that square 
+             */
+            // 
+            const kingInCheck = this.reactState.kingsState.white.isInCheck ? this.reactState.kingsState.white : this.reactState.kingsState.black;
+            console.log("todo block attacker:", kingInCheck, this.reactState, ' attacker coords: ', attacker)
+
+
+            // this just removes any duplicate valid moves so that phaser setVisible will actually work
+            // https://stackoverflow.com/questions/2218999/how-to-remove-all-duplicates-from-an-array-of-objects
+            initialValidMoves = actualValidMoves.filter((value, index, self) =>
+                index === self.findIndex((t) => (
+                    t.x === value.x && t.y === value.y
+                ))
+            );
+            
+        });
+
+
+        return initialValidMoves;
         // === End check legal moves === //
     }
 
