@@ -301,16 +301,74 @@ export class MainGameScene extends Scene{
                 });
             }
             
-            // 3. block the attacker
+            // 3. block the attacker - (only for enemy rook, bishop, queen)
             /**
              * - get the attacker direction of attack (diagonal, horizontal, vertical)
              * - for each square of the attackers line of attack, loop through via queenvalidator
              * and knightvalidator to see if a friend piece can go/block that square 
              */
-            // 
-            const kingInCheck = this.reactState.kingsState.white.isInCheck ? this.reactState.kingsState.white : this.reactState.kingsState.black;
-            console.log("todo block attacker:", kingInCheck, this.reactState, ' attacker coords: ', attacker)
+            const kingInCheckCoords = isWhite ? this.bothKingsPosition.white : this.bothKingsPosition.black;
+            const kingTracer = new KingValidator({ 
+                x: kingInCheckCoords.x, y: kingInCheckCoords.y, name: isWhite ? PieceNames.wKing : PieceNames.bKing
+            }, this.board, this.reactState.moveHistory, false);
+            let attackersLineOfPath: IBaseCoordinates[] = []; 
 
+            switch(attackerSpriteName){
+                case PieceNames.wBishop:
+                case PieceNames.bBishop:
+                    attackersLineOfPath = kingTracer.traceDiagonalPath(attacker);
+                    break;
+                case PieceNames.wRook:
+                case PieceNames.bRook:
+                    attackersLineOfPath = kingTracer.traceStraightPath(attacker);
+                    break;
+                case PieceNames.wQueen:
+                case PieceNames.bQueen:
+                    const queenStraightPath = kingTracer.traceStraightPath(attacker);
+
+                    if (queenStraightPath.length <= 0){
+                        attackersLineOfPath = kingTracer.traceDiagonalPath(attacker);
+                    } else {
+                        attackersLineOfPath = queenStraightPath;
+                    }
+
+                    break;
+            } 
+
+            // get all friend piece,
+            // for each attackers line of path (square), generate friend queen, knight, pawn move
+            // and see if they can block that attacker square
+            if (attackersLineOfPath.length > 0)
+            {
+                for(let i = 0; i < this.board.length; i++){
+                    for(let j = 0; j < this.board[i].length; j++){
+
+                        // the block move is only possible selected/clicked piece 
+                        if (this.selectedPiece && this.selectedPiece.x === j && this.selectedPiece.y === i) {
+                            const currTile = this.board[j][i];
+                            if (!currTile) continue;
+                            const spriteName = currTile.name.split("-")[0] as PieceNames;
+    
+                            // get friend piece moves 
+                            if (
+                                (isWhite && currTile.name[0] === "w") ||
+                                (!isWhite && currTile.name[0] === "b")
+                            ){
+                                const friendPieceMoves = this.getInitialMoves(spriteName, j, i, currTile.name); 
+                                // if one of our friend move can block an enemey attack sqaure
+                                attackersLineOfPath.forEach(attackSquare => {
+                                    const blockable = friendPieceMoves.find(friendMove => friendMove.x === attackSquare.x && friendMove.y === attackSquare.y);
+                                    if (blockable){
+                                        actualValidMoves.push(blockable);
+                                    }
+                                });
+                            }
+                        }
+
+
+                    }
+                }
+            }
 
             // this just removes any duplicate valid moves so that phaser setVisible will actually work
             // https://stackoverflow.com/questions/2218999/how-to-remove-all-duplicates-from-an-array-of-objects
@@ -325,6 +383,10 @@ export class MainGameScene extends Scene{
 
         return initialValidMoves;
         // === End check legal moves === //
+    }
+
+    kingInCheckAndMoveCanBlockTheCheck(){
+
     }
 
     /**
