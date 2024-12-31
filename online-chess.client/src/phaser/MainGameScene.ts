@@ -214,13 +214,13 @@ export class MainGameScene extends Scene{
         })
     }
 
-    getInitialMoves(name: PieceNames, x: number, y: number, uniqueName: string, allowXRayOpponentKing?: boolean){
+    getInitialMoves(name: PieceNames, x: number, y: number, uniqueName: string, allowXRayOpponentKing: boolean = false){
         let validMoves: IValidMove[] = [];
         
         switch(name){
             case PieceNames.bRook:
             case PieceNames.wRook:
-                validMoves = (new RookValidator({ x, y, name, uniqueName }, this.board, this.reactState.moveHistory, allowXRayOpponentKing ?? false)).validMoves();
+                validMoves = (new RookValidator({ x, y, name, uniqueName }, this.board, this.reactState.moveHistory, allowXRayOpponentKing)).validMoves();
                 break;
             case PieceNames.bKnight:
             case PieceNames.wKnight:
@@ -228,11 +228,11 @@ export class MainGameScene extends Scene{
                 break;
             case PieceNames.bBishop:
             case PieceNames.wBishop:
-                validMoves = (new BishopValidator({ x, y, name, uniqueName }, this.board, this.reactState.moveHistory, allowXRayOpponentKing ?? false)).validMoves();
+                validMoves = (new BishopValidator({ x, y, name, uniqueName }, this.board, this.reactState.moveHistory, allowXRayOpponentKing)).validMoves();
                 break;
             case PieceNames.bQueen:
             case PieceNames.wQueen:
-                validMoves = (new QueenValidator({ x, y, name, uniqueName }, this.board, this.reactState.moveHistory, allowXRayOpponentKing ?? false)).validMoves();
+                validMoves = (new QueenValidator({ x, y, name, uniqueName }, this.board, this.reactState.moveHistory, allowXRayOpponentKing)).validMoves();
                 break;
             case PieceNames.bKing:
                 validMoves = (new KingValidator(
@@ -253,7 +253,7 @@ export class MainGameScene extends Scene{
     possibleMovesIfKingInCheck(name: PieceNames, initialValidMoves: IValidMove[]){
         
         // both kings are not in check
-        if (!this.reactState.kingsState.black.isInCheck && this.reactState.kingsState.white.isInCheck!){
+        if (!this.reactState.kingsState.black.isInCheck && !this.reactState.kingsState.white.isInCheck){
             return null;
         }
 

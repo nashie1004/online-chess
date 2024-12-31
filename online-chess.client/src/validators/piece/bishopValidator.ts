@@ -8,11 +8,11 @@ export default class BishopValidator extends BasePieceValidator{
      */
     private readonly allowXRayOpponentKing: boolean;
 
-    constructor(piece: IPiece, board: (GameObjects.Sprite | null)[][], moveHistory: IMoveHistory, allowXRayOpponentKing?: boolean) {
+    constructor(piece: IPiece, board: (GameObjects.Sprite | null)[][], moveHistory: IMoveHistory, allowXRayOpponentKing: boolean = false) {
 
         super(piece, board, moveHistory);
 
-        this.allowXRayOpponentKing = allowXRayOpponentKing ?? false;
+        this.allowXRayOpponentKing = allowXRayOpponentKing;
     }
     
     public override validMoves(): IValidMove[]{
