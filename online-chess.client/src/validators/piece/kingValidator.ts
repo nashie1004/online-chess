@@ -1,5 +1,5 @@
 import { GameObjects } from "phaser";
-import { IMoveHistory, IPiece, IValidMove } from "../../utils/types";
+import { IBaseCoordinates, IMoveHistory, IPiece, IValidMove } from "../../utils/types";
 import BasePieceValidator from "./basePieceValidator";
 import QueenValidator from "./queenValidator";
 import KnightValidator from "./knightValidator";
@@ -438,4 +438,71 @@ export default class KingValidator extends BasePieceValidator{
                 return [];
         }
     }
+
+    
+    /**
+     * - get bishop's line of attack
+     * @param pieceA - the king
+     * @param pieceB - the bishop
+     */
+    public traceDiagonalPath(enemyBishop: IBaseCoordinates){
+        const attackerSquares: IBaseCoordinates[] = [];
+        const xDiff = enemyBishop.x - this.piece.x;
+        const yDiff = enemyBishop.y - this.piece.y;
+
+        // check if both this class king and enemy bishop are in the same diagonal
+        if (Math.abs(xDiff) === Math.abs(yDiff)){
+            const xMove = xDiff < 0 ? -1 : 1;
+            const yMove = yDiff < 0 ? -1 : 1;
+
+            let currentCol = this.piece.x;
+            let currentRow = this.piece.y;
+
+            // trace the path from king square to enemy bishop square
+            while(currentCol !== enemyBishop.x && currentRow !== enemyBishop.y){
+                currentCol += xMove;
+                currentRow += yMove;
+
+                attackerSquares.push({ x: currentCol, y: currentRow });
+            }
+        }
+
+        return attackerSquares;
+    }
+    
+    /**
+     * - get rooks's line of attack
+     * @param pieceA - the king
+     * @param pieceB - the bishop
+     */
+    public traceStraightPath(enemyRook: IBaseCoordinates){
+        const attackerSquares: IBaseCoordinates[] = [];
+
+        const xDiff = enemyRook.x - this.piece.x;
+        const yDiff = enemyRook.y - this.piece.y;
+
+        // check if both this class king and enemy rook are in the same row or col
+        if (
+            (this.piece.x === enemyRook.x) ||
+            (this.piece.y === enemyRook.y)
+        ){
+
+            const xMove = (this.piece.x === enemyRook.x) ? 0 : (xDiff < 0 ? -1 : 1);
+            const yMove = (this.piece.y === enemyRook.y) ? 0 : (yDiff < 0 ? -1 : 1);
+
+            let currentCol = this.piece.x;
+            let currentRow = this.piece.y;
+
+            // trace the path from king square to enemy rook square
+            while(currentCol !== enemyRook.x || currentRow !== enemyRook.y){
+                currentCol += xMove;
+                currentRow += yMove;
+
+                attackerSquares.push({ x: currentCol, y: currentRow });
+            }
+        }
+
+        return attackerSquares;
+    }
+
 }
