@@ -6,9 +6,13 @@ export default class BishopValidator extends BasePieceValidator{
     /**
      *
      */
-    constructor(piece: IPiece, board: (GameObjects.Sprite | null)[][], moveHistory: IMoveHistory) {
+    private readonly allowXRayOpponentKing: boolean;
+
+    constructor(piece: IPiece, board: (GameObjects.Sprite | null)[][], moveHistory: IMoveHistory, allowXRayOpponentKing?: boolean) {
 
         super(piece, board, moveHistory);
+
+        this.allowXRayOpponentKing = allowXRayOpponentKing ?? false;
     }
     
     public override validMoves(): IValidMove[]{
@@ -48,8 +52,19 @@ export default class BishopValidator extends BasePieceValidator{
                         break;
                     } 
                     else{
-                        validMoves.push({ x: col, y: row, isCapture: true }) // an opponent
-                        break;
+
+                        // normal bishop capture
+                        if (!this.allowXRayOpponentKing){
+                            validMoves.push({ x: col, y: row, isCapture: true }) // an opponent
+                            break;
+                        }
+
+                        // these lines are for invalidating squares behind a king
+                        // in check
+                        if (currTile.name.toLowerCase().indexOf("king") >= 0){
+                            continue;
+                        }
+                    
                     }
                 }
                 

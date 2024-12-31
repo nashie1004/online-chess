@@ -226,11 +226,11 @@ export class MainGameScene extends Scene{
                 break;
             case PieceNames.bBishop:
             case PieceNames.wBishop:
-                validMoves = (new BishopValidator({ x, y, name, uniqueName }, this.board, this.reactState.moveHistory)).validMoves();
+                validMoves = (new BishopValidator({ x, y, name, uniqueName }, this.board, this.reactState.moveHistory, allowXRayOpponentKing ?? false)).validMoves();
                 break;
             case PieceNames.bQueen:
             case PieceNames.wQueen:
-                validMoves = (new QueenValidator({ x, y, name, uniqueName }, this.board, this.reactState.moveHistory)).validMoves();
+                validMoves = (new QueenValidator({ x, y, name, uniqueName }, this.board, this.reactState.moveHistory, allowXRayOpponentKing ?? false)).validMoves();
                 break;
             case PieceNames.bKing:
                 validMoves = (new KingValidator(

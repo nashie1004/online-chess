@@ -8,16 +8,20 @@ export default class QueenValidator extends BasePieceValidator{
     /**
      *
      */
-    constructor(piece: IPiece, board: (GameObjects.Sprite | null)[][], moveHistory: IMoveHistory) {
+    private readonly allowXRayOpponentKing: boolean;
+
+    constructor(piece: IPiece, board: (GameObjects.Sprite | null)[][], moveHistory: IMoveHistory, allowXRayOpponentKing?: boolean) {
 
         super(piece, board, moveHistory);
+
+        this.allowXRayOpponentKing = allowXRayOpponentKing ?? false;
     }
     
     public override validMoves(): IValidMove[]{
         let validMoves: IValidMove[] = [];
 
-        const rookValidator = new RookValidator(this.piece, this.board, this.moveHistory);
-        const bishopValidator = new BishopValidator(this.piece, this.board, this.moveHistory);
+        const rookValidator = new RookValidator(this.piece, this.board, this.moveHistory, this.allowXRayOpponentKing);
+        const bishopValidator = new BishopValidator(this.piece, this.board, this.moveHistory, this.allowXRayOpponentKing);
         
         validMoves = [...rookValidator.validMoves(), ...bishopValidator.validMoves()]
 
