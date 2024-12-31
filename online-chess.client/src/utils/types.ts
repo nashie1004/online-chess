@@ -37,7 +37,7 @@ export interface ICaptureHistory{
 
 export interface IKing{
     isInCheck: boolean;
-    checkedBy: IBaseCoordinates | null;
+    checkedBy: IBaseCoordinates[];
     isCheckMate: boolean;
 }
 

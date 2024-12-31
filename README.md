@@ -4,10 +4,11 @@
 
 ### Chess Logic
 #### king
-1 x ray checks / valid moves 
+1. x ray checks
 2. discovered checks
+~~3. castling doesnt result in a check~~ 
 
-### detector
+#### detector
 2. king pins after move function
 2. checkmate validator after move function + you won /lose
 4. stalemate detection - if the piece value suffice
