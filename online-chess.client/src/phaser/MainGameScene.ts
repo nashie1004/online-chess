@@ -233,8 +233,12 @@ export class MainGameScene extends Scene{
                 validMoves = (new QueenValidator({ x, y, name, uniqueName }, this.board, this.reactState.moveHistory)).validMoves();
                 break;
             case PieceNames.bKing:
+                validMoves = (new KingValidator(
+                    { x, y, name, uniqueName }, this.board, this.reactState.moveHistory, this.reactState.kingsState.black.isInCheck)).validMoves();
+                break;
             case PieceNames.wKing:
-                validMoves = (new KingValidator({ x, y, name, uniqueName }, this.board, this.reactState.moveHistory)).validMoves();
+                validMoves = (new KingValidator(
+                    { x, y, name, uniqueName }, this.board, this.reactState.moveHistory, this.reactState.kingsState.white.isInCheck)).validMoves();
                 break;
             case PieceNames.bPawn:
             case PieceNames.wPawn:
@@ -508,7 +512,7 @@ export class MainGameScene extends Scene{
                     , name: isWhite ? PieceNames.wKing : PieceNames.bKing
                     , uniqueName: pieceName 
                 }
-                 , this.board, this.reactState.moveHistory
+                 , this.board, this.reactState.moveHistory, false
             );   
 
             const validKingSide = kingValidator.validKingSideCastling(selectedPiece.x, selectedPiece.y);

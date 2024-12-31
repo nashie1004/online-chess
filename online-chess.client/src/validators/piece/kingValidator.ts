@@ -12,9 +12,12 @@ export default class KingValidator extends BasePieceValidator{
     /**
      *
      */
-    constructor(piece: IPiece, board: (GameObjects.Sprite | null)[][], moveHistory: IMoveHistory) {
+    private readonly isInCheck: boolean;
+
+    constructor(piece: IPiece, board: (GameObjects.Sprite | null)[][], moveHistory: IMoveHistory, isInCheck: boolean) {
 
         super(piece, board, moveHistory);
+        this.isInCheck = isInCheck;
     }
     
     public override validMoves(): IValidMove[]{
@@ -64,13 +67,15 @@ export default class KingValidator extends BasePieceValidator{
         })
 
         // castling
-        const validKingSideCastling = this.validKingSideCastling(this.piece.x, this.piece.y);
-        if (validKingSideCastling){
-            validMoves.push(validKingSideCastling);
-        }
-        const validQueenSideCastling = this.validQueenSideCastling(this.piece.x, this.piece.y);
-        if (validQueenSideCastling){
-            validMoves.push(validQueenSideCastling);
+        if (!this.isInCheck){
+            const validKingSideCastling = this.validKingSideCastling(this.piece.x, this.piece.y);
+            if (validKingSideCastling){
+                validMoves.push(validKingSideCastling);
+            }
+            const validQueenSideCastling = this.validQueenSideCastling(this.piece.x, this.piece.y);
+            if (validQueenSideCastling){
+                validMoves.push(validQueenSideCastling);
+            }
         }
 
         // check for danger squares
