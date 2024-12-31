@@ -8,13 +8,15 @@ export default class PawnValidator extends BasePieceValidator{
      */
     private readonly isWhite: boolean;
     public readonly captureYDirection: -1 | 1;
+    private readonly showCaptureSquares: boolean; // for invalidating opponent king move to pawn capture squares
 
-    constructor(piece: IPiece, board: (GameObjects.Sprite | null)[][], moveHistory: IMoveHistory) {
+    constructor(piece: IPiece, board: (GameObjects.Sprite | null)[][], moveHistory: IMoveHistory, showCaptureSquares: boolean) {
 
         super(piece, board, moveHistory);
 
         this.isWhite = this.piece.name.toString()[0] === "w";
         this.captureYDirection = this.isWhite ? -1 : 1;
+        this.showCaptureSquares = showCaptureSquares;
     }
     
     public override validMoves(): IValidMove[]{
@@ -71,6 +73,13 @@ export default class PawnValidator extends BasePieceValidator{
                 if (this.isOutOfBounds(col, row)) return;
 
                 const currTile = this.board[col][row]
+
+                // for invalidating opponent king move to pawn capture squares
+                // this is just used for the king validator class
+                if (this.showCaptureSquares){
+                    validMoves.push({ x: col, y: row, isCapture: true });
+                    return;
+                }
 
                 if (currTile && !this.isAFriendPiece(currTile.name)) 
                 {

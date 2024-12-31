@@ -108,7 +108,7 @@ export default class KingValidator extends BasePieceValidator{
                 { x: initialValidMove.x, y: initialValidMove.y, name: (kingIsWhite ? PieceNames.wRook : PieceNames.bRook) }
                 , _this.board, _this.moveHistory)).validMoves();
 
-                bishopSquares.forEach(square => {
+            bishopSquares.forEach(square => {
                 const currTile = _this.board[square.x][square.y];
                 if (!currTile) return;
                 const currTileIsWhite = currTile.name[0] === "w";
@@ -127,13 +127,31 @@ export default class KingValidator extends BasePieceValidator{
                 { x: initialValidMove.x, y: initialValidMove.y, name: (kingIsWhite ? PieceNames.wRook : PieceNames.bRook) }
                 , _this.board, _this.moveHistory)).validMoves();
 
-                knightSquares.forEach(square => {
+            knightSquares.forEach(square => {
                 const currTile = _this.board[square.x][square.y];
                 if (!currTile) return;
                 const currTileIsWhite = currTile.name[0] === "w";
 
                 if (
                     currTile.name.toLowerCase().indexOf("knight") >= 0  
+                    && ((kingIsWhite && !currTileIsWhite) || !kingIsWhite && currTileIsWhite) 
+                ){
+                    dangerSquaresSet.add(`${initialValidMove.x}-${initialValidMove.y}`);
+                }
+            });
+            
+            // 4. pawn
+            const pawnSquares = (new PawnValidator(
+                { x: initialValidMove.x, y: initialValidMove.y, name: (kingIsWhite ? PieceNames.wPawn : PieceNames.bPawn) }
+                , _this.board, _this.moveHistory, true)).validMoves();
+
+            pawnSquares.forEach(square => {
+                const currTile = _this.board[square.x][square.y];
+                if (!currTile) return;
+                const currTileIsWhite = currTile.name[0] === "w";
+
+                if (
+                    currTile.name.toLowerCase().indexOf("pawn") >= 0  
                     && ((kingIsWhite && !currTileIsWhite) || !kingIsWhite && currTileIsWhite) 
                 ){
                     dangerSquaresSet.add(`${initialValidMove.x}-${initialValidMove.y}`);
@@ -398,7 +416,7 @@ export default class KingValidator extends BasePieceValidator{
         switch(enemyName){
             case PieceNames.bPawn:
             case PieceNames.wPawn:
-                return (new PawnValidator(piece, this.board, this.moveHistory)).validMoves();
+                return (new PawnValidator(piece, this.board, this.moveHistory, false)).validMoves();
             case PieceNames.bRook:
             case PieceNames.wRook:
                 return (new RookValidator(piece, this.board, this.moveHistory)).validMoves();
