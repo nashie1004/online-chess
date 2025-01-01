@@ -1,9 +1,9 @@
 import usePhaser from '../hooks/usePhaser';
-import { pieceImages, PieceNames } from '../utils/constants';
-import { chessBoardNotation } from '../utils/helpers';
+import { pieceImages, PieceNames } from '../game/utilities/constants';
+import { chessBoardNotation } from '../game/utilities/helpers';
 import {Card, CardHeader, CardBody,  Divider, Image, ScrollShadow, Spacer, Kbd, Button, Select, SelectItem, Radio, RadioGroup} from "@nextui-org/react";
 import {Table, TableHeader, TableColumn, TableBody, TableRow, TableCell} from "@nextui-org/react";
-import { eventEmitter } from '../phaser/eventEmitter';
+import { eventEmitter } from '../game/utilities/eventEmitter';
 
 import wQueen from "../assets/pieces/wQ.svg"
 import wRook from "../assets/pieces/wR.svg"
@@ -14,7 +14,7 @@ import bRook from "../assets/pieces/bR.svg"
 import bKnight from "../assets/pieces/bN.svg"
 import bBishop from "../assets/pieces/bB.svg"
 import bQueen from "../assets/pieces/bQ.svg"
-import { PromoteTo } from '../utils/types';
+import { PromoteTo } from '../game/utilities/types';
 
 const board = chessBoardNotation();
 

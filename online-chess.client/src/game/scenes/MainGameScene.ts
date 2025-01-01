@@ -1,20 +1,19 @@
 import { GameObjects, Scene } from "phaser";
-import bg from "../assets/wood4-800x800.jpg"
-import previewMove from "../assets/indicator.png"
-import move from "../assets/sounds/Move.ogg"
-import capture from "../assets/sounds/Capture.ogg"
-import select from "../assets/sounds/Select.ogg"
-import check from "../assets/sounds/Check.mp3"
-import pieces, { baseKingState } from "../utils/constants";
-import { gameOptions, PieceNames, pieceImages } from "../utils/constants";
-import { IBaseCoordinates, IBothKingsPosition, IKingState, IMoveInfo, INonTilePieces, IPhaserContextValues, IValidMove, PromoteTo } from "../utils/types";
-import { eventEmitter } from "./eventEmitter";
-import RookValidator from "../validators/piece/rookValidator";
-import KnightValidator from "../validators/piece/knightValidator";
-import BishopValidator from "../validators/piece/bishopValidator";
-import QueenValidator from "../validators/piece/queenValidator";
-import KingValidator from "../validators/piece/kingValidator";
-import PawnValidator from "../validators/piece/pawnValidator";
+import bg from "../../assets/wood4-800x800.jpg"
+import previewMove from "../../assets/indicator.png"
+import move from "../../assets/sounds/Move.ogg"
+import capture from "../../assets/sounds/Capture.ogg"
+import select from "../../assets/sounds/Select.ogg"
+import check from "../../assets/sounds/Check.mp3"
+import pieces, { Options as gameOptions, PieceNames, pieceImages, baseKingState } from "../utilities/constants";
+import { IBaseCoordinates, IBothKingsPosition, IKingState, IMoveInfo, INonTilePieces, IPhaserContextValues, IValidMove, PromoteTo } from "../utilities/types";
+import RookValidator from "../logic/piece/rookValidator";
+import KnightValidator from "../logic/piece/knightValidator";
+import BishopValidator from "../logic/piece/bishopValidator";
+import QueenValidator from "../logic/piece/queenValidator";
+import KingValidator from "../logic/piece/kingValidator";
+import PawnValidator from "../logic/piece/pawnValidator";
+import { eventEmitter } from "../utilities/eventEmitter";
 
 export class MainGameScene extends Scene{
     /**

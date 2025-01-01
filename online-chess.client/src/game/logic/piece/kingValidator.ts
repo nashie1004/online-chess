@@ -1,9 +1,9 @@
 import { GameObjects } from "phaser";
-import { IBaseCoordinates, IMoveHistory, IPiece, IValidMove } from "../../utils/types";
+import { IBaseCoordinates, IMoveHistory, IPiece, IValidMove } from "../../utilities/types";
 import BasePieceValidator from "./basePieceValidator";
 import QueenValidator from "./queenValidator";
 import KnightValidator from "./knightValidator";
-import { PieceNames } from "../../utils/constants";
+import { PieceNames } from "../../utilities/constants";
 import BishopValidator from "./bishopValidator";
 import PawnValidator from "./pawnValidator";
 import RookValidator from "./rookValidator";

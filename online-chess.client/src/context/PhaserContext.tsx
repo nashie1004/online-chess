@@ -1,6 +1,6 @@
 import { createContext, ReactNode, useState } from 'react'
-import { IMoveHistory, ICaptureHistory, PromoteTo, IPhaserContext, IKingState, ITimer } from '../utils/types';
-import { baseKingState } from '../utils/constants';
+import { IMoveHistory, ICaptureHistory, PromoteTo, IPhaserContext, IKingState, ITimer } from '../game/utilities/types';
+import { baseKingState } from '../game/utilities/constants';
 
 interface PhaserContextProps{
     children: ReactNode

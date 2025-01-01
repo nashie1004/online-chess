@@ -1,12 +1,12 @@
 import { useEffect, useRef } from "react"
-import { MainGameScene } from "../phaser/MainGameScene";
 
-import { gameOptions } from "../utils/constants";
-import { eventEmitter } from "../phaser/eventEmitter";
+import { Options as gameOptions } from "../game/utilities/constants";
+import { eventEmitter } from "../game/utilities/eventEmitter";
 import SidebarLeft from "../components/SidebarLeft";
 import usePhaser from "../hooks/usePhaser";
-import { IMoveHistory , ICaptureHistory, IKingState} from "../utils/types";
+import { IMoveHistory , ICaptureHistory, IKingState} from "../game/utilities/types";
 import SidebarRight from "../components/SidebarRight";
+import { MainGameScene } from "../game/scenes/MainGameScene";
 
 export default function Main(){
     const gameRef = useRef<Phaser.Game | null>();
