@@ -935,7 +935,7 @@ export class MainGameScene extends Scene{
 
         const validMovesTotal = validMoves.capturable + validMoves.blockable + validMoves.movableKing; 
         console.info(`number of legal/valid moves that prevent checkmate: `, validMovesTotal)
-        return validMovesTotal > 0;
+        return validMovesTotal <= 0;
     }
 
 }

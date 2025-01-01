@@ -7,9 +7,6 @@ import SidebarLeft from "../components/SidebarLeft";
 import usePhaser from "../hooks/usePhaser";
 import { IMoveHistory , ICaptureHistory, IKingState} from "../utils/types";
 import SidebarRight from "../components/SidebarRight";
-import { Alert, Avatar, Card, CardBody, CardFooter, CardHeader, Divider } from "@nextui-org/react";
-import UserIcon from "../components/ui/UserIcon";
-import PlayerInfo from "../components/ui/PlayerInfo";
 
 export default function Main(){
     const gameRef = useRef<Phaser.Game | null>();

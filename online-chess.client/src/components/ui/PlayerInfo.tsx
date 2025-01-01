@@ -39,6 +39,12 @@ export default function PlayerInfo() {
                     {kingsState.black.isInCheck ? "Black is in check" : ""}
                 </Chip> : <></> 
             }
+            {
+                kingsState.white.isCheckMate || kingsState.black.isCheckMate ? <Chip size='md'>
+                    {kingsState.white.isCheckMate ? "White is checkmated" : ""}
+                    {kingsState.black.isCheckMate ? "Black is checkmated" : ""}
+                </Chip> : <></> 
+            }
         </div>
         <Alert 
             icon={<UserIcon />}
