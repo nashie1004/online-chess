@@ -1,5 +1,10 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using online_chess.Server.DTOs;
 using online_chess.Server.Hubs;
+using online_chess.Server.Models;
+using online_chess.Server.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,7 +22,16 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+// services
+/*
 builder.Services.AddAutoMapper(typeof(Mapper));
+builder.Services.AddDbContext<MainDbContext>(opt => opt.UseSqlite("Data Source=app.db"));
+builder.Services.AddIdentity<User, Role>()
+    .AddEntityFrameworkStores<UserIdentityDbContext>()
+    .AddDefaultTokenProviders();
+*/
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
+
 
 var app = builder.Build();
 

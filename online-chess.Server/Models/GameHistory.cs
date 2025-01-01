@@ -1,4 +1,4 @@
-﻿using online_chess.Server.Common;
+﻿using online_chess.Server.Enums;
 
 namespace online_chess.Server.Models
 {

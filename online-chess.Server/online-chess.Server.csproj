@@ -34,10 +34,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Commands\Auth\" />
-    <Folder Include="Features\Commands\Game\" />
-    <Folder Include="Features\Queries\Auth\" />
-    <Folder Include="Features\Queries\Game\" />
+    <Folder Include="Features\Auth\" />
+    <Folder Include="Features\Game\Queries\" />
     <Folder Include="Migrations\" />
     <Folder Include="SQLiteDB\" />
   </ItemGroup>

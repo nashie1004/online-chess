@@ -24,17 +24,18 @@ export default function Main(){
             .configureLogging(LogLevel.Information)
             .build();
         ;
-        connection.on("TestMessage", (user, message) => {
+        connection.on("ReceiveMessage", (user, message) => {
             console.log(user + " says " + message); 
         })
         try {
             await connection.start();
+            //await connection.invoke("TestMessage", "todo")
             console.log("Connection started");
         } catch (error) {
             console.log(error);
         }
 
-        //await connection.
+        await connection.invoke("SendMessage", "hi")
     }
 
     useEffect(() => {

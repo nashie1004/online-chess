@@ -1,4 +1,4 @@
-﻿namespace online_chess.Server.Common
+﻿namespace online_chess.Server.Enums
 {
     public enum Color : short
     {
