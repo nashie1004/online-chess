@@ -8,6 +8,7 @@ import { IMoveHistory , ICaptureHistory, IKingState} from "../game/utilities/typ
 import SidebarRight from "../components/SidebarRight";
 import { MainGameScene } from "../game/scenes/MainGameScene";
 import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
+import SignalRConnection from "../services/SignalRService";
 
 export default function Main(){
     const gameRef = useRef<Phaser.Game | null>();
@@ -58,7 +59,19 @@ export default function Main(){
         eventEmitter.on("setKingsState", (data: IKingState) => setKingsState(data))
 
         // test real time connection
-        startConnection();
+
+        const connection = new SignalRConnection();
+        async function start() {
+            await connection.startConnection();
+
+            await connection.addHandler("TestClientResponse", (user, message) => {
+                console.log('TestClientResponse', user, message)
+            });
+
+            await connection.invoke("JoinRoom", "joining room")
+        }
+
+        start();
 
         // cleanup phaser
         return () => {
@@ -66,6 +79,7 @@ export default function Main(){
                 gameRef.current.destroy(true);
                 gameRef.current = null;
             }
+            connection.stopConnection();
         };
     }, [])
  

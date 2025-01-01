@@ -1,4 +1,4 @@
-import { HubConnection, HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
+import { HttpTransportType, HubConnection, HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 
 export default class SignalRConnection {
 
@@ -9,11 +9,22 @@ export default class SignalRConnection {
     }
 
     async startConnection() {
+        /*
         this.hubConnection = new HubConnectionBuilder()
             .withUrl("https://localhost:44332/hub")
             .configureLogging(LogLevel.Information)
             .build();
         ;
+        */
+        this.hubConnection = new HubConnectionBuilder()
+            .configureLogging(LogLevel.Debug)  // add this for diagnostic clues
+            .withUrl("https://localhost:44332/hub", {
+                skipNegotiation: true,  // skipNegotiation as we specify WebSockets
+                transport: HttpTransportType.WebSockets  // force WebSocket transport
+            })
+            .build();
+
+        console.log(this.hubConnection.connectionId)
 
         try {
             await this.hubConnection.start();
