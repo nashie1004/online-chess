@@ -162,6 +162,9 @@ export default class KingValidator extends BasePieceValidator{
                     dangerSquaresSet.add(`${initialValidMove.x}-${initialValidMove.y}`);
                 }
             });
+            
+            // 5. enemy king
+            //  two kings must not touch each other
 
         });
         

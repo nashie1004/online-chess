@@ -5,7 +5,7 @@
 ### Chess Logic
 ~~1. when king is in check - another option is to block the attacker~~
 2. king pins after move function
-3. checkmate validator after validate check function
+~~3. checkmate validator after validate check function~~
 4. stalemate detection - if the piece value suffice
 5. kings must not touch each other
 

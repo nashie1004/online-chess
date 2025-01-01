@@ -93,6 +93,6 @@ export default pieces;
 
 
 export const baseKingState: IKingState = { 
-    white: { isCheckMate: false, isInCheck: false, checkedBy: null }
-    , black: { isCheckMate: false, isInCheck: false, checkedBy: null } 
+    white: { isCheckMate: false, isInCheck: false, checkedBy: [] }
+    , black: { isCheckMate: false, isInCheck: false, checkedBy: [] } 
 };
