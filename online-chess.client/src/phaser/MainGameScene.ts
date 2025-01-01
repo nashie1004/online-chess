@@ -471,13 +471,7 @@ export class MainGameScene extends Scene{
     }
 
     update(){
-        // TODO: handle movehistory, capturehistory and who will move next
-        if (this.reactState.isWhitesTurn){
-            // console.info(`White's turn to move`)
-        } else {
-            // console.info(`Black's turn to move`)
-        }
-
+        // may not need this
     }
 
     mNormalCapture(newX: number, newY: number, isWhite: boolean){
@@ -664,19 +658,15 @@ export class MainGameScene extends Scene{
         kingSprite?.postFX?.addGlow(0xE44C6A, 10, 2);
 
         // 3. checkmate // TODO
-        let isCheckMate = false;
-        this.validCheckMate();
-        /*
-        const isCheckMate = this.validateCheckmate(isWhite);
+        let isCheckMate = this.isCheckmate();
 
         if (isCheckMate){
-            if (isWhite){
-                this.reactState.kingsState.black.isCheckMate = true;
-            } else {
+            if (this.reactState.kingsState.white.isInCheck){
                 this.reactState.kingsState.white.isCheckMate = true;
+            } else {
+                this.reactState.kingsState.black.isCheckMate = true;
             }
         }
-        */
         
         eventEmitter.emit("setKingsState", this.reactState.kingsState);
         return (isCheckMate ? 2 : 1);
@@ -853,12 +843,12 @@ export class MainGameScene extends Scene{
      * @param initialValidMoves 
      * @returns 
      */
-    validCheckMate(){
+    isCheckmate(){
         const colorInCheckIsWhite = this.reactState.kingsState.white.isInCheck;
         const friendPieces = this.getAllFriendOrOpponentPieces(true, colorInCheckIsWhite);
         const attackersCoords = colorInCheckIsWhite ? this.reactState.kingsState.white.checkedBy 
             : this.reactState.kingsState.black.checkedBy;
-        let validMoves: number = 0;
+        const validMoves = { capturable: 0, movableKing: 0, blockable: 0 }; // for debug purposes 
         const kingInCheckCoords = colorInCheckIsWhite ? this.bothKingsPosition.white : this.bothKingsPosition.black;
 
         if (attackersCoords.length < 0) return; // no attacker/checker
@@ -887,16 +877,14 @@ export class MainGameScene extends Scene{
 
                     // 1. Capture attacker
                     if (attacker.x === friendMove.x && attacker.y === friendMove.y){
-                        validMoves++;
-                        console.log("Capture attacker: ", friendPieces, attacker, friendMove, friendPiece, friendPieceMoves)
+                        validMoves.capturable++;
                     }
 
                     // 2. Move the checked king   
                     if (friendPieceName === PieceNames.wKing || friendPieceName === PieceNames.bKing){
                         const kingCapturableTile = attackerSquares.find(attackerSquare => attackerSquare.x === friendMove.x && attackerSquare.y === friendMove.y);
                         if (!kingCapturableTile){
-                            validMoves++;
-                            console.log("Move the checked king: ", kingCapturableTile, friendPieceName)
+                            validMoves.movableKing++;
                         }
                     }
 
@@ -935,9 +923,9 @@ export class MainGameScene extends Scene{
                         attackerLineOfPath.x === friendMove.x && attackerLineOfPath.y === friendMove.y
                     );
 
+                    // attacker's line of attack can be blocked by current friend piece
                     if (blockableTiles.length > 0){
-                        validMoves += blockableTiles.length;
-                        console.info(`Check is blockable: `, attackersLineOfPath, friendPiece, friendPiece.sprite.name)
+                        validMoves.blockable += blockableTiles.length;
                     }
 
                 });
@@ -945,7 +933,9 @@ export class MainGameScene extends Scene{
             });
         });
 
-        console.log(`number of legal/valid moves that prevent checkmate: `, validMoves)
+        const validMovesTotal = validMoves.capturable + validMoves.blockable + validMoves.movableKing; 
+        console.info(`number of legal/valid moves that prevent checkmate: `, validMovesTotal)
+        return validMovesTotal > 0;
     }
 
 }
