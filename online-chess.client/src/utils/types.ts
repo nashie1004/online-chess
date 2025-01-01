@@ -1,3 +1,4 @@
+import { GameObjects } from "phaser";
 import { PieceNames } from "./constants";
 
 export interface IBaseCoordinates{
@@ -82,4 +83,8 @@ export interface IReactContext extends IReactContextValues{
 export interface IBothKingsPosition{
     white: IBaseCoordinates;
     black: IBaseCoordinates;
+}
+
+export interface INonTilePieces extends IBaseCoordinates{
+    sprite: GameObjects.Sprite
 }
