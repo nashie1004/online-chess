@@ -174,6 +174,7 @@ export default class KingValidator extends BasePieceValidator{
         // additional danger squares
         // two kings must not touch each other
         const enemyKingMoves = this.enemyKingMoves();
+
         validMoves = validMoves.filter(supposedValidMove => {
             const twoKingTouchesSquare = enemyKingMoves.find(enemyKingMove => enemyKingMove.x === supposedValidMove.x && enemyKingMove.y === supposedValidMove.y);
             if (!twoKingTouchesSquare){
@@ -541,10 +542,6 @@ export default class KingValidator extends BasePieceValidator{
             const row = enemyKingCoords.y + direction.y;
 
             if (this.isOutOfBounds(col, row)) return; // out of bounds
-
-            const currTile = this.board[col][row];
-
-            if (!currTile) return;
 
             enemyKingMoves.push({ x: col, y: row });
         })
