@@ -235,11 +235,11 @@ export class MainGameScene extends Scene{
                 break;
             case PieceNames.bKing:
                 validMoves = (new KingValidator(
-                    { x, y, name, uniqueName }, this.board, this.reactState.moveHistory, this.reactState.kingsState.black.isInCheck)).validMoves();
+                    { x, y, name, uniqueName }, this.board, this.reactState.moveHistory, this.reactState.kingsState.black.isInCheck, this.bothKingsPosition)).validMoves();
                 break;
             case PieceNames.wKing:
                 validMoves = (new KingValidator(
-                    { x, y, name, uniqueName }, this.board, this.reactState.moveHistory, this.reactState.kingsState.white.isInCheck)).validMoves();
+                    { x, y, name, uniqueName }, this.board, this.reactState.moveHistory, this.reactState.kingsState.white.isInCheck, this.bothKingsPosition)).validMoves();
                 break;
             case PieceNames.bPawn:
             case PieceNames.wPawn:
@@ -309,7 +309,7 @@ export class MainGameScene extends Scene{
             const kingInCheckCoords = isWhite ? this.bothKingsPosition.white : this.bothKingsPosition.black;
             const kingTracer = new KingValidator({ 
                 x: kingInCheckCoords.x, y: kingInCheckCoords.y, name: isWhite ? PieceNames.wKing : PieceNames.bKing
-            }, this.board, this.reactState.moveHistory, false);
+            }, this.board, this.reactState.moveHistory, false, this.bothKingsPosition);
             let attackersLineOfPath: IBaseCoordinates[] = []; 
 
             switch(attackerSpriteName){
@@ -567,6 +567,7 @@ export class MainGameScene extends Scene{
                     , uniqueName: pieceName 
                 }
                  , this.board, this.reactState.moveHistory, false
+                 , this.bothKingsPosition
             );   
 
             const validKingSide = kingValidator.validKingSideCastling(selectedPiece.x, selectedPiece.y);
@@ -890,7 +891,7 @@ export class MainGameScene extends Scene{
                     // 3. Block the line of attack
                     const kingTracer = new KingValidator({ 
                         x: kingInCheckCoords.x, y: kingInCheckCoords.y, name: colorInCheckIsWhite ? PieceNames.wKing : PieceNames.bKing
-                    }, this.board, this.reactState.moveHistory, false);
+                    }, this.board, this.reactState.moveHistory, false, this.bothKingsPosition);
 
                     let attackersLineOfPath: IBaseCoordinates[] = [];
 

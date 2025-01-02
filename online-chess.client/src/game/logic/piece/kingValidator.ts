@@ -1,5 +1,5 @@
 import { GameObjects } from "phaser";
-import { IBaseCoordinates, IMoveHistory, IPiece, IValidMove } from "../../utilities/types";
+import { IBaseCoordinates, IBothKingsPosition, IMoveHistory, IPiece, IValidMove } from "../../utilities/types";
 import BasePieceValidator from "./basePieceValidator";
 import QueenValidator from "./queenValidator";
 import KnightValidator from "./knightValidator";
@@ -13,11 +13,13 @@ export default class KingValidator extends BasePieceValidator{
      *
      */
     private readonly isInCheck: boolean;
+    private readonly bothKingsPosition: IBothKingsPosition;
 
-    constructor(piece: IPiece, board: (GameObjects.Sprite | null)[][], moveHistory: IMoveHistory, isInCheck: boolean) {
+    constructor(piece: IPiece, board: (GameObjects.Sprite | null)[][], moveHistory: IMoveHistory, isInCheck: boolean, bothKingsPosition: IBothKingsPosition) {
 
         super(piece, board, moveHistory);
         this.isInCheck = isInCheck;
+        this.bothKingsPosition = bothKingsPosition;
     }
     
     public override validMoves(): IValidMove[]{
@@ -162,15 +164,21 @@ export default class KingValidator extends BasePieceValidator{
                     dangerSquaresSet.add(`${initialValidMove.x}-${initialValidMove.y}`);
                 }
             });
-            
-            // 5. enemy king
-            //  two kings must not touch each other
-
         });
         
         validMoves = validMoves.filter(j => {
             // if their is an overlap, remove that as valid king move
             return !dangerSquaresSet.has(`${j.x}-${j.y}`);
+        });
+
+        // additional danger squares
+        // two kings must not touch each other
+        const enemyKingMoves = this.enemyKingMoves();
+        validMoves = validMoves.filter(supposedValidMove => {
+            const twoKingTouchesSquare = enemyKingMoves.find(enemyKingMove => enemyKingMove.x === supposedValidMove.x && enemyKingMove.y === supposedValidMove.y);
+            if (!twoKingTouchesSquare){
+                return supposedValidMove;
+            }
         });
 
         return validMoves;
@@ -506,6 +514,42 @@ export default class KingValidator extends BasePieceValidator{
         }
 
         return attackerSquares;
+    }
+
+    /**
+     * - Two kings must not touch each other
+     * @returns - enemy king moves
+     */
+    private enemyKingMoves(): IBaseCoordinates[] {
+        const enemyKingMoves: IBaseCoordinates[] = []; 
+        const kingIsWhite = this.piece.name[0] === "w";
+        const enemyKingCoords = kingIsWhite ? this.bothKingsPosition.black : this.bothKingsPosition.white;
+
+        const directions = [
+            { x: -1, y: -1 }
+            ,{ x: 0, y: -1 }
+            ,{ x: 1, y: -1 }
+            ,{ x: -1, y: 0 }
+            ,{ x: 1, y: 0 }
+            ,{ x: -1, y: 1 }
+            ,{ x: 0, y: 1 }
+            ,{ x: 1, y: 1 }
+        ]
+
+        directions.forEach(direction => {
+            const col = enemyKingCoords.x + direction.x;
+            const row = enemyKingCoords.y + direction.y;
+
+            if (this.isOutOfBounds(col, row)) return; // out of bounds
+
+            const currTile = this.board[col][row];
+
+            if (!currTile) return;
+
+            enemyKingMoves.push({ x: col, y: row });
+        })
+
+        return enemyKingMoves;
     }
 
 }
