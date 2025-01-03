@@ -3,11 +3,8 @@
 ## Todo
 
 ### Chess Logic
-~~1. when king is in check - another option is to block the attacker~~
 2. king pins after move function
-~~3. checkmate validator after validate check function~~
 4. stalemate detection - if the piece value suffice
-5. kings must not touch each other
 
 ### Pages / UI
 1. home / dashboard 
@@ -36,6 +33,9 @@
 ~~7. king danger squares after move function~~
 ~~9. check validator after move function~~
 ~~11. show timer~~
+~~5. kings must not touch each other~~
+~~1. when king is in check - another option is to block the attacker~~
+~~3. checkmate validator after validate check function~~
 
 
 ui

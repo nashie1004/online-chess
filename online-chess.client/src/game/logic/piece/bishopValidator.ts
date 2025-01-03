@@ -1,5 +1,5 @@
 import { GameObjects } from "phaser";
-import { IMoveHistory, IPiece, IValidMove } from "../../utilities/types";
+import { IBothKingsPosition, IMoveHistory, IPiece, IValidMove } from "../../utilities/types";
 import BasePieceValidator from "./basePieceValidator";
 
 export default class BishopValidator extends BasePieceValidator{
@@ -8,9 +8,9 @@ export default class BishopValidator extends BasePieceValidator{
      */
     private readonly allowXRayOpponentKing: boolean;
 
-    constructor(piece: IPiece, board: (GameObjects.Sprite | null)[][], moveHistory: IMoveHistory, allowXRayOpponentKing: boolean = false) {
+    constructor(piece: IPiece, board: (GameObjects.Sprite | null)[][], moveHistory: IMoveHistory, allowXRayOpponentKing: boolean = false, bothKingsPosition: IBothKingsPosition) {
 
-        super(piece, board, moveHistory);
+        super(piece, board, moveHistory, bothKingsPosition);
 
         this.allowXRayOpponentKing = allowXRayOpponentKing;
     }

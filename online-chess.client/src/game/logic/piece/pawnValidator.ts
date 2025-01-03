@@ -1,5 +1,5 @@
 import { GameObjects } from "phaser";
-import { IMoveHistory, IMoveInfo, IPiece, IValidMove } from "../../utilities/types";
+import { IBothKingsPosition, IMoveHistory, IMoveInfo, IPiece, IValidMove } from "../../utilities/types";
 import BasePieceValidator from "./basePieceValidator";
 
 export default class PawnValidator extends BasePieceValidator{
@@ -10,9 +10,9 @@ export default class PawnValidator extends BasePieceValidator{
     public readonly captureYDirection: -1 | 1;
     private readonly showCaptureSquares: boolean; // for invalidating opponent king move to pawn capture squares
 
-    constructor(piece: IPiece, board: (GameObjects.Sprite | null)[][], moveHistory: IMoveHistory, showCaptureSquares: boolean) {
+    constructor(piece: IPiece, board: (GameObjects.Sprite | null)[][], moveHistory: IMoveHistory, showCaptureSquares: boolean, bothKingsPosition: IBothKingsPosition) {
 
-        super(piece, board, moveHistory);
+        super(piece, board, moveHistory, bothKingsPosition);
 
         this.isWhite = this.piece.name.toString()[0] === "w";
         this.captureYDirection = this.isWhite ? -1 : 1;

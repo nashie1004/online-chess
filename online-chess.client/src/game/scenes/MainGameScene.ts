@@ -219,19 +219,19 @@ export class MainGameScene extends Scene{
         switch(name){
             case PieceNames.bRook:
             case PieceNames.wRook:
-                validMoves = (new RookValidator({ x, y, name, uniqueName }, this.board, this.reactState.moveHistory, allowXRayOpponentKing)).validMoves();
+                validMoves = (new RookValidator({ x, y, name, uniqueName }, this.board, this.reactState.moveHistory, allowXRayOpponentKing, this.bothKingsPosition)).validMoves();
                 break;
             case PieceNames.bKnight:
             case PieceNames.wKnight:
-                validMoves = (new KnightValidator({ x, y, name, uniqueName }, this.board, this.reactState.moveHistory)).validMoves();
+                validMoves = (new KnightValidator({ x, y, name, uniqueName }, this.board, this.reactState.moveHistory, this.bothKingsPosition)).validMoves();
                 break;
             case PieceNames.bBishop:
             case PieceNames.wBishop:
-                validMoves = (new BishopValidator({ x, y, name, uniqueName }, this.board, this.reactState.moveHistory, allowXRayOpponentKing)).validMoves();
+                validMoves = (new BishopValidator({ x, y, name, uniqueName }, this.board, this.reactState.moveHistory, allowXRayOpponentKing, this.bothKingsPosition)).validMoves();
                 break;
             case PieceNames.bQueen:
             case PieceNames.wQueen:
-                validMoves = (new QueenValidator({ x, y, name, uniqueName }, this.board, this.reactState.moveHistory, allowXRayOpponentKing)).validMoves();
+                validMoves = (new QueenValidator({ x, y, name, uniqueName }, this.board, this.reactState.moveHistory, allowXRayOpponentKing, this.bothKingsPosition)).validMoves();
                 break;
             case PieceNames.bKing:
                 validMoves = (new KingValidator(
@@ -243,7 +243,11 @@ export class MainGameScene extends Scene{
                 break;
             case PieceNames.bPawn:
             case PieceNames.wPawn:
-                validMoves = (new PawnValidator({ x, y, name, uniqueName }, this.board, this.reactState.moveHistory,false)).validMoves();
+                //validMoves = (new PawnValidator(
+                //    { piece: { x, y, name, uniqueName },
+                //    board: this.board, moveHistory: this.reactState.moveHistory, showCaptureSquares: false })).validMoves();
+                validMoves = (new PawnValidator(
+                    { x, y, name, uniqueName }, this.board, this.reactState.moveHistory, false, this.bothKingsPosition)).validMoves();
                 break;
             }
         return validMoves;
@@ -499,14 +503,20 @@ export class MainGameScene extends Scene{
         if (pieceName.toLowerCase().indexOf("pawn") >= 0){
             
             // get the previous pawn' square before moving diagonally
+            /*
             const pawnValidator = new PawnValidator(
-                { 
-                    x: selectedPiece.x, y: selectedPiece.y
-                    , name: isWhite ? PieceNames.wPawn : PieceNames.bPawn
-                    , uniqueName: pieceName 
-                }
-                 , this.board, this.reactState.moveHistory, false
-            );
+            {
+                piece: {
+                    x: selectedPiece.x, y: selectedPiece.y,
+                    name: isWhite ? PieceNames.wPawn : PieceNames.bPawn,
+                    uniqueName: pieceName
+                }, board: this.board, moveHistory: this.reactState.moveHistory, showCaptureSquares: false
+                });
+            */
+
+            const pawnValidator = new PawnValidator(
+                { x: selectedPiece.x, y: selectedPiece.y, name: isWhite ? PieceNames.wPawn : PieceNames.bPawn, uniqueName: pieceName }
+                , this.board, this.reactState.moveHistory, false, this.bothKingsPosition);
 
             const validCapture = pawnValidator.validEnPassantCapture();
             
@@ -694,16 +704,17 @@ export class MainGameScene extends Scene{
 
         const rookMoves = (new RookValidator(
             { x: king.x, y: king.y, name: kingPiece === PieceNames.wKing ? PieceNames.wRook : PieceNames.bRook }
-            , this.board, this.reactState.moveHistory)).validMoves();
+            , this.board, this.reactState.moveHistory, false, this.bothKingsPosition)).validMoves();
         const bishopMoves = (new BishopValidator(
             { x: king.x, y: king.y, name: kingPiece === PieceNames.wKing ? PieceNames.wBishop : PieceNames.bBishop }
-            , this.board, this.reactState.moveHistory)).validMoves();
+            , this.board, this.reactState.moveHistory, false, this.bothKingsPosition)).validMoves();
         const knightMoves = (new KnightValidator(
             { x: king.x, y: king.y, name: kingPiece === PieceNames.wKing ? PieceNames.wKnight : PieceNames.bKnight }
-            , this.board, this.reactState.moveHistory)).validMoves();
+            , this.board, this.reactState.moveHistory, this.bothKingsPosition)).validMoves();
         const pawnMoves = (new PawnValidator(
-            { x: king.x, y: king.y, name: kingPiece === PieceNames.wKing ? PieceNames.wPawn : PieceNames.bPawn }
-            , this.board, this.reactState.moveHistory, false)).validMoves();
+                { x: king.x, y: king.y, name: kingPiece === PieceNames.wKing ? PieceNames.wPawn : PieceNames.bPawn },
+                this.board, this.reactState.moveHistory, false, this.bothKingsPosition
+            )).validMoves();
 
         // 1. rook
         rookMoves.forEach(rookMove => {

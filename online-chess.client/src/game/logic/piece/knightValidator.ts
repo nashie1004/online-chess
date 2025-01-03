@@ -1,13 +1,13 @@
 import { GameObjects } from "phaser";
-import { IMoveHistory, IPiece, IValidMove } from "../../utilities/types";
+import { IBothKingsPosition, IMoveHistory, IPiece, IValidMove } from "../../utilities/types";
 import BasePieceValidator from "./basePieceValidator";
 
 export default class KnightValidator extends BasePieceValidator{
     /**
      *
      */
-    constructor(piece: IPiece, board: (GameObjects.Sprite | null)[][], moveHistory: IMoveHistory) {
-        super(piece, board, moveHistory);
+    constructor(piece: IPiece, board: (GameObjects.Sprite | null)[][], moveHistory: IMoveHistory, bothKingsPosition: IBothKingsPosition) {
+        super(piece, board, moveHistory, bothKingsPosition);
     }
     
     public override validMoves(): IValidMove[]{
@@ -58,6 +58,8 @@ export default class KnightValidator extends BasePieceValidator{
 
             validMoves.push({ x: col, y: row, isCapture: false })
         })
+
+        this.isAbsolutelyPinned();
         
         return validMoves;
     }

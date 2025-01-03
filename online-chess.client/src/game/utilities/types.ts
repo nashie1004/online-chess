@@ -88,3 +88,10 @@ export interface IBothKingsPosition{
 export interface INonTilePieces extends IBaseCoordinates{
     sprite: GameObjects.Sprite
 }
+
+export interface IPinMove {
+    isEnemy: boolean;
+    isFriend: boolean;
+    isEmptyTile: boolean;
+    coords: IBaseCoordinates;
+}
