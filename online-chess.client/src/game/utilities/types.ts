@@ -95,3 +95,9 @@ export interface IPinMove {
     isEmptyTile: boolean;
     coords: IBaseCoordinates;
 }
+
+export interface IPinInfo {
+    isPinned: boolean;
+    restrictedToX: number | null;
+    restrictedToY: number | null;
+}

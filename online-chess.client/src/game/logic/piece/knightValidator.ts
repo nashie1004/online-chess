@@ -59,7 +59,7 @@ export default class KnightValidator extends BasePieceValidator{
             validMoves.push({ x: col, y: row, isCapture: false })
         })
 
-        this.isAbsolutelyPinned();
+        this.validateAbsolutelyPinned();
         
         return validMoves;
     }

@@ -1,5 +1,5 @@
 import { GameObjects } from "phaser";
-import { IBothKingsPosition, IMoveHistory, IPiece, IPinMove, IValidMove } from "../../utilities/types";
+import { IBothKingsPosition, IMoveHistory, IPiece, IPinInfo, IPinMove, IValidMove } from "../../utilities/types";
 
 export default class BasePieceValidator{
     /**
@@ -47,11 +47,14 @@ export default class BasePieceValidator{
     /**
      * - this method is only for non-king pieces
      * - only rook, bishops, queens can pin
+     * - if a piece is pinned, can only move in forward or backwards in the same direction as 
+     * the enemy pinning piece or capture the enemy pinning piece
+     * @returns pin info - if pinned and what squares are legal
      */
-    protected isAbsolutelyPinned() {
-        const pinInfo = { isPinned: false, validMoves: [] };
+    protected validateAbsolutelyPinned(): IPinInfo {
+        let pinInfo: IPinInfo = { isPinned: false, restrictedToX: null, restrictedToY: null };
 
-        if (this.piece.name.toLowerCase().indexOf("king") >= 0) return;
+        if (this.piece.name.toLowerCase().indexOf("king") >= 0) return pinInfo;
 
         const pieceIsWhite = this.piece.name[0] === "w";
 
@@ -141,11 +144,14 @@ export default class BasePieceValidator{
 
             if ((pieceIsWhite && enemyIsWhite) || (!pieceIsWhite && !enemyIsWhite)) return;
 
-            // 4.2 no friend block piece or there are 2 or more friend pieces in the king's line of path
+            // 4.1 no friend block piece or there are 2 or more friend pieces in the king's line of path
             if (blockingFriendPieces.length > 1 || blockingFriendPieces.length < 1) return;
 
-            // 5. check if the enemy rook, friend piece blocking, and friend king are on the same col/row
+            // 4.2 blocking piece is this class itself
             const blockingFriendPiece = blockingFriendPieces[0];
+            if (blockingFriendPiece.coords.x !== this.piece.x && blockingFriendPiece.coords.y !== this.piece.y) return;
+
+            // 5. check if the enemy rook, friend piece blocking, and friend king are on the same col/row
 
             // all 3 are in the same column
             const linedUpSameCol = (
@@ -172,7 +178,7 @@ export default class BasePieceValidator{
                     (pinningEnemyPiece.coords.y > blockingFriendPiece.coords.y) &&
                     (blockingFriendPiece.coords.y > friendKingCoords.y)
                 ) {
-                    console.log(`1. LINED UP enemy pinning piece: `, pinningEnemyPiece ,` blocking piece: `, this.piece, ` friend king: `, friendKingCoords)
+                    console.log(`1. LINED UP enemy pinning piece: `, pinningEnemyPiece, ` blocking piece: `, this.piece, ` friend king: `, friendKingCoords)
                 }
                 else if (
                     (friendKingCoords.y > blockingFriendPiece.coords.y) &&
@@ -181,6 +187,7 @@ export default class BasePieceValidator{
                     console.log(`2. LINED UP enemy pinning piece: `, pinningEnemyPiece, ` blocking piece: `, this.piece, ` friend king: `, friendKingCoords)
                 }
 
+                pinInfo = { isPinned: true, restrictedToX: this.piece.x, restrictedToY: null };
             } 
             else if (linedUpSameRow) {
 
@@ -196,6 +203,8 @@ export default class BasePieceValidator{
                 ) {
                     console.log(`4. LINED UP enemy pinning piece: `, pinningEnemyPiece, ` blocking piece: `, this.piece, ` friend king: `, friendKingCoords)
                 }
+
+                pinInfo = { isPinned: true, restrictedToX: null, restrictedToY: this.piece.y };
             }
 
         })
