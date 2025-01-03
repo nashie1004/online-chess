@@ -98,6 +98,6 @@ export interface IPinMove {
 
 export interface IPinInfo {
     isPinned: boolean;
-    restrictedToX: number | null;
-    restrictedToY: number | null;
+    restrictedToCol: number | null;
+    restrictedToRow: number | null;
 }

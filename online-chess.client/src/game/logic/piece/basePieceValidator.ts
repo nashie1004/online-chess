@@ -52,7 +52,7 @@ export default class BasePieceValidator{
      * @returns pin info - if pinned and what squares are legal
      */
     protected validateAbsolutelyPinned(): IPinInfo {
-        let pinInfo: IPinInfo = { isPinned: false, restrictedToX: null, restrictedToY: null };
+        let pinInfo: IPinInfo = { isPinned: false, restrictedToCol: null, restrictedToRow: null };
 
         if (this.piece.name.toLowerCase().indexOf("king") >= 0) return pinInfo;
 
@@ -61,8 +61,8 @@ export default class BasePieceValidator{
         // get friend king, simulate rook, and bishop moves
         const friendKingCoords = pieceIsWhite ? this.bothKingsPosition.white : this.bothKingsPosition.black;
 
-        // 1. Rook Moves
-        const directions = [
+        /** ==== 1. ROOK MOVES === */
+        const rookDirections = [
             { x: 0, y: -1 },
             { x: -1, y: 0 },
             { x: 1, y: 0 },
@@ -73,7 +73,7 @@ export default class BasePieceValidator{
         // allow x ray for any tile type (empty, friend, opponent)
         // since we want if for the line of path, there are 1 opponent piece
         // and 1 friend piece
-        directions.forEach(direction => {
+        rookDirections.forEach(direction => {
 
             let row = friendKingCoords.y;
             let col = friendKingCoords.x;
@@ -175,41 +175,146 @@ export default class BasePieceValidator{
             if (linedUpSameCol) {
 
                 if (
-                    (pinningEnemyPiece.coords.y > blockingFriendPiece.coords.y) &&
-                    (blockingFriendPiece.coords.y > friendKingCoords.y)
+                    (
+                        (pinningEnemyPiece.coords.y > blockingFriendPiece.coords.y) &&
+                        (blockingFriendPiece.coords.y > friendKingCoords.y)
+                    )
+                    ||
+                    (
+                        (friendKingCoords.y > blockingFriendPiece.coords.y) &&
+                        (blockingFriendPiece.coords.y > pinningEnemyPiece.coords.y) 
+                    )
                 ) {
-                    console.log(`1. LINED UP enemy pinning piece: `, pinningEnemyPiece, ` blocking piece: `, this.piece, ` friend king: `, friendKingCoords)
-                }
-                else if (
-                    (friendKingCoords.y > blockingFriendPiece.coords.y) &&
-                    (blockingFriendPiece.coords.y > pinningEnemyPiece.coords.y) 
-                ) {
-                    console.log(`2. LINED UP enemy pinning piece: `, pinningEnemyPiece, ` blocking piece: `, this.piece, ` friend king: `, friendKingCoords)
+                    //console.log(`1. LINED UP enemy pinning piece: `, pinningEnemyPiece, ` blocking piece: `, this.piece, ` friend king: `, friendKingCoords)
+                    pinInfo = { isPinned: true, restrictedToCol: this.piece.x, restrictedToRow: null };
                 }
 
-                pinInfo = { isPinned: true, restrictedToX: this.piece.x, restrictedToY: null };
             } 
             else if (linedUpSameRow) {
 
                 if (
-                    (pinningEnemyPiece.coords.x > blockingFriendPiece.coords.x) &&
-                    (blockingFriendPiece.coords.x > friendKingCoords.x)
+                    (
+                        (pinningEnemyPiece.coords.x > blockingFriendPiece.coords.x) &&
+                        (blockingFriendPiece.coords.x > friendKingCoords.x)
+                    )
+                    ||
+                    (
+                        (friendKingCoords.x > blockingFriendPiece.coords.x) &&
+                        (blockingFriendPiece.coords.x > pinningEnemyPiece.coords.x)
+                    )
                 ) {
-                    console.log(`3. LINED UP enemy pinning piece: `, pinningEnemyPiece, ` blocking piece: `, this.piece, ` friend king: `, friendKingCoords)
+                    //console.log(`2. LINED UP enemy pinning piece: `, pinningEnemyPiece, ` blocking piece: `, this.piece, ` friend king: `, friendKingCoords)
+                    pinInfo = { isPinned: true, restrictedToCol: null, restrictedToRow: this.piece.y };
                 }
-                else if (
-                    (friendKingCoords.x > blockingFriendPiece.coords.x) &&
-                    (blockingFriendPiece.coords.x > pinningEnemyPiece.coords.x)
-                ) {
-                    console.log(`4. LINED UP enemy pinning piece: `, pinningEnemyPiece, ` blocking piece: `, this.piece, ` friend king: `, friendKingCoords)
-                }
-
-                pinInfo = { isPinned: true, restrictedToX: null, restrictedToY: this.piece.y };
             }
 
         })
 
-        // 2. Bishop Moves
+        /** ==== 2. BISHOP MOVES === */
+        const bishopDirections = [
+            { x: -1, y: -1 } // Top Left: -x, -y
+            , { x: -1, y: 1 } // Bottom Left: -x, +y
+            , { x: 1, y: -1 } // Top Right: +x, -y
+            , { x: 1, y: 1 } // Bottom Right: +x, +y
+        ]
+
+        bishopDirections.forEach(direction => {
+
+            let row = friendKingCoords.y;
+            let col = friendKingCoords.x;
+            const bishopMoves: IPinMove[] = [];
+
+            while (row >= 0 && col >= 0 && row <= 7 && col <= 7) {
+                row += direction.y;
+                col += direction.x;
+
+                if (this.isOutOfBounds(col, row)) continue;
+
+                const currTile = this.board[col][row]
+
+                if (currTile) {
+
+                    if (this.isAFriendPiece(currTile.name)) {
+                        bishopMoves.push({
+                            isEnemy: false, isFriend: true, isEmptyTile: false,
+                            coords: { x: col, y: row }
+                        });
+                    }
+                    else {
+                        bishopMoves.push({
+                            isEnemy: true, isFriend: false, isEmptyTile: false,
+                            coords: { x: col, y: row }
+                        });
+                    }
+
+                    continue;
+                }
+
+                bishopMoves.push({
+                    isEnemy: false, isFriend: false, isEmptyTile: true,
+                    coords: { x: col, y: row }
+                });
+            }
+
+
+            /**
+             * Pinning enemy bishop or queen logic:
+             * - for each king bishop move direction...
+             * - check if there is: 1 friend and 1 opponent
+             */
+            const blockingFriendPieces = bishopMoves.filter(bishopMove => {
+                if (bishopMove.isFriend) return bishopMove;
+            });
+            const pinningEnemyPiece = bishopMoves.find(bishopMove => {
+                if (bishopMove.isEnemy) return bishopMove;
+            });
+
+            // 1. check if there is an enemy piece in the line of attack
+            if (!pinningEnemyPiece) return;
+
+            const currEnemyTile = this.board[pinningEnemyPiece.coords.x][pinningEnemyPiece.coords.y];
+
+            // 2. not an empty tile
+            if (!currEnemyTile) return;
+
+            // 3.1 Identify if the enemy piece is a bishop or queen
+            const enemyIsABishopOrQueen = (currEnemyTile.name.toLowerCase().indexOf("bishop") >= 0
+                || currEnemyTile.name.toLowerCase().indexOf("queen") >= 0);
+
+            if (!enemyIsABishopOrQueen) return;
+
+            // 3.2 identify if piece is enemy
+            const enemyIsWhite = currEnemyTile.name[0] === "w";
+
+            if ((pieceIsWhite && enemyIsWhite) || (!pieceIsWhite && !enemyIsWhite)) return;
+
+            // 4.1 no friend block piece or there are 2 or more friend pieces in the king's line of path
+            if (blockingFriendPieces.length > 1 || blockingFriendPieces.length < 1) return;
+
+            // 4.2 blocking piece is this class itself
+            const blockingFriendPiece = blockingFriendPieces[0];
+            if (blockingFriendPiece.coords.x !== this.piece.x && blockingFriendPiece.coords.y !== this.piece.y) return;
+
+            // 5. check if the enemy rook, friend piece blocking, and friend king are on the same col/row
+
+            // all 3 are in the same column
+            const linedUp1 = (Math.abs(pinningEnemyPiece.coords.y - blockingFriendPiece.coords.y)
+                === Math.abs(pinningEnemyPiece.coords.x - blockingFriendPiece.coords.x));
+
+            // all 3 are in the same row
+            const linedUp2 = (Math.abs(blockingFriendPiece.coords.y - this.piece.y)
+                === Math.abs(blockingFriendPiece.coords.x - this.piece.x));
+
+            //console.log(`B.0. LINED UP enemy pinning piece: `, pinningEnemyPiece.coords, ` blocking piece: `, this.piece, ` friend king: `, friendKingCoords)
+
+            if (!linedUp1 && !linedUp2) return;
+
+            // All 3 pieces are on the same col or row
+            // check if there are on the proper order
+
+            // TODO
+            console.log(`BISHOP LINED UP enemy pinning piece: `, pinningEnemyPiece, ` blocking piece: `, this.piece, ` friend king: `, friendKingCoords)
+        })
 
         return pinInfo;
     }

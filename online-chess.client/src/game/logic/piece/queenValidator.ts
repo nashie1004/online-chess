@@ -25,6 +25,31 @@ export default class QueenValidator extends BasePieceValidator{
         
         validMoves = [...rookValidator.validMoves(), ...bishopValidator.validMoves()]
 
+        // this will check if this piece is absolutely pinned to its friend king
+        const absolutePinFilter = this.validateAbsolutelyPinned();
+
+        if (absolutePinFilter.isPinned) {
+
+            validMoves = validMoves.filter(initialValidMove => {
+
+                // 1. enemy rook or queen 
+                if (absolutePinFilter.restrictedToCol && initialValidMove.x === absolutePinFilter.restrictedToCol) {
+                    return initialValidMove;
+                }
+                else if (absolutePinFilter.restrictedToRow && initialValidMove.y === absolutePinFilter.restrictedToRow) {
+                    return initialValidMove;
+                }
+
+                // 2. enemy bishop or queen
+
+                // bottom left to top right = x: +1, y: -1 
+
+                // top left to bottom right = x: +1, y: +1
+
+            });
+
+        }
+
         return validMoves;
     }
 }

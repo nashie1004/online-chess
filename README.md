@@ -3,8 +3,16 @@
 ## Todo
 
 ### Chess Logic
-2. king pins after move function
-4. stalemate detection - if the piece value suffice
+1. king pins after move function
+2. stalemate detection - if the piece value suffice
+
+### Chess Game
+1. rotate board
+2. gameplay is okay on single player
+3. phaser and react state is in sync
+4. show notation on chessboard 
+5. cleanup
+
 
 ### Pages / UI
 1. home / dashboard 
@@ -18,6 +26,9 @@
 ### C#
 1. backend - authentication
 2. backend - signal move state
+
+### UI Possible Templates
+1. https://www.chesssquire.com/chess-vs-computer.html
 
 ~~1. x ray checks'~~
 ~~2. pawn diagoanl capture invalidates a king move~~
@@ -37,16 +48,10 @@
 ~~1. when king is in check - another option is to block the attacker~~
 ~~3. checkmate validator after validate check function~~
 
-
-ui
 ~~1. move history (with notation)~~
 ~~2. capture history (with svg)~~
 ~~3. chat bar styling~~
 ~~4. side bar styling~~
-
-others/minimal
-1. rotate board
-2. show notation on chessboard 
 
 ## Assets 
 - https://github.com/lichess-org/lila/blob/master/public/piece/alpha/

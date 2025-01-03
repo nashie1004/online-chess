@@ -11,7 +11,7 @@ export default class KnightValidator extends BasePieceValidator{
     }
     
     public override validMoves(): IValidMove[]{
-        const validMoves: IValidMove[] = [];
+        let validMoves: IValidMove[] = [];
         const x = this.piece.x;
         const y = this.piece.y;
         
@@ -59,7 +59,25 @@ export default class KnightValidator extends BasePieceValidator{
             validMoves.push({ x: col, y: row, isCapture: false })
         })
 
-        this.validateAbsolutelyPinned();
+        // TODO: ADDITIONAL
+        // this will check if this piece is absolutely pinned to its friend king
+        const absolutePinFilter = this.validateAbsolutelyPinned();
+
+        if (absolutePinFilter.isPinned) {
+
+            validMoves = validMoves.filter(initialValidMove => {
+
+                // 1. enemy rook or queen 
+                if (absolutePinFilter.restrictedToCol && initialValidMove.x === absolutePinFilter.restrictedToCol) {
+                    return initialValidMove;
+                }
+                else if (absolutePinFilter.restrictedToRow && initialValidMove.y === absolutePinFilter.restrictedToRow) {
+                    return initialValidMove;
+                }
+
+            });
+
+        }
         
         return validMoves;
     }
