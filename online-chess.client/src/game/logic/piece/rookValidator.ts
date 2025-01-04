@@ -16,7 +16,7 @@ export default class RookValidator extends BasePieceValidator{
     }
     
     public override validMoves(): IValidMove[]{
-        const validMoves: IValidMove[] = [];
+        let validMoves: IValidMove[] = [];
         const x = this.piece.x;
         const y = this.piece.y;
 
@@ -71,6 +71,8 @@ export default class RookValidator extends BasePieceValidator{
                 validMoves.push({ x: col, y: row, isCapture: false })
             }
         })
+
+        validMoves = this.filterLegalMovesWhenPinned(validMoves);
 
         return validMoves;
     }

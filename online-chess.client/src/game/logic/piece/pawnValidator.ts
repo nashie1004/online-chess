@@ -23,7 +23,7 @@ export default class PawnValidator extends BasePieceValidator{
         const x = this.piece.x;
         const y = this.piece.y;
         
-        const validMoves: IValidMove[] = [];
+        let validMoves: IValidMove[] = [];
         
         // 1. normal 1 square forward
         if (y <= 7 || y >= 0){
@@ -93,6 +93,8 @@ export default class PawnValidator extends BasePieceValidator{
         if (enPassantCapture){
             validMoves.push(enPassantCapture);
         }
+
+        validMoves = this.filterLegalMovesWhenPinned(validMoves);
         
         return validMoves;
     }

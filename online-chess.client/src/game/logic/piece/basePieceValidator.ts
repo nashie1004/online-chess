@@ -49,10 +49,11 @@ export default class BasePieceValidator{
      * - only rook, bishops, queens can pin
      * - if a piece is pinned, can only move in forward or backwards in the same direction as 
      * the enemy pinning piece or capture the enemy pinning piece
+     * - this method is used by this.filterLegalMovesWhenPinned() below
      * @returns pin info - if pinned and what squares are legal
      */
     protected validateAbsolutelyPinned(): IPinInfo {
-        let pinInfo: IPinInfo = { isPinned: false, restrictedToCol: null, restrictedToRow: null };
+        let pinInfo: IPinInfo = { isPinned: false, restrictedToCol: null, restrictedToRow: null, isRook: true };
 
         if (this.piece.name.toLowerCase().indexOf("king") >= 0) return pinInfo;
 
@@ -186,7 +187,7 @@ export default class BasePieceValidator{
                     )
                 ) {
                     //console.log(`1. LINED UP enemy pinning piece: `, pinningEnemyPiece, ` blocking piece: `, this.piece, ` friend king: `, friendKingCoords)
-                    pinInfo = { isPinned: true, restrictedToCol: this.piece.x, restrictedToRow: null };
+                    pinInfo = { isPinned: true, restrictedToCol: this.piece.x, restrictedToRow: null, isRook: true };
                 }
 
             } 
@@ -204,7 +205,7 @@ export default class BasePieceValidator{
                     )
                 ) {
                     //console.log(`2. LINED UP enemy pinning piece: `, pinningEnemyPiece, ` blocking piece: `, this.piece, ` friend king: `, friendKingCoords)
-                    pinInfo = { isPinned: true, restrictedToCol: null, restrictedToRow: this.piece.y };
+                    pinInfo = { isPinned: true, restrictedToCol: null, restrictedToRow: this.piece.y, isRook: true };
                 }
             }
 
@@ -295,27 +296,95 @@ export default class BasePieceValidator{
             const blockingFriendPiece = blockingFriendPieces[0];
             if (blockingFriendPiece.coords.x !== this.piece.x && blockingFriendPiece.coords.y !== this.piece.y) return;
 
-            // 5. check if the enemy rook, friend piece blocking, and friend king are on the same col/row
+            // 5. check if the enemy rook, friend piece blocking, and friend king are on the same col/row and in the corect order
 
             // all 3 are in the same column
             const linedUp1 = (Math.abs(pinningEnemyPiece.coords.y - blockingFriendPiece.coords.y)
                 === Math.abs(pinningEnemyPiece.coords.x - blockingFriendPiece.coords.x));
 
             // all 3 are in the same row
-            const linedUp2 = (Math.abs(blockingFriendPiece.coords.y - this.piece.y)
-                === Math.abs(blockingFriendPiece.coords.x - this.piece.x));
-
-            //console.log(`B.0. LINED UP enemy pinning piece: `, pinningEnemyPiece.coords, ` blocking piece: `, this.piece, ` friend king: `, friendKingCoords)
+            const linedUp2 = (Math.abs(blockingFriendPiece.coords.y - friendKingCoords.x)
+                === Math.abs(blockingFriendPiece.coords.x - friendKingCoords.y));
 
             if (!linedUp1 && !linedUp2) return;
 
-            // All 3 pieces are on the same col or row
-            // check if there are on the proper order
+            // returns something like [0 ,4]
+            const endsCol = [pinningEnemyPiece.coords.x, friendKingCoords.x];
+            const endsRow = [pinningEnemyPiece.coords.y, friendKingCoords.y];
 
-            // TODO
-            console.log(`BISHOP LINED UP enemy pinning piece: `, pinningEnemyPiece, ` blocking piece: `, this.piece, ` friend king: `, friendKingCoords)
-        })
+            pinInfo = {
+                isPinned: true
+                // fills up missing whole number for example
+                // [0, 4] becomes [0, 1,2,3, 4]
+                // [4, 0] becomes [4, 3,2,1, 0]
+                , restrictedToCol: Array.from(
+                    { length: Math.abs(endsCol[1] - endsCol[0]) + 1 },
+                    (_, i) => endsCol[0] + (endsCol[0] < endsCol[1] ? i : -i)
+                )
+                , restrictedToRow: Array.from(
+                    { length: Math.abs(endsRow[1] - endsRow[0]) + 1 },
+                    (_, i) => endsRow[0] + (endsRow[0] < endsRow[1] ? i : -i)
+                )
+                , isRook: false
+            }
+        });
 
         return pinInfo;
     }
+
+    /**
+     * - this method will check if this piece/class is in pinned to its king and
+     *  filter out the legal moves 
+     * @param validMoves
+     * @returns modified validMoves[]
+     */
+    protected filterLegalMovesWhenPinned(validMoves: IValidMove[]): IValidMove[] {
+
+        // this will check if this piece is absolutely pinned to its friend king
+        const absolutePinFilter = this.validateAbsolutelyPinned();
+
+        //console.log(absolutePinFilter, this.piece, validMoves)
+
+        if (absolutePinFilter.isPinned) {
+
+            validMoves = validMoves.filter(initialValidMove => {
+
+                // 1. enemy rook or queen (just a number)
+                // this will just check if the legal move is in the same rank or file 
+                if (absolutePinFilter.isRook && typeof absolutePinFilter.restrictedToCol === "number" && typeof absolutePinFilter.restrictedToRow === "number") {
+
+                    if (absolutePinFilter.restrictedToCol && initialValidMove.x === absolutePinFilter.restrictedToCol) {
+                        return initialValidMove;
+                    }
+                    else if (absolutePinFilter.restrictedToRow && initialValidMove.y === absolutePinFilter.restrictedToRow) {
+                        return initialValidMove;
+                    }
+                }
+
+                // 2. enemy bishop or queen (an array/tuple)
+                // this will just check if the enemy bishop/queen, friend blocking piece
+                // and friend king are in the same diagonal and in the right order
+                else if (!absolutePinFilter.isRook && Array.isArray(absolutePinFilter.restrictedToCol) && Array.isArray(absolutePinFilter.restrictedToRow)) {
+
+                    for (let i = 0; i < absolutePinFilter.restrictedToRow.length; i++) {
+                        const restrictedToTile = { x: absolutePinFilter.restrictedToCol[i], y: absolutePinFilter.restrictedToRow[i] };
+
+                        if (
+                            absolutePinFilter.restrictedToCol[i] === initialValidMove.x &&
+                            absolutePinFilter.restrictedToRow[i] === initialValidMove.y
+                        ) {
+                            return initialValidMove;
+                        }
+
+                    }
+
+                }
+
+            });
+
+        }
+
+        return validMoves;
+    }
+
 }

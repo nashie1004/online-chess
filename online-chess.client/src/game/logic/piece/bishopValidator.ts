@@ -19,7 +19,7 @@ export default class BishopValidator extends BasePieceValidator{
         const x = this.piece.x;
         const y = this.piece.y;
 
-        const validMoves: IValidMove[] = [];
+        let validMoves: IValidMove[] = [];
 
         const directions = [
             { x: -1, y: -1 } // Top Left: -x, -y
@@ -71,6 +71,8 @@ export default class BishopValidator extends BasePieceValidator{
                 validMoves.push({ x: col, y: row, isCapture: false})
             }
         })
+
+        validMoves = this.filterLegalMovesWhenPinned(validMoves);
 
         return validMoves;
     }

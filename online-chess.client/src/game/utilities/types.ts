@@ -98,6 +98,8 @@ export interface IPinMove {
 
 export interface IPinInfo {
     isPinned: boolean;
-    restrictedToCol: number | null;
-    restrictedToRow: number | null;
+    // 1. null means piece is not pinned, 2. number if pinned by enemy rook or queen 2. array if pinned by enemy bishop or queen
+    restrictedToCol: null | number | number[]; 
+    restrictedToRow: null | number | number[];
+    isRook: boolean;
 }
