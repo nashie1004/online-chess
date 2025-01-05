@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using online_chess.Server;
 using online_chess.Server.DTOs;
 using online_chess.Server.Hubs;
 using online_chess.Server.Models;
@@ -24,8 +25,9 @@ builder.Services.AddSwaggerGen(c =>
 
 // services
 //builder.Services.AddAutoMapper(typeof(Mapper));
-builder.Services.AddDbContext<MainDbContext>(opt => opt.UseSqlite("Data Source=app.db"));
-builder.Services.AddDbContext<UserIdentityDbContext>(opt => opt.UseSqlite("Data Source=app.db"));
+var dataSource = DBCreatorHelper.CreateSQLiteDB();
+builder.Services.AddDbContext<MainDbContext>(opt => opt.UseSqlite($"Data Source={dataSource}"));
+builder.Services.AddDbContext<UserIdentityDbContext>(opt => opt.UseSqlite($"Data Source={dataSource}"));
 builder.Services.AddIdentity<User, Role>()
     .AddEntityFrameworkStores<UserIdentityDbContext>()
     .AddDefaultTokenProviders();

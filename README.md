@@ -30,19 +30,24 @@
 ### UI Possible Templates
 1. https://www.chesssquire.com/chess-vs-computer.html
 
-## Assets 
-- https://github.com/lichess-org/lila/blob/master/public/piece/alpha/
-- https://github.com/lichess-org/lila/blob/master/public/images/board/wood4.jpg
-- https://www.piskelapp.com/
-
-
 ## Description
 A simple real time 2-player chess web application created with Phaser, React, Typescript, Bootstrap, ASP.NET Core SignalR and Identity, and SQLite.
 You can view a demo [here](https://github.com/nashie1004/online-chess).
 
 ## Migrations 
 Run the following commands:
-```NuGet
+```
 Update-Database -Context MainDbContext
 Update-Database -Context UserIdentityDbContext
 ```
+or
+```
+dotnet ef database update MainDbContext
+dotnet ef database update UserIdentityDbContext
+```
+This should create a directory named `/SQLiteDB` where our SQLite Database resides.
+
+## Assets 
+- https://github.com/lichess-org/lila/blob/master/public/piece/alpha/
+- https://github.com/lichess-org/lila/blob/master/public/images/board/wood4.jpg
+- https://www.piskelapp.com/
