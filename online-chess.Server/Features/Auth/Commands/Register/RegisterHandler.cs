@@ -35,6 +35,7 @@ namespace online_chess.Server.Features.Auth.Commands.Register
                 if (!result.Succeeded)
                 {
                     retVal.ValidationErrors = result.Errors.Select(i => i.Description).ToList();
+                    return retVal;
                 }
 
                 await _signManager.SignInAsync(user, true);

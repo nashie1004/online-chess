@@ -3,7 +3,7 @@ import { useEffect, useRef } from "react"
 import { Options as gameOptions } from "../game/utilities/constants";
 import { eventEmitter } from "../game/utilities/eventEmitter";
 import SidebarLeft from "../components/SidebarLeft";
-import usePhaser from "../hooks/usePhaser";
+import usePhaserContext from "../hooks/usePhaserContext";
 import { IMoveHistory , ICaptureHistory, IKingState} from "../game/utilities/types";
 import SidebarRight from "../components/SidebarRight";
 import { MainGameScene } from "../game/scenes/MainGameScene";
@@ -19,7 +19,7 @@ export default function Main(){
         , setMoveHistory
         , setCaptureHistory
         , setKingsState
-    } = usePhaser();
+    } = usePhaserContext();
 
     async function startConnection() {
         const connection = new HubConnectionBuilder()
@@ -61,7 +61,7 @@ export default function Main(){
         eventEmitter.on("setKingsState", (data: IKingState) => setKingsState(data))
 
         // test real time connection
-
+        /*
         const connection = new SignalRConnection();
         async function start() {
             await connection.startConnection();
@@ -74,6 +74,7 @@ export default function Main(){
         }
 
         start();
+        */
 
         // cleanup phaser
         return () => {
@@ -81,7 +82,7 @@ export default function Main(){
                 gameRef.current.destroy(true);
                 gameRef.current = null;
             }
-            connection.stopConnection();
+            //connection.stopConnection();
         };
     }, [])
  

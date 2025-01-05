@@ -34,6 +34,13 @@ namespace online_chess.Server.Controllers
         }
 
         [Authorize]
+        [HttpPost("isSignedIn")]
+        public async Task<IActionResult> IsSignedIn()
+        {
+            return Ok();
+        }
+
+        [Authorize]
         [HttpPost("logout")]
         public async Task<IActionResult> Logout([FromBody] LogoutRequest req)
         {

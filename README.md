@@ -53,7 +53,7 @@ Then
 cd .\online-chess.client\
 npm run dev
 ```
-and
+and open a new terminal and finally
 ```
 cd .\online-chess.Server\
 dotnet watch

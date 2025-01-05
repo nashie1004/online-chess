@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import useReactContext from '../hooks/useReactContext';
-import usePhaser from '../hooks/usePhaser';
+import usePhaserContext from '../hooks/usePhaserContext';
 import Image from 'react-bootstrap/Image';
 import { Alert, Badge } from 'react-bootstrap';
 
@@ -8,7 +8,7 @@ export default function PlayerInfo() {
     const {timer, setTimer} = useReactContext();
   const {
         isWhitesTurn, kingsState
-    } = usePhaser();
+  } = usePhaserContext();
     
     
     useEffect(() => {

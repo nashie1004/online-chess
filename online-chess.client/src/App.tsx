@@ -11,24 +11,27 @@ import Register from "./pages/Register";
 import Profile from "./pages/Profile";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import About from "./pages/About";
+import AuthContext from "./context/AuthContext";
 
 export default function App(){
     return <>
         <ReactContext>
             <PhaserContext>
-                <BrowserRouter>
-                    <Routes>
-                        <Route path="/" element={<Layout />}>
-                            <Route path="/" element={<Home /> } />
-                            <Route path="/play" element={<Play /> } />
-                            <Route path="/register" element={<Register /> } />
-                            <Route path="/login" element={<Login /> } />
-                            <Route path="/profile" element={<Profile /> } />
-                            <Route path="/about" element={<About /> } />
-                            <Route path="*" element={<NotFound /> } />
-                        </Route>
-                    </Routes>
-                </BrowserRouter>
+                <AuthContext>
+                    <BrowserRouter>
+                        <Routes>
+                            <Route path="/" element={<Layout />}>
+                                <Route path="/" element={<Home /> } />
+                                <Route path="/play" element={<Play /> } />
+                                <Route path="/register" element={<Register /> } />
+                                <Route path="/login" element={<Login /> } />
+                                <Route path="/profile" element={<Profile /> } />
+                                <Route path="/about" element={<About /> } />
+                                <Route path="*" element={<NotFound /> } />
+                            </Route>
+                        </Routes>
+                    </BrowserRouter>
+                </AuthContext>
             </PhaserContext>
         </ReactContext>
     </>

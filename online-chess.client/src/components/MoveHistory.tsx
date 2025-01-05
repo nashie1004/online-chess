@@ -1,5 +1,5 @@
 import React from 'react'
-import usePhaser from '../hooks/usePhaser';
+import usePhaserContext from '../hooks/usePhaserContext';
 import { chessBoardNotation } from '../game/utilities/helpers';
 import { Table } from 'react-bootstrap';
 
@@ -11,7 +11,7 @@ export default function MoveHistory() {
         captureHistory,
         setPromoteTo,
         isColorWhite
-    } = usePhaser();
+    } = usePhaserContext();
     
   return (
     <>

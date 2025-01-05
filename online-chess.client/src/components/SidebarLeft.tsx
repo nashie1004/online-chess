@@ -1,4 +1,4 @@
-import usePhaser from '../hooks/usePhaser';
+import usePhaser from '../hooks/usePhaserContext';
 import { pieceImages, PieceNames } from '../game/utilities/constants';
 import { chessBoardNotation } from '../game/utilities/helpers';
 import { eventEmitter } from '../game/utilities/eventEmitter';
