@@ -31,10 +31,11 @@
 1. https://www.chesssquire.com/chess-vs-computer.html
 
 ## Description
-A simple real time 2-player chess web application created with Phaser, React, Typescript, Bootstrap, ASP.NET Core SignalR and Identity, and SQLite.
+A simple real time 2-player chess web application created with Phaser, React, Typescript, Bootstrap, ASP.NET Core SignalR and Identity, and SQLite. Uses .NET 9 and React 18.
 You can view a demo [here](https://github.com/nashie1004/online-chess).
 
-## Migrations 
+## Installation
+
 Run the following commands:
 ```
 Update-Database -Context MainDbContext
@@ -46,6 +47,18 @@ dotnet ef database update MainDbContext
 dotnet ef database update UserIdentityDbContext
 ```
 This should create a directory named `/SQLiteDB` where our SQLite Database resides.
+
+Then
+```
+cd .\online-chess.client\
+npm run dev
+```
+and
+```
+cd .\online-chess.Server\
+dotnet watch
+```
+after that, the web application should now be running.
 
 ## Assets 
 - https://github.com/lichess-org/lila/blob/master/public/piece/alpha/

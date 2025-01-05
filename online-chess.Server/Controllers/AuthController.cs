@@ -1,9 +1,10 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
+using online_chess.Server.Features.Auth.Commands.LogIn;
 using online_chess.Server.Features.Auth.Commands.LogOut;
+using online_chess.Server.Features.Auth.Commands.Register;
 
 namespace online_chess.Server.Controllers
 {
