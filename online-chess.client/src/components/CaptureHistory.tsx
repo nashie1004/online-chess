@@ -1,4 +1,3 @@
-import React from 'react'
 import usePhaser from '../hooks/usePhaser';
 import { pieceImages, PieceNames } from '../game/utilities/constants';
 

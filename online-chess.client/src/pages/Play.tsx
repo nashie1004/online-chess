@@ -9,7 +9,7 @@ import SidebarRight from "../components/SidebarRight";
 import { MainGameScene } from "../game/scenes/MainGameScene";
 import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import SignalRConnection from "../services/SignalRService";
-import PlayerInfo from "../components/ui/PlayerInfo";
+import PlayerInfo from "../components/PlayerInfo";
 import CaptureHistory from "../components/CaptureHistory";
 
 export default function Main(){
@@ -87,7 +87,7 @@ export default function Main(){
  
     return <> 
         {/* <SidebarLeft /> */}
-        <div className="col-auto">
+        <div className="col-auto pt-2">
             <div id="game-container" style={{ maxWidth: "800px" }}>
             
             </div>

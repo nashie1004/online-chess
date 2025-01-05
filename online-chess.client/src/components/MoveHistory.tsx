@@ -15,7 +15,7 @@ export default function MoveHistory() {
     
   return (
     <>
-        <div style={{ height: "200px", overflowY: "scroll" }} className='mb-3'>
+        <div style={{ height: "170px", overflowY: "scroll" }} className='mb-3'>
             <Table striped size="sm">
                 <thead>
                     <tr>
