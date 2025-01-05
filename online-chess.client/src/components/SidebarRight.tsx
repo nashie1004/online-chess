@@ -1,5 +1,4 @@
 import usePhaser from '../hooks/usePhaser';
-import {Card, CardHeader, CardBody, CardFooter, Divider, Link, Image, Button, Select, SelectItem, Spacer, ButtonGroup, Input, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow} from "@nextui-org/react";
 import PlayerInfo from './ui/PlayerInfo';
 import MailIcon from './ui/MainInfo';
 
@@ -8,69 +7,63 @@ export default function SidebarRight() {
 
   return (
     <div className='flex-1 p-4'>
-        <Card className=' bg-default-50' style={{ border: "1px solid rgba(177, 158, 191, 0.2)"}}>
-          <CardHeader>
+        <div className=' bg-default-50' style={{ border: "1px solid rgba(177, 158, 191, 0.2)"}}>
+          <div>
             <p>Player Information</p>
-          </CardHeader>
-          <Divider />
-          <CardBody>
+          </div>
+          <div />
+          <div>
             <PlayerInfo />
-          </CardBody>
-        </Card>
-    <Spacer y={5} />
-    <Card className=' bg-default-50' style={{ border: "1px solid rgba(177, 158, 191, 0.2)"}}>
-      <CardHeader>
+          </div>
+        </div>
+    <div className=' bg-default-50' style={{ border: "1px solid rgba(177, 158, 191, 0.2)"}}>
+      <div>
         <p>Chat Bar</p>
-      </CardHeader>
-      <Divider />
-      <CardBody>
+      </div>
+      <div>
         <div style={{ height: "350px", overflowY: "scroll" }}>
 
-            <Table aria-label="Example static collection table">
-          <TableHeader>
-            <TableColumn>NAME</TableColumn>
-            <TableColumn>ROLE</TableColumn>
-            <TableColumn>STATUS</TableColumn>
-          </TableHeader>
-          <TableBody>
-            <TableRow key="1">
-              <TableCell>Tony Reichert</TableCell>
-              <TableCell>CEO</TableCell>
-              <TableCell>Active</TableCell>
-            </TableRow>
-            <TableRow key="2">
-              <TableCell>Zoey Lang</TableCell>
-              <TableCell>Technical Lead</TableCell>
-              <TableCell>Paused</TableCell>
-            </TableRow>
-            <TableRow key="3">
-              <TableCell>Jane Fisher</TableCell>
-              <TableCell>Senior Developer</TableCell>
-              <TableCell>Active</TableCell>
-            </TableRow>
-            <TableRow key="4">
-              <TableCell>William Howard</TableCell>
-              <TableCell>Community Manager</TableCell>
-              <TableCell>Vacation</TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
+            <div aria-label="Example static collection table">
+          <div>
+            <div>NAME</div>
+            <div>ROLE</div>
+            <div>STATUS</div>
+          </div>
+          <div>
+            <div key="1">
+              <div>Tony Reichert</div>
+              <div>CEO</div>
+              <div>Active</div>
+            </div>
+            <div key="2">
+              <div>Zoey Lang</div>
+              <div>Technical Lead</div>
+              <div>Paused</div>
+            </div>
+            <div key="3">
+              <div>Jane Fisher</div>
+              <div>Senior Developer</div>
+              <div>Active</div>
+            </div>
+            <div key="4">
+              <div>William Howard</div>
+              <div>Community Manager</div>
+              <div>Vacation</div>
+            </div>
+          </div>
         </div>
-        <Spacer y={3} />
+        </div>
         <div className='flex gap-1'>
-          <Input
+          <input
             placeholder="you@example.com"
-            startContent={
-              <MailIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
-            }
             type="text"
           />
-          <Button color='primary' size='md'>
+          <div color='primary' >
             Send
-          </Button>
+          </div>
         </div>
-      </CardBody>
-    </Card>
+      </div>
+    </div>
     </div>
   )
 }

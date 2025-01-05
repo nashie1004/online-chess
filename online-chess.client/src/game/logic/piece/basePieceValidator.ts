@@ -294,6 +294,7 @@ export default class BasePieceValidator{
 
             // 4.2 blocking piece is this class itself
             const blockingFriendPiece = blockingFriendPieces[0];
+            console.log(blockingFriendPiece, this.piece)
             if (blockingFriendPiece.coords.x !== this.piece.x && blockingFriendPiece.coords.y !== this.piece.y) return;
 
             // 5. check if the enemy rook, friend piece blocking, and friend king are on the same col/row and in the corect order
@@ -328,6 +329,8 @@ export default class BasePieceValidator{
                 , isRook: false
             }
         });
+
+
 
         return pinInfo;
     }
@@ -370,8 +373,8 @@ export default class BasePieceValidator{
                         const restrictedToTile = { x: absolutePinFilter.restrictedToCol[i], y: absolutePinFilter.restrictedToRow[i] };
 
                         if (
-                            absolutePinFilter.restrictedToCol[i] === initialValidMove.x &&
-                            absolutePinFilter.restrictedToRow[i] === initialValidMove.y
+                            restrictedToTile.x === initialValidMove.x &&
+                            restrictedToTile.y === initialValidMove.y
                         ) {
                             return initialValidMove;
                         }
