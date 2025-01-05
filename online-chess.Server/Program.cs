@@ -23,13 +23,13 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 // services
-/*
-builder.Services.AddAutoMapper(typeof(Mapper));
+//builder.Services.AddAutoMapper(typeof(Mapper));
 builder.Services.AddDbContext<MainDbContext>(opt => opt.UseSqlite("Data Source=app.db"));
+builder.Services.AddDbContext<UserIdentityDbContext>(opt => opt.UseSqlite("Data Source=app.db"));
 builder.Services.AddIdentity<User, Role>()
     .AddEntityFrameworkStores<UserIdentityDbContext>()
     .AddDefaultTokenProviders();
-*/
+
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
 
 

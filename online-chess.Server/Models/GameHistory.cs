@@ -6,10 +6,10 @@ namespace online_chess.Server.Models
     {
         public long GameHistoryId { get; set; }
         public DateTime CreateDate { get; set; }
-        public long PlayerOneUserId { get; set; }
+        public long PlayerOneId { get; set; }
         public Color PlayerOneColor { get; set; }
-        public long PlayerTwoUserId { get; set; }
+        public long PlayerTwoId { get; set; }
         public Color PlayerTwoColor { get; set; }
-        public long WinnerUserId { get; set; }
+        public long WinnerPlayerId { get; set; }
     }
 }

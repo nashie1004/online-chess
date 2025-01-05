@@ -34,7 +34,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Auth\" />
+    <Folder Include="Features\Auth\Queries\" />
     <Folder Include="Features\Game\Queries\" />
     <Folder Include="Migrations\" />
     <Folder Include="SQLiteDB\" />
