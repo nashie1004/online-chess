@@ -9,6 +9,8 @@ import SidebarRight from "../components/SidebarRight";
 import { MainGameScene } from "../game/scenes/MainGameScene";
 import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import SignalRConnection from "../services/SignalRService";
+import PlayerInfo from "../components/ui/PlayerInfo";
+import CaptureHistory from "../components/CaptureHistory";
 
 export default function Main(){
     const gameRef = useRef<Phaser.Game | null>();
@@ -83,11 +85,16 @@ export default function Main(){
         };
     }, [])
  
-    return <div className="flex"> 
-        <SidebarLeft />
-        <main id="game-container" style={{ maxWidth: "800px" }}>
-          
-        </main>
-        <SidebarRight />
-    </div>
+    return <> 
+        {/* <SidebarLeft /> */}
+        <div className="col-auto">
+            <div id="game-container" style={{ maxWidth: "800px" }}>
+            
+            </div>
+            <CaptureHistory />
+        </div>
+        <div className="col">
+            <SidebarRight />
+        </div>
+    </>
 }

@@ -1,76 +1,32 @@
 import usePhaser from '../hooks/usePhaser';
-import {Card, CardHeader, CardBody, CardFooter, Divider, Link, Image, Button, Select, SelectItem, Spacer, ButtonGroup, Input, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow} from "@nextui-org/react";
 import PlayerInfo from './ui/PlayerInfo';
 import MailIcon from './ui/MainInfo';
+import { Button, Form, Table } from 'react-bootstrap';
+import Chatbar from './Chatbar';
+import CaptureHistory from './CaptureHistory';
+import MoveHistory from './MoveHistory';
 
 export default function SidebarRight() {
   const { isColorWhite, promoteTo, setPromoteTo } = usePhaser();
 
   return (
-    <div className='flex-1 p-4'>
-        <Card className=' bg-default-50' style={{ border: "1px solid rgba(177, 158, 191, 0.2)"}}>
-          <CardHeader>
-            <p>Player Information</p>
-          </CardHeader>
-          <Divider />
-          <CardBody>
-            <PlayerInfo />
-          </CardBody>
-        </Card>
-    <Spacer y={5} />
-    <Card className=' bg-default-50' style={{ border: "1px solid rgba(177, 158, 191, 0.2)"}}>
-      <CardHeader>
-        <p>Chat Bar</p>
-      </CardHeader>
-      <Divider />
-      <CardBody>
-        <div style={{ height: "350px", overflowY: "scroll" }}>
-
-            <Table aria-label="Example static collection table">
-          <TableHeader>
-            <TableColumn>NAME</TableColumn>
-            <TableColumn>ROLE</TableColumn>
-            <TableColumn>STATUS</TableColumn>
-          </TableHeader>
-          <TableBody>
-            <TableRow key="1">
-              <TableCell>Tony Reichert</TableCell>
-              <TableCell>CEO</TableCell>
-              <TableCell>Active</TableCell>
-            </TableRow>
-            <TableRow key="2">
-              <TableCell>Zoey Lang</TableCell>
-              <TableCell>Technical Lead</TableCell>
-              <TableCell>Paused</TableCell>
-            </TableRow>
-            <TableRow key="3">
-              <TableCell>Jane Fisher</TableCell>
-              <TableCell>Senior Developer</TableCell>
-              <TableCell>Active</TableCell>
-            </TableRow>
-            <TableRow key="4">
-              <TableCell>William Howard</TableCell>
-              <TableCell>Community Manager</TableCell>
-              <TableCell>Vacation</TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
+      <div className=''>
+        {/* 1. Resign, Request draw btns */}
+        <div className='hstack gap-1 mt-3'>
+          <button className='btn btn-danger btn-md w-100'>Resign</button>
+          <button className='btn btn-secondary btn-md w-100'>Offer a Draw</button>
         </div>
-        <Spacer y={3} />
-        <div className='flex gap-1'>
-          <Input
-            placeholder="you@example.com"
-            startContent={
-              <MailIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
-            }
-            type="text"
-          />
-          <Button color='primary' size='md'>
-            Send
-          </Button>
-        </div>
-      </CardBody>
-    </Card>
-    </div>
+        {/* 2. Game checks, checkmate, stalemate, player turn */}
+        <h6>Player Information</h6>
+        <PlayerInfo />
+        {/* 3. Move History */}
+        <h6>Move History</h6>
+        <MoveHistory />
+        {/* 4. Capture History */}
+        {/* <CaptureHistory /> */}
+        {/* 5. Chat bar */}
+        <h6>Chat bar</h6>
+        <Chatbar />
+      </div>
   )
 }
