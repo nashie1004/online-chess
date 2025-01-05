@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
-import useReactContext from '../../hooks/useReactContext';
-import usePhaser from '../../hooks/usePhaser';
+import useReactContext from '../hooks/useReactContext';
+import usePhaser from '../hooks/usePhaser';
 import Image from 'react-bootstrap/Image';
 import { Alert, Badge } from 'react-bootstrap';
 
@@ -31,21 +31,21 @@ export default function PlayerInfo() {
 
   return (
     <>
-        <div className="row">
+        <div className="row my-2">
             <div className='col'>
-                <h6>Lorem, ipsum.</h6>
+                <h6 className='text-secondary'>Lorem, ipsum.</h6>
                 <h1>
-                    <Badge bg="info">{timer.white}.00s</Badge>
+                    <Badge bg="dark">{timer.white}.00s</Badge>
                 </h1>
             </div>
             <div className='col'>
-                <h6>Lorem, ipsum.</h6>
+                <h6  className='text-secondary'>Lorem, ipsum.</h6>
                 <h1>
-                    <Badge bg="info">{timer.black}.00s</Badge>
+                    <Badge bg="dark">{timer.black}.00s</Badge>
                 </h1>
             </div>
         </div>
-        <Alert variant='warning'>
+        <Alert variant='secondary'>
             {isWhitesTurn ? <>White's</> : <>Black's</>} turn to move.
             {
                 kingsState.white.isInCheck || kingsState.black.isInCheck ? <>

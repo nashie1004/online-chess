@@ -9,7 +9,7 @@ import SidebarRight from "../components/SidebarRight";
 import { MainGameScene } from "../game/scenes/MainGameScene";
 import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import SignalRConnection from "../services/SignalRService";
-import PlayerInfo from "../components/ui/PlayerInfo";
+import PlayerInfo from "../components/PlayerInfo";
 import CaptureHistory from "../components/CaptureHistory";
 
 export default function Main(){
