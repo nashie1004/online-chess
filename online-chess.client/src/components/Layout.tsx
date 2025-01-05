@@ -8,19 +8,19 @@ import { ToastContainer } from "react-toastify";
 export default function Layout() {
     const navigate = useNavigate();
     const url = useLocation();
-    const {isAuthenticated, isAuthenticating} = useAuthContext();
+    const {user, isAuthenticating} = useAuthContext();
       // if not signed in, allowed urls are these
     const unAuthenticatedAllowedPaths = ["/", "/about", "/register", "/login"];
 
     useEffect(() => {
 
-      if (isAuthenticated) return;
+      if (user) return;
 
       if (!unAuthenticatedAllowedPaths.includes(url.pathname)) {
         navigate('/login');
       }
 
-    }, [isAuthenticated, url.pathname])
+    }, [user, url.pathname])
 
   return (
     <>

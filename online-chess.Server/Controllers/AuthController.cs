@@ -2,9 +2,11 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using online_chess.Server.Common;
 using online_chess.Server.Features.Auth.Commands.LogIn;
 using online_chess.Server.Features.Auth.Commands.LogOut;
 using online_chess.Server.Features.Auth.Commands.Register;
+using online_chess.Server.Features.Auth.Queries.GetPlayerInfo;
 
 namespace online_chess.Server.Controllers
 {
@@ -35,9 +37,9 @@ namespace online_chess.Server.Controllers
 
         [Authorize]
         [HttpGet("isSignedIn")]
-        public async Task<IActionResult> IsSignedIn()
+        public async Task<IActionResult> IsSignedIn([FromQuery] GetPlayerInfoRequest req)
         {
-            return Ok();
+            return Ok(await _mediator.Send(req));
         }
 
         [Authorize]

@@ -5,8 +5,8 @@ import useAuthContext from '../hooks/useAuthContext';
   
 export default function NavigationBar() {
     const url = useLocation();
-  const {isAuthenticated, logout} = useAuthContext();
-
+  const {logout, user} = useAuthContext();
+  
   return (
     <Navbar bg="dark" data-bs-theme="dark" collapseOnSelect expand="lg">
       <Container>
@@ -16,7 +16,7 @@ export default function NavigationBar() {
           <Nav className='me-auto'>
             {
               // Not Signed In
-              !isAuthenticated ?
+              !user ?
               [
                 { url: "/", name: "Home",  },
                 { url: "/login", name: "Login",  },
@@ -44,22 +44,21 @@ export default function NavigationBar() {
                 )
               })
             }
+            <NavLink to="https://github.com/nashie1004/online-chess" className="text-warning nav-link">Source Code</NavLink>
           </Nav>
           <Nav className='hstack gap-2'>
             {
-              isAuthenticated ?
+              user ?
+              <>
+                <span className="text-white">{user.userName}</span>
                 <button 
                   onClick={() => logout()}
                   className='btn btn-outline-info'>
                   Log out
                 </button>
-              : <></>
+              </>
+              : <span className="text-white">Guest</span>
             }
-            <NavLink className="btn btn-outline-warning"
-            to="https://github.com/nashie1004/online-chess"
-            >
-              Source code
-            </NavLink>
           </Nav>
         </Navbar.Collapse>
       </Container>

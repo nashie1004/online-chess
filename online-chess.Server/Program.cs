@@ -33,7 +33,7 @@ builder.Services.AddIdentity<User, Role>()
     .AddDefaultTokenProviders();
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
-
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 

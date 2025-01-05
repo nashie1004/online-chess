@@ -4,11 +4,15 @@ import BaseApiService from '../services/BaseApiService';
 
 const authService = new BaseApiService();
 
+interface IUser {
+    userName: string;
+}
+
 interface IAuthContext {
-    isAuthenticated: boolean;
     isAuthenticating: boolean;
-    login: () => void;
+    login: (user: IUser) => void;
     logout: () => void;
+    user: IUser | null;
 }
 
 interface IAuthContextProps {
@@ -16,43 +20,47 @@ interface IAuthContextProps {
 }
 
 export const authContext = createContext<IAuthContext>({
-    isAuthenticated: false,
     isAuthenticating: true,
-    login: () => { },
+    login: (user: IUser) => { },
     logout: () => { },
+    user: null
 });
 
 export default function AuthContext(
     { children }: IAuthContextProps
 ) {
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [isAuthenticating, setIsAuthenticating] = useState(true);
+    const [user, setUser] = useState<null | IUser>(null)
 
-    async function login() {
-        setIsAuthenticated(true);
+    async function login(user: IUser) {
+        setUser(user);
     }
 
     async function logout() {
-        setIsAuthenticated(false);
+        setIsAuthenticating(true)
+        const res = await authService.basePost("/api/Auth/logout", {});
+        if (res.isOk) {
+            setUser(null);
+        }
+
+        setIsAuthenticating(false)
     }
 
     useEffect(() => {
         async function authenticate() {
             const res = await authService.baseGet("/api/Auth/isSignedIn");
             if (res.isOk) {
-                setIsAuthenticated(true);
+                setUser({ userName: res.data.userName })
             }
-            // console.log("res", res) // may show toaster
-
             setIsAuthenticating(false)
         }
 
         authenticate();
 
-    }, [isAuthenticated])
+    }, [])
 
     const data = {
-        isAuthenticated, login, logout, isAuthenticating
+        user, login, logout, isAuthenticating
     }
 
   return (

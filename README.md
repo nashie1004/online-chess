@@ -18,9 +18,9 @@
 1. home / dashboard 
 2. lobby 
 3. play - timer progress bar  
-4. login
+~~4. login
 5. register
-6. logout
+6. logout~~
 7. profile
 
 ### C#

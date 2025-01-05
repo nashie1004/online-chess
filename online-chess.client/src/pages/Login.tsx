@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import BaseApiService from "../services/BaseApiService";
 import { toast } from 'react-toastify';
+import useAuthContext from "../hooks/useAuthContext";
 
 const schema = z.object({
   userName: z.string().min(8, "Username must contain at least 8 character(s)"),
@@ -16,7 +17,8 @@ type FormFields = z.infer<typeof schema>;
 const registerService = new BaseApiService();
 
 export default function Login() {
-  const navigate = useNavigate();
+    const navigate = useNavigate();
+    const { login } = useAuthContext();
   
   const {
     register, handleSubmit,
@@ -36,8 +38,9 @@ export default function Login() {
       toast(res.message, { type: "error" })
       return;
     }
-
-    navigate("/login");
+    console.log(res.data)
+      login({ userName: res.data.userName });
+    navigate("/");
   }
 
   const loading = isSubmitting;

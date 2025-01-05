@@ -39,6 +39,7 @@ namespace online_chess.Server.Features.Auth.Commands.LogIn
                     return retVal;
                 }
 
+                retVal.UserName = user.UserName ?? string.Empty;
             }
             catch (Exception ex)
             {
