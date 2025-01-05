@@ -3,6 +3,7 @@ import Navbar from "./Navigationbar";
 import useAuthContext from "../hooks/useAuthContext";
 import { useEffect } from "react";
 import { Spinner } from "react-bootstrap";
+import { ToastContainer } from "react-toastify";
 
 export default function Layout() {
     const navigate = useNavigate();
@@ -34,6 +35,20 @@ export default function Layout() {
           <Spinner animation="border" variant="dark" className="mt-3" /> 
         }
       </main>
+
+      {/** Additional */}
+      
+      <ToastContainer
+        position="top-right"
+        autoClose={4000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        />
     </>
   );
 }

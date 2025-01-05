@@ -12,6 +12,7 @@ import Profile from "./pages/Profile";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import About from "./pages/About";
 import AuthContext from "./context/AuthContext";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function App(){
     return <>

@@ -42,7 +42,7 @@ export default function AuthContext(
             if (res.isOk) {
                 setIsAuthenticated(true);
             }
-            console.log("res", res)
+            // console.log("res", res) // may show toaster
 
             setIsAuthenticating(false)
         }

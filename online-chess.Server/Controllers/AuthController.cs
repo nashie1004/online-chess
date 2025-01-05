@@ -34,7 +34,7 @@ namespace online_chess.Server.Controllers
         }
 
         [Authorize]
-        [HttpPost("isSignedIn")]
+        [HttpGet("isSignedIn")]
         public async Task<IActionResult> IsSignedIn()
         {
             return Ok();
