@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import useReactContext from '../../hooks/useReactContext';
 import usePhaser from '../../hooks/usePhaser';
 import Image from 'react-bootstrap/Image';
+import { Alert, Badge } from 'react-bootstrap';
 
 export default function PlayerInfo() {
     const {timer, setTimer} = useReactContext();
@@ -29,33 +30,36 @@ export default function PlayerInfo() {
     }, [isWhitesTurn])
 
   return (
-    <div className="row">
-        {/* <div className='flex gap-2'>
-            <Chip size="md">{isWhitesTurn ? <>White's</> : <>Black's</>} turn to move</Chip>
+    <>
+        <div className="row">
+            <div className='col'>
+                <h6>Lorem, ipsum.</h6>
+                <h1>
+                    <Badge bg="info">{timer.white}.00s</Badge>
+                </h1>
+            </div>
+            <div className='col'>
+                <h6>Lorem, ipsum.</h6>
+                <h1>
+                    <Badge bg="info">{timer.black}.00s</Badge>
+                </h1>
+            </div>
+        </div>
+        <Alert variant='warning'>
+            {isWhitesTurn ? <>White's</> : <>Black's</>} turn to move.
             {
-                kingsState.white.isInCheck || kingsState.black.isInCheck ? <Chip size='md'>
-                    {kingsState.white.isInCheck ? "White is in check" : ""}
-                    {kingsState.black.isInCheck ? "Black is in check" : ""}
-                </Chip> : <></> 
+                kingsState.white.isInCheck || kingsState.black.isInCheck ? <>
+                    {kingsState.white.isInCheck ? " White is in check." : ""}
+                    {kingsState.black.isInCheck ? " Black is in check." : ""}
+                </> : <></> 
             }
             {
-                kingsState.white.isCheckMate || kingsState.black.isCheckMate ? <Chip size='md'>
-                    {kingsState.white.isCheckMate ? "White is checkmated" : ""}
-                    {kingsState.black.isCheckMate ? "Black is checkmated" : ""}
-                </Chip> : <></> 
+                kingsState.white.isCheckMate || kingsState.black.isCheckMate ? <>
+                    {kingsState.white.isCheckMate ? " White is checkmated." : ""}
+                    {kingsState.black.isCheckMate ? " Black is checkmated." : ""}
+                </> : <></> 
             }
-        </div> */}
-        <div className='col'>
-            <Image rounded style={{ height: 50, width: 50 }} />
-            <h5>Player 1</h5>
-            <p>{timer.white} second(s)</p>
-            {isWhitesTurn ? <p>White's turn</p> : <></>}
-        </div>
-        <div className='col'>
-            <h5>Player 2</h5>
-            <p>{timer.black} second(s)</p>
-            {!isWhitesTurn ? <p>Black's turn</p> : <></>}
-        </div>
-    </div>
+        </Alert>
+    </>
   )
 }

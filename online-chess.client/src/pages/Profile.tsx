@@ -1,4 +1,4 @@
-import { Form, Table } from "react-bootstrap";
+import { Form, Pagination, Table } from "react-bootstrap";
 
 export default function Profile() {
   const tempLength = 4;
@@ -64,6 +64,11 @@ export default function Profile() {
         </tr>
       </tbody>
       </Table>
+      <Pagination>
+        <Pagination.Prev />
+        <Pagination.Item disabled>{1}</Pagination.Item>
+        <Pagination.Next />
+      </Pagination>
     </>
   );
 }

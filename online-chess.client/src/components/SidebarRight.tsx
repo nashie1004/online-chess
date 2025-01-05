@@ -1,7 +1,7 @@
 import usePhaser from '../hooks/usePhaser';
 import PlayerInfo from './ui/PlayerInfo';
 import MailIcon from './ui/MainInfo';
-import { Button, Form, Table } from 'react-bootstrap';
+import { Alert, Button, Form, Table } from 'react-bootstrap';
 import Chatbar from './Chatbar';
 import CaptureHistory from './CaptureHistory';
 import MoveHistory from './MoveHistory';
@@ -17,15 +17,16 @@ export default function SidebarRight() {
           <button className='btn btn-secondary btn-md w-100'>Offer a Draw</button>
         </div>
         {/* 2. Game checks, checkmate, stalemate, player turn */}
-        <h6>Player Information</h6>
+        <h6 className='text-bg-dark p-1 rounded-2 text-center my-2'>Player Information</h6>
         <PlayerInfo />
         {/* 3. Move History */}
-        <h6>Move History</h6>
+        <h6 className='text-bg-dark p-1 rounded-2 text-center my-2'>Move History</h6>
         <MoveHistory />
         {/* 4. Capture History */}
-        {/* <CaptureHistory /> */}
+        {/* <h6 className='text-bg-dark p-1 rounded-2 text-center my-2'>Capture History</h6>
+        <CaptureHistory /> */}
         {/* 5. Chat bar */}
-        <h6>Chat bar</h6>
+        <h6 className='text-bg-dark p-1 rounded-2 text-center my-2'>Chat Bar</h6>
         <Chatbar />
       </div>
   )

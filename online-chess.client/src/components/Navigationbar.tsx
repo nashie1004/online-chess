@@ -20,37 +20,40 @@ export default function NavigationBar() {
   const navigate = useNavigate();
 
   return (
-    <Navbar bg="dark" data-bs-theme="dark">
+    <Navbar bg="dark" data-bs-theme="dark" collapseOnSelect expand="lg">
       <Container>
         <Navbar.Brand>ONLINE-CHESS.COM</Navbar.Brand>
-        <Nav className='me-auto'>
-          {
-            [
-              { url: "/", name: "Home" },
-              { url: "/play", name: "Play" },
-              { url: "/profile", name: "Profile" },
-              { url: "/login", name: "Login" },
-              { url: "/register", name: "Register" },
-              { url: "/about", name: "About" },
-            ].map((item, idx) => {
-              return  (
-                <NavLink key={idx} to={item.url} className={url.pathname === item.url ? "nav-link active" : "nav-link"}>
-                  {item.name}
-                </NavLink>
-              )
-            })
-          }
-        </Nav>
-        <Nav>
-          <NavLink className="nav-link" to="/">
-            Log out
-          </NavLink>
-          <NavLink className="btn btn-outline-warning"
-           to="https://github.com/nashie1004/online-chess"
-          >
-            Source code
-          </NavLink>
-        </Nav>
+        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+        <Navbar.Collapse id="responsive-navbar-nav">
+          <Nav className='me-auto'>
+            {
+              [
+                { url: "/", name: "Home" },
+                { url: "/play", name: "Play" },
+                { url: "/profile", name: "Profile" },
+                { url: "/about", name: "About" },
+                { url: "/login", name: "Login" },
+                { url: "/register", name: "Register" },
+              ].map((item, idx) => {
+                return  (
+                  <NavLink key={idx} to={item.url} className={url.pathname === item.url ? "nav-link active" : "nav-link"}>
+                    {item.name}
+                  </NavLink>
+                )
+              })
+            }
+          </Nav>
+          <Nav className='hstack gap-2'>
+            <button className='btn btn-outline-info'>
+              Log out
+            </button>
+            <NavLink className="btn btn-outline-warning"
+            to="https://github.com/nashie1004/online-chess"
+            >
+              Source code
+            </NavLink>
+          </Nav>
+        </Navbar.Collapse>
       </Container>
     </Navbar>
   )

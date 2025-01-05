@@ -87,7 +87,7 @@ export default function Main(){
  
     return <> 
         {/* <SidebarLeft /> */}
-        <div className="col-auto">
+        <div className="col-auto pt-2">
             <div id="game-container" style={{ maxWidth: "800px" }}>
             
             </div>

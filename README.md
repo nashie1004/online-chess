@@ -12,7 +12,7 @@
 3. phaser and react state is in sync
 4. show notation on chessboard 
 5. cleanup
-
+6. promotion picker
 
 ### Pages / UI
 1. home / dashboard 
