@@ -1,10 +1,12 @@
 import { Form, Table } from "react-bootstrap";
 
 export default function Profile() {
+  const tempLength = 4;
+
   return (
-    <div>
-      <h3 className="text-large">Account Information</h3>
-      <div className="mb-3 w-25">
+    <>
+      <div className="mt-5 mt-3 w-50">
+        <h3 className="">Account Information</h3>
         <Form
             onSubmit={(e) => e.preventDefault()}
           >
@@ -28,14 +30,15 @@ export default function Profile() {
               type="checkbox"
               label="Edit Profile"
             />
+            <button disabled className="btn btn-primary w-100 mt-3">Edit</button>
         </Form>
       </div>
-      <h3 className="text-large">Game History</h3>
-      <Table responsive striped>
+      <h3 className="my-3">Game History</h3>
+      <Table responsive striped size="sm">
       <thead>
         <tr>
           <th>#</th>
-          {Array.from({ length: 4 }).map((_, index) => (
+          {Array.from({ length: tempLength }).map((_, index) => (
             <th key={index}>Table heading</th>
           ))}
         </tr>
@@ -43,24 +46,24 @@ export default function Profile() {
       <tbody>
         <tr>
           <td>1</td>
-          {Array.from({ length: 4 }).map((_, index) => (
+          {Array.from({ length: tempLength }).map((_, index) => (
             <td key={index}>Table cell {index}</td>
           ))}
         </tr>
         <tr>
           <td>2</td>
-          {Array.from({ length: 4 }).map((_, index) => (
+          {Array.from({ length: tempLength }).map((_, index) => (
             <td key={index}>Table cell {index}</td>
           ))}
         </tr>
         <tr>
           <td>3</td>
-          {Array.from({ length: 4 }).map((_, index) => (
+          {Array.from({ length: tempLength }).map((_, index) => (
             <td key={index}>Table cell {index}</td>
           ))}
         </tr>
       </tbody>
       </Table>
-    </div>
+    </>
   );
 }

@@ -31,6 +31,7 @@ export default function NavigationBar() {
               { url: "/profile", name: "Profile" },
               { url: "/login", name: "Login" },
               { url: "/register", name: "Register" },
+              { url: "/about", name: "About" },
             ].map((item, idx) => {
               return  (
                 <NavLink key={idx} to={item.url} className={url.pathname === item.url ? "nav-link active" : "nav-link"}>

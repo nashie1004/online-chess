@@ -76,58 +76,13 @@ export default function SidebarLeft() {
       </div>
       <div>
         <div>
-            <div style={{ height: "200px", overflowY: "scroll" }}>
-                <div aria-label="Example static collection div" >
-                    <div>
-                        <div>#</div>
-                        <div>WHITE</div>
-                        <div>BLACK</div>
-                    </div>
-                    <div>
-                        {Array.from({ length: Math.max(moveHistory.white.length, moveHistory.black.length) }).map((_, idx) => (
-                            <div key={idx}>
-                                <div>{idx + 1}</div>
-                                <div>{moveHistory.white[idx] ? board[moveHistory.white[idx].new.x][moveHistory.white[idx].new.y] : '-'}</div>
-                                <div>{moveHistory.black[idx] ? board[moveHistory.black[idx].new.x][moveHistory.black[idx].new.y] : '-'}</div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </div>
+
         </div>
       </div>
     </div>   
     <div className=' bg-default-50' style={{ border: "1px solid rgba(177, 158, 191, 0.2)"}}>
         <div>
             <p>Capture History</p>
-        </div>
-        <div>
-            <div style={{ height: "100px", overflowY: "scroll" }}>
-              <div className='flex gap-4 p-3'>
-                  {captureHistory.white.map((capture, idx) => {
-                      const name = capture.pieceName.split("-")[0] as PieceNames
-                      const svgUrl = `data:image/svg+xml;base64,${btoa(pieceImages[name])}`;
-                      return <div key={idx}>
-                          <img 
-                              src={svgUrl} 
-                              alt={capture.pieceName} 
-                              style={{ width: 35, height: 35, }} 
-                          />
-                      </div>
-                  })}
-                  {captureHistory.black.map((capture, idx) => {
-                      const name = capture.pieceName.split("-")[0] as PieceNames
-                      const svgUrl = `data:image/svg+xml;base64,${btoa(pieceImages[name])}`;
-                      return <div key={idx}>
-                          <img 
-                              src={svgUrl} 
-                              alt={capture.pieceName} 
-                              style={{ width: 35, height: 35, }} 
-                          />
-                      </div>
-                  })}
-              </div>
-            </div>
         </div>
     </div>
     </aside>

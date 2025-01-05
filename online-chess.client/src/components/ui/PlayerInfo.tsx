@@ -1,8 +1,7 @@
-import { Alert, Avatar, Chip, Kbd } from '@nextui-org/react';
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import useReactContext from '../../hooks/useReactContext';
-import UserIcon from './UserIcon';
 import usePhaser from '../../hooks/usePhaser';
+import Image from 'react-bootstrap/Image';
 
 export default function PlayerInfo() {
     const {timer, setTimer} = useReactContext();
@@ -30,8 +29,8 @@ export default function PlayerInfo() {
     }, [isWhitesTurn])
 
   return (
-    <div className="flex flex-col gap-4">
-        <div className='flex gap-2'>
+    <div className="row">
+        {/* <div className='flex gap-2'>
             <Chip size="md">{isWhitesTurn ? <>White's</> : <>Black's</>} turn to move</Chip>
             {
                 kingsState.white.isInCheck || kingsState.black.isInCheck ? <Chip size='md'>
@@ -45,29 +44,18 @@ export default function PlayerInfo() {
                     {kingsState.black.isCheckMate ? "Black is checkmated" : ""}
                 </Chip> : <></> 
             }
+        </div> */}
+        <div className='col'>
+            <Image rounded style={{ height: 50, width: 50 }} />
+            <h5>Player 1</h5>
+            <p>{timer.white} second(s)</p>
+            {isWhitesTurn ? <p>White's turn</p> : <></>}
         </div>
-        <Alert 
-            icon={<UserIcon />}
-            description
-            endContent={
-                <>
-                    <p>{timer.white} second(s)</p>
-                </>
-            }
-            variant={isWhitesTurn ? "solid" : "bordered"}
-            title={"Player 1"}
-        />
-        <Alert 
-            icon={<UserIcon />}
-            description
-            endContent={
-                <>
-                    <p>{timer.black} second(s)</p>
-                </>
-            }
-            variant={!isWhitesTurn ? "solid" : "bordered"}
-            title={"Player 2"}
-        />
+        <div className='col'>
+            <h5>Player 2</h5>
+            <p>{timer.black} second(s)</p>
+            {!isWhitesTurn ? <p>Black's turn</p> : <></>}
+        </div>
     </div>
   )
 }
