@@ -38,7 +38,7 @@ after that, the web application should now be running.
 ## Todo
 
 ### Chess Logic
-1. king pins after move function
+~~1. king pins after move function~~
 2. stalemate detection - if the piece value suffice
 
 ### Chess Game

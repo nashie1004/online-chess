@@ -292,10 +292,9 @@ export default class BasePieceValidator{
             // 4.1 no friend block piece or there are 2 or more friend pieces in the king's line of path
             if (blockingFriendPieces.length > 1 || blockingFriendPieces.length < 1) return;
 
-            // 4.2 blocking piece is this class itself
+            // 4.2 blocking piece is this class itself / blocking piece is not the class then return
             const blockingFriendPiece = blockingFriendPieces[0];
-            console.log(blockingFriendPiece, this.piece)
-            if (blockingFriendPiece.coords.x !== this.piece.x && blockingFriendPiece.coords.y !== this.piece.y) return;
+            if (blockingFriendPiece.coords.x !== this.piece.x || blockingFriendPiece.coords.y !== this.piece.y) return;
 
             // 5. check if the enemy rook, friend piece blocking, and friend king are on the same col/row and in the corect order
 
@@ -354,7 +353,7 @@ export default class BasePieceValidator{
 
                 // 1. enemy rook or queen (just a number)
                 // this will just check if the legal move is in the same rank or file 
-                if (absolutePinFilter.isRook && typeof absolutePinFilter.restrictedToCol === "number" && typeof absolutePinFilter.restrictedToRow === "number") {
+                if (absolutePinFilter.isRook && (typeof absolutePinFilter.restrictedToCol === "number" || typeof absolutePinFilter.restrictedToRow === "number")) {
 
                     if (absolutePinFilter.restrictedToCol && initialValidMove.x === absolutePinFilter.restrictedToCol) {
                         return initialValidMove;
