@@ -13,11 +13,13 @@ export default class KingValidator extends BasePieceValidator{
      *
      */
     private readonly isInCheck: boolean;
+    private readonly boardOrientationIsWhite: boolean;
 
-    constructor(piece: IPiece, board: (GameObjects.Sprite | null)[][], moveHistory: IMoveHistory, isInCheck: boolean, bothKingsPosition: IBothKingsPosition) {
+    constructor(piece: IPiece, board: (GameObjects.Sprite | null)[][], moveHistory: IMoveHistory, isInCheck: boolean, bothKingsPosition: IBothKingsPosition, boardOrientationIsWhite: boolean) {
 
         super(piece, board, moveHistory, bothKingsPosition);
         this.isInCheck = isInCheck;
+        this.boardOrientationIsWhite = boardOrientationIsWhite;
     }
     
     public override validMoves(): IValidMove[]{
@@ -150,7 +152,7 @@ export default class KingValidator extends BasePieceValidator{
                 { x: initialValidMove.x, y: initialValidMove.y, name: (kingIsWhite ? PieceNames.wPawn : PieceNames.bPawn) }
                 , _this.board,
                 _this.moveHistory
-                , true, this.bothKingsPosition
+                , true, this.bothKingsPosition, this.boardOrientationIsWhite
             )).validMoves();
 
             pawnSquares.forEach(square => {
@@ -434,7 +436,7 @@ export default class KingValidator extends BasePieceValidator{
         switch(enemyName){
             case PieceNames.bPawn:
             case PieceNames.wPawn:
-                return (new PawnValidator(piece, this.board, this.moveHistory, false, this.bothKingsPosition )).validMoves();
+                return (new PawnValidator(piece, this.board, this.moveHistory, false, this.bothKingsPosition, this.boardOrientationIsWhite )).validMoves();
             case PieceNames.bRook:
             case PieceNames.wRook:
                 return (new RookValidator(piece, this.board, this.moveHistory, false, this.bothKingsPosition)).validMoves();
