@@ -48,7 +48,7 @@ after that, the web application should now be running.
 6. promotion picker
 
 ### Pages / UI
-1. home / dashboard 
+~~1. home / dashboard~~
 2. lobby 
 3. play - timer progress bar  
 ~~4. login~~

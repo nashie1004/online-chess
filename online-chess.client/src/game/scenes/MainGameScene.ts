@@ -26,6 +26,7 @@ export class MainGameScene extends Scene{
     private selectedPiece: IMoveInfo | null;
     private reactState: IPhaserContextValues;
     private bothKingsPosition: IBothKingsPosition;
+    private boardOrientationIsWhite: boolean;
     
     constructor() {
         super({ key: "MainGame" });
@@ -43,13 +44,18 @@ export class MainGameScene extends Scene{
 
         // game internal state
         this.selectedPiece = null;
-        this.bothKingsPosition = { white: { x: 4, y: 7 }, black: { x: 4, y: 0 } };
+        this.boardOrientationIsWhite = false;
+        this.bothKingsPosition = {
+            // if black orientation switch queen and king coords
+            white: { x: this.boardOrientationIsWhite ? 4 : 3, y: this.boardOrientationIsWhite ? 7 : 0 }
+            , black: { x: this.boardOrientationIsWhite ? 4 : 3, y: this.boardOrientationIsWhite ? 0 : 7 }
+        };
 
         this.tileSize = gameOptions.tileSize; // 100
         
         // creates 8x8 grid
         this.board = Array.from({ length: 8}).map(_ => new Array(8).fill(null));
-        this.previewBoard = Array.from({ length: 8}).map(_ => new Array(8));
+        this.previewBoard = Array.from({ length: 8 }).map(_ => new Array(8));
     }
 
     // Load assets
@@ -98,7 +104,21 @@ export class MainGameScene extends Scene{
 
         // 2. actual pieces
         pieces.forEach(piece => {
-            const { name, x, y } = piece;
+            let { name, x, y } = piece;
+
+            // if black orientation 
+            if (!this.boardOrientationIsWhite) {
+
+                // flip y
+                y = Math.abs(y - 7);
+
+                // if king and or queen
+                if (name.toLowerCase().indexOf("king") >= 0) {
+                    x = 3;
+                } else if (name.toLowerCase().indexOf("queen") >= 0) {
+                    x = 4;
+                }
+            }
 
             const sprite = this.add
                 .sprite(x * this.tileSize, y * this.tileSize, name.toString(), 1)
@@ -235,11 +255,11 @@ export class MainGameScene extends Scene{
                 break;
             case PieceNames.bKing:
                 validMoves = (new KingValidator(
-                    { x, y, name, uniqueName }, this.board, this.reactState.moveHistory, this.reactState.kingsState.black.isInCheck, this.bothKingsPosition)).validMoves();
+                    { x, y, name, uniqueName }, this.board, this.reactState.moveHistory, this.reactState.kingsState.black.isInCheck, this.bothKingsPosition, this.boardOrientationIsWhite)).validMoves();
                 break;
             case PieceNames.wKing:
                 validMoves = (new KingValidator(
-                    { x, y, name, uniqueName }, this.board, this.reactState.moveHistory, this.reactState.kingsState.white.isInCheck, this.bothKingsPosition)).validMoves();
+                    { x, y, name, uniqueName }, this.board, this.reactState.moveHistory, this.reactState.kingsState.white.isInCheck, this.bothKingsPosition, this.boardOrientationIsWhite)).validMoves();
                 break;
             case PieceNames.bPawn:
             case PieceNames.wPawn:
@@ -247,7 +267,7 @@ export class MainGameScene extends Scene{
                 //    { piece: { x, y, name, uniqueName },
                 //    board: this.board, moveHistory: this.reactState.moveHistory, showCaptureSquares: false })).validMoves();
                 validMoves = (new PawnValidator(
-                    { x, y, name, uniqueName }, this.board, this.reactState.moveHistory, false, this.bothKingsPosition)).validMoves();
+                    { x, y, name, uniqueName }, this.board, this.reactState.moveHistory, false, this.bothKingsPosition, this.boardOrientationIsWhite)).validMoves();
                 break;
             }
         return validMoves;
@@ -313,7 +333,7 @@ export class MainGameScene extends Scene{
             const kingInCheckCoords = isWhite ? this.bothKingsPosition.white : this.bothKingsPosition.black;
             const kingTracer = new KingValidator({ 
                 x: kingInCheckCoords.x, y: kingInCheckCoords.y, name: isWhite ? PieceNames.wKing : PieceNames.bKing
-            }, this.board, this.reactState.moveHistory, false, this.bothKingsPosition);
+            }, this.board, this.reactState.moveHistory, false, this.bothKingsPosition, this.boardOrientationIsWhite);
             let attackersLineOfPath: IBaseCoordinates[] = []; 
 
             switch(attackerSpriteName){
@@ -516,7 +536,7 @@ export class MainGameScene extends Scene{
 
             const pawnValidator = new PawnValidator(
                 { x: selectedPiece.x, y: selectedPiece.y, name: isWhite ? PieceNames.wPawn : PieceNames.bPawn, uniqueName: pieceName }
-                , this.board, this.reactState.moveHistory, false, this.bothKingsPosition);
+                , this.board, this.reactState.moveHistory, false, this.bothKingsPosition, this.boardOrientationIsWhite);
 
             const validCapture = pawnValidator.validEnPassantCapture();
             
@@ -541,7 +561,13 @@ export class MainGameScene extends Scene{
         // check if pawn and promotable
         if (
             (pieceName.toLowerCase().indexOf("pawn") >= 0)
-            && ((newY === 0 && isWhite) || newY === 7 && !isWhite)
+            && (
+                (newY === 0 && isWhite && this.boardOrientationIsWhite) ||
+                (newY === 7 && isWhite && !this.boardOrientationIsWhite) ||
+
+                (newY === 7 && !isWhite && this.boardOrientationIsWhite) ||
+                (newY === 0 && !isWhite && !this.boardOrientationIsWhite)
+            )
             && sprite
         ){
             // change sprite name and image/texture from pawn to queen
@@ -578,6 +604,7 @@ export class MainGameScene extends Scene{
                 }
                  , this.board, this.reactState.moveHistory, false
                  , this.bothKingsPosition
+                 , this.boardOrientationIsWhite
             );   
 
             const validKingSide = kingValidator.validKingSideCastling(selectedPiece.x, selectedPiece.y);
@@ -596,9 +623,19 @@ export class MainGameScene extends Scene{
             // if a castle move is actually performed
             if (isKingSideCastle !== null)
             {
+                const rookKingSideCastleInfo = {
+                    oldX: selectedPiece.x + (this.boardOrientationIsWhite ? 3 : -3),
+                    newX: (selectedPiece.x + (this.boardOrientationIsWhite ? 3 : -3)) + (this.boardOrientationIsWhite ? -2 : 2)
+                };
+
+                const rookQueenSideCastleInfo = {
+                    oldX: selectedPiece.x + (this.boardOrientationIsWhite ? -4 : 4),
+                    newX: (selectedPiece.x + (this.boardOrientationIsWhite ? -4 : 4)) + (this.boardOrientationIsWhite ? 3 : -3)
+                };
+
                 const rook = { 
-                    oldX: (isKingSideCastle ? selectedPiece.x + 3 : selectedPiece.x - 4)
-                    , newX: (isKingSideCastle ? (selectedPiece.x + 3) - 2 : (selectedPiece.x - 4) + 3)
+                    oldX: (isKingSideCastle ? rookKingSideCastleInfo.oldX : rookQueenSideCastleInfo.oldX)
+                    , newX: (isKingSideCastle ? rookKingSideCastleInfo.newX : rookQueenSideCastleInfo.newX)
                     , y: selectedPiece.y 
                 };
 
@@ -713,7 +750,7 @@ export class MainGameScene extends Scene{
             , this.board, this.reactState.moveHistory, this.bothKingsPosition)).validMoves();
         const pawnMoves = (new PawnValidator(
                 { x: king.x, y: king.y, name: kingPiece === PieceNames.wKing ? PieceNames.wPawn : PieceNames.bPawn },
-                this.board, this.reactState.moveHistory, false, this.bothKingsPosition
+                this.board, this.reactState.moveHistory, false, this.bothKingsPosition, this.boardOrientationIsWhite
             )).validMoves();
 
         // 1. rook
@@ -800,16 +837,6 @@ export class MainGameScene extends Scene{
         }
         return kingUpdate.checkedBy.length > 0;
     }
-
-    // TODO
-    validateCheckmate(isBlack: boolean){
-        // todo 1: if king is in check, run through all legal moves and check if there is at least one legal move
-        // todo 2: if no more legal move, means checkmate
-        let checkMate = false;
-        
-        return checkMate;
-    }
-
     
     /**
      * 
@@ -902,7 +929,7 @@ export class MainGameScene extends Scene{
                     // 3. Block the line of attack
                     const kingTracer = new KingValidator({ 
                         x: kingInCheckCoords.x, y: kingInCheckCoords.y, name: colorInCheckIsWhite ? PieceNames.wKing : PieceNames.bKing
-                    }, this.board, this.reactState.moveHistory, false, this.bothKingsPosition);
+                    }, this.board, this.reactState.moveHistory, false, this.bothKingsPosition, this.boardOrientationIsWhite);
 
                     let attackersLineOfPath: IBaseCoordinates[] = [];
 
