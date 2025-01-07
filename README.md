@@ -42,7 +42,7 @@ after that, the web application should now be running.
 2. stalemate detection - if the piece value suffice
 
 ### Chess Game
-1. rotate board
+~~1. rotate board~~
 2. gameplay is okay on single player
 3. phaser and react state is in sync
 4. show notation on chessboard 
@@ -50,7 +50,7 @@ after that, the web application should now be running.
 6. promotion picker
 
 ### Pages / UI
-1. home / dashboard 
+~~1. home / dashboard~~
 2. lobby 
 3. play - timer progress bar  
 ~~4. login~~
