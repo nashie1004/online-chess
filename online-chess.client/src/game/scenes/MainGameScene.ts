@@ -561,7 +561,13 @@ export class MainGameScene extends Scene{
         // check if pawn and promotable
         if (
             (pieceName.toLowerCase().indexOf("pawn") >= 0)
-            && ((newY === 0 && isWhite) || newY === 7 && !isWhite)
+            && (
+                (newY === 0 && isWhite && this.boardOrientationIsWhite) ||
+                (newY === 7 && isWhite && !this.boardOrientationIsWhite) ||
+
+                (newY === 7 && !isWhite && this.boardOrientationIsWhite) ||
+                (newY === 0 && !isWhite && !this.boardOrientationIsWhite)
+            )
             && sprite
         ){
             // change sprite name and image/texture from pawn to queen
@@ -617,9 +623,19 @@ export class MainGameScene extends Scene{
             // if a castle move is actually performed
             if (isKingSideCastle !== null)
             {
+                const rookKingSideCastleInfo = {
+                    oldX: selectedPiece.x + (this.boardOrientationIsWhite ? 3 : -3),
+                    newX: (selectedPiece.x + (this.boardOrientationIsWhite ? 3 : -3)) + (this.boardOrientationIsWhite ? -2 : 2)
+                };
+
+                const rookQueenSideCastleInfo = {
+                    oldX: selectedPiece.x - 4,
+                    newX: (selectedPiece.x - 4) + 3
+                };
+
                 const rook = { 
-                    oldX: (isKingSideCastle ? selectedPiece.x + 3 : selectedPiece.x - 4)
-                    , newX: (isKingSideCastle ? (selectedPiece.x + 3) - 2 : (selectedPiece.x - 4) + 3)
+                    oldX: (isKingSideCastle ? rookKingSideCastleInfo.oldX : rookQueenSideCastleInfo.oldX)
+                    , newX: (isKingSideCastle ? rookKingSideCastleInfo.newX : rookQueenSideCastleInfo.newX)
                     , y: selectedPiece.y 
                 };
 
