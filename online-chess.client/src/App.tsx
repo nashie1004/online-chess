@@ -13,6 +13,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import About from "./pages/About";
 import AuthContext from "./context/AuthContext";
 import "react-toastify/dist/ReactToastify.css";
+import Lobby from "./pages/Lobby";
 
 export default function App(){
     return <>
@@ -28,6 +29,7 @@ export default function App(){
                                 <Route path="/login" element={<Login /> } />
                                 <Route path="/profile" element={<Profile /> } />
                                 <Route path="/about" element={<About /> } />
+                                <Route path="/lobby" element={<Lobby /> } />
                                 <Route path="*" element={<NotFound /> } />
                             </Route>
                         </Routes>

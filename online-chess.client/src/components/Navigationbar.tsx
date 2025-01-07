@@ -33,7 +33,7 @@ export default function NavigationBar() {
               :
               [
                 { url: "/", name: "Home",  },
-                { url: "/play", name: "Play",  },
+                { url: "/lobby", name: "Lobby",  },
                 { url: "/profile", name: "Profile",  },
                 { url: "/about", name: "About",  },
               ].map((item, idx) => {

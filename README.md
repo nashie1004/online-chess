@@ -1,6 +1,4 @@
 # Online-Chess
-
-## Description
 A simple real time 2-player chess web application created with Phaser, React, Typescript, Bootstrap, ASP.NET Core SignalR and Identity, and SQLite. Uses .NET 9 and React 18.
 You can view a demo [here](https://github.com/nashie1004/online-chess).
 
@@ -42,7 +40,7 @@ after that, the web application should now be running.
 2. stalemate detection - if the piece value suffice
 
 ### Chess Game
-1. rotate board
+~~1. rotate board~~
 2. gameplay is okay on single player
 3. phaser and react state is in sync
 4. show notation on chessboard 
