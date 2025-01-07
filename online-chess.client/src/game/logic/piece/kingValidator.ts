@@ -309,15 +309,15 @@ export default class KingValidator extends BasePieceValidator{
         if (kingHasMoved) return null;
 
         // 2. if the king side rook hasnt moved yet
-        const rookX = x - 4; 
+        const rookX = x + (this.boardOrientationIsWhite ? -4 : 4); 
         const rookY = y;       
 
         if (!this.board[rookY][rookX]) return null; // rook is captured or rook has moved from inital position
 
         // 3. if there are no blockage (knight, bishop)
-        const queenSquare = this.board[x - 1][y];
-        const bishopSquare = this.board[x - 2][y];
-        const knightSquare = this.board[x - 3][y];
+        const queenSquare = this.board[x + (this.boardOrientationIsWhite ? -1 : 1) ][y];
+        const bishopSquare = this.board[x + (this.boardOrientationIsWhite ? -2 : 2) ][y];
+        const knightSquare = this.board[x + (this.boardOrientationIsWhite ? -3 : 3) ][y];
         
         if (knightSquare || bishopSquare || queenSquare){
             // in MainGameScene.ts > this.move() the king has already changed coordinates,
@@ -329,7 +329,7 @@ export default class KingValidator extends BasePieceValidator{
         
         // 4. check if the king doesnt pass through a square under attack
         // sqaure beside king, generate all possible moves in that new king position,  
-        const isUnderAttack ={ x: x - 1, y, isCapture: false };
+        const isUnderAttack = { x: x + (this.boardOrientationIsWhite ? -1 : 1), y, isCapture: false };
         const _this = this;
         let rookSquareIsUnderAttack = false;
 
@@ -397,7 +397,7 @@ export default class KingValidator extends BasePieceValidator{
         
         if (rookSquareIsUnderAttack) return null;
 
-        return { x: x - 2, y, isCapture: false };
+        return { x: x + (this.boardOrientationIsWhite ? -2 : 2), y, isCapture: false };
     }
 
     /**

@@ -629,8 +629,8 @@ export class MainGameScene extends Scene{
                 };
 
                 const rookQueenSideCastleInfo = {
-                    oldX: selectedPiece.x - 4,
-                    newX: (selectedPiece.x - 4) + 3
+                    oldX: selectedPiece.x + (this.boardOrientationIsWhite ? -4 : 4),
+                    newX: (selectedPiece.x + (this.boardOrientationIsWhite ? -4 : 4)) + (this.boardOrientationIsWhite ? 3 : -3)
                 };
 
                 const rook = { 
