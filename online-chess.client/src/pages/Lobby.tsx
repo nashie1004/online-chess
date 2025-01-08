@@ -1,21 +1,59 @@
+import { useEffect, useState } from "react";
 import { Form, Pagination, Table } from "react-bootstrap"
-import { useNavigate } from "react-router";
+import { useNavigate,  } from "react-router";
+import SignalRConnection from "../services/SignalRService";
+
+const connection = new SignalRConnection();
+
+type IGameType = "1"|"2"|"3"|"4"|"5";
 
 export default function Lobby() {
+    const [gameType, setGameType] = useState<IGameType>("1");
+    const [gameRoomList, setGameRoomList] = useState(); 
+
     const tempLengthLeaderboard = 4;
     const navigate = useNavigate();
+
+    useEffect(() => {
+
+        async function start(){
+            await connection.startConnection((e) => console.log(e));
+
+            await connection.addHandler("RefreshRoomList", (data) => {
+                console.log("RefreshRoomList: ", data)
+            });
+
+            await connection.invoke("GetRoomList");
+        }
+
+        start();
+
+        return () => {
+            connection.stopConnection();
+        }
+    }, [])
+
+    async function formSubmit(e: React.FormEvent<HTMLFormElement>){
+        e.preventDefault()  
+
+        await connection.invoke("AddToQueue", gameType)
+        //navigate("/play")
+    }
 
     return <div className="col">
         <div className="mt-5 mt-3 w-50">
             <h3 className="">Find a match</h3>
             <Form
-                onSubmit={(e) => {
-                    e.preventDefault()
-                    navigate("/play")
-                }}
+                onSubmit={formSubmit}
             >
                 <Form.Group className="mb-3">
-                    <Form.Select aria-label="Default select example">
+                    <Form.Select 
+                        onChange={(e) => {
+                            const val = e.target.value as IGameType;
+                            setGameType(val);
+                        }}
+                        aria-label="Game Type"
+                    >
                         <option selected disabled>Choose Game Type</option>
                         <option value="1">Classical (1 hour per player)</option>
                         <option value="2">Blitz (3 minutes per player)</option>

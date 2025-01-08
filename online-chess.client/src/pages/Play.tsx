@@ -21,26 +21,6 @@ export default function Main(){
         , setKingsState
     } = usePhaserContext();
 
-    async function startConnection() {
-        const connection = new HubConnectionBuilder()
-            .withUrl("https://localhost:44332/hub")
-            .configureLogging(LogLevel.Information)
-            .build();
-        ;
-        connection.on("ReceiveMessage", (user, message) => {
-            console.log(user + " says " + message); 
-        })
-        try {
-            await connection.start();
-            //await connection.invoke("TestMessage", "todo")
-            console.log("Connection started");
-        } catch (error) {
-            console.log(error);
-        }
-
-        await connection.invoke("SendMessage", "hi")
-    }
-
     useEffect(() => {
 
         // start phaser
@@ -61,20 +41,28 @@ export default function Main(){
         eventEmitter.on("setKingsState", (data: IKingState) => setKingsState(data))
 
         // test real time connection
-        /*
+        
         const connection = new SignalRConnection();
         async function start() {
-            await connection.startConnection();
+            await connection.startConnection((e) => console.log(e));
 
+            await connection.addHandler("NewlyConnected", (user, message) => {
+                console.log('NewlyConnected: ', user, message)
+            });
+            
+            await connection.addHandler("Disconnected", (user, message) => {
+                console.log('Disconnected: ', user, message)
+            });
+            
             await connection.addHandler("TestClientResponse", (user, message) => {
-                console.log('TestClientResponse', user, message)
+                console.log('TestClientResponse: ', user, message)
             });
 
-            await connection.invoke("JoinRoom", "joining room")
+            await connection.invoke("JoinRoom", "TestUser", "Hello World")
         }
 
         start();
-        */
+        
 
         // cleanup phaser
         return () => {
@@ -82,7 +70,8 @@ export default function Main(){
                 gameRef.current.destroy(true);
                 gameRef.current = null;
             }
-            //connection.stopConnection();
+            
+            connection.stopConnection();
         };
     }, [])
  

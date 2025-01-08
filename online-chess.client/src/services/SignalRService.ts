@@ -8,7 +8,7 @@ export default class SignalRConnection {
         this.hubConnection = null;
     }
 
-    async startConnection() {
+    async startConnection(closeEventCallback: (arg: any) => void) {
         /*
         this.hubConnection = new HubConnectionBuilder()
             .withUrl("https://localhost:44332/hub")
@@ -33,7 +33,7 @@ export default class SignalRConnection {
             console.error(error);
         }
 
-        this.hubConnection.onclose((e) => console.info(`Connection closed: ${e}`))
+        this.hubConnection.onclose(closeEventCallback);
         this.hubConnection.onreconnected((e) => console.info(`Reconnected: ${e}`))
         this.hubConnection.onreconnecting((e) => console.info(`Reconnecting: ${e}`))
     }
@@ -53,7 +53,7 @@ export default class SignalRConnection {
         if (!this.hubConnection) return;
         
         try{
-            await this.hubConnection.invoke(methodName, arg)
+            await this.hubConnection.invoke(methodName, ...arg)
         } catch(err){
             console.log(`Invoke error ${err}`)
         }
