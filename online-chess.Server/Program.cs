@@ -6,6 +6,7 @@ using online_chess.Server.DTOs;
 using online_chess.Server.Hubs;
 using online_chess.Server.Models;
 using online_chess.Server.Persistence;
+using online_chess.Server.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,6 +35,7 @@ builder.Services.AddIdentity<User, Role>()
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddSingleton<GameRoomService>();
 
 var app = builder.Build();
 

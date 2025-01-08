@@ -56,6 +56,10 @@ export class MainGameScene extends Scene{
         // creates 8x8 grid
         this.board = Array.from({ length: 8}).map(_ => new Array(8).fill(null));
         this.previewBoard = Array.from({ length: 8 }).map(_ => new Array(8));
+
+        this.pieces = {
+
+        };
     }
 
     // Load assets

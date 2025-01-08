@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { Alert, Form, Pagination, Table } from "react-bootstrap"
-import { useNavigate,  } from "react-router";
+import { Alert, Button, Form, Modal, Pagination, Table } from "react-bootstrap"
+import { NavLink, useNavigate,  } from "react-router";
 import SignalRConnection from "../services/SignalRService";
 import { IGameRoom } from "../game/utilities/types";
 import { GameType } from "../game/utilities/constants";
@@ -12,6 +12,7 @@ export default function Lobby() {
     const [gameType, setGameType] = useState<GameType>(1);
     const [gameRoomList, setGameRoomList] = useState<IGameRoom[]>([]); 
     const navigate = useNavigate();
+    const [modalShow, setModalShow] = useState(false);
 
     useEffect(() => {
 
@@ -66,11 +67,14 @@ export default function Lobby() {
             </Form>
         </div>
         <h3 className="my-3">Join</h3>
-        <Alert variant="warning">You have a game queuing...</Alert>
+        <Alert variant="warning">
+            You have a game queuing...
+            <NavLink to="/play/123" className="alert-link">Play now</NavLink>
+        </Alert>
         <Table responsive striped size="sm">
             <thead>
                 <tr>
-                    <th></th>
+                    <th>Action</th>
                     <th>Player Username</th>
                     <th>Looking for Game Type</th>
                     <th>Last Update Date</th>
@@ -80,7 +84,13 @@ export default function Lobby() {
                 {gameRoomList.map((item, idx) => {
                     
                     return <tr key={idx}>
-                        <td>Action</td>
+                        <td className="d-flex gap-2">
+                            <button 
+                                onClick={() => setModalShow(true)}
+                                className="btn btn-outline-primary btn-sm">View</button>
+                            <button 
+                                className="btn btn-outline-danger btn-sm">Delete</button>
+                        </td>
                         <td>{item.value.createdByUserId}</td>
                         <td>{item.value.gameType}</td>
                         <td>{moment(item.value.createDate).fromNow()}</td>
@@ -93,5 +103,28 @@ export default function Lobby() {
             <Pagination.Item disabled>{1}</Pagination.Item>
             <Pagination.Next />
         </Pagination>
+        
+        <Modal
+            size="lg"
+            aria-labelledby="contained-modal-title-vcenter"
+            centered
+            show={modalShow}
+            onHide={() => setModalShow(false)}
+            >
+            <Modal.Header closeButton>
+                <Modal.Title id="contained-modal-title-vcenter">
+                Confirmation
+                </Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <p>Are you sure you want to resign?</p>
+            </Modal.Body>
+            <Modal.Footer>
+                <Button onClick={() => {
+                    setModalShow(false)
+                    navigate("/play/234")
+                }}>Yes</Button>
+            </Modal.Footer>
+            </Modal>
     </div>
 }

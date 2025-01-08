@@ -1,25 +1,30 @@
 ﻿
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.SignalR;
 using online_chess.Server.Constants;
 using online_chess.Server.Features.Game.Commands.JoinRoom;
+using online_chess.Server.Features.Game.Queries.GetRoomList;
 using online_chess.Server.Models;
+using online_chess.Server.Service;
 using System.Collections.Concurrent;
 using System.Security.Claims;
 
 namespace online_chess.Server.Hubs
 {
+    [Authorize]
     public class GameHub : Hub
     {
         private readonly IMediator _mediator;
-        private static ConcurrentDictionary<Guid, GameQueue> _gameRoomIds = new ConcurrentDictionary<Guid, GameQueue>();
+        private readonly GameRoomService _gameRoomService;
         private IHttpContextAccessor _httpContextAccessor;
 
-        public GameHub(IMediator mediator, IHttpContextAccessor httpContextAccessor)
+        public GameHub(IMediator mediator, IHttpContextAccessor httpContextAccessor, GameRoomService gameRoomService)
         {
             _mediator = mediator;
             _httpContextAccessor = httpContextAccessor;
+            _gameRoomService = gameRoomService;
         }
 
         /* List */
@@ -28,18 +33,22 @@ namespace online_chess.Server.Hubs
             var userIdString = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
             long userId = long.TryParse(userIdString, out var temp) ? temp : 0;
 
-            _gameRoomIds.TryAdd(Guid.NewGuid(), new GameQueue()
+            _gameRoomService.Add(new GameQueue()
             {
                 CreatedByUserId = userId,
                 CreateDate = DateTime.Now,
                 GameType = (GameType)gameType
             });
-            await Clients.Caller.SendAsync("RefreshRoomList", _gameRoomIds.ToArray());
+            
+            await Clients.Caller.SendAsync("RefreshRoomList", _gameRoomService.GetAll());
         }
 
         public async Task GetRoomList()
         {
-            await Clients.Caller.SendAsync("RefreshRoomList", _gameRoomIds.ToArray());
+            await _mediator.Send(new GetRoomListRequest()
+            {
+                UserConnectionId = Context.ConnectionId
+            });
         }
 
         /* Form */

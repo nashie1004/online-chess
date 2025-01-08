@@ -2,15 +2,13 @@ import { useEffect, useRef } from "react"
 
 import { Options as gameOptions } from "../game/utilities/constants";
 import { eventEmitter } from "../game/utilities/eventEmitter";
-import SidebarLeft from "../components/SidebarLeft";
 import usePhaserContext from "../hooks/usePhaserContext";
 import { IMoveHistory , ICaptureHistory, IKingState} from "../game/utilities/types";
 import SidebarRight from "../components/SidebarRight";
 import { MainGameScene } from "../game/scenes/MainGameScene";
-import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import SignalRConnection from "../services/SignalRService";
-import PlayerInfo from "../components/PlayerInfo";
 import CaptureHistory from "../components/CaptureHistory";
+import { useParams, useSearchParams } from "react-router";
 
 export default function Main(){
     const gameRef = useRef<Phaser.Game | null>();
@@ -20,6 +18,9 @@ export default function Main(){
         , setCaptureHistory
         , setKingsState
     } = usePhaserContext();
+    const test = useParams();
+
+    console.log(test)
 
     useEffect(() => {
 
