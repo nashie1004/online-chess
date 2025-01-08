@@ -1,5 +1,5 @@
 import { GameObjects } from "phaser";
-import { PieceNames } from "./constants";
+import { GameType, PieceNames } from "./constants";
 
 export interface IBaseCoordinates{
     x: number;
@@ -102,4 +102,15 @@ export interface IPinInfo {
     restrictedToCol: null | number | number[]; 
     restrictedToRow: null | number | number[];
     isRook: boolean;
+}
+
+export interface IGameRoomValue{
+    createdByUserId: string | number;
+    createDate: Date,
+    gameType: GameType
+}
+
+export interface IGameRoom{
+    key: string,
+    value: IGameRoomValue
 }

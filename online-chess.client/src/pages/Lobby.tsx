@@ -1,17 +1,16 @@
 import { useEffect, useState } from "react";
-import { Form, Pagination, Table } from "react-bootstrap"
+import { Alert, Form, Pagination, Table } from "react-bootstrap"
 import { useNavigate,  } from "react-router";
 import SignalRConnection from "../services/SignalRService";
+import { IGameRoom } from "../game/utilities/types";
+import { GameType } from "../game/utilities/constants";
+import moment from "moment";
 
 const connection = new SignalRConnection();
 
-type IGameType = "1"|"2"|"3"|"4"|"5";
-
 export default function Lobby() {
-    const [gameType, setGameType] = useState<IGameType>("1");
-    const [gameRoomList, setGameRoomList] = useState(); 
-
-    const tempLengthLeaderboard = 4;
+    const [gameType, setGameType] = useState<GameType>(1);
+    const [gameRoomList, setGameRoomList] = useState<IGameRoom[]>([]); 
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -20,7 +19,8 @@ export default function Lobby() {
             await connection.startConnection((e) => console.log(e));
 
             await connection.addHandler("RefreshRoomList", (data) => {
-                console.log("RefreshRoomList: ", data)
+                //console.log("RefreshRoomList: ", data)
+                setGameRoomList(data);
             });
 
             await connection.invoke("GetRoomList");
@@ -49,7 +49,7 @@ export default function Lobby() {
                 <Form.Group className="mb-3">
                     <Form.Select 
                         onChange={(e) => {
-                            const val = e.target.value as IGameType;
+                            const val = Number(e.target.value) as GameType;
                             setGameType(val);
                         }}
                         aria-label="Game Type"
@@ -66,77 +66,26 @@ export default function Lobby() {
             </Form>
         </div>
         <h3 className="my-3">Join</h3>
+        <Alert variant="warning">You have a game queuing...</Alert>
         <Table responsive striped size="sm">
             <thead>
                 <tr>
                     <th></th>
                     <th>Player Username</th>
-                    <th>Wins/Loses/Draw</th>
                     <th>Looking for Game Type</th>
                     <th>Last Update Date</th>
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>1</td>
-                    {Array.from({ length: tempLengthLeaderboard }).map((_, index) => (
-                        <td key={index}>Table cell {index}</td>
-                    ))}
-                </tr>
-                <tr>
-                    <td>1</td>
-                    {Array.from({ length: tempLengthLeaderboard }).map((_, index) => (
-                        <td key={index}>Table cell {index}</td>
-                    ))}
-                </tr>
-                <tr>
-                    <td>1</td>
-                    {Array.from({ length: tempLengthLeaderboard }).map((_, index) => (
-                        <td key={index}>Table cell {index}</td>
-                    ))}
-                </tr>
-                <tr>
-                    <td>1</td>
-                    {Array.from({ length: tempLengthLeaderboard }).map((_, index) => (
-                        <td key={index}>Table cell {index}</td>
-                    ))}
-                </tr>
-                <tr>
-                    <td>1</td>
-                    {Array.from({ length: tempLengthLeaderboard }).map((_, index) => (
-                        <td key={index}>Table cell {index}</td>
-                    ))}
-                </tr>
-                <tr>
-                    <td>1</td>
-                    {Array.from({ length: tempLengthLeaderboard }).map((_, index) => (
-                        <td key={index}>Table cell {index}</td>
-                    ))}
-                </tr>
-                <tr>
-                    <td>1</td>
-                    {Array.from({ length: tempLengthLeaderboard }).map((_, index) => (
-                        <td key={index}>Table cell {index}</td>
-                    ))}
-                </tr>
-                <tr>
-                    <td>1</td>
-                    {Array.from({ length: tempLengthLeaderboard }).map((_, index) => (
-                        <td key={index}>Table cell {index}</td>
-                    ))}
-                </tr>
-                <tr>
-                    <td>2</td>
-                    {Array.from({ length: tempLengthLeaderboard }).map((_, index) => (
-                        <td key={index}>Table cell {index}</td>
-                    ))}
-                </tr>
-                <tr>
-                    <td>3</td>
-                    {Array.from({ length: tempLengthLeaderboard }).map((_, index) => (
-                        <td key={index}>Table cell {index}</td>
-                    ))}
-                </tr>
+                {gameRoomList.map((item, idx) => {
+                    
+                    return <tr key={idx}>
+                        <td>Action</td>
+                        <td>{item.value.createdByUserId}</td>
+                        <td>{item.value.gameType}</td>
+                        <td>{moment(item.value.createDate).fromNow()}</td>
+                    </tr>
+                })}
             </tbody>
         </Table>
         <Pagination>

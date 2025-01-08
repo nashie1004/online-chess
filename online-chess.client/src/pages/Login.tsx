@@ -38,8 +38,8 @@ export default function Login() {
       toast(res.message, { type: "error" })
       return;
     }
-    console.log(res.data)
-      login({ userName: res.data.userName });
+    
+    login({ userName: res.data.userName });
     navigate("/");
   }
 

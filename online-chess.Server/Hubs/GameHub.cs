@@ -1,26 +1,39 @@
 ﻿
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.SignalR;
+using online_chess.Server.Constants;
 using online_chess.Server.Features.Game.Commands.JoinRoom;
+using online_chess.Server.Models;
 using System.Collections.Concurrent;
+using System.Security.Claims;
 
 namespace online_chess.Server.Hubs
 {
     public class GameHub : Hub
     {
         private readonly IMediator _mediator;
-        private static ConcurrentDictionary<Guid, string> _gameRoomIds = new ConcurrentDictionary<Guid, string>();
+        private static ConcurrentDictionary<Guid, GameQueue> _gameRoomIds = new ConcurrentDictionary<Guid, GameQueue>();
+        private IHttpContextAccessor _httpContextAccessor;
 
-        public GameHub(IMediator mediator)
+        public GameHub(IMediator mediator, IHttpContextAccessor httpContextAccessor)
         {
             _mediator = mediator;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         /* List */
-        public async Task AddToQueue(string gameType)
+        public async Task AddToQueue(short gameType)
         {
-            Guid roomId = Guid.NewGuid();
-            _gameRoomIds.TryAdd(roomId, gameType);
+            var userIdString = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            long userId = long.TryParse(userIdString, out var temp) ? temp : 0;
+
+            _gameRoomIds.TryAdd(Guid.NewGuid(), new GameQueue()
+            {
+                CreatedByUserId = userId,
+                CreateDate = DateTime.Now,
+                GameType = (GameType)gameType
+            });
             await Clients.Caller.SendAsync("RefreshRoomList", _gameRoomIds.ToArray());
         }
 

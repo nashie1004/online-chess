@@ -96,3 +96,11 @@ export const baseKingState: IKingState = {
     white: { isCheckMate: false, isInCheck: false, checkedBy: [] }
     , black: { isCheckMate: false, isInCheck: false, checkedBy: [] } 
 };
+
+export enum GameType{
+    Classical = 1,
+    Blitz3Mins = 2,
+    Blitz5Mins = 3,
+    Rapid10Mins = 4,
+    Rapid25Mins = 5,
+}
