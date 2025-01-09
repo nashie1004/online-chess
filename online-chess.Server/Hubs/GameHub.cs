@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.SignalR;
 using online_chess.Server.Constants;
 using online_chess.Server.Features.Game.Commands.AddToQueue;
 using online_chess.Server.Features.Game.Commands.JoinRoom;
+using online_chess.Server.Features.Game.Commands.LeaveRoom;
 using online_chess.Server.Features.Game.Queries.GetRoomList;
 using online_chess.Server.Models;
 using online_chess.Server.Service;
@@ -52,20 +53,17 @@ namespace online_chess.Server.Hubs
             });
         }
 
-        public async Task LeaveRoom(string user, string message)
-        {
-            //var retVal = await _mediator.Send(new JoinRoomRequest());
-            await Clients.All.SendAsync("TestClientResponse", "New connect:");
-        }
-
         public override async Task OnConnectedAsync()
         {
-            await Clients.All.SendAsync("NewlyConnected", $"{Context.ConnectionId} connected");
             await base.OnConnectedAsync();
         }
         public override async Task OnDisconnectedAsync(Exception? ex)
         {
-            await Clients.All.SendAsync("Disconnected", $"{Context.ConnectionId} disconnected");
+            await _mediator.Send(new LeaveRoomRequest()
+            {
+                UserConnectionId = Context.ConnectionId
+            });
+
             await base.OnDisconnectedAsync(ex);
         }
 

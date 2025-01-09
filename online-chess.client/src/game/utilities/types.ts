@@ -110,6 +110,7 @@ export interface IGameRoomValue{
     createdByUserId: string | number;
     createDate: Date,
     gameType: GameType
+    joinedByUserId: string | number;
 }
 
 export interface IGameRoom{

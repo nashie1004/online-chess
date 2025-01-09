@@ -13,7 +13,6 @@ export default function Layout() {
     const unAuthenticatedAllowedPaths = ["/", "/about", "/register", "/login"];
 
     useEffect(() => {
-
       if (user) return;
 
       if (!unAuthenticatedAllowedPaths.includes(url.pathname)) {

@@ -29,13 +29,19 @@ export default function Main(){
         async function start() {
             await connection.startConnection((e) => console.log(e));
             await connection.addHandler("GetRoomData", (data) => {
-                console.log(data)
                 setMessages(prev => ([...prev, { 
                     createDate: new Date(moment().format()) 
                     , createdByUserId: 999
                     , message: data
                 }]));
             })
+            await connection.addHandler("LeaveRoom", (data) => {
+                setMessages(prev => ([...prev, { 
+                    createDate: new Date(moment().format()) 
+                    , createdByUserId: 999
+                    , message: data
+                }]));
+            });
             await connection.invoke("JoinRoom", url.gameRoomId);
 
             // start phaser
