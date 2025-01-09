@@ -9,6 +9,8 @@ import { MainGameScene } from "../game/scenes/MainGameScene";
 import SignalRConnection from "../services/SignalRService";
 import CaptureHistory from "../components/CaptureHistory";
 import { useParams, useSearchParams } from "react-router";
+import useReactContext from "../hooks/useReactContext";
+import moment from "moment";
 
 const connection = new SignalRConnection();
 
@@ -21,12 +23,18 @@ export default function Main(){
         , setKingsState
     } = usePhaserContext();
     const url = useParams();
+    const { setMessages } = useReactContext();
 
     useEffect(() => {
         async function start() {
             await connection.startConnection((e) => console.log(e));
             await connection.addHandler("GetRoomData", (data) => {
                 console.log(data)
+                setMessages(prev => ([...prev, { 
+                    createDate: new Date(moment().format()) 
+                    , createdByUserId: 999
+                    , message: data
+                }]));
             })
             await connection.invoke("JoinRoom", url.gameRoomId);
 

@@ -74,10 +74,12 @@ export interface IPhaserContext extends IPhaserContextValues{
 
 export interface IReactContextValues{
     timer: ITimer;
+    messages: IMessage[]
 }
 
 export interface IReactContext extends IReactContextValues{
     setTimer: React.Dispatch<React.SetStateAction<ITimer>>;
+    setMessages: React.Dispatch<React.SetStateAction<IMessage[]>>;
 }
 
 export interface IBothKingsPosition{
@@ -113,4 +115,10 @@ export interface IGameRoomValue{
 export interface IGameRoom{
     key: string,
     value: IGameRoomValue
+}
+
+export interface IMessage{
+    message: string;
+    createDate: Date;
+    createdByUserId: string | number;
 }

@@ -1,20 +1,20 @@
 import { Table, Form } from "react-bootstrap";
+import useReactContext from "../hooks/useReactContext";
+import moment from "moment";
 
 export default function Chatbar() {
+  const {messages} = useReactContext();
+
   return (
     <>
       <div style={{ height: "250px", overflowY: "scroll" }}>
           <Table striped size="sm">
             <tbody>
-              <tr>
-                <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Architecto, cumque.</p>
-              </tr>
-              <tr>
-                <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Architecto, cumque.</p>
-              </tr>
-              <tr>
-                <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Eius non itaque adipisci unde soluta magni.</p>
-              </tr>
+              {messages.map((item, idx) => {
+                return <tr key={idx}>
+                  <p>{item.createdByUserId}: {item.message} - {moment(item.createDate).fromNow()}</p>
+                </tr>
+              })}
             </tbody>
           </Table>
         </div>
