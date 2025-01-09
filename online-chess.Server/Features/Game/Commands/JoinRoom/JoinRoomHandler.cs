@@ -4,7 +4,7 @@ using online_chess.Server.Hubs;
 
 namespace online_chess.Server.Features.Game.Commands.JoinRoom
 {
-    public class JoinRoomHandler : IRequestHandler<JoinRoomRequest, JoinRoomResponse>   
+    public class JoinRoomHandler : IRequestHandler<JoinRoomRequest, Unit>   
     {
         private readonly IHubContext<GameHub> _hubContext;
 
@@ -13,10 +13,17 @@ namespace online_chess.Server.Features.Game.Commands.JoinRoom
             _hubContext = hubContext;
         }
 
-        public async Task<JoinRoomResponse> Handle(JoinRoomRequest request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(JoinRoomRequest request, CancellationToken cancellationToken)
         {
-            await _hubContext.Clients.All.SendAsync("TestClientResponse", $"New connect: ${DateTime.Now}");
-            return new JoinRoomResponse();
+            // Add user to group
+            await _hubContext.Groups.AddToGroupAsync(request.UserConnectionId, request.GameRoomKey.ToString());
+            // Send message to all participants in the group
+            await _hubContext
+                .Clients
+                .Group(request.GameRoomKey.ToString())
+                .SendAsync("GetRoomData", $"{request.UserConnectionId} has joined");
+            
+            return Unit.Value;
         }
     }
 }

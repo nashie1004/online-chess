@@ -10,6 +10,8 @@ import SignalRConnection from "../services/SignalRService";
 import CaptureHistory from "../components/CaptureHistory";
 import { useParams, useSearchParams } from "react-router";
 
+const connection = new SignalRConnection();
+
 export default function Main(){
     const gameRef = useRef<Phaser.Game | null>();
     const {
@@ -18,55 +20,39 @@ export default function Main(){
         , setCaptureHistory
         , setKingsState
     } = usePhaserContext();
-    const test = useParams();
-
-    console.log(test)
+    const url = useParams();
 
     useEffect(() => {
-
-        // start phaser
-        if (!gameRef.current){
-            gameRef.current = new Phaser.Game({
-                type: Phaser.AUTO,
-                width: gameOptions.width,
-                height: gameOptions.height,
-                parent: 'game-container',
-                backgroundColor: '#028af8',
-                scene: [ MainGameScene, ],
-            });
-        }
-
-        eventEmitter.on("setIsWhitesTurn", (data: boolean) => setIsWhitesTurn(data))
-        eventEmitter.on("setMoveHistory", (data: IMoveHistory) => setMoveHistory(data))
-        eventEmitter.on("setCaptureHistory", (data: ICaptureHistory) => setCaptureHistory(data))
-        eventEmitter.on("setKingsState", (data: IKingState) => setKingsState(data))
-
-        // test real time connection
-        
-        const connection = new SignalRConnection();
         async function start() {
             await connection.startConnection((e) => console.log(e));
+            await connection.addHandler("GetRoomData", (data) => {
+                console.log(data)
+            })
+            await connection.invoke("JoinRoom", url.gameRoomId);
 
-            await connection.addHandler("NewlyConnected", (user, message) => {
-                console.log('NewlyConnected: ', user, message)
-            });
-            
-            await connection.addHandler("Disconnected", (user, message) => {
-                console.log('Disconnected: ', user, message)
-            });
-            
-            await connection.addHandler("TestClientResponse", (user, message) => {
-                console.log('TestClientResponse: ', user, message)
-            });
+            // start phaser
+            if (!gameRef.current){
+                gameRef.current = new Phaser.Game({
+                    type: Phaser.AUTO,
+                    width: gameOptions.width,
+                    height: gameOptions.height,
+                    parent: 'game-container',
+                    backgroundColor: '#028af8',
+                    scene: [ MainGameScene, ],
+                });
+            }
 
-            await connection.invoke("JoinRoom", "TestUser", "Hello World")
+            eventEmitter.on("setIsWhitesTurn", (data: boolean) => setIsWhitesTurn(data))
+            eventEmitter.on("setMoveHistory", (data: IMoveHistory) => setMoveHistory(data))
+            eventEmitter.on("setCaptureHistory", (data: ICaptureHistory) => setCaptureHistory(data))
+            eventEmitter.on("setKingsState", (data: IKingState) => setKingsState(data))
+
         }
 
         start();
-        
 
-        // cleanup phaser
         return () => {
+            // cleanup phaser
             if (gameRef.current){
                 gameRef.current.destroy(true);
                 gameRef.current = null;

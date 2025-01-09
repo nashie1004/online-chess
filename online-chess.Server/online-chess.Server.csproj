@@ -34,7 +34,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Game\Commands\AddToQueue\" />
     <Folder Include="Features\Game\Commands\LeaveRoom\" />
     <Folder Include="Migrations\" />
     <Folder Include="SQLiteDB\" />
