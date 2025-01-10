@@ -7,6 +7,11 @@
             
         }
     }
+    
+    public class BaseGameRequest 
+    {
+        public string UserConnectionId { get; set; }
+    }
 
     public class BaseRequestList
     {

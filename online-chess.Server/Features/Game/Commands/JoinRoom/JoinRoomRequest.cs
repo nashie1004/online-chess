@@ -3,9 +3,8 @@ using online_chess.Server.Common;
 
 namespace online_chess.Server.Features.Game.Commands.JoinRoom
 {
-    public class JoinRoomRequest : BaseRequest, IRequest<Unit>
+    public class JoinRoomRequest : BaseGameRequest, IRequest<Unit>
     {
-        public string UserConnectionId { get; set; }
-        public Guid GameRoomKey { get; set; }
+        public string GameRoomKeyString { get; set; }
     }
 }

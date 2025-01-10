@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.SignalR;
 using online_chess.Server.Constants;
+using online_chess.Server.Features.Game.Commands.AddMessageToRoom;
 using online_chess.Server.Features.Game.Commands.AddToQueue;
 using online_chess.Server.Features.Game.Commands.JoinRoom;
 using online_chess.Server.Features.Game.Commands.LeaveRoom;
@@ -25,7 +26,7 @@ namespace online_chess.Server.Hubs
             _mediator = mediator;
         }
 
-        /* List */
+        /* 1. Lobby Page */
         public async Task AddToQueue(short gameType)
         {
             await _mediator.Send(new AddToQueueRequest()
@@ -43,12 +44,19 @@ namespace online_chess.Server.Hubs
             });
         }
 
-        /* Form */
         public async Task JoinRoom(string gameRoomKey)
         {
             await _mediator.Send(new JoinRoomRequest()
             {
-                GameRoomKey = Guid.Parse(gameRoomKey),
+                GameRoomKeyString = gameRoomKey,
+                UserConnectionId = Context.ConnectionId
+            });
+        }
+
+        public async Task AddMessageToRoom(string message)
+        {
+            await _mediator.Send(new AddMessageToRoomRequest()
+            {
                 UserConnectionId = Context.ConnectionId
             });
         }

@@ -17,7 +17,7 @@ export default class SignalRConnection {
         ;
         */
         this.hubConnection = new HubConnectionBuilder()
-            .configureLogging(LogLevel.Debug)  // add this for diagnostic clues
+            .configureLogging(LogLevel.Information)  // add this for diagnostic clues
             .withUrl("https://localhost:44332/hub", {
                 skipNegotiation: true,  // skipNegotiation as we specify WebSockets
                 transport: HttpTransportType.WebSockets  // force WebSocket transport

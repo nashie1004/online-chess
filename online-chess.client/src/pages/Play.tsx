@@ -8,7 +8,7 @@ import SidebarRight from "../components/SidebarRight";
 import { MainGameScene } from "../game/scenes/MainGameScene";
 import SignalRConnection from "../services/SignalRService";
 import CaptureHistory from "../components/CaptureHistory";
-import { useParams, useSearchParams } from "react-router";
+import { useNavigate, useParams, useSearchParams } from "react-router";
 import useReactContext from "../hooks/useReactContext";
 import moment from "moment";
 
@@ -24,10 +24,14 @@ export default function Main(){
     } = usePhaserContext();
     const url = useParams();
     const { setMessages } = useReactContext();
+    const navigate = useNavigate();
 
     useEffect(() => {
         async function start() {
             await connection.startConnection((e) => console.log(e));
+            await connection.addHandler("NotFound", (notFound) => {
+                if (notFound) navigate("/notFound")
+            });
             await connection.addHandler("GetRoomData", (data) => {
                 setMessages(prev => ([...prev, { 
                     createDate: new Date(moment().format()) 

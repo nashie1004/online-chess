@@ -4,7 +4,7 @@ export default function Profile() {
   const tempLength = 4;
 
   return (
-    <>
+    <div className="col">
       <div className="mt-5 mt-3 w-50">
         <h3 className="">Account Information</h3>
         <Form
@@ -44,24 +44,7 @@ export default function Profile() {
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td>1</td>
-          {Array.from({ length: tempLength }).map((_, index) => (
-            <td key={index}>Table cell {index}</td>
-          ))}
-        </tr>
-        <tr>
-          <td>2</td>
-          {Array.from({ length: tempLength }).map((_, index) => (
-            <td key={index}>Table cell {index}</td>
-          ))}
-        </tr>
-        <tr>
-          <td>3</td>
-          {Array.from({ length: tempLength }).map((_, index) => (
-            <td key={index}>Table cell {index}</td>
-          ))}
-        </tr>
+        
       </tbody>
       </Table>
       <Pagination>
@@ -69,6 +52,6 @@ export default function Profile() {
         <Pagination.Item disabled>{1}</Pagination.Item>
         <Pagination.Next />
       </Pagination>
-    </>
+    </div>
   );
 }

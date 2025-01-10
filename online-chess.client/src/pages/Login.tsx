@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import BaseApiService from "../services/BaseApiService";
 import { toast } from 'react-toastify';
 import useAuthContext from "../hooks/useAuthContext";
+import { useEffect } from "react";
 
 const schema = z.object({
   userName: z.string().min(8, "Username must contain at least 8 character(s)"),
@@ -18,7 +19,7 @@ const registerService = new BaseApiService();
 
 export default function Login() {
     const navigate = useNavigate();
-    const { login } = useAuthContext();
+    const { login, user } = useAuthContext();
   
   const {
     register, handleSubmit,
@@ -42,6 +43,12 @@ export default function Login() {
     login({ userName: res.data.userName });
     navigate("/");
   }
+
+  useEffect(() => {
+    if (user){
+      navigate("/")
+    }
+  }, [])
 
   const loading = isSubmitting;
 

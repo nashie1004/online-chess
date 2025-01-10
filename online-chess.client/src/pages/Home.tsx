@@ -1,3 +1,4 @@
+import moment from "moment";
 import { Pagination, Table } from "react-bootstrap";
 
 export default function Home() {
@@ -5,8 +6,8 @@ export default function Home() {
   const tempLength = 4;
 
   return (
-    <>
-      <h2 className="mt-5">Leaderboard</h2>
+    <div className="col">
+      <h3 className="mt-5">Leaderboard</h3>
       <Table responsive striped size="sm">
       <thead>
         <tr>
@@ -19,66 +20,18 @@ export default function Home() {
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td>1</td>
-          {Array.from({ length: tempLengthLeaderboard }).map((_, index) => (
-            <td key={index}>Table cell {index}</td>
-          ))}
-        </tr>
-        <tr>
-          <td>1</td>
-          {Array.from({ length: tempLengthLeaderboard }).map((_, index) => (
-            <td key={index}>Table cell {index}</td>
-          ))}
-        </tr>
-        <tr>
-          <td>1</td>
-          {Array.from({ length: tempLengthLeaderboard }).map((_, index) => (
-            <td key={index}>Table cell {index}</td>
-          ))}
-        </tr>
-        <tr>
-          <td>1</td>
-          {Array.from({ length: tempLengthLeaderboard }).map((_, index) => (
-            <td key={index}>Table cell {index}</td>
-          ))}
-        </tr>
-        <tr>
-          <td>1</td>
-          {Array.from({ length: tempLengthLeaderboard }).map((_, index) => (
-            <td key={index}>Table cell {index}</td>
-          ))}
-        </tr>
-        <tr>
-          <td>1</td>
-          {Array.from({ length: tempLengthLeaderboard }).map((_, index) => (
-            <td key={index}>Table cell {index}</td>
-          ))}
-        </tr>
-        <tr>
-          <td>1</td>
-          {Array.from({ length: tempLengthLeaderboard }).map((_, index) => (
-            <td key={index}>Table cell {index}</td>
-          ))}
-        </tr>
-        <tr>
-          <td>1</td>
-          {Array.from({ length: tempLengthLeaderboard }).map((_, index) => (
-            <td key={index}>Table cell {index}</td>
-          ))}
-        </tr>
-        <tr>
-          <td>2</td>
-          {Array.from({ length: tempLengthLeaderboard }).map((_, index) => (
-            <td key={index}>Table cell {index}</td>
-          ))}
-        </tr>
-        <tr>
-          <td>3</td>
-          {Array.from({ length: tempLengthLeaderboard }).map((_, index) => (
-            <td key={index}>Table cell {index}</td>
-          ))}
-        </tr>
+        {
+          Array.from({length: 4}).map((item, idx) => {
+            return <tr key={idx}>
+              <td>{idx}.</td>
+              <td>Lorem, ipsum dolor.</td>
+              <td>Lorem, ipsum dolor.</td>
+              <td>Lorem, ipsum dolor.</td>
+              <td>Lorem, ipsum dolor.</td>
+              <td>{moment(new Date()).fromNow()}</td>
+            </tr>
+          })
+        }
       </tbody>
       </Table>
       <Pagination>
@@ -86,6 +39,6 @@ export default function Home() {
         <Pagination.Item disabled>{1}</Pagination.Item>
         <Pagination.Next />
       </Pagination>
-    </>
+    </div>
   );
 }

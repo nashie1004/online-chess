@@ -4,9 +4,8 @@ using online_chess.Server.Constants;
 
 namespace online_chess.Server.Features.Game.Commands.AddToQueue
 {
-    public class AddToQueueRequest : BaseRequest, IRequest<Unit>
+    public class AddToQueueRequest : BaseGameRequest, IRequest<Unit>
     {
         public GameType GameType { get; set; }
-        public string UserConnectionId { get; set; }
     }
 }
