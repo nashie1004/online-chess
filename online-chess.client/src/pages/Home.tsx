@@ -11,7 +11,7 @@ export default function Home() {
       <Table responsive striped size="sm">
       <thead>
         <tr>
-          <th></th>
+          <th>#</th>
           <th>Player Username</th>
           <th>Wins</th>
           <th>Loses</th>
