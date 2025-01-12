@@ -9,44 +9,52 @@ namespace online_chess.Server.Features.Game.Commands.JoinRoom
     {
         private readonly IHubContext<GameHub> _hubContext;
         private readonly GameRoomService _gameRoomService;
+        private readonly AuthenticatedUserService _authenticatedUserService;
 
-        public JoinRoomHandler(IHubContext<GameHub> hubContext, GameRoomService gameRoomService)
+        public JoinRoomHandler(IHubContext<GameHub> hubContext, GameRoomService gameRoomService, AuthenticatedUserService authenticatedUserService)
         {
             _hubContext = hubContext;
             _gameRoomService = gameRoomService;
+            _authenticatedUserService = authenticatedUserService;
         }
 
         public async Task<Unit> Handle(JoinRoomRequest request, CancellationToken cancellationToken)
         {
-            // if not a valid guid, redirect to 404 notfound
+            // 1. if not a valid guid, redirect to 404 notfound
             if (!Guid.TryParse(request.GameRoomKeyString, out Guid gameRoomKey))
             {
-                await _hubContext
-                    .Clients
-                    .Client(request.UserConnectionId)
-                    .SendAsync("NotFound", true);
-
+                await _hubContext.Clients.Client(request.UserConnectionId).SendAsync("NotFound", true);
                 return Unit.Value;
             }
 
-            // Add user to group
-            await _hubContext.Groups.AddToGroupAsync(request.UserConnectionId, gameRoomKey.ToString());
-
-            // add joiner to the room
             var room = _gameRoomService.GetOne(gameRoomKey);
-            if (
-                room != null &&
-                room.CreatedByUserId != request.IdentityUserName
-                )
+
+            // 2. if room is not found, redirect to 404 notfound
+            if (room == null)
             {
-                room.JoinedByUserId = request.IdentityUserName;
+                await _hubContext.Clients.Client(request.UserConnectionId).SendAsync("NotFound", true);
+                return Unit.Value;
             }
 
+            room.JoinedByUserId = request.IdentityUserName;
+
+            // Add both user to group
+            await _hubContext.Groups.AddToGroupAsync(
+                _authenticatedUserService.GetConnectionId(room.CreatedByUserId)
+                , gameRoomKey.ToString());
+
+            await _hubContext.Groups.AddToGroupAsync(
+                _authenticatedUserService.GetConnectionId(room.JoinedByUserId)
+            , gameRoomKey.ToString());
+
+            // redirect both users
+            await _hubContext.Clients.Group(gameRoomKey.ToString()).SendAsync("MatchFound", gameRoomKey.ToString());
+
             // Send message to all participants in the group
-            await _hubContext
-                .Clients
-                .Group(gameRoomKey.ToString())
-                .SendAsync("GetRoomData", $"{request.IdentityUserName} has joined");
+            //await _hubContext
+            //    .Clients
+            //    .Group(gameRoomKey.ToString())
+            //    .SendAsync("GetRoomData", $"{request.IdentityUserName} has joined");
             
             return Unit.Value;
         }

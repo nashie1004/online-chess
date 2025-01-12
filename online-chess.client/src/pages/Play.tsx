@@ -1,5 +1,4 @@
 import { useEffect, useRef } from "react"
-
 import { Options as gameOptions } from "../game/utilities/constants";
 import { eventEmitter } from "../game/utilities/eventEmitter";
 import usePhaserContext from "../hooks/usePhaserContext";
@@ -7,9 +6,8 @@ import { IMoveHistory , ICaptureHistory, IKingState} from "../game/utilities/typ
 import SidebarRight from "../components/SidebarRight";
 import { MainGameScene } from "../game/scenes/MainGameScene";
 import CaptureHistory from "../components/CaptureHistory";
-import { useNavigate, useParams, useSearchParams } from "react-router";
+import { useNavigate } from "react-router";
 import useReactContext from "../hooks/useGameContext";
-import moment from "moment";
 import useSignalRContext from "../hooks/useSignalRContext";
 
 export default function Main(){
@@ -20,7 +18,6 @@ export default function Main(){
         , setCaptureHistory
         , setKingsState
     } = usePhaserContext();
-    const url = useParams();
     const { setMessages } = useReactContext();
     const navigate = useNavigate();
     const signalRContext = useSignalRContext();
@@ -31,6 +28,7 @@ export default function Main(){
 
             await signalRContext.addHandler("NotFound", _ => navigate("/notFound"));
 
+            /*
             await signalRContext.addHandler("GetRoomData", (data) => {
                 setMessages(prev => ([...prev, { 
                     createDate: new Date(moment().format()) 
@@ -46,8 +44,9 @@ export default function Main(){
                     , message: data
                 }]));
             });
+            */
             
-            await signalRContext.invoke("JoinRoom", url.gameRoomId);
+            // await signalRContext.invoke("JoinRoom", url.gameRoomId);
 
             // start phaser
             if (!gameRef.current){

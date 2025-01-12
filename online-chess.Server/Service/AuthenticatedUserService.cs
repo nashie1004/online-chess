@@ -21,9 +21,13 @@ public class AuthenticatedUserService
         return identityUserName;
     }
 
-    public string? GetOne(string userConnectionId){
+    public string? GetIdentityName(string userConnectionId){
         _authenticatedUsers.TryGetValue(userConnectionId, out string? identityUserName);
         return identityUserName;
+    }
+
+    public string GetConnectionId(string userIdentityName){
+        return _authenticatedUsers.FirstOrDefault(i => i.Value == userIdentityName).Key;
     }
 
     public ConcurrentDictionary<string, string> GetAll(){

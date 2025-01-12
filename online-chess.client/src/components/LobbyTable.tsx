@@ -2,7 +2,6 @@ import moment from "moment"
 import { Table, Pagination, Modal, Button, Spinner } from "react-bootstrap"
 import { IGameRoom, IGameRoomList } from "../game/utilities/types"
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router";
 import useSignalRContext from "../hooks/useSignalRContext";
 import { gameTypeDisplay } from "../utils/helper";
 import useAuthContext from "../hooks/useAuthContext";
@@ -17,7 +16,6 @@ export default function LobbyTable({
 }: ILobbyTable){
     const [selectedRoom, setSelectedRoom] = useState<IGameRoom | null>(null);
     const [modal, setModal] = useState<boolean>(false);
-    const navigate = useNavigate();
     const { invoke } = useSignalRContext();
     const [pageNo, setPageNo] = useState<number>(1);
     const { user } = useAuthContext();
@@ -81,7 +79,6 @@ export default function LobbyTable({
         
         <Modal
             size="lg"
-            aria-labelledby="contained-modal-title-vcenter"
             centered
             show={modal}
             onHide={() => {
@@ -106,8 +103,8 @@ export default function LobbyTable({
             </Modal.Body>
             <Modal.Footer>
                 <Button onClick={() => {
-                    setModal(false)
-                    navigate(`/play/${selectedRoom?.key ?? ""}`)
+                    setModal(false);
+                    invoke("JoinRoom", selectedRoom?.key);
                 }}>Play</Button>
             </Modal.Footer>
             </Modal>

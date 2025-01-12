@@ -6,12 +6,14 @@ import { toast } from "react-toastify";
 import useSignalRContext from "../hooks/useSignalRContext";
 import useAuthContext from "../hooks/useAuthContext";
 import LobbyForm from "../components/LobbyForm";
+import { useNavigate } from "react-router";
 
 export default function Lobby() {
     const [gameRoomList, setGameRoomList] = useState<IGameRoomList>({ list: [], isLoading: true });
     const { startConnection, stopConnection, addHandler, invoke } = useSignalRContext();
     const { setUserConnectionId } = useAuthContext(); 
     const [roomKey, setRoomKey] = useState<string | null>(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         async function start(){
@@ -21,6 +23,7 @@ export default function Lobby() {
             await addHandler("InvalidRoomKey", (msg) => toast(msg, { type: "error" }));
             await addHandler("GetUserConnectionId", (connectionId) => setUserConnectionId(connectionId));
             await addHandler("GetRoomKey", (roomKey) => setRoomKey(roomKey));
+            await addHandler("MatchFound", (roomKey) => navigate(`/play/${roomKey}`));
 
             await invoke("GetRoomList", 1);
             await invoke("GetCreatedRoomKey");

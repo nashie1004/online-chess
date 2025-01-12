@@ -28,7 +28,6 @@ export default function Home() {
       return;
     }
 
-    console.log(res.data)
     setList({ isLoading: false, data: res.data.leaderboardList });
   }
 
@@ -39,7 +38,7 @@ export default function Home() {
   return (
     <div className="col">
       <h3 className="mt-5">Leaderboard</h3>
-      <Table responsive striped size="sm">
+      <Table responsive striped>
       <thead>
         <tr>
           <th className="col-1">#</th>

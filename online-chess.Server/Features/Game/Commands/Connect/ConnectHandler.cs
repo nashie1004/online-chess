@@ -21,7 +21,7 @@ public class ConnectHandler : IRequestHandler<ConnectRequest, Unit>
 
         if (string.IsNullOrEmpty(req.IdentityUserName)) return Unit.Value;
 
-        var existing = _authenticatedUserService.GetOne(req.UserConnectionId);
+        var existing = _authenticatedUserService.GetIdentityName(req.UserConnectionId);
 
         if (string.IsNullOrEmpty(existing)){
             _authenticatedUserService.Add(req.UserConnectionId, req.IdentityUserName);
