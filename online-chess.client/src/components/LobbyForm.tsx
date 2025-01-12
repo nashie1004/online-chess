@@ -33,7 +33,6 @@ export default function LobbyForm(
                     <Form.Select 
                         onChange={(e) => {
                             const val = Number(e.target.value) as GameType;
-                            console.log(e, val)
                             setGameType(val);
                         }}
                         aria-label="Game Type"

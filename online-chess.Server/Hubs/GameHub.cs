@@ -7,6 +7,7 @@ using online_chess.Server.Features.Game.Commands.AddMessageToRoom;
 using online_chess.Server.Features.Game.Commands.AddToQueue;
 using online_chess.Server.Features.Game.Commands.Connect;
 using online_chess.Server.Features.Game.Commands.DeleteRoom;
+using online_chess.Server.Features.Game.Commands.GetRoomKey;
 using online_chess.Server.Features.Game.Commands.JoinRoom;
 using online_chess.Server.Features.Game.Commands.LeaveRoom;
 using online_chess.Server.Features.Game.Queries.GetRoomList;
@@ -58,6 +59,14 @@ namespace online_chess.Server.Hubs
             await _mediator.Send(new DeleteRoomRequest()
             {
                 GameRoomKeyString = gameRoomKey,
+                UserConnectionId = Context.ConnectionId
+            });
+        }
+        
+        public async Task GetCreatedRoomKey()
+        {
+            await _mediator.Send(new GetCreatedRoomKeyRequest()
+            {   
                 UserConnectionId = Context.ConnectionId
             });
         }

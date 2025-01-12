@@ -27,13 +27,13 @@ export default function LobbyTable({
     }, [pageNo])
 
     return <>
-        <Table responsive striped size="sm">
+        <Table responsive striped>
             <thead className="bg-warning">
                 <tr>
-                    <th className="col-3">Action</th>
-                    <th className="col-3">Player Username</th>
-                    <th className="col-3">Looking for Game Type</th>
-                    <th className="col-3">Last Update Date</th>
+                    <th className="col-1">Action</th>
+                    <th className="col-4">Player Username</th>
+                    <th className="col-4">Looking for Game Type</th>
+                    <th className="col-2">Create Date</th>
                 </tr>
             </thead>
             <tbody>
@@ -43,13 +43,15 @@ export default function LobbyTable({
                     </> : gameRoomList.list.map((item, idx) => {
 
                     return <tr key={idx}> 
-                        <td className="d-flex gap-2">
-                            <button 
-                                onClick={() => {
-                                    setSelectedRoom(item)
-                                    setModal(true)
-                                }}
-                                className="btn btn-outline-primary btn-sm">View</button>
+                        <td>
+                            {user?.connectionId !== item.value.createdByUserId ? <>
+                                <button 
+                                    onClick={() => {
+                                        setSelectedRoom(item)
+                                        setModal(true)
+                                    }}
+                                    className="btn btn-outline-primary btn-sm">View</button>
+                            </> : <></>}
                         </td>
                         <td>{user?.connectionId === item.value.createdByUserId ? "You" : item.value.createdByUserId}</td>
                         <td>{gameTypeDisplay(item.value.gameType)}</td>
@@ -94,7 +96,7 @@ export default function LobbyTable({
                     selectedRoom ? <>
                         <p>Connection Id: {selectedRoom.key}</p>
                         <p>Created By User: {selectedRoom.value.createdByUserId}</p>
-                        <p>Game Type: {selectedRoom.value.gameType}</p>
+                        <p>Game Type: { gameTypeDisplay(selectedRoom.value.gameType)}</p>
                         <p>Last Update Date: {moment(selectedRoom.value.createDate).fromNow()}</p>
                     </> : <></>
                 }

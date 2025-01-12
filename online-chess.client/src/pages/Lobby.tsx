@@ -15,6 +15,8 @@ export default function Lobby() {
     const [roomKey, setRoomKey] = useState<string | null>(null);
 
     useEffect(() => {
+        setUserConnectionId(null);
+
         async function start(){
             await startConnection((e) => console.log(e));
     
@@ -24,6 +26,7 @@ export default function Lobby() {
             await addHandler("GetRoomKey", (roomKey) => setRoomKey(roomKey));
 
             await invoke("GetRoomList", 1);
+            await invoke("GetCreatedRoomKey");
         }
 
         start();
