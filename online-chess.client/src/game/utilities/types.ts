@@ -82,6 +82,13 @@ export interface IReactContext extends IReactContextValues{
     setMessages: React.Dispatch<React.SetStateAction<IMessage[]>>;
 }
 
+export interface ISignalRContext {
+    startConnection: (closeEventCallback: (arg: any) => void) => void;
+    stopConnection: () => void;
+    invoke: (methodName: string, ...args: any[]) => void;
+    addHandler: (methodName: string, method: (...args: any[]) => void) => void;
+}
+
 export interface IBothKingsPosition{
     white: IBaseCoordinates;
     black: IBaseCoordinates;

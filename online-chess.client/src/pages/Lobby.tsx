@@ -1,39 +1,44 @@
 import { useEffect, useState } from "react";
 import { Alert, Form } from "react-bootstrap"
 import { NavLink,  } from "react-router";
-import SignalRConnection from "../services/SignalRService";
 import { IGameRoom } from "../game/utilities/types";
 import { GameType } from "../game/utilities/constants";
 import LobbyTable from "../components/LobbyTable";
-
-const connection = new SignalRConnection();
+import { toast } from "react-toastify";
+import useSignalRContext from "../hooks/useSignalRContext";
 
 export default function Lobby() {
     const [gameType, setGameType] = useState<GameType>(1);
-    const [gameRoomList, setGameRoomList] = useState<IGameRoom[]>([]); 
+    const [gameRoomList, setGameRoomList] = useState<IGameRoom[]>([]);
+    const signalRContext = useSignalRContext(); 
 
     useEffect(() => {
 
         async function start(){
-            await connection.startConnection((e) => console.log(e));
+            await signalRContext.startConnection((e) => console.log(e));
 
-            await connection.addHandler("RefreshRoomList", (data) => {
-                setGameRoomList(data);
+            console.log(123)
+            await signalRContext.addHandler("RefreshRoomList", (roomList) => {
+                setGameRoomList(roomList);
             });
 
-            await connection.invoke("GetRoomList");
+            await signalRContext.addHandler("InvalidRoomKey", (msg) => {
+                if (msg) toast(msg, { type: "error" })
+            });
+
+            await signalRContext.invoke("GetRoomList");
         }
 
         start();
 
         return () => {
-            connection.stopConnection();
+            signalRContext.stopConnection();
         }
     }, [])
 
     async function formSubmit(e: React.FormEvent<HTMLFormElement>){
         e.preventDefault()  
-        await connection.invoke("AddToQueue", gameType)
+        await signalRContext.invoke("AddToQueue", gameType)
     }
 
     return <div className="col">

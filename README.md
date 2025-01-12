@@ -11,8 +11,8 @@ Update-Database -Context UserIdentityDbContext
 ```
 or
 ```
-dotnet ef database update MainDbContext
-dotnet ef database update UserIdentityDbContext
+dotnet ef database update --context MainDbContext
+dotnet ef database update --context UserIdentityDbContext
 ```
 This should create a directory named `/SQLiteDB` where our SQLite Database resides.
 

@@ -14,26 +14,29 @@ import About from "./pages/About";
 import AuthContext from "./context/AuthContext";
 import "react-toastify/dist/ReactToastify.css";
 import Lobby from "./pages/Lobby";
+import SignalRContext from "./context/SignalRContext";
 
 export default function App(){
     return <>
         <ReactContext>
             <PhaserContext>
                 <AuthContext>
-                    <BrowserRouter>
-                        <Routes>
-                            <Route path="/" element={<Layout />}>
-                                <Route path="/" element={<Home /> } />
-                                <Route path="/play/:gameRoomId" element={<Play /> } />
-                                <Route path="/register" element={<Register /> } />
-                                <Route path="/login" element={<Login /> } />
-                                <Route path="/profile" element={<Profile /> } />
-                                <Route path="/about" element={<About /> } />
-                                <Route path="/lobby" element={<Lobby /> } />
-                                <Route path="*" element={<NotFound /> } />
-                            </Route>
-                        </Routes>
-                    </BrowserRouter>
+                    <SignalRContext>
+                        <BrowserRouter>
+                            <Routes>
+                                <Route path="/" element={<Layout />}>
+                                    <Route path="/" element={<Home /> } />
+                                    <Route path="/play/:gameRoomId" element={<Play /> } />
+                                    <Route path="/register" element={<Register /> } />
+                                    <Route path="/login" element={<Login /> } />
+                                    <Route path="/profile" element={<Profile /> } />
+                                    <Route path="/about" element={<About /> } />
+                                    <Route path="/lobby" element={<Lobby /> } />
+                                    <Route path="*" element={<NotFound /> } />
+                                </Route>
+                            </Routes>
+                        </BrowserRouter>
+                    </SignalRContext>
                 </AuthContext>
             </PhaserContext>
         </ReactContext>

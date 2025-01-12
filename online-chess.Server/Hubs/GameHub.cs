@@ -53,6 +53,11 @@ namespace online_chess.Server.Hubs
             });
         }
 
+        public async Task DeleteRoom(string gameRoomKey)
+        {
+
+        }
+
         public async Task AddMessageToRoom(string message)
         {
             await _mediator.Send(new AddMessageToRoomRequest()

@@ -6,13 +6,11 @@ import usePhaserContext from "../hooks/usePhaserContext";
 import { IMoveHistory , ICaptureHistory, IKingState} from "../game/utilities/types";
 import SidebarRight from "../components/SidebarRight";
 import { MainGameScene } from "../game/scenes/MainGameScene";
-import SignalRConnection from "../services/SignalRService";
 import CaptureHistory from "../components/CaptureHistory";
 import { useNavigate, useParams, useSearchParams } from "react-router";
 import useReactContext from "../hooks/useReactContext";
 import moment from "moment";
-
-const connection = new SignalRConnection();
+import useSignalRContext from "../hooks/useSignalRContext";
 
 export default function Main(){
     const gameRef = useRef<Phaser.Game | null>();
@@ -25,28 +23,29 @@ export default function Main(){
     const url = useParams();
     const { setMessages } = useReactContext();
     const navigate = useNavigate();
+    const signalRContext = useSignalRContext();
 
     useEffect(() => {
         async function start() {
-            await connection.startConnection((e) => console.log(e));
-            await connection.addHandler("NotFound", (notFound) => {
+            await signalRContext.startConnection((e) => console.log(e));
+            await signalRContext.addHandler("NotFound", (notFound) => {
                 if (notFound) navigate("/notFound")
             });
-            await connection.addHandler("GetRoomData", (data) => {
+            await signalRContext.addHandler("GetRoomData", (data) => {
                 setMessages(prev => ([...prev, { 
                     createDate: new Date(moment().format()) 
                     , createdByUserId: 999
                     , message: data
                 }]));
             })
-            await connection.addHandler("LeaveRoom", (data) => {
+            await signalRContext.addHandler("LeaveRoom", (data) => {
                 setMessages(prev => ([...prev, { 
                     createDate: new Date(moment().format()) 
                     , createdByUserId: 999
                     , message: data
                 }]));
             });
-            await connection.invoke("JoinRoom", url.gameRoomId);
+            await signalRContext.invoke("JoinRoom", url.gameRoomId);
 
             // start phaser
             if (!gameRef.current){
@@ -76,7 +75,7 @@ export default function Main(){
                 gameRef.current = null;
             }
             
-            connection.stopConnection();
+            signalRContext.stopConnection();
         };
     }, [])
  

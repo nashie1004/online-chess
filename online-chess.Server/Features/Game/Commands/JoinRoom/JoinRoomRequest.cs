@@ -5,6 +5,5 @@ namespace online_chess.Server.Features.Game.Commands.JoinRoom
 {
     public class JoinRoomRequest : BaseGameRequest, IRequest<Unit>
     {
-        public string GameRoomKeyString { get; set; }
     }
 }
