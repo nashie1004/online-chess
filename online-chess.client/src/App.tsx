@@ -2,7 +2,7 @@ import { BrowserRouter, Route, Routes } from "react-router";
 import Play from "./pages/Play";
 import NotFound from "./pages/NotFound";
 import PhaserContext from "./context/PhaserContext";
-import ReactContext from "./context/ReactContext";
+import ReactContext from "./context/GameContext";
 import './index.css'
 import Layout from "./components/Layout";
 import Home from "./pages/Home";

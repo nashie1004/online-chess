@@ -1,23 +1,23 @@
 import { createContext, ReactNode, useState } from 'react'
-import { IMessage, IReactContext } from '../game/utilities/types';
+import { IMessage, IGameContext } from '../game/utilities/types';
 
-interface ReactContextProps{
+interface GameContextProps{
     children: ReactNode
 }
 
-export const reactContext = createContext<IReactContext | null>(null);
+export const gameContext = createContext<IGameContext | null>(null);
 
-export default function ReactContext(
-    {children}: ReactContextProps
+export default function GameContext(
+    {children}: GameContextProps
 ) {
     const [timer, setTimer] = useState({ white: 0, black: 0});
     const [messages, setMessages] = useState<IMessage[]>([]);
 
   return (
-    <reactContext.Provider value={{
+    <gameContext.Provider value={{
         timer, setTimer, messages, setMessages
     }}>
         {children}
-    </reactContext.Provider>
+    </gameContext.Provider>
   )
 }

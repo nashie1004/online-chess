@@ -46,9 +46,12 @@ after that, the web application should now be running.
 3. play - timer progress bar  
 7. profile
 
-### C#
-1. backend - authentication
-2. backend - signal move state
+### C# / Signalr
+1. chat bar
+2. delete room
+3. leave room
+4. handle unintentional disconnect
+
 
 ### UI Possible Templates
 1. https://www.chesssquire.com/chess-vs-computer.html

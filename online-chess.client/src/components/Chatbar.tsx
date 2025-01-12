@@ -1,5 +1,5 @@
 import { Table, Form } from "react-bootstrap";
-import useReactContext from "../hooks/useReactContext";
+import useReactContext from "../hooks/useGameContext";
 import moment from "moment";
 
 export default function Chatbar() {

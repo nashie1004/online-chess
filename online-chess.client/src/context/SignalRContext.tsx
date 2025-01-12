@@ -7,15 +7,13 @@ interface ISignalRContextProps{
 }
 
 export const signalRContext = createContext<null | ISignalRContext>(null);
-// const signalRConnection = new SignalRConnection(); 
+let hubConnection: HubConnection;
 
 export default function SignalRContext(
     {children}: ISignalRContextProps
 ) {
-    const [hubConnection, setHubConnection] = useState<HubConnection | null>(null);
-
     async function startConnection(closeEventCallback: (arg: any) => void){
-        const connection = new HubConnectionBuilder()
+        hubConnection = new HubConnectionBuilder()
             .configureLogging(LogLevel.Information) 
             .withUrl("https://localhost:44332/hub", {
                 skipNegotiation: true,  // skipNegotiation as we specify WebSockets
@@ -24,17 +22,14 @@ export default function SignalRContext(
             .build();
         
         try {
-            await connection.start();
+            await hubConnection.start();
+            hubConnection.onclose(closeEventCallback);
+            hubConnection.onreconnected((e) => console.info(`Reconnected: ${e}`))
+            hubConnection.onreconnecting((e) => console.info(`Reconnecting: ${e}`))
             console.log("Connection started");
         } catch (error) {
             console.error(error);
         }
-
-        connection.onclose(closeEventCallback);
-        connection.onreconnected((e) => console.info(`Reconnected: ${e}`))
-        connection.onreconnecting((e) => console.info(`Reconnecting: ${e}`))
-
-        setHubConnection(connection);
     }
 
     async function stopConnection(){
@@ -58,8 +53,6 @@ export default function SignalRContext(
     }
     
     async function addHandler(methodName: string, method: (...args: any[]) => any){
-        console.log(hubConnection, methodName)
-
         if (!hubConnection) return;
         try{
             await hubConnection.on(methodName, method);

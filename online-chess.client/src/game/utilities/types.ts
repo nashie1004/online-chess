@@ -72,12 +72,12 @@ export interface IPhaserContext extends IPhaserContextValues{
     setKingsState: (val: IKingState) => void;
 }
 
-export interface IReactContextValues{
+export interface IGameContextValues{
     timer: ITimer;
     messages: IMessage[]
 }
 
-export interface IReactContext extends IReactContextValues{
+export interface IGameContext extends IGameContextValues{
     setTimer: React.Dispatch<React.SetStateAction<ITimer>>;
     setMessages: React.Dispatch<React.SetStateAction<IMessage[]>>;
 }

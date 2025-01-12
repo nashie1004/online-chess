@@ -17,7 +17,6 @@ export default function Lobby() {
         async function start(){
             await signalRContext.startConnection((e) => console.log(e));
 
-            console.log(123)
             await signalRContext.addHandler("RefreshRoomList", (roomList) => {
                 setGameRoomList(roomList);
             });

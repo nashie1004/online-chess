@@ -8,7 +8,7 @@ import SidebarRight from "../components/SidebarRight";
 import { MainGameScene } from "../game/scenes/MainGameScene";
 import CaptureHistory from "../components/CaptureHistory";
 import { useNavigate, useParams, useSearchParams } from "react-router";
-import useReactContext from "../hooks/useReactContext";
+import useReactContext from "../hooks/useGameContext";
 import moment from "moment";
 import useSignalRContext from "../hooks/useSignalRContext";
 
@@ -28,9 +28,11 @@ export default function Main(){
     useEffect(() => {
         async function start() {
             await signalRContext.startConnection((e) => console.log(e));
+
             await signalRContext.addHandler("NotFound", (notFound) => {
                 if (notFound) navigate("/notFound")
             });
+
             await signalRContext.addHandler("GetRoomData", (data) => {
                 setMessages(prev => ([...prev, { 
                     createDate: new Date(moment().format()) 
@@ -38,6 +40,7 @@ export default function Main(){
                     , message: data
                 }]));
             })
+            
             await signalRContext.addHandler("LeaveRoom", (data) => {
                 setMessages(prev => ([...prev, { 
                     createDate: new Date(moment().format()) 
