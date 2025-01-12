@@ -10,7 +10,7 @@ interface IAuthContext {
     login: (user: IUser) => void;
     logout: () => void;
     user: IUser | null;
-    setUserConnectionId: (val: string) => void;
+    setUserConnectionId: (val: string | null) => void;
 }
 
 interface IAuthContextProps {
@@ -45,7 +45,7 @@ export default function AuthContext(
         setIsAuthenticating(false)
     }
 
-    function setUserConnectionId(connectionId: string){
+    function setUserConnectionId(connectionId: string | null){
         setUser(prev => {
             if (!prev) return prev;
             return ({ ...prev, connectionId })

@@ -5,19 +5,22 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import useSignalRContext from "../hooks/useSignalRContext";
 import { gameTypeDisplay } from "../utils/helper";
+import useAuthContext from "../hooks/useAuthContext";
 
 interface ILobbyTable{
+    setGameRoomList: React.Dispatch<React.SetStateAction<IGameRoomList>>;
     gameRoomList: IGameRoomList
 }
 
 export default function LobbyTable({
-    gameRoomList
+    gameRoomList, setGameRoomList
 }: ILobbyTable){
     const [selectedRoom, setSelectedRoom] = useState<IGameRoom | null>(null);
     const [modal, setModal] = useState<boolean>(false);
     const navigate = useNavigate();
     const { invoke } = useSignalRContext();
     const [pageNo, setPageNo] = useState<number>(1);
+    const { user } = useAuthContext();
 
     useEffect(() => {
         invoke("GetRoomList", pageNo);
@@ -27,10 +30,10 @@ export default function LobbyTable({
         <Table responsive striped size="sm">
             <thead>
                 <tr>
-                    <th>Action</th>
-                    <th>Player Username</th>
-                    <th>Looking for Game Type</th>
-                    <th>Last Update Date</th>
+                    <th className="col-3">Action</th>
+                    <th className="col-3">Player Username</th>
+                    <th className="col-3">Looking for Game Type</th>
+                    <th className="col-3">Last Update Date</th>
                 </tr>
             </thead>
             <tbody>
@@ -38,7 +41,7 @@ export default function LobbyTable({
                     gameRoomList.isLoading ? <>
                         <Spinner animation="border" variant="dark" className="mt-3" /> 
                     </> : gameRoomList.list.map((item, idx) => {
-                    
+
                     return <tr key={idx}>
                         <td className="d-flex gap-2">
                             <button 
@@ -47,13 +50,18 @@ export default function LobbyTable({
                                     setModal(true)
                                 }}
                                 className="btn btn-outline-primary btn-sm">View</button>
-                            <button 
-                                onClick={() => {
-                                    invoke("DeleteRoom", item.key)
-                                }}
-                                className="btn btn-outline-danger btn-sm">Delete</button>
+                            {
+                                user?.connectionId === item.value.createdByUserId ? <>
+                                    <button 
+                                        onClick={() => {
+                                            setGameRoomList(prev => ({ ...prev, isLoading: true }));
+                                            invoke("DeleteRoom", item.key)
+                                        }}
+                                        className="btn btn-outline-danger btn-sm">Delete</button>
+                                </> : <></>
+                            }
                         </td>
-                        <td>{item.value.createdByUserId}</td>
+                        <td>{user?.connectionId === item.value.createdByUserId ? "You" : item.value.createdByUserId}</td>
                         <td>{gameTypeDisplay(item.value.gameType)}</td>
                         <td>{moment(item.value.createDate).fromNow()}</td>
                     </tr>
@@ -62,11 +70,17 @@ export default function LobbyTable({
         </Table>
         <Pagination>
             <Pagination.Prev 
-                onClick={() => setPageNo(prev => Math.max(prev - 1, 1))}
+                onClick={() => {
+                    setGameRoomList(prev => ({ ...prev, isLoading: true }));
+                    setPageNo(prev => Math.max(prev - 1, 1));
+                }}
             />
             <Pagination.Item disabled>{pageNo}</Pagination.Item>
             <Pagination.Next 
-                onClick={() => setPageNo(prev => prev + 1)}
+                onClick={() => {
+                    setGameRoomList(prev => ({ ...prev, isLoading: true }));
+                    setPageNo(prev => prev + 1);
+                }}
             />
         </Pagination>
         
