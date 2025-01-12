@@ -2,7 +2,7 @@ import { Outlet, useLocation, useNavigate } from "react-router";
 import Navbar from "./Navigationbar";
 import useAuthContext from "../hooks/useAuthContext";
 import { useEffect } from "react";
-import { Spinner } from "react-bootstrap";
+import { Alert, Spinner } from "react-bootstrap";
 import { ToastContainer } from "react-toastify";
 
 export default function Layout() {

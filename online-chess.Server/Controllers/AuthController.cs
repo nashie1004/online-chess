@@ -6,10 +6,12 @@ using online_chess.Server.Common;
 using online_chess.Server.Features.Auth.Commands.LogIn;
 using online_chess.Server.Features.Auth.Commands.LogOut;
 using online_chess.Server.Features.Auth.Commands.Register;
+using online_chess.Server.Features.Auth.Queries.GetGameHistory;
 using online_chess.Server.Features.Auth.Queries.GetPlayerInfo;
 
 namespace online_chess.Server.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
@@ -35,16 +37,26 @@ namespace online_chess.Server.Controllers
             return Ok(await _mediator.Send(req));
         }
 
-        [Authorize]
         [HttpGet("isSignedIn")]
         public async Task<IActionResult> IsSignedIn([FromQuery] GetPlayerInfoRequest req)
         {
             return Ok(await _mediator.Send(req));
         }
 
-        [Authorize]
         [HttpPost("logout")]
         public async Task<IActionResult> Logout([FromBody] LogoutRequest req)
+        {
+            return Ok(await _mediator.Send(req));
+        }
+
+        [HttpPost("edit")]
+        public async Task<IActionResult> EditAccount([FromBody] LoginRequest req)
+        {
+            return Ok(await _mediator.Send(req));
+        }
+        
+        [HttpGet("gameHistory")]
+        public async Task<IActionResult> GameHistory([FromQuery] GetGameHistoryRequest req)
         {
             return Ok(await _mediator.Send(req));
         }

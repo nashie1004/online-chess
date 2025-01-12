@@ -45,7 +45,7 @@ namespace online_chess.Server.Features.Game.Commands.JoinRoom
 
             await _hubContext.Groups.AddToGroupAsync(
                 _authenticatedUserService.GetConnectionId(room.JoinedByUserId)
-            , gameRoomKey.ToString());
+                , gameRoomKey.ToString());
 
             // redirect both users
             await _hubContext.Clients.Group(gameRoomKey.ToString()).SendAsync("MatchFound", gameRoomKey.ToString());

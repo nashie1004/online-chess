@@ -104,3 +104,7 @@ export enum GameType{
     Rapid10Mins = 4,
     Rapid25Mins = 5,
 }
+
+export enum GameStatus{
+    Won, Lose, Draw
+}

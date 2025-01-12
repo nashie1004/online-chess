@@ -1,8 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using online_chess.Server;
-using online_chess.Server.DTOs;
 using online_chess.Server.Hubs;
 using online_chess.Server.Models;
 using online_chess.Server.Persistence;

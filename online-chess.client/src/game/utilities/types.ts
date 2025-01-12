@@ -1,5 +1,5 @@
 import { GameObjects } from "phaser";
-import { GameType, PieceNames } from "./constants";
+import { GameStatus, GameType, PieceNames } from "./constants";
 
 export interface IBaseCoordinates{
     x: number;
@@ -152,4 +152,16 @@ export interface ILeaderboard{
 export interface ILeaderboardList{
     isLoading: boolean;
     data: ILeaderboard[];
+}
+
+export interface IGameHistory{
+    gameStatus: GameStatus;
+    isColorWhite: boolean;
+    opponentName: string;
+    createDate: Date;
+}
+
+export interface IGameHistoryList{
+    isLoading: boolean;
+    data: IGameHistory[];
 }

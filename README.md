@@ -48,10 +48,10 @@ after that, the web application should now be running.
 
 ### C# / Signalr
 1. chat bar
-2. delete room
+~~2. delete room~~
 3. leave room
 4. handle unintentional disconnect
-5. lobby pagination
+~~5. lobby pagination~~
 
 
 ### UI Possible Templates

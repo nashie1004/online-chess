@@ -1,6 +1,6 @@
 using System;
 
-namespace online_chess.Server.Models;
+namespace online_chess.Server.Models.DTOs;
 
 public class LeaderboardList
 {

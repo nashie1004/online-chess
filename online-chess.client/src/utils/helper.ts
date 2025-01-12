@@ -1,4 +1,4 @@
-import { GameType } from "../game/utilities/constants";
+import { GameStatus, GameType } from "../game/utilities/constants";
 
 export function gameTypeDisplay(gameType: GameType){
     switch(gameType){
@@ -12,5 +12,16 @@ export function gameTypeDisplay(gameType: GameType){
             return "Rapid - 10 minutes per player"
         case GameType.Rapid25Mins:
             return "Rapid - 25 minutes per player"
+    }
+}
+
+export function gameStatusDisplay(status: GameStatus){
+    switch(status){
+        case GameStatus.Won:
+            return "Win";
+        case GameStatus.Lose:
+            return "Lose";
+        case GameStatus.Draw:
+            return "Draw";
     }
 }

@@ -17,7 +17,7 @@ export default function Lobby() {
 
     useEffect(() => {
         async function start(){
-            await startConnection((e) => console.log(e));
+            await startConnection((e) => {});
     
             await addHandler("RefreshRoomList", (roomList) => setGameRoomList({ isLoading: false, list: roomList }));
             await addHandler("InvalidRoomKey", (msg) => toast(msg, { type: "error" }));
