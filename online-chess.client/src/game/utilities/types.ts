@@ -135,3 +135,8 @@ export interface IGameRoomList{
     list: IGameRoom[];
     isLoading: boolean;
 }
+
+export interface IUser {
+    userName: string;
+    connectionId: string | null;
+}

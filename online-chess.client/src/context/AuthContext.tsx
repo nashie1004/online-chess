@@ -1,18 +1,16 @@
 import { useState, useEffect, createContext } from 'react'
 import BaseApiService from '../services/BaseApiService';
+import { IUser } from '../game/utilities/types';
 
 
 const authService = new BaseApiService();
-
-interface IUser {
-    userName: string;
-}
 
 interface IAuthContext {
     isAuthenticating: boolean;
     login: (user: IUser) => void;
     logout: () => void;
     user: IUser | null;
+    setUserConnectionId: (val: string) => void;
 }
 
 interface IAuthContextProps {
@@ -23,7 +21,8 @@ export const authContext = createContext<IAuthContext>({
     isAuthenticating: true,
     login: (user: IUser) => { },
     logout: () => { },
-    user: null
+    user: null,
+    setUserConnectionId: () => {}
 });
 
 export default function AuthContext(
@@ -46,11 +45,18 @@ export default function AuthContext(
         setIsAuthenticating(false)
     }
 
+    function setUserConnectionId(connectionId: string){
+        setUser(prev => {
+            if (!prev) return prev;
+            return ({ ...prev, connectionId })
+        });
+    }
+
     useEffect(() => {
         async function authenticate() {
             const res = await authService.baseGet("/api/Auth/isSignedIn");
             if (res.isOk) {
-                setUser({ userName: res.data.userName })
+                setUser({ userName: res.data.userName, connectionId: null })
             }
             setIsAuthenticating(false)
         }
@@ -60,7 +66,7 @@ export default function AuthContext(
     }, [])
 
     const data = {
-        user, login, logout, isAuthenticating
+        user, login, logout, isAuthenticating, setUserConnectionId
     }
 
   return (

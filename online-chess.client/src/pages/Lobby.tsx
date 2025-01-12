@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { Alert, Form } from "react-bootstrap"
 import { NavLink,  } from "react-router";
-import { IGameRoom, IGameRoomList } from "../game/utilities/types";
+import { IGameRoomList } from "../game/utilities/types";
 import { GameType } from "../game/utilities/constants";
 import LobbyTable from "../components/LobbyTable";
 import { toast } from "react-toastify";
 import useSignalRContext from "../hooks/useSignalRContext";
 import { gameTypeDisplay } from "../utils/helper";
+import useAuthContext from "../hooks/useAuthContext";
 
 const gameTypes = [ GameType.Classical, GameType.Blitz3Mins, GameType.Blitz5Mins, GameType.Rapid10Mins, GameType.Rapid25Mins ];
 
@@ -15,17 +16,22 @@ export default function Lobby() {
     const [gameRoomList, setGameRoomList] = useState<IGameRoomList>({
         list: [], isLoading: true
     });
-    const { startConnection, stopConnection, addHandler, invoke } = useSignalRContext(); 
+    const { startConnection, stopConnection, addHandler, invoke } = useSignalRContext();
+    const { setUserConnectionId } = useAuthContext(); 
 
     useEffect(() => {
         async function start(){
             await startConnection((e) => console.log(e));
     
             await addHandler("RefreshRoomList", (roomList) => {
-                setGameRoomList(roomList);
+                setGameRoomList({ isLoading: false, list: roomList });
             });
     
             await addHandler("InvalidRoomKey", (msg) => toast(msg, { type: "error" }));
+
+            await addHandler("GetUserConnectionId", (connectionId) => {
+                setUserConnectionId(connectionId);
+            });
     
             await invoke("GetRoomList", 1);
         }

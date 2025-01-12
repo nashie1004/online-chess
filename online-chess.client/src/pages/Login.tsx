@@ -40,7 +40,7 @@ export default function Login() {
       return;
     }
     
-    login({ userName: res.data.userName });
+    login({ userName: res.data.userName, connectionId: null });
     navigate("/");
   }
 

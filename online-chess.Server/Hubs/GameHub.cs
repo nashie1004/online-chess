@@ -73,13 +73,13 @@ namespace online_chess.Server.Hubs
 
         public override async Task OnConnectedAsync()
         {
+            await base.OnConnectedAsync();
+
             await _mediator.Send(new ConnectRequest()
             {
                 UserConnectionId = Context.ConnectionId,
                 IdentityUserName = Context.User?.Identity?.Name
             });
-
-            await base.OnConnectedAsync();
         }
 
         public override async Task OnDisconnectedAsync(Exception? ex)

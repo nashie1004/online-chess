@@ -1,13 +1,13 @@
 import moment from "moment"
-import { Table, Pagination, Modal, Button } from "react-bootstrap"
-import { IGameRoom } from "../game/utilities/types"
+import { Table, Pagination, Modal, Button, Spinner } from "react-bootstrap"
+import { IGameRoom, IGameRoomList } from "../game/utilities/types"
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import useSignalRContext from "../hooks/useSignalRContext";
 import { gameTypeDisplay } from "../utils/helper";
 
 interface ILobbyTable{
-    gameRoomList: IGameRoom[]
+    gameRoomList: IGameRoomList
 }
 
 export default function LobbyTable({
@@ -34,7 +34,10 @@ export default function LobbyTable({
                 </tr>
             </thead>
             <tbody>
-                {gameRoomList.map((item, idx) => {
+                {
+                    gameRoomList.isLoading ? <>
+                        <Spinner animation="border" variant="dark" className="mt-3" /> 
+                    </> : gameRoomList.list.map((item, idx) => {
                     
                     return <tr key={idx}>
                         <td className="d-flex gap-2">
