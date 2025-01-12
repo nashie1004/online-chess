@@ -62,8 +62,11 @@ export default function LobbyTable({
         </Table>
         <Pagination>
             <Pagination.Prev 
+                disabled={pageNo === 1}
                 onClick={() => {
-                    setGameRoomList(prev => ({ ...prev, isLoading: true }));
+                    if (pageNo > 1){
+                        setGameRoomList(prev => ({ ...prev, isLoading: true }));
+                    }
                     setPageNo(prev => Math.max(prev - 1, 1));
                 }}
             />

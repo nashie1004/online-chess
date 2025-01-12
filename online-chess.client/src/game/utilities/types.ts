@@ -140,3 +140,16 @@ export interface IUser {
     userName: string;
     connectionId: string | null;
 }
+
+export interface ILeaderboard{
+    userName: string;
+    wins: number;
+    loses: number;
+    draws: number;
+    lastGameDate: Date;
+}
+
+export interface ILeaderboardList{
+    isLoading: boolean;
+    data: ILeaderboard[];
+}
