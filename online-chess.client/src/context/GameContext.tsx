@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useState } from 'react'
+import { createContext, ReactNode, useReducer, useState } from 'react'
 import { IMessage, IGameContext } from '../game/utilities/types';
 
 interface GameContextProps{
@@ -7,11 +7,17 @@ interface GameContextProps{
 
 export const gameContext = createContext<IGameContext | null>(null);
 
+function reducerFn(state, action){
+    return state;
+}
+
 export default function GameContext(
     {children}: GameContextProps
 ) {
     const [timer, setTimer] = useState({ white: 0, black: 0});
     const [messages, setMessages] = useState<IMessage[]>([]);
+
+    const [state, dispatch] = useReducer(reducerFn, {});
 
   return (
     <gameContext.Provider value={{

@@ -3,6 +3,8 @@ import { Table, Pagination, Modal, Button } from "react-bootstrap"
 import { IGameRoom } from "../game/utilities/types"
 import { useState } from "react";
 import { useNavigate } from "react-router";
+import useSignalRContext from "../hooks/useSignalRContext";
+import { gameTypeDisplay } from "../utils/helper";
 
 interface ILobbyTable{
     gameRoomList: IGameRoom[]
@@ -14,6 +16,7 @@ export default function LobbyTable({
     const [selectedRoom, setSelectedRoom] = useState<IGameRoom | null>(null);
     const [modal, setModal] = useState<boolean>(false);
     const navigate = useNavigate();
+    const { invoke } = useSignalRContext();
 
     return <>
         <Table responsive striped size="sm">
@@ -37,10 +40,13 @@ export default function LobbyTable({
                                 }}
                                 className="btn btn-outline-primary btn-sm">View</button>
                             <button 
+                                onClick={() => {
+                                    invoke("DeleteRoom", item.key)
+                                }}
                                 className="btn btn-outline-danger btn-sm">Delete</button>
                         </td>
                         <td>{item.value.createdByUserId}</td>
-                        <td>{item.value.gameType}</td>
+                        <td>{gameTypeDisplay(item.value.gameType)}</td>
                         <td>{moment(item.value.createDate).fromNow()}</td>
                     </tr>
                 })}

@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.SignalR;
 using online_chess.Server.Constants;
 using online_chess.Server.Features.Game.Commands.AddMessageToRoom;
 using online_chess.Server.Features.Game.Commands.AddToQueue;
+using online_chess.Server.Features.Game.Commands.Connect;
+using online_chess.Server.Features.Game.Commands.DeleteRoom;
 using online_chess.Server.Features.Game.Commands.JoinRoom;
 using online_chess.Server.Features.Game.Commands.LeaveRoom;
 using online_chess.Server.Features.Game.Queries.GetRoomList;
@@ -29,6 +31,8 @@ namespace online_chess.Server.Hubs
         /* 1. Lobby Page */
         public async Task AddToQueue(short gameType)
         {
+            var test = Context.User;
+
             await _mediator.Send(new AddToQueueRequest()
             {
                 GameType = (GameType)gameType,
@@ -46,6 +50,8 @@ namespace online_chess.Server.Hubs
 
         public async Task JoinRoom(string gameRoomKey)
         {
+            var test = Context.User;
+
             await _mediator.Send(new JoinRoomRequest()
             {
                 GameRoomKeyString = gameRoomKey,
@@ -55,7 +61,11 @@ namespace online_chess.Server.Hubs
 
         public async Task DeleteRoom(string gameRoomKey)
         {
-
+            await _mediator.Send(new DeleteRoomRequest()
+            {
+                GameRoomKeyString = gameRoomKey,
+                UserConnectionId = Context.ConnectionId
+            });
         }
 
         public async Task AddMessageToRoom(string message)
@@ -68,11 +78,16 @@ namespace online_chess.Server.Hubs
 
         public override async Task OnConnectedAsync()
         {
+            await _mediator.Send(new ConnectRequest(){
+                UserConnectionId = Context.ConnectionId,
+                IdentityUserName = Context.User?.Identity?.Name
+            });
+
             await base.OnConnectedAsync();
         }
         public override async Task OnDisconnectedAsync(Exception? ex)
         {
-            await _mediator.Send(new LeaveRoomRequest()
+            await _mediator.Send(new LeaveRequest()
             {
                 UserConnectionId = Context.ConnectionId
             });

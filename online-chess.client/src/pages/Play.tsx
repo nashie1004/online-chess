@@ -29,9 +29,7 @@ export default function Main(){
         async function start() {
             await signalRContext.startConnection((e) => console.log(e));
 
-            await signalRContext.addHandler("NotFound", (notFound) => {
-                if (notFound) navigate("/notFound")
-            });
+            await signalRContext.addHandler("NotFound", _ => navigate("/notFound"));
 
             await signalRContext.addHandler("GetRoomData", (data) => {
                 setMessages(prev => ([...prev, { 
@@ -48,6 +46,7 @@ export default function Main(){
                     , message: data
                 }]));
             });
+            
             await signalRContext.invoke("JoinRoom", url.gameRoomId);
 
             // start phaser

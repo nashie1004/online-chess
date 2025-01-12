@@ -51,6 +51,7 @@ after that, the web application should now be running.
 2. delete room
 3. leave room
 4. handle unintentional disconnect
+5. lobby pagination
 
 
 ### UI Possible Templates

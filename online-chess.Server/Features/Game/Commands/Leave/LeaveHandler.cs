@@ -5,19 +5,23 @@ using online_chess.Server.Service;
 
 namespace online_chess.Server.Features.Game.Commands.LeaveRoom
 {
-    public class LeaveRoomHandler : IRequestHandler<LeaveRoomRequest, Unit>
+    public class LeaveHandler : IRequestHandler<LeaveRequest, Unit>
     {
         private readonly IHubContext<GameHub> _hubContext;
         private readonly GameRoomService _gameRoomService;
+        private readonly AuthenticatedUserService _authenticatedUserService;
 
-        public LeaveRoomHandler(IHubContext<GameHub> hubContext, GameRoomService gameRoomService)
+        public LeaveHandler(IHubContext<GameHub> hubContext, GameRoomService gameRoomService, AuthenticatedUserService authenticatedUserService)
         {
             _hubContext = hubContext;
             _gameRoomService = gameRoomService;
+            _authenticatedUserService = authenticatedUserService;
         }
 
-        public async Task<Unit> Handle(LeaveRoomRequest request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(LeaveRequest request, CancellationToken cancellationToken)
         {
+            _authenticatedUserService.RemoveOne(request.UserConnectionId);
+
             var gameRooms = _gameRoomService.GetAll();
             foreach (var item in gameRooms)
             {

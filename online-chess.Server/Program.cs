@@ -36,6 +36,7 @@ builder.Services.AddIdentity<User, Role>()
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<GameRoomService>();
+builder.Services.AddSingleton<AuthenticatedUserService>();
 
 var app = builder.Build();
 

@@ -35,9 +35,7 @@ namespace online_chess.Server.Features.Game.Commands.AddToQueue
             });
 
             //await Clients.Caller.SendAsync("RefreshRoomList", _gameRoomService.GetAll());
-            await _hubContext.Clients
-                .Client(request.UserConnectionId)
-                .SendAsync("RefreshRoomList", _gameRoomService.GetAll());
+            await _hubContext.Clients.All.SendAsync("RefreshRoomList", _gameRoomService.GetAll());
 
             return Unit.Value;
         }
