@@ -31,9 +31,9 @@ public class DeleteRoomHandler : IRequestHandler<DeleteRoomRequest, Unit>
         }
 
         _gameRoomService.Remove(gameRoomKey);
-        await _hubContext.Clients
-            .All
-            .SendAsync("RefreshRoomList", _gameRoomService.GetAll());
+        await _hubContext.Clients.All.SendAsync("RefreshRoomList", 
+            _gameRoomService.GetPaginatedDictionary(1).ToArray()
+        );
 
         return Unit.Value;
     }

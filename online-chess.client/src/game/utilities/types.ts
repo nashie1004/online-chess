@@ -130,3 +130,8 @@ export interface IMessage{
     createDate: Date;
     createdByUserId: string | number;
 }
+
+export interface IGameRoomList{
+    list: IGameRoom[];
+    isLoading: boolean;
+}

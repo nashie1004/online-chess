@@ -1,7 +1,6 @@
 ﻿
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.SignalR;
 using online_chess.Server.Constants;
 using online_chess.Server.Features.Game.Commands.AddMessageToRoom;
@@ -11,10 +10,6 @@ using online_chess.Server.Features.Game.Commands.DeleteRoom;
 using online_chess.Server.Features.Game.Commands.JoinRoom;
 using online_chess.Server.Features.Game.Commands.LeaveRoom;
 using online_chess.Server.Features.Game.Queries.GetRoomList;
-using online_chess.Server.Models;
-using online_chess.Server.Service;
-using System.Collections.Concurrent;
-using System.Security.Claims;
 
 namespace online_chess.Server.Hubs
 {
@@ -40,18 +35,17 @@ namespace online_chess.Server.Hubs
             });
         }
 
-        public async Task GetRoomList()
+        public async Task GetRoomList(int pageNumber)
         {
             await _mediator.Send(new GetRoomListRequest()
             {
-                UserConnectionId = Context.ConnectionId
+                UserConnectionId = Context.ConnectionId,
+                PageNumber = pageNumber
             });
         }
 
         public async Task JoinRoom(string gameRoomKey)
         {
-            var test = Context.User;
-
             await _mediator.Send(new JoinRoomRequest()
             {
                 GameRoomKeyString = gameRoomKey,
@@ -68,6 +62,7 @@ namespace online_chess.Server.Hubs
             });
         }
 
+        /* 2. Play Page */
         public async Task AddMessageToRoom(string message)
         {
             await _mediator.Send(new AddMessageToRoomRequest()
@@ -78,13 +73,15 @@ namespace online_chess.Server.Hubs
 
         public override async Task OnConnectedAsync()
         {
-            await _mediator.Send(new ConnectRequest(){
+            await _mediator.Send(new ConnectRequest()
+            {
                 UserConnectionId = Context.ConnectionId,
                 IdentityUserName = Context.User?.Identity?.Name
             });
 
             await base.OnConnectedAsync();
         }
+
         public override async Task OnDisconnectedAsync(Exception? ex)
         {
             await _mediator.Send(new LeaveRequest()

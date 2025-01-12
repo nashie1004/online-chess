@@ -1,7 +1,7 @@
 import moment from "moment"
 import { Table, Pagination, Modal, Button } from "react-bootstrap"
 import { IGameRoom } from "../game/utilities/types"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import useSignalRContext from "../hooks/useSignalRContext";
 import { gameTypeDisplay } from "../utils/helper";
@@ -17,6 +17,11 @@ export default function LobbyTable({
     const [modal, setModal] = useState<boolean>(false);
     const navigate = useNavigate();
     const { invoke } = useSignalRContext();
+    const [pageNo, setPageNo] = useState<number>(1);
+
+    useEffect(() => {
+        invoke("GetRoomList", pageNo);
+    }, [pageNo])
 
     return <>
         <Table responsive striped size="sm">
@@ -53,9 +58,13 @@ export default function LobbyTable({
             </tbody>
         </Table>
         <Pagination>
-            <Pagination.Prev />
-            <Pagination.Item disabled>{1}</Pagination.Item>
-            <Pagination.Next />
+            <Pagination.Prev 
+                onClick={() => setPageNo(prev => Math.max(prev - 1, 1))}
+            />
+            <Pagination.Item disabled>{pageNo}</Pagination.Item>
+            <Pagination.Next 
+                onClick={() => setPageNo(prev => prev + 1)}
+            />
         </Pagination>
         
         <Modal

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Alert, Form } from "react-bootstrap"
 import { NavLink,  } from "react-router";
-import { IGameRoom } from "../game/utilities/types";
+import { IGameRoom, IGameRoomList } from "../game/utilities/types";
 import { GameType } from "../game/utilities/constants";
 import LobbyTable from "../components/LobbyTable";
 import { toast } from "react-toastify";
@@ -12,7 +12,9 @@ const gameTypes = [ GameType.Classical, GameType.Blitz3Mins, GameType.Blitz5Mins
 
 export default function Lobby() {
     const [gameType, setGameType] = useState<GameType>(1);
-    const [gameRoomList, setGameRoomList] = useState<IGameRoom[]>([]);
+    const [gameRoomList, setGameRoomList] = useState<IGameRoomList>({
+        list: [], isLoading: true
+    });
     const { startConnection, stopConnection, addHandler, invoke } = useSignalRContext(); 
 
     useEffect(() => {
@@ -25,7 +27,7 @@ export default function Lobby() {
     
             await addHandler("InvalidRoomKey", (msg) => toast(msg, { type: "error" }));
     
-            await invoke("GetRoomList");
+            await invoke("GetRoomList", 1);
         }
 
         start();

@@ -38,5 +38,16 @@ namespace online_chess.Server.Service
         {
             return _gameRoomIds;
         }
+        
+        public ConcurrentDictionary<Guid, GameQueue> GetPaginatedDictionary(int pageNumber = 1, int pageSize = 10)
+        {
+            var paginatedDict =_gameRoomIds
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToDictionary(pair => pair.Key, pair => pair.Value)
+            ;
+
+            return new ConcurrentDictionary<Guid, GameQueue>(paginatedDict);
+        }
     }
 }
