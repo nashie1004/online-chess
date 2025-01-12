@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { GameType } from '../game/utilities/constants';
 import { gameTypeDisplay } from '../utils/helper';
 import { Form } from 'react-bootstrap';
@@ -6,17 +6,17 @@ import useSignalRContext from '../hooks/useSignalRContext';
 import { IGameRoomList } from '../game/utilities/types';
 
 interface ILobbyForm{
-    setGameType: React.Dispatch<React.SetStateAction<GameType>>;
-    gameType: GameType;
     setGameRoomList: React.Dispatch<React.SetStateAction<IGameRoomList>>;
+    roomKey: string | null;
 }
 
 const gameTypes = [ GameType.Classical, GameType.Blitz3Mins, GameType.Blitz5Mins, GameType.Rapid10Mins, GameType.Rapid25Mins ];
 
 export default function LobbyForm(
-    { setGameType, gameType, setGameRoomList }: ILobbyForm
+    { setGameRoomList, roomKey }: ILobbyForm
 ) {
     const { invoke } = useSignalRContext();
+    const [gameType, setGameType] = useState<GameType>(1);
 
   return (
     <>
@@ -33,6 +33,7 @@ export default function LobbyForm(
                     <Form.Select 
                         onChange={(e) => {
                             const val = Number(e.target.value) as GameType;
+                            console.log(e, val)
                             setGameType(val);
                         }}
                         aria-label="Game Type"
@@ -40,14 +41,16 @@ export default function LobbyForm(
                         <option selected disabled>Choose Game Type</option>
                         {
                             gameTypes.map((item, idx) => {
-                                return <option key={idx} value={gameType}>
+                                return <option key={idx} value={item}>
                                     {gameTypeDisplay(item)}
                                 </option>
                             })
                         }
                     </Form.Select>
                 </Form.Group>
-                <button type="submit" className="btn btn-primary w-100">Queue</button>
+                <button
+                    disabled={roomKey ? true : false} 
+                    type="submit" className="btn btn-primary w-100">Queue</button>
             </Form>
         </div>
     </>

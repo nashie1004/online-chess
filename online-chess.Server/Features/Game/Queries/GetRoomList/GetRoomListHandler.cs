@@ -19,7 +19,7 @@ namespace online_chess.Server.Features.Game.Queries.GetRoomList
         public async Task<Unit> Handle(GetRoomListRequest request, CancellationToken cancellationToken)
         {
             await _hubCtx.Clients.Client(request.UserConnectionId).SendAsync("RefreshRoomList", 
-                _gameRoomService.GetPaginatedDictionary(request.PageNumber).ToArray()    
+                _gameRoomService.GetPaginatedDictionary(request.PageNumber).ToArray().OrderByDescending(i => i.Value.CreateDate)    
             );
 
             return Unit.Value;

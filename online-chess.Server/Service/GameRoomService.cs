@@ -12,9 +12,9 @@ namespace online_chess.Server.Service
             
         }
 
-        public void Add(GameQueue gameQueue)
+        public void Add(Guid roomIdKey, GameQueue gameQueue)
         {
-            _gameRoomIds.TryAdd(Guid.NewGuid(), gameQueue);
+            _gameRoomIds.TryAdd(roomIdKey, gameQueue);
         }
 
         public GameQueue? Remove(Guid key)

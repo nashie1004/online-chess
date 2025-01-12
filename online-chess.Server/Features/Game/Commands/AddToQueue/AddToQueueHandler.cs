@@ -23,16 +23,17 @@ namespace online_chess.Server.Features.Game.Commands.AddToQueue
 
         public async Task<Unit> Handle(AddToQueueRequest request, CancellationToken cancellationToken)
         {
-            //var userIdString = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            //long userId = long.TryParse(userIdString, out var temp) ? temp : 0;
+            var roomKey = Guid.NewGuid();
 
-            _gameRoomService.Add(new GameQueue()
+            _gameRoomService.Add(roomKey, new GameQueue()
             {
                 CreatedByUserId = request.UserConnectionId,
                 CreateDate = DateTime.Now,
                 GameType = request.GameType,
                 JoinedByUserId = string.Empty
             });
+
+            await _hubContext.Clients.Client(request.UserConnectionId).SendAsync("GetRoomKey", roomKey);
 
             await _hubContext.Clients.All.SendAsync("RefreshRoomList",
                 _gameRoomService.GetPaginatedDictionary(1).ToArray()

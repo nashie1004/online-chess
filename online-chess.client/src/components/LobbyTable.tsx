@@ -28,7 +28,7 @@ export default function LobbyTable({
 
     return <>
         <Table responsive striped size="sm">
-            <thead>
+            <thead className="bg-warning">
                 <tr>
                     <th className="col-3">Action</th>
                     <th className="col-3">Player Username</th>
@@ -42,7 +42,7 @@ export default function LobbyTable({
                         <Spinner animation="border" variant="dark" className="mt-3" /> 
                     </> : gameRoomList.list.map((item, idx) => {
 
-                    return <tr key={idx}>
+                    return <tr key={idx}> 
                         <td className="d-flex gap-2">
                             <button 
                                 onClick={() => {
@@ -50,16 +50,6 @@ export default function LobbyTable({
                                     setModal(true)
                                 }}
                                 className="btn btn-outline-primary btn-sm">View</button>
-                            {
-                                user?.connectionId === item.value.createdByUserId ? <>
-                                    <button 
-                                        onClick={() => {
-                                            setGameRoomList(prev => ({ ...prev, isLoading: true }));
-                                            invoke("DeleteRoom", item.key)
-                                        }}
-                                        className="btn btn-outline-danger btn-sm">Delete</button>
-                                </> : <></>
-                            }
                         </td>
                         <td>{user?.connectionId === item.value.createdByUserId ? "You" : item.value.createdByUserId}</td>
                         <td>{gameTypeDisplay(item.value.gameType)}</td>
