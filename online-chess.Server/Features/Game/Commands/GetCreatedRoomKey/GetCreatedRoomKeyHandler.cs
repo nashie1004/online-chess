@@ -21,7 +21,7 @@ public class GetCreatedRoomKeyHandler : IRequestHandler<GetCreatedRoomKeyRequest
     {
         foreach(var item in _gameRoomService.GetDictionary())
         {
-            if (item.Value.CreatedByUserId == req.UserConnectionId){
+            if (item.Value.CreatedByUserId == req.IdentityUserName){
                 await _hubContext.Clients.Client(req.UserConnectionId).SendAsync("GetRoomKey", item.Key);
                 return Unit.Value;
             }

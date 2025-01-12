@@ -6,5 +6,4 @@ namespace online_chess.Server.Features.Game.Commands.Connect;
 
 public class ConnectRequest : BaseGameRequest, IRequest<Unit>
 {
-    public string? IdentityUserName { get; set; }
 }

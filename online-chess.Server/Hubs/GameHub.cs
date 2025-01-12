@@ -27,12 +27,11 @@ namespace online_chess.Server.Hubs
         /* 1. Lobby Page */
         public async Task AddToQueue(short gameType)
         {
-            var test = Context.User;
-
             await _mediator.Send(new AddToQueueRequest()
             {
                 GameType = (GameType)gameType,
-                UserConnectionId = Context.ConnectionId
+                UserConnectionId = Context.ConnectionId,
+                IdentityUserName = Context.User?.Identity?.Name
             });
         }
 
@@ -41,7 +40,8 @@ namespace online_chess.Server.Hubs
             await _mediator.Send(new GetRoomListRequest()
             {
                 UserConnectionId = Context.ConnectionId,
-                PageNumber = pageNumber
+                PageNumber = pageNumber,
+                IdentityUserName = Context.User?.Identity?.Name
             });
         }
 
@@ -50,7 +50,8 @@ namespace online_chess.Server.Hubs
             await _mediator.Send(new JoinRoomRequest()
             {
                 GameRoomKeyString = gameRoomKey,
-                UserConnectionId = Context.ConnectionId
+                UserConnectionId = Context.ConnectionId,
+                IdentityUserName = Context.User?.Identity?.Name
             });
         }
 
@@ -59,7 +60,8 @@ namespace online_chess.Server.Hubs
             await _mediator.Send(new DeleteRoomRequest()
             {
                 GameRoomKeyString = gameRoomKey,
-                UserConnectionId = Context.ConnectionId
+                UserConnectionId = Context.ConnectionId,
+                IdentityUserName = Context.User?.Identity?.Name
             });
         }
         
@@ -67,7 +69,8 @@ namespace online_chess.Server.Hubs
         {
             await _mediator.Send(new GetCreatedRoomKeyRequest()
             {   
-                UserConnectionId = Context.ConnectionId
+                UserConnectionId = Context.ConnectionId,
+                IdentityUserName = Context.User?.Identity?.Name
             });
         }
 
@@ -76,7 +79,8 @@ namespace online_chess.Server.Hubs
         {
             await _mediator.Send(new AddMessageToRoomRequest()
             {
-                UserConnectionId = Context.ConnectionId
+                UserConnectionId = Context.ConnectionId,
+                IdentityUserName = Context.User?.Identity?.Name
             });
         }
 
@@ -95,11 +99,11 @@ namespace online_chess.Server.Hubs
         {
             await _mediator.Send(new LeaveRequest()
             {
-                UserConnectionId = Context.ConnectionId
+                UserConnectionId = Context.ConnectionId,
+                IdentityUserName = Context.User?.Identity?.Name
             });
 
             await base.OnDisconnectedAsync(ex);
         }
-
     }
 }

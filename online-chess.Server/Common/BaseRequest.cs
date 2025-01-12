@@ -11,6 +11,7 @@
     public class BaseGameRequest 
     {
         public string UserConnectionId { get; set; }
+        public string? IdentityUserName { get; set; }
         public string GameRoomKeyString { get; set; }
     }
 

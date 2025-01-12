@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Alert } from "react-bootstrap"
-import { NavLink,  } from "react-router";
 import { IGameRoomList } from "../game/utilities/types";
 import LobbyTable from "../components/LobbyTable";
 import { toast } from "react-toastify";
@@ -15,8 +14,6 @@ export default function Lobby() {
     const [roomKey, setRoomKey] = useState<string | null>(null);
 
     useEffect(() => {
-        setUserConnectionId(null);
-
         async function start(){
             await startConnection((e) => console.log(e));
     

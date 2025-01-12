@@ -44,7 +44,7 @@ export default function LobbyTable({
 
                     return <tr key={idx}> 
                         <td>
-                            {user?.connectionId !== item.value.createdByUserId ? <>
+                            {user?.userName !== item.value.createdByUserId ? <>
                                 <button 
                                     onClick={() => {
                                         setSelectedRoom(item)
@@ -53,7 +53,7 @@ export default function LobbyTable({
                                     className="btn btn-outline-primary btn-sm">View</button>
                             </> : <></>}
                         </td>
-                        <td>{user?.connectionId === item.value.createdByUserId ? "You" : item.value.createdByUserId}</td>
+                        <td>{user?.userName === item.value.createdByUserId ? "You" : item.value.createdByUserId}</td>
                         <td>{gameTypeDisplay(item.value.gameType)}</td>
                         <td>{moment(item.value.createDate).fromNow()}</td>
                     </tr>

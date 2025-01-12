@@ -36,17 +36,17 @@ namespace online_chess.Server.Features.Game.Commands.JoinRoom
             var room = _gameRoomService.GetOne(gameRoomKey);
             if (
                 room != null &&
-                room.CreatedByUserId != request.UserConnectionId
+                room.CreatedByUserId != request.IdentityUserName
                 )
             {
-                room.JoinedByUserId = request.UserConnectionId;
+                room.JoinedByUserId = request.IdentityUserName;
             }
 
             // Send message to all participants in the group
             await _hubContext
                 .Clients
                 .Group(gameRoomKey.ToString())
-                .SendAsync("GetRoomData", $"{request.UserConnectionId} has joined");
+                .SendAsync("GetRoomData", $"{request.IdentityUserName} has joined");
             
             return Unit.Value;
         }

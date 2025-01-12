@@ -37,7 +37,7 @@ export default function LobbyForm(
                         }}
                         aria-label="Game Type"
                     >
-                        <option selected disabled>Choose Game Type</option>
+                        {/* <option selected disabled>Choose Game Type</option> */}
                         {
                             gameTypes.map((item, idx) => {
                                 return <option key={idx} value={item}>
