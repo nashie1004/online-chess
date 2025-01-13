@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Alert } from "react-bootstrap"
+import { Alert, Spinner } from "react-bootstrap"
 import { IGameRoomList } from "../game/utilities/types";
 import LobbyTable from "../components/LobbyTable";
 import { toast } from "react-toastify";
@@ -45,7 +45,7 @@ export default function Lobby() {
         <h3 className="my-3">Join</h3>
         {roomKey ? <>
             <Alert variant="warning">
-                You have a game queuing... <a href="#" className="alert-link" onClick={() => {
+                <Spinner size="sm" animation="border" variant="success" className="mt-3" /> You have a game queuing... <a href="#" className="alert-link" onClick={() => {
                     invoke("DeleteRoom", roomKey)
                     setRoomKey(null);
                 }}>Stop queuing?</a>
