@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { GameType } from '../game/utilities/constants';
-import { gameTypeDisplay } from '../utils/helper';
+import { ColorOptions, GameType } from '../game/utilities/constants';
+import { colorOptionsDisplay, gameTypeDisplay } from '../utils/helper';
 import { Form } from 'react-bootstrap';
 import useSignalRContext from '../hooks/useSignalRContext';
 import { IGameRoomList } from '../game/utilities/types';
@@ -11,12 +11,14 @@ interface ILobbyForm{
 }
 
 const gameTypes = [ GameType.Classical, GameType.Blitz3Mins, GameType.Blitz5Mins, GameType.Rapid10Mins, GameType.Rapid25Mins ];
+const colorOptions = [ ColorOptions.White, ColorOptions.Black, ColorOptions.Random ];
 
 export default function LobbyForm(
     { setGameRoomList, roomKey }: ILobbyForm
 ) {
     const { invoke } = useSignalRContext();
     const [gameType, setGameType] = useState<GameType>(1);
+    const [colorOption, setColorOption] = useState<ColorOptions>(1);
 
   return (
     <>
@@ -26,7 +28,7 @@ export default function LobbyForm(
                 onSubmit={(e) => {
                     e.preventDefault();
                     setGameRoomList(prev => ({ ...prev, isLoading: true }));
-                    invoke("AddToQueue", gameType)
+                    invoke("AddToQueue", gameType, colorOption)
                 }}
             >
                 <Form.Group className="mb-3">
@@ -37,14 +39,25 @@ export default function LobbyForm(
                         }}
                         aria-label="Game Type"
                     >
-                        {/* <option selected disabled>Choose Game Type</option> */}
-                        {
-                            gameTypes.map((item, idx) => {
-                                return <option key={idx} value={item}>
-                                    {gameTypeDisplay(item)}
-                                </option>
-                            })
-                        }
+                        {gameTypes.map((item, idx) => {
+                            return <option key={idx} value={item}>
+                                {gameTypeDisplay(item)}
+                            </option>
+                        })}
+                    </Form.Select>
+                </Form.Group>
+                <Form.Group className='mb-3'>
+                    <Form.Select
+                        onChange={(e) => {
+                            const val = Number(e.target.value) as ColorOptions;
+                            setColorOption(val);
+                        }}
+                    >
+                        {colorOptions.map((item, idx) => {
+                            return <option value={item} key={idx}>
+                                {colorOptionsDisplay(item)}
+                            </option>
+                        })}
                     </Form.Select>
                 </Form.Group>
                 <button

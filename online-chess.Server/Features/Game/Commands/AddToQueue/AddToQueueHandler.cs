@@ -25,6 +25,7 @@ namespace online_chess.Server.Features.Game.Commands.AddToQueue
         {
             var roomKey = Guid.NewGuid();
 
+            // TODO Add Color
             _gameRoomService.Add(roomKey, new GameQueue()
             {
                 CreatedByUserId = request.IdentityUserName,

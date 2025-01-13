@@ -2,7 +2,8 @@
 {
     public enum Color : short
     {
-        White = 0,
-        Black = 1
+        White = 1,
+        Black = 2,
+        Random = 3
     }
 }

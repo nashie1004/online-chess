@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using online_chess.Server.Constants;
+using online_chess.Server.Enums;
 using online_chess.Server.Features.Game.Commands.AddMessageToRoom;
 using online_chess.Server.Features.Game.Commands.AddToQueue;
 using online_chess.Server.Features.Game.Commands.Connect;
@@ -25,11 +26,12 @@ namespace online_chess.Server.Hubs
         }
 
         /* 1. Lobby Page */
-        public async Task AddToQueue(short gameType)
+        public async Task AddToQueue(short gameType, short colorOption)
         {
             await _mediator.Send(new AddToQueueRequest()
             {
                 GameType = (GameType)gameType,
+                ColorOption = (Color)colorOption,
                 UserConnectionId = Context.ConnectionId,
                 IdentityUserName = Context.User?.Identity?.Name
             });

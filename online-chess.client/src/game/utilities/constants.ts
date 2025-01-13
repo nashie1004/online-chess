@@ -108,3 +108,9 @@ export enum GameType{
 export enum GameStatus{
     Won, Lose, Draw
 }
+
+export enum ColorOptions{
+    White = 1,
+    Black = 2,
+    Random = 3,
+}

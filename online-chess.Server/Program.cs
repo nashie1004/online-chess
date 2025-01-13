@@ -60,7 +60,7 @@ app.UseAuthorization();
 app.MapControllers();
 
 // Serve static files for your frontend (if any)
-// app.MapFallbackToFile("/index.html");
+app.MapFallbackToFile("/index.html");
 
 app.MapHub<GameHub>("/hub");
 
