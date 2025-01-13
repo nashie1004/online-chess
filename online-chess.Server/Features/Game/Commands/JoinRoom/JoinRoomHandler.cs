@@ -8,10 +8,10 @@ namespace online_chess.Server.Features.Game.Commands.JoinRoom
     public class JoinRoomHandler : IRequestHandler<JoinRoomRequest, Unit>   
     {
         private readonly IHubContext<GameHub> _hubContext;
-        private readonly GameRoomService _gameRoomService;
+        private readonly GameQueueService _gameRoomService;
         private readonly AuthenticatedUserService _authenticatedUserService;
 
-        public JoinRoomHandler(IHubContext<GameHub> hubContext, GameRoomService gameRoomService, AuthenticatedUserService authenticatedUserService)
+        public JoinRoomHandler(IHubContext<GameHub> hubContext, GameQueueService gameRoomService, AuthenticatedUserService authenticatedUserService)
         {
             _hubContext = hubContext;
             _gameRoomService = gameRoomService;

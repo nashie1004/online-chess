@@ -8,10 +8,10 @@ namespace online_chess.Server.Features.Game.Commands.DeleteRoom;
 
 public class DeleteRoomHandler : IRequestHandler<DeleteRoomRequest, Unit>
 {
-    private readonly GameRoomService _gameRoomService;
+    private readonly GameQueueService _gameRoomService;
     private readonly IHubContext<GameHub> _hubContext;
 
-    public DeleteRoomHandler(GameRoomService gameRoomService, IHubContext<GameHub> hubContext)
+    public DeleteRoomHandler(GameQueueService gameRoomService, IHubContext<GameHub> hubContext)
     {
         _gameRoomService = gameRoomService;
         _hubContext = hubContext;

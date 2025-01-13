@@ -4,6 +4,7 @@ using System.Reflection.Metadata.Ecma335;
 
 namespace online_chess.Server.Models
 {
+    // For Lobby Page
     public class GameQueue
     {
         public string CreatedByUserId { get; set; }

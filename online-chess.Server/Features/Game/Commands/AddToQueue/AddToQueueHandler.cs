@@ -12,9 +12,9 @@ namespace online_chess.Server.Features.Game.Commands.AddToQueue
     {
         private readonly IHubContext<GameHub> _hubContext;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly GameRoomService _gameRoomService;
+        private readonly GameQueueService _gameRoomService;
 
-        public AddToQueueHandler(IHubContext<GameHub> hubContext, IHttpContextAccessor httpContextAccessor, GameRoomService gameRoomService)
+        public AddToQueueHandler(IHubContext<GameHub> hubContext, IHttpContextAccessor httpContextAccessor, GameQueueService gameRoomService)
         {
             _hubContext = hubContext;
             _httpContextAccessor = httpContextAccessor;

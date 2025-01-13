@@ -8,9 +8,9 @@ namespace online_chess.Server.Features.Game.Queries.GetRoomList
     public class GetRoomListHandler : IRequestHandler<GetRoomListRequest, Unit>
     {
         private readonly IHubContext<GameHub> _hubCtx;
-        private readonly GameRoomService _gameRoomService;
+        private readonly GameQueueService _gameRoomService;
 
-        public GetRoomListHandler(IHubContext<GameHub> ctx, GameRoomService gameRoomService)
+        public GetRoomListHandler(IHubContext<GameHub> ctx, GameQueueService gameRoomService)
         {
             _hubCtx = ctx;
             _gameRoomService = gameRoomService;

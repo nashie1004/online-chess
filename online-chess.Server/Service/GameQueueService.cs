@@ -3,11 +3,11 @@ using System.Collections.Concurrent;
 
 namespace online_chess.Server.Service
 {
-    public class GameRoomService
+    public class GameQueueService
     {
         private static ConcurrentDictionary<Guid, GameQueue> _gameRoomIds = new ConcurrentDictionary<Guid, GameQueue>();
 
-        public GameRoomService()
+        public GameQueueService()
         {
             
         }
