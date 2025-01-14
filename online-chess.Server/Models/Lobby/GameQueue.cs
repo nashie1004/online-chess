@@ -12,5 +12,6 @@ namespace online_chess.Server.Models.Lobby
         public GameType GameType { get; set; }
         public Color CreatedByUserColor { get; set; }
         public string JoinedByUserId { get; set; }
+        public GamePlayStatus GamePlayStatus { get; set; }
     }
 }
