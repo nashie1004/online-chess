@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace online_chess.Server.Models
+namespace online_chess.Server.Models.Entities
 {
     public class User : IdentityUser<long>
     {

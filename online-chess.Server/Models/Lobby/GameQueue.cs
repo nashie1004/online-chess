@@ -2,7 +2,7 @@
 using online_chess.Server.Enums;
 using System.Reflection.Metadata.Ecma335;
 
-namespace online_chess.Server.Models
+namespace online_chess.Server.Models.Lobby
 {
     // For Lobby Page
     public class GameQueue

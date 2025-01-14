@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using online_chess.Server;
 using online_chess.Server.Hubs;
 using online_chess.Server.Models;
+using online_chess.Server.Models.Entities;
 using online_chess.Server.Persistence;
 using online_chess.Server.Service;
 

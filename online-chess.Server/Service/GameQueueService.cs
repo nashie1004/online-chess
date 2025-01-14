@@ -1,4 +1,4 @@
-﻿using online_chess.Server.Models;
+﻿using online_chess.Server.Models.Lobby;
 using System.Collections.Concurrent;
 
 namespace online_chess.Server.Service
