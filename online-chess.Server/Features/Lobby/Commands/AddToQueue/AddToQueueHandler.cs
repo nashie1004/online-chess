@@ -6,15 +6,15 @@ using online_chess.Server.Models;
 using online_chess.Server.Service;
 using System.Security.Claims;
 
-namespace online_chess.Server.Features.Game.Commands.AddToQueue
+namespace online_chess.Server.Features.Lobby.Commands.AddToQueue
 {
     public class AddToQueueHandler : IRequestHandler<AddToQueueRequest, Unit>
     {
         private readonly IHubContext<GameHub> _hubContext;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly GameRoomService _gameRoomService;
+        private readonly GameQueueService _gameRoomService;
 
-        public AddToQueueHandler(IHubContext<GameHub> hubContext, IHttpContextAccessor httpContextAccessor, GameRoomService gameRoomService)
+        public AddToQueueHandler(IHubContext<GameHub> hubContext, IHttpContextAccessor httpContextAccessor, GameQueueService gameRoomService)
         {
             _hubContext = hubContext;
             _httpContextAccessor = httpContextAccessor;
@@ -25,12 +25,12 @@ namespace online_chess.Server.Features.Game.Commands.AddToQueue
         {
             var roomKey = Guid.NewGuid();
 
-            // TODO Add Color
             _gameRoomService.Add(roomKey, new GameQueue()
             {
                 CreatedByUserId = request.IdentityUserName,
                 CreateDate = DateTime.Now,
                 GameType = request.GameType,
+                CreatedByUserColor = request.ColorOption,
                 JoinedByUserId = string.Empty
             });
 

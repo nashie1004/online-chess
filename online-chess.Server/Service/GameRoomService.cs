@@ -5,49 +5,49 @@ namespace online_chess.Server.Service
 {
     public class GameRoomService
     {
-        private static ConcurrentDictionary<Guid, GameQueue> _gameRoomIds = new ConcurrentDictionary<Guid, GameQueue>();
+        private static ConcurrentDictionary<Guid, GameRoom> _gameRoomIds = new ConcurrentDictionary<Guid, GameRoom>();
 
         public GameRoomService()
         {
-            
+
         }
 
-        public void Add(Guid roomIdKey, GameQueue gameQueue)
+        public void Add(Guid roomIdKey, GameRoom GameRoom)
         {
-            _gameRoomIds.TryAdd(roomIdKey, gameQueue);
+            _gameRoomIds.TryAdd(roomIdKey, GameRoom);
         }
 
-        public GameQueue? Remove(Guid key)
+        public GameRoom? Remove(Guid key)
         {
-            _gameRoomIds.Remove(key, out GameQueue? value);
+            _gameRoomIds.Remove(key, out GameRoom? value);
             return value;
         }
 
-        public KeyValuePair<Guid, GameQueue>[] GetAll()
+        public KeyValuePair<Guid, GameRoom>[] GetAll()
         {
             return _gameRoomIds.ToArray();
         }
 
-        public GameQueue? GetOne(Guid key)
+        public GameRoom? GetOne(Guid key)
         {
-            _gameRoomIds.TryGetValue(key, out GameQueue? value);
+            _gameRoomIds.TryGetValue(key, out GameRoom? value);
             return value;
         }
 
-        public ConcurrentDictionary<Guid, GameQueue> GetDictionary()
+        public ConcurrentDictionary<Guid, GameRoom> GetDictionary()
         {
             return _gameRoomIds;
         }
-        
-        public ConcurrentDictionary<Guid, GameQueue> GetPaginatedDictionary(int pageNumber = 1, int pageSize = 10)
+
+        public ConcurrentDictionary<Guid, GameRoom> GetPaginatedDictionary(int pageNumber = 1, int pageSize = 10)
         {
-            var paginatedDict =_gameRoomIds
+            var paginatedDict = _gameRoomIds
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToDictionary(pair => pair.Key, pair => pair.Value)
             ;
 
-            return new ConcurrentDictionary<Guid, GameQueue>(paginatedDict);
+            return new ConcurrentDictionary<Guid, GameRoom>(paginatedDict);
         }
     }
 }

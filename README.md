@@ -37,22 +37,15 @@ after that, the web application should now be running.
 
 ### Chess Logic/Game
 1. stalemate detection - if the piece value suffice
-4. show notation on chessboard 
-5. cleanup
-6. promotion picker
-
-### Pages / UI
-2. lobby 
-3. play - timer progress bar  
-7. profile
+2. promotion picker
+3. show notation on chessboard 
 
 ### C# / Signalr
-1. chat bar
-~~2. delete room~~
-3. leave room
-4. handle unintentional disconnect
-~~5. lobby pagination~~
+1. play page game state (pieces coords, whose turn is it, timer)
+2. lobby page chat bar
 
+### Pages / UI
+7. profile edit
 
 ### UI Possible Templates
 1. https://www.chesssquire.com/chess-vs-computer.html

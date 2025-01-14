@@ -1,6 +1,6 @@
 ﻿using online_chess.Server.Enums;
 
-namespace online_chess.Server.Models
+namespace online_chess.Server.Models.Entities
 {
     public class GameHistory
     {

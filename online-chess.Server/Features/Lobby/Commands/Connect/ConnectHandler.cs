@@ -4,10 +4,10 @@ using Microsoft.AspNetCore.SignalR;
 using online_chess.Server.Hubs;
 using online_chess.Server.Service;
 
-namespace online_chess.Server.Features.Game.Commands.Connect;
+namespace online_chess.Server.Features.Lobby.Commands.Connect;
 
 public class ConnectHandler : IRequestHandler<ConnectRequest, Unit>
-{   
+{
     private readonly AuthenticatedUserService _authenticatedUserService;
     private readonly IHubContext<GameHub> _hubContext;
 
@@ -17,13 +17,15 @@ public class ConnectHandler : IRequestHandler<ConnectRequest, Unit>
         _hubContext = hubContext;
     }
 
-    public async Task<Unit> Handle(ConnectRequest req, CancellationToken ct){
+    public async Task<Unit> Handle(ConnectRequest req, CancellationToken ct)
+    {
 
         if (string.IsNullOrEmpty(req.IdentityUserName)) return Unit.Value;
 
         var existing = _authenticatedUserService.GetIdentityName(req.UserConnectionId);
 
-        if (string.IsNullOrEmpty(existing)){
+        if (string.IsNullOrEmpty(existing))
+        {
             _authenticatedUserService.Add(req.UserConnectionId, req.IdentityUserName);
             await _hubContext.Clients.Client(req.UserConnectionId).SendAsync("GetUserConnectionId", req.UserConnectionId);
         }

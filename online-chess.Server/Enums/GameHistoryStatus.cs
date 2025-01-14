@@ -2,7 +2,7 @@ using System;
 
 namespace online_chess.Server.Enums;
 
-public enum GameStatus : short
+public enum GameHistoryStatus : short
 {
     Won,
     Lose,

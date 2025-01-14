@@ -5,13 +5,13 @@ using Microsoft.AspNetCore.SignalR;
 using online_chess.Server.Constants;
 using online_chess.Server.Enums;
 using online_chess.Server.Features.Game.Commands.AddMessageToRoom;
-using online_chess.Server.Features.Game.Commands.AddToQueue;
-using online_chess.Server.Features.Game.Commands.Connect;
-using online_chess.Server.Features.Game.Commands.DeleteRoom;
-using online_chess.Server.Features.Game.Commands.GetRoomKey;
-using online_chess.Server.Features.Game.Commands.JoinRoom;
+using online_chess.Server.Features.Lobby.Commands.AddToQueue;
+using online_chess.Server.Features.Lobby.Commands.Connect;
+using online_chess.Server.Features.Lobby.Commands.DeleteRoom;
+using online_chess.Server.Features.Lobby.Queries.GetCreatedRoomKey;
+using online_chess.Server.Features.Lobby.Commands.JoinRoom;
 using online_chess.Server.Features.Game.Commands.LeaveRoom;
-using online_chess.Server.Features.Game.Queries.GetRoomList;
+using online_chess.Server.Features.Lobby.Queries.GetRoomList;
 
 namespace online_chess.Server.Hubs
 {

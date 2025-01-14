@@ -26,13 +26,13 @@ public class GetGameHistoryHandler : IRequestHandler<GetGameHistoryRequest, GetG
             retVal.Items = new List<GameHistoryDTO>()
             {
                 new GameHistoryDTO(){
-                    GameStatus = GameStatus.Won,
+                    GameStatus = GameHistoryStatus.Won,
                     IsColorWhite = true,
                     OpponentName = string.Empty,
                     CreateDate = DateTime.Now
                 },  
                 new GameHistoryDTO(){
-                    GameStatus = GameStatus.Draw,
+                    GameStatus = GameHistoryStatus.Draw,
                     IsColorWhite = false,
                     OpponentName = string.Empty,
                     CreateDate = DateTime.Now

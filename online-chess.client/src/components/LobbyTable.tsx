@@ -3,7 +3,7 @@ import { Table, Pagination, Modal, Button, Spinner } from "react-bootstrap"
 import { IGameRoom, IGameRoomList } from "../game/utilities/types"
 import { useEffect, useState } from "react";
 import useSignalRContext from "../hooks/useSignalRContext";
-import { gameTypeDisplay } from "../utils/helper";
+import { colorOptionsDisplay, gameTypeDisplay } from "../utils/helper";
 import useAuthContext from "../hooks/useAuthContext";
 
 interface ILobbyTable{
@@ -30,7 +30,8 @@ export default function LobbyTable({
                 <tr>
                     <th className="col-1">Action</th>
                     <th className="col-4">Player Username</th>
-                    <th className="col-4">Looking for Game Type</th>
+                    <th className="col-3">Looking for Game Type</th>
+                    <th className="col-2">Color</th>
                     <th className="col-2">Create Date</th>
                 </tr>
             </thead>
@@ -53,6 +54,7 @@ export default function LobbyTable({
                         </td>
                         <td>{user?.userName === item.value.createdByUserId ? "You" : item.value.createdByUserId}</td>
                         <td>{gameTypeDisplay(item.value.gameType)}</td>
+                        <td>{colorOptionsDisplay(item.value.createdByUserColor)}</td>
                         <td>{moment(item.value.createDate).fromNow()}</td>
                     </tr>
                 })}
