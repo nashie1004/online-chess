@@ -1,10 +1,8 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.SignalR;
-using online_chess.Server.Constants;
 using online_chess.Server.Hubs;
-using online_chess.Server.Models;
+using online_chess.Server.Models.Lobby;
 using online_chess.Server.Service;
-using System.Security.Claims;
 
 namespace online_chess.Server.Features.Lobby.Commands.AddToQueue
 {

@@ -20,7 +20,7 @@ namespace online_chess.Server.Features.Lobby.Commands.JoinRoom
 
         public async Task<Unit> Handle(JoinRoomRequest request, CancellationToken cancellationToken)
         {
-            // 1. if not a valid guid, redirect to 404 notfound
+            // 1. if not a valid guid, redirect to 404 not found
             if (!Guid.TryParse(request.GameRoomKeyString, out Guid gameRoomKey))
             {
                 await _hubContext.Clients.Client(request.UserConnectionId).SendAsync("NotFound", true);
@@ -29,7 +29,7 @@ namespace online_chess.Server.Features.Lobby.Commands.JoinRoom
 
             var room = _gameRoomService.GetOne(gameRoomKey);
 
-            // 2. if room is not found, redirect to 404 notfound
+            // 2. if room is not found, redirect to 404 not found
             if (room == null)
             {
                 await _hubContext.Clients.Client(request.UserConnectionId).SendAsync("NotFound", true);
