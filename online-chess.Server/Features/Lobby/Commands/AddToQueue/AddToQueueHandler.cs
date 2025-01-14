@@ -6,7 +6,7 @@ using online_chess.Server.Models;
 using online_chess.Server.Service;
 using System.Security.Claims;
 
-namespace online_chess.Server.Features.Game.Commands.AddToQueue
+namespace online_chess.Server.Features.Lobby.Commands.AddToQueue
 {
     public class AddToQueueHandler : IRequestHandler<AddToQueueRequest, Unit>
     {

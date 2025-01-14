@@ -35,8 +35,10 @@
 
   <ItemGroup>
     <Folder Include="Features\Game\Commands\GameStart\" />
-    <Folder Include="Features\Lobby\" />
+    <Folder Include="Features\Game\Queries\" />
     <Folder Include="Migrations\" />
+    <Folder Include="Models\Entities\" />
+    <Folder Include="Models\Play\" />
     <Folder Include="SQLiteDB\" />
   </ItemGroup>
 

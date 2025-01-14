@@ -3,7 +3,7 @@ using online_chess.Server.Common;
 using online_chess.Server.Constants;
 using online_chess.Server.Enums;
 
-namespace online_chess.Server.Features.Game.Commands.AddToQueue
+namespace online_chess.Server.Features.Lobby.Commands.AddToQueue
 {
     public class AddToQueueRequest : BaseGameRequest, IRequest<Unit>
     {

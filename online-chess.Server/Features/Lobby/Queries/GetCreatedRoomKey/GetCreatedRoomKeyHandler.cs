@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.SignalR;
 using online_chess.Server.Hubs;
 using online_chess.Server.Service;
 
-namespace online_chess.Server.Features.Game.Commands.GetRoomKey;
+namespace online_chess.Server.Features.Lobby.Queries.GetCreatedRoomKey;
 
 public class GetCreatedRoomKeyHandler : IRequestHandler<GetCreatedRoomKeyRequest, Unit>
 {
@@ -19,14 +19,15 @@ public class GetCreatedRoomKeyHandler : IRequestHandler<GetCreatedRoomKeyRequest
 
     public async Task<Unit> Handle(GetCreatedRoomKeyRequest req, CancellationToken ct)
     {
-        foreach(var item in _gameRoomService.GetDictionary())
+        foreach (var item in _gameRoomService.GetDictionary())
         {
-            if (item.Value.CreatedByUserId == req.IdentityUserName){
+            if (item.Value.CreatedByUserId == req.IdentityUserName)
+            {
                 await _hubContext.Clients.Client(req.UserConnectionId).SendAsync("GetRoomKey", item.Key);
                 return Unit.Value;
             }
         }
-        
+
         return Unit.Value;
     }
 }

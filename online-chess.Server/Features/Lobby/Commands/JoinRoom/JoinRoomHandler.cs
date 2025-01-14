@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.SignalR;
 using online_chess.Server.Hubs;
 using online_chess.Server.Service;
 
-namespace online_chess.Server.Features.Game.Commands.JoinRoom
+namespace online_chess.Server.Features.Lobby.Commands.JoinRoom
 {
-    public class JoinRoomHandler : IRequestHandler<JoinRoomRequest, Unit>   
+    public class JoinRoomHandler : IRequestHandler<JoinRoomRequest, Unit>
     {
         private readonly IHubContext<GameHub> _hubContext;
         private readonly GameQueueService _gameRoomService;
@@ -55,7 +55,7 @@ namespace online_chess.Server.Features.Game.Commands.JoinRoom
             //    .Clients
             //    .Group(gameRoomKey.ToString())
             //    .SendAsync("GetRoomData", $"{request.IdentityUserName} has joined");
-            
+
             return Unit.Value;
         }
     }
