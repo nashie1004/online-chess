@@ -167,3 +167,7 @@ export interface IGameHistoryList{
     isLoading: boolean;
     data: IGameHistory[];
 }
+
+export interface IInitialGameInfo{
+    isColorWhite: boolean;
+}
