@@ -40,16 +40,41 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
                 _authenticatedUserService.GetConnectionId(gameRoom.JoinedByUserId)
                 , gameRoomKey.ToString());
 
-            // passed to Play.tsx > MainGameScene constructor
+            /*
+            Start The Game
+            - passed to Play.tsx > MainGameScene constructor
+            */
             var playerColor = (gameRoom.CreatedByUserId == request.IdentityUserName)
                 ? gameRoom.CreatedByUserColor
                 : (gameRoom.CreatedByUserColor == Color.White ? Color.Black : Color.White);
 
+            gameRoom.GameStartedAt = DateTime.Now;
+            gameRoom.ChatMessages = new List<Models.Play.Chat>()
+            {
+                new Models.Play.Chat()
+                {
+                    CreateDate = DateTime.Now
+                    , CreatedByUser = gameRoom.CreatedByUserId
+                    , Message = $"{gameRoom.CreatedByUserId} has joined the game."
+                }
+                ,new Models.Play.Chat()
+                {
+                    CreateDate = DateTime.Now
+                    , CreatedByUser = gameRoom.JoinedByUserId
+                    , Message = $"{gameRoom.JoinedByUserId} has joined the game."
+                }
+            };
+
             var initGameinfo = new
             {
+                gameRoomKey,
                 isColorWhite = playerColor == Color.White,
-                moveHistory = 1,
-                captureHistory = 1,
+                moveHistory = gameRoom.MoveHistory,
+                captureHistory = gameRoom.CaptureHistory,
+                gameStartedAtDate = gameRoom.GameStartedAt,
+                messages = gameRoom.ChatMessages,
+                createdByUserInfo = gameRoom.CreatedByUserInfo,
+                joinedByUserInfo = gameRoom.JoinByUserInfo,
             };
 
             await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync("InitializeGameInfo", initGameinfo);

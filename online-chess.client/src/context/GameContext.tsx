@@ -1,5 +1,5 @@
 import { createContext, ReactNode, useReducer, useState } from 'react'
-import { IMessage, IGameContext } from '../game/utilities/types';
+import { IGameContext, IChat } from '../game/utilities/types';
 
 interface GameContextProps{
     children: ReactNode
@@ -15,7 +15,7 @@ export default function GameContext(
     {children}: GameContextProps
 ) {
     const [timer, setTimer] = useState({ white: 0, black: 0});
-    const [messages, setMessages] = useState<IMessage[]>([]);
+    const [messages, setMessages] = useState<IChat[]>([]);
 
     const [state, dispatch] = useReducer(reducerFn, {});
 

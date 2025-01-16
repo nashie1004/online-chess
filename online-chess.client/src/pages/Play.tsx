@@ -34,7 +34,10 @@ export default function Main(){
     const gameRoomKey = url.gameRoomId;
 
     const initPhaser = useCallback((initGameInfo: IInitialGameInfo) => {
-        // start phaser
+        // init base state
+        setMessages(initGameInfo.messages);
+
+        // init phaser
         if (!gameRef.current){
             gameRef.current = new Phaser.Game({
                 type: Phaser.AUTO,
@@ -48,14 +51,11 @@ export default function Main(){
             });
         }
 
-        eventEmitter.on("setIsWhitesTurn", (data: boolean) => setIsWhitesTurn(data))
-        eventEmitter.on("setMoveHistory", (data: IMoveHistory) => {
-            setMoveHistory(data)
-            console.log("move peice: ", data)
-            // signalRContext.invoke("MovePiece", gameRoomKey);
-        })
-        eventEmitter.on("setCaptureHistory", (data: ICaptureHistory) => setCaptureHistory(data))
-        eventEmitter.on("setKingsState", (data: IKingState) => setKingsState(data))
+        // connect react and phaser
+        eventEmitter.on("setIsWhitesTurn", (data: boolean) => setIsWhitesTurn(data));
+        eventEmitter.on("setMoveHistory", (data: IMoveHistory) => setMoveHistory(data));
+        eventEmitter.on("setCaptureHistory", (data: ICaptureHistory) => setCaptureHistory(data));
+        eventEmitter.on("setKingsState", (data: IKingState) => setKingsState(data));
     }, []);
     
     useEffect(() => {

@@ -12,7 +12,7 @@ export default function Chatbar() {
             <tbody>
               {messages.map((item, idx) => {
                 return <tr key={idx}>
-                  <p>{item.createdByUserId}: {item.message} - {moment(item.createDate).fromNow()}</p>
+                  <p>{item.createdByUser}: {item.message} - {moment(item.createDate).fromNow()}</p>
                 </tr>
               })}
             </tbody>
