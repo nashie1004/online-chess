@@ -42,15 +42,6 @@ namespace online_chess.Server.Features.Lobby.Commands.JoinRoom
 
             room.JoinedByUserId = request.IdentityUserName;
 
-            // Add both user to group
-            await _hubContext.Groups.AddToGroupAsync(
-                _authenticatedUserService.GetConnectionId(room.CreatedByUserId)
-                , gameRoomKey.ToString());
-
-            await _hubContext.Groups.AddToGroupAsync(
-                _authenticatedUserService.GetConnectionId(room.JoinedByUserId)
-                , gameRoomKey.ToString());
-
             var val = new Random().Next(0, 2);  // Generates either 0 or 1
             var randomColor = val == 0 ? Color.White : Color.Black;
             var newColor = room.CreatedByUserColor == Color.Random ? randomColor : room.CreatedByUserColor;
@@ -70,7 +61,13 @@ namespace online_chess.Server.Features.Lobby.Commands.JoinRoom
             _gameQueueService.Remove(gameRoomKey);
 
             // redirect both users
-            await _hubContext.Clients.Group(gameRoomKey.ToString()).SendAsync("MatchFound", gameRoomKey.ToString());
+            await _hubContext.Clients.Client(
+                _authenticatedUserService.GetConnectionId(room.CreatedByUserId)
+            ).SendAsync("MatchFound", gameRoomKey.ToString());
+            
+            await _hubContext.Clients.Client(
+                _authenticatedUserService.GetConnectionId(room.JoinedByUserId)
+            ).SendAsync("MatchFound", gameRoomKey.ToString());
 
             return Unit.Value;
         }

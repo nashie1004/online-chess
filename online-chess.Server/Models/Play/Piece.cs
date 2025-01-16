@@ -2,10 +2,8 @@
 
 namespace online_chess.Server.Models.Play
 {
-    public class Piece
+    public class Piece : BaseCoordinates
     {
-        public int XCoordinate { get; set; }
-        public int YCoordinate { get; set; }
         public Pieces PieceType { get; set; }
     }
 }

@@ -48,7 +48,8 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
             var initGameinfo = new
             {
                 isColorWhite = playerColor == Color.White,
-                testOnly = 1
+                moveHistory = 1,
+                captureHistory = 1,
             };
 
             await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync("InitializeGameInfo", initGameinfo);

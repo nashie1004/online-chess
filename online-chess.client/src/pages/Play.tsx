@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react"
+import { useCallback, useEffect, useRef } from "react"
 import { Options as gameOptions } from "../game/utilities/constants";
 import { eventEmitter } from "../game/utilities/eventEmitter";
 import usePhaserContext from "../hooks/usePhaserContext";
@@ -31,35 +31,35 @@ export default function Main(){
     const signalRContext = useSignalRContext();
     const url = useParams();
 
+    const initPhaser = useCallback((initGameInfo: IInitialGameInfo) => {
+        // start phaser
+        if (!gameRef.current){
+            gameRef.current = new Phaser.Game({
+                type: Phaser.AUTO,
+                width: gameOptions.width,
+                height: gameOptions.height,
+                parent: 'game-container',
+                backgroundColor: '#028af8',
+                scene: [
+                    new MainGameScene("mainChessboard", initGameInfo.isColorWhite)
+                ],
+            });
+        }
+
+        eventEmitter.on("setIsWhitesTurn", (data: boolean) => setIsWhitesTurn(data))
+        eventEmitter.on("setMoveHistory", (data: IMoveHistory) => setMoveHistory(data))
+        eventEmitter.on("setCaptureHistory", (data: ICaptureHistory) => setCaptureHistory(data))
+        eventEmitter.on("setKingsState", (data: IKingState) => setKingsState(data))
+    }, []);
+
     useEffect(() => {
         async function start() {
-            await signalRContext.startConnection((e) => console.log(`Play 36: ${e}`));
+            await signalRContext.startConnection(_ => {});
 
             await signalRContext.addHandler("NotFound", _ => navigate("/notFound"));
-            await signalRContext.addHandler("InitializeGameInfo", (initGameInfo: IInitialGameInfo) => {
-
-                // start phaser
-                if (!gameRef.current){
-                    gameRef.current = new Phaser.Game({
-                        type: Phaser.AUTO,
-                        width: gameOptions.width,
-                        height: gameOptions.height,
-                        parent: 'game-container',
-                        backgroundColor: '#028af8',
-                        scene: [
-                            new MainGameScene("mainChessboard", initGameInfo.isColorWhite)
-                        ],
-                    });
-                }
-    
-                eventEmitter.on("setIsWhitesTurn", (data: boolean) => setIsWhitesTurn(data))
-                eventEmitter.on("setMoveHistory", (data: IMoveHistory) => setMoveHistory(data))
-                eventEmitter.on("setCaptureHistory", (data: ICaptureHistory) => setCaptureHistory(data))
-                eventEmitter.on("setKingsState", (data: IKingState) => setKingsState(data))
-            });
+            await signalRContext.addHandler("InitializeGameInfo", initPhaser);
 
             await signalRContext.invoke("GameStart", url.gameRoomId);
-
         }
 
         start();
