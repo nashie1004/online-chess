@@ -12,6 +12,9 @@ using online_chess.Server.Features.Lobby.Queries.GetCreatedRoomKey;
 using online_chess.Server.Features.Lobby.Commands.JoinRoom;
 using online_chess.Server.Features.Game.Commands.LeaveRoom;
 using online_chess.Server.Features.Lobby.Queries.GetRoomList;
+using online_chess.Server.Features.Game.Commands.GameStart;
+using online_chess.Server.Features.Game.Commands.MovePiece;
+using online_chess.Server.Models.Play;
 
 namespace online_chess.Server.Hubs
 {
@@ -77,12 +80,33 @@ namespace online_chess.Server.Hubs
         }
 
         /* 2. Play Page */
+        public async Task GameStart(string gameRoomKey)
+        {
+            await _mediator.Send(new GameStartRequest()
+            {
+                UserConnectionId = Context.ConnectionId,
+                IdentityUserName = Context.User?.Identity?.Name,
+                GameRoomKeyString = gameRoomKey
+            });
+        }
+
         public async Task AddMessageToRoom(string message)
         {
             await _mediator.Send(new AddMessageToRoomRequest()
             {
                 UserConnectionId = Context.ConnectionId,
                 IdentityUserName = Context.User?.Identity?.Name
+            });
+        }
+
+        public async Task MovePiece(string gameRoomKey, BaseMoveInfo moveInfo)
+        {
+            await _mediator.Send(new MovePieceRequest()
+            {
+                UserConnectionId = Context.ConnectionId,
+                IdentityUserName = Context.User?.Identity?.Name,
+                GameRoomKeyString = gameRoomKey,
+                MoveInfo = moveInfo
             });
         }
 

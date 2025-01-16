@@ -9,12 +9,11 @@ namespace online_chess.Server.Models
      */
     public class GameRoom : GameQueue
     {
-        public TimeSpan CreatedByUserTime { get; set; }
-        public TimeSpan JoinByUserTime { get; set; }
-        public bool CreatedByUsersTurn { get; set; }
-        public List<string> MoveHistory { get; set; }
-        public List<string> CaptureHistory { get; set; }
-        public BothKingsState BothKingsState { get; set; }
-        public List<string> ChatMessages { get; set; }
+        public DateTime GameStartedAt { get; set; }
+        public PlayerInfo CreatedByUserInfo { get; set; }
+        public PlayerInfo JoinByUserInfo { get; set; }
+        public List<MoveHistory> MoveHistory { get; set; }
+        public List<CaptureHistory> CaptureHistory { get; set; }
+        public List<Play.Chat> ChatMessages { get; set; }
     }
 }
