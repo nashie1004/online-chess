@@ -90,12 +90,14 @@ namespace online_chess.Server.Hubs
             });
         }
 
-        public async Task AddMessageToRoom(string message)
+        public async Task AddMessageToRoom(string gameRoomKey, string message)
         {
             await _mediator.Send(new AddMessageToRoomRequest()
             {
                 UserConnectionId = Context.ConnectionId,
-                IdentityUserName = Context.User?.Identity?.Name
+                IdentityUserName = Context.User?.Identity?.Name,
+                GameRoomKeyString = gameRoomKey,
+                Message = message
             });
         }
 

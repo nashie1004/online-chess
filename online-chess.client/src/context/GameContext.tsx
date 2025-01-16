@@ -16,12 +16,13 @@ export default function GameContext(
 ) {
     const [timer, setTimer] = useState({ white: 0, black: 0});
     const [messages, setMessages] = useState<IChat[]>([]);
+    const [gameRoomKey, setGameRoomKey] = useState("");
 
     const [state, dispatch] = useReducer(reducerFn, {});
 
   return (
     <gameContext.Provider value={{
-        timer, setTimer, messages, setMessages
+        timer, setTimer, messages, setMessages, gameRoomKey, setGameRoomKey
     }}>
         {children}
     </gameContext.Provider>

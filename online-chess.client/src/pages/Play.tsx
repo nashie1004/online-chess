@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef } from "react"
 import { Options as gameOptions } from "../game/utilities/constants";
 import { eventEmitter } from "../game/utilities/eventEmitter";
 import usePhaserContext from "../hooks/usePhaserContext";
-import { IMoveHistory , ICaptureHistory, IKingState, IInitialGameInfo} from "../game/utilities/types";
+import { IMoveHistory , ICaptureHistory, IKingState, IInitialGameInfo, IChat} from "../game/utilities/types";
 import SidebarRight from "../components/SidebarRight";
 import { MainGameScene } from "../game/scenes/MainGameScene";
 import CaptureHistory from "../components/CaptureHistory";
@@ -27,15 +27,15 @@ export default function Main(){
         , setKingsState
         , moveHistory
     } = usePhaserContext();
-    const { setMessages } = useGameContext();
+    const { setMessages, setGameRoomKey } = useGameContext();
     const navigate = useNavigate();
     const signalRContext = useSignalRContext();
     const url = useParams();
-    const gameRoomKey = url.gameRoomId;
 
     const initPhaser = useCallback((initGameInfo: IInitialGameInfo) => {
         // init base state
         setMessages(initGameInfo.messages);
+        setGameRoomKey(initGameInfo.gameRoomKey);
 
         // init phaser
         if (!gameRef.current){
@@ -64,8 +64,9 @@ export default function Main(){
 
             await signalRContext.addHandler("NotFound", _ => navigate("/notFound"));
             await signalRContext.addHandler("InitializeGameInfo", initPhaser);
+            await signalRContext.addHandler("ReceiveMessages", (messages: IChat[]) => setMessages(messages));
 
-            await signalRContext.invoke("GameStart", gameRoomKey);
+            await signalRContext.invoke("GameStart", url.gameRoomId);
         }
 
         start();
