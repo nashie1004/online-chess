@@ -12,6 +12,7 @@ export default function PlayerInfo() {
     
     
     useEffect(() => {
+        /*
         let intervalId: number;
 
         if (isWhitesTurn){
@@ -27,6 +28,7 @@ export default function PlayerInfo() {
         return () => {
             clearInterval(intervalId);
         }
+        */
     }, [isWhitesTurn])
 
   return (

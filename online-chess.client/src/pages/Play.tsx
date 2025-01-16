@@ -31,6 +31,7 @@ export default function Main(){
     const navigate = useNavigate();
     const signalRContext = useSignalRContext();
     const url = useParams();
+    const gameRoomKey = url.gameRoomId;
 
     const initPhaser = useCallback((initGameInfo: IInitialGameInfo) => {
         // start phaser
@@ -48,13 +49,15 @@ export default function Main(){
         }
 
         eventEmitter.on("setIsWhitesTurn", (data: boolean) => setIsWhitesTurn(data))
-        eventEmitter.on("setMoveHistory", (data: IMoveHistory) => setMoveHistory(data))
+        eventEmitter.on("setMoveHistory", (data: IMoveHistory) => {
+            setMoveHistory(data)
+            console.log("move peice: ", data)
+            // signalRContext.invoke("MovePiece", gameRoomKey);
+        })
         eventEmitter.on("setCaptureHistory", (data: ICaptureHistory) => setCaptureHistory(data))
         eventEmitter.on("setKingsState", (data: IKingState) => setKingsState(data))
     }, []);
     
-    console.log(moveHistory)
-
     useEffect(() => {
         async function start() {
             await signalRContext.startConnection(_ => {});
@@ -62,7 +65,7 @@ export default function Main(){
             await signalRContext.addHandler("NotFound", _ => navigate("/notFound"));
             await signalRContext.addHandler("InitializeGameInfo", initPhaser);
 
-            await signalRContext.invoke("GameStart", url.gameRoomId);
+            await signalRContext.invoke("GameStart", gameRoomKey);
         }
 
         start();
