@@ -55,7 +55,6 @@ namespace online_chess.Server.Features.Lobby.Commands.JoinRoom
                 JoinedByUserId = room.JoinedByUserId,
                 GamePlayStatus = GamePlayStatus.Ongoing,
                 GameStartedAt = DateTime.Now,
-                CreatedByUsersTurn = newColor == Color.White
             });
 
             _gameQueueService.Remove(gameRoomKey);

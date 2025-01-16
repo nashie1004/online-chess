@@ -1,19 +1,19 @@
 ﻿namespace online_chess.Server.Enums
 {
-    public enum Pieces
+    public class Pieces
     {
-        wPawn = 1,
-        wRook = 2,
-        wKnight = 3,
-        wBishop = 4,
-        wQueen = 5,
-        wKing = 6,
+        public const string wPawn = "wPawn";
+        public const string wRook = "wRook";
+        public const string wKnight = "wKnight";
+        public const string wBishop = "wBishop";
+        public const string wQueen = "wQueen";
+        public const string wKing = "wKing";
 
-        bPawn = 7,
-        bRook = 8,
-        bKnight = 9,
-        bBishop = 10,
-        bQueen = 11,
-        bKing = 12
+        public const string bPawn = "bPawn";
+        public const string bRook = "bRook";
+        public const string bKnight = "bKnight";
+        public const string bBishop = "bBishop";
+        public const string bQueen = "bQueen";
+        public const string bKing = "bKing";
     }
 }

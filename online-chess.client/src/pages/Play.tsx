@@ -25,6 +25,7 @@ export default function Main(){
         , setMoveHistory
         , setCaptureHistory
         , setKingsState
+        , moveHistory
     } = usePhaserContext();
     const { setMessages } = useGameContext();
     const navigate = useNavigate();
@@ -51,6 +52,8 @@ export default function Main(){
         eventEmitter.on("setCaptureHistory", (data: ICaptureHistory) => setCaptureHistory(data))
         eventEmitter.on("setKingsState", (data: IKingState) => setKingsState(data))
     }, []);
+    
+    console.log(moveHistory)
 
     useEffect(() => {
         async function start() {

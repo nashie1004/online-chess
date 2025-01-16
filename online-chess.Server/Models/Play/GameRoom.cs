@@ -12,8 +12,8 @@ namespace online_chess.Server.Models
         public DateTime GameStartedAt { get; set; }
         public PlayerInfo CreatedByUserInfo { get; set; }
         public PlayerInfo JoinByUserInfo { get; set; }
-        public List<string> MoveHistory { get; set; }
-        public List<string> CaptureHistory { get; set; }
-        public List<Models.Play.Chat> ChatMessages { get; set; }
+        public List<MoveHistory> MoveHistory { get; set; }
+        public List<CaptureHistory> CaptureHistory { get; set; }
+        public List<Play.Chat> ChatMessages { get; set; }
     }
 }
