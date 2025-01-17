@@ -6,7 +6,7 @@ import capture from "../../assets/sounds/Capture.ogg"
 import select from "../../assets/sounds/Select.ogg"
 import check from "../../assets/sounds/Check.mp3"
 import pieces, { Options as gameOptions, PieceNames, pieceImages, baseKingState } from "../utilities/constants";
-import { IBaseCoordinates, IBothKingsPosition, IKingState, IMoveInfo, INonTilePieces, IPhaserContextValues, IValidMove, PromoteTo } from "../utilities/types";
+import { IBaseCoordinates, IBothKingsPosition, IKingState, IMoveInfo, INonTilePieces, IPhaserContextValues, IPiecesCoordinates, IValidMove, PromoteTo } from "../utilities/types";
 import RookValidator from "../logic/piece/rookValidator";
 import KnightValidator from "../logic/piece/knightValidator";
 import BishopValidator from "../logic/piece/bishopValidator";
@@ -26,7 +26,8 @@ export class MainGameScene extends Scene{
     private selectedPiece: IMoveInfo | null;
     private reactState: IPhaserContextValues;
     private bothKingsPosition: IBothKingsPosition;
-    private boardOrientationIsWhite: boolean;
+    private readonly boardOrientationIsWhite: boolean;
+    private readonly pieceCoordinates: IPiecesCoordinates;
 
     constructor(key: string, isColorWhite: boolean) {
         super({ key });
@@ -57,8 +58,11 @@ export class MainGameScene extends Scene{
         this.board = Array.from({ length: 8}).map(_ => new Array(8).fill(null));
         this.previewBoard = Array.from({ length: 8 }).map(_ => new Array(8));
 
-        // this.pieces = {
-        // };
+        this.pieceCoordinates = {
+            white: [],
+            black: [],
+        };
+
     }
 
     // Load assets
@@ -108,6 +112,7 @@ export class MainGameScene extends Scene{
         // 2. actual pieces
         pieces.forEach(piece => {
             let { name, x, y } = piece;
+            const pieceIsWhite = name[0] === "w";
 
             // if black orientation
             if (!this.boardOrientationIsWhite) {
@@ -123,10 +128,15 @@ export class MainGameScene extends Scene{
                 }
             }
 
+            const uniqueName = `${name}-${x}-${y}`;
+            this.pieceCoordinates[pieceIsWhite ? "white" : "black"].push({
+                name, x, y, uniqueName
+            });
+
             const sprite = this.add
                 .sprite(x * this.tileSize, y * this.tileSize, name.toString(), 1)
                 .setOrigin(0, 0)
-                .setName(`${name}-${x}-${y}`)
+                .setName(uniqueName)
                 .setInteractive({  cursor: "pointer" })
                 .on("pointerover", () => {
 
@@ -443,6 +453,15 @@ export class MainGameScene extends Scene{
         // new coordinate
         this.board[newX][newY] = sprite;
 
+        // This is for stalemate detection
+        const pieceCoordinate = this.pieceCoordinates[isWhite ? "white" : "black"]
+            .find(i => i.x === this.selectedPiece?.x && i.y === this.selectedPiece?.y);
+
+        if (pieceCoordinate){
+            pieceCoordinate.x = newX;
+            pieceCoordinate.y = newY;
+        }
+
         // some special logic
         this.mPawnPromote(pieceName, newX, newY, isWhite, sprite);
 
@@ -450,7 +469,7 @@ export class MainGameScene extends Scene{
 
         this.mSaveMoveHistory(isWhite, pieceName, this.selectedPiece, newX, newY);
 
-        // if the move is a king, update private king pos state - this is used by the this.mKingInCheckOrCheckmate() function
+        // if the move is a king, update private king pos state - this is used by the this.validateCheckOrCheckMateOrStalemate() function
         if (sprite.name.toLowerCase().indexOf("king") >= 0){
             this.bothKingsPosition[isWhite ? "white" : "black"].x = newX;
             this.bothKingsPosition[isWhite ? "white" : "black"].y = newY;
@@ -473,11 +492,13 @@ export class MainGameScene extends Scene{
         this.resetMoves();
 
         // check for check or checkmate
-        const kingSafety = this.mKingInCheckOrCheckmate(isWhite);
+        const kingSafety = this.validateCheckOrCheckMateOrStalemate(isWhite);
 
         // play sound
         hasCapture ? this.sound.play("capture") : this.sound.play("move");
         if (kingSafety !== 0) this.sound.play("check");
+
+        console.log(this.pieceCoordinates)
     }
 
     // find by name
@@ -512,6 +533,9 @@ export class MainGameScene extends Scene{
             } else {
                 this.reactState.captureHistory.black.push({ x: newX, y: newY, pieceName: opponentPiece.name })
             }
+
+            this.pieceCoordinates[isWhite ? "black" : "white"] = 
+                this.pieceCoordinates[isWhite ? "black" : "white"].filter(i => i.x !== newX || i.y !== newY);
 
             opponentPiece.destroy();
             return true;
@@ -550,6 +574,10 @@ export class MainGameScene extends Scene{
 
                 if (opponentPiece && validCapture.x === newX && validCapture.y === newY){
                     opponentPiece.destroy();
+
+                    this.pieceCoordinates[isWhite ? "black" : "white"] = 
+                        this.pieceCoordinates[isWhite ? "black" : "white"].filter(i => i.x !== newX || i.y !== newY);
+
                     return true;
                 }
             }
@@ -683,9 +711,9 @@ export class MainGameScene extends Scene{
      * @param isWhite
      * @param newX
      * @param newY
-     * @returns 0 = no check or checkmate, 1 = check, 2 = checkmate
+     * @returns 0 = no check or checkmate, 1 = check, 2 = checkmate, 3 = stalemate
      */
-    mKingInCheckOrCheckmate(isWhite: boolean) : 0 | 1 | 2 {
+    validateCheckOrCheckMateOrStalemate(isWhite: boolean) : 0 | 1 | 2 {
         this.board[this.bothKingsPosition.black.x][this.bothKingsPosition.black.y]?.resetPostPipeline();
         this.board[this.bothKingsPosition.white.x][this.bothKingsPosition.white.y]?.resetPostPipeline();
 
@@ -707,7 +735,7 @@ export class MainGameScene extends Scene{
         const kingSprite = this.board[king.x][king.y];
         kingSprite?.postFX?.addGlow(0xE44C6A, 10, 2);
 
-        // 3. checkmate // TODO
+        // 3. checkmate 
         let isCheckMate = this.isCheckmate();
 
         if (isCheckMate){
@@ -717,6 +745,9 @@ export class MainGameScene extends Scene{
                 this.reactState.kingsState.black.isCheckMate = true;
             }
         }
+
+        // 4. stalemate
+        let isStalemate = this.isStalemate(isWhite);
 
         eventEmitter.emit("setKingsState", this.reactState.kingsState);
         return (isCheckMate ? 2 : 1);
@@ -977,6 +1008,28 @@ export class MainGameScene extends Scene{
         const validMovesTotal = validMoves.capturable + validMoves.blockable + validMoves.movableKing;
         console.info(`number of legal/valid moves that prevent checkmate: `, validMovesTotal)
         return validMovesTotal <= 0;
+    }
+
+    /**
+     * - if any friend piece has atleast one move
+     * - TODO check if king not in check
+     * @param isWhite 
+     * @returns 
+     */
+    isStalemate(isWhite: boolean){
+        let hasAtleastOneLegalMove = false;
+        
+        this.pieceCoordinates[isWhite ? "white" : "black"].forEach(friendPiece => {
+            const {x, y, name, uniqueName} = friendPiece;
+            const pieceMoves = this.getInitialMoves(name, x, y, uniqueName ?? `${name}-${x}-${y}`, false);
+
+            if (pieceMoves.length > 0){
+                hasAtleastOneLegalMove = true;
+                return;
+            }
+        });
+
+        return hasAtleastOneLegalMove;
     }
 
 }

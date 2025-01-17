@@ -34,18 +34,15 @@ after that, the web application should now be running.
 - https://www.piskelapp.com/
 
 ## Todo
-
-### Chess Logic/Game
-1. stalemate detection - if the piece value suffice
-2. promotion picker
-3. show notation on chessboard 
-
-### C# / Signalr
 1. play page game state (pieces coords, whose turn is it, timer)
-2. lobby page chat bar
-
-### Pages / UI
-7. profile edit
+2. disconnect/leave logic
+3. refactor phaser logic
+4. refactor/clean react and signalr logic
+5. profile edit
+6. stalemate detection - if the piece value suffice
+7. promotion picker
+8. show notation on chessboard 
+9. beautify UI
 
 ### UI Possible Templates
 1. https://www.chesssquire.com/chess-vs-computer.html

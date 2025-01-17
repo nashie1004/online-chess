@@ -74,12 +74,14 @@ export interface IPhaserContext extends IPhaserContextValues{
 
 export interface IGameContextValues{
     timer: ITimer;
-    messages: IMessage[]
+    messages: IChat[];
+    gameRoomKey: string;
 }
 
 export interface IGameContext extends IGameContextValues{
     setTimer: React.Dispatch<React.SetStateAction<ITimer>>;
-    setMessages: React.Dispatch<React.SetStateAction<IMessage[]>>;
+    setMessages: React.Dispatch<React.SetStateAction<IChat[]>>;
+    setGameRoomKey: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export interface ISignalRContext {
@@ -127,10 +129,10 @@ export interface IGameRoom{
     value: IGameRoomValue
 }
 
-export interface IMessage{
-    message: string;
+export interface IChat{
+    createdByUser: string;
     createDate: Date;
-    createdByUserId: string | number;
+    message: string;
 }
 
 export interface IGameRoomList{
@@ -169,5 +171,18 @@ export interface IGameHistoryList{
 }
 
 export interface IInitialGameInfo{
+    gameRoomKey: string;
     isColorWhite: boolean;
+    moveHistory: IMoveHistory[];
+    captureHistory: ICaptureHistory[];
+    gameStartedAtDate: Date;
+    messages: IChat[];
+    // TODO
+    createdByUserInfo: any;
+    joinedByUserInfo: any;
+}
+
+export interface IPiecesCoordinates{
+    white: IPiece[];
+    black: IPiece[];
 }
