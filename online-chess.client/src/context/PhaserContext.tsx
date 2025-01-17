@@ -22,10 +22,12 @@ export default function PhaserContext(
     const [isWhitesTurn, setIsWhitesTurn] = useState(true);
     const [moveHistory, setMoveHistory] = useState<IMoveHistory>({ white: [], black: [] });
     const [captureHistory, setCaptureHistory] = useState<ICaptureHistory>({ white: [], black: [] });
-    const [promoteTo, setPromoteTo] = useState<PromoteTo>("queen");
+    const [kingsState, setKingsState] = useState<IKingState>(baseKingState);
+
+    // local state
     const [isColorWhite, setIsColorWhite] = useState<boolean>(true);
     const [isWhitesOrientation, setIsWhitesOrientation] = useState<boolean>(true);
-    const [kingsState, setKingsState] = useState<IKingState>(baseKingState);
+    const [promoteTo, setPromoteTo] = useState<PromoteTo>("queen");
 
     const data: IPhaserContext = {
         isWhitesTurn, setIsWhitesTurn, 

@@ -181,3 +181,8 @@ export interface IInitialGameInfo{
     createdByUserInfo: any;
     joinedByUserInfo: any;
 }
+
+export interface IPiecesCoordinates{
+    white: IPiece[];
+    black: IPiece[];
+}
