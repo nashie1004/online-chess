@@ -8,14 +8,13 @@ import check from "../../assets/sounds/Check.mp3"
 import pieces, { Options as gameOptions, PieceNames, pieceImages, baseKingState } from "../utilities/constants";
 import { IBothKingsPosition, IKingState, IMoveInfo, IPhaserContextValues, IPiecesCoordinates, IValidMove, PromoteTo } from "../utilities/types";
 import { eventEmitter } from "../utilities/eventEmitter";
-import GetInitialMoves from "../logic/getInitialMoves";
 import IsStalemate from "../logic/IsStaleMate";
 import IsCheck from "../logic/isCheck";
-import PossibleMovesIfKingInCheck from "../logic/possibleMovesIfKingInCheck";
 import IsCheckMate from "../logic/isCheckMate";
 import KingCastled from "../logic/kingCastled";
 import PawnPromote from "../logic/pawnPromote";
 import PieceCapture from "../logic/pieceCapture";
+import ShowPossibleMoves from "../logic/showPossibleMoves";
 
 export class MainGameScene extends Scene{
     /**
@@ -170,7 +169,13 @@ export class MainGameScene extends Scene{
                     // show available moves
                     select.play();
                     this.resetMoves();
-                    this.showPossibleMoves(pieceName, pieceX, pieceY);
+                    this.selectedPiece = (new ShowPossibleMoves(
+                        this.board, this.previewBoard
+                        ,this.boardOrientationIsWhite, this.pieceCoordinates
+                        ,this.selectedPiece, this.reactState
+                        ,this.bothKingsPosition
+                    )).showPossibleMoves(pieceName, pieceX, pieceY);
+                    
                 })
 ;
             this.board[x][y] = sprite;
@@ -205,53 +210,6 @@ export class MainGameScene extends Scene{
                     this.previewBoard[colIdx][rowIdx].setVisible(false);
                 }
             })
-        })
-    }
-
-    /**
-     * - once a piece is clicked, this func will run
-     * to toggle/show possible moves and display ui preview squares to the user
-     * - also filters down player moves if the king is in check
-     * @param name
-     * @param x
-     * @param y
-     */
-    showPossibleMoves(name: PieceNames, x: number, y: number){
-        // actual coords
-        const uniqueName = `${name}-${x}-${y}`;
-        const isWhite = name[0] === "w";
-        const actualCoordinates = this.pieceCoordinates[isWhite ? "white" : "black"].find(i => i.uniqueName === uniqueName);
-        if (!actualCoordinates) return;
-
-        x = actualCoordinates.x;
-        y = actualCoordinates.y;
-
-        // validate
-        let initialValidMoves: IValidMove[] = (new GetInitialMoves(
-            this.board, this.reactState, 
-            this.bothKingsPosition, this.boardOrientationIsWhite
-        )).getInitialMoves(name, x, y, uniqueName);
-
-        // set selected piece
-        this.selectedPiece = { x, y, pieceName: uniqueName };
-
-        // this returns null if the king isnt in check
-        const actualValidMoves = (new PossibleMovesIfKingInCheck(
-            this.board, this.selectedPiece
-            ,this.reactState, this.bothKingsPosition
-            ,this.boardOrientationIsWhite
-        )).possibleMovesIfKingInCheck(name, initialValidMoves);
-
-        if (actualValidMoves){
-            initialValidMoves = actualValidMoves;
-        }
-
-        // handle absolute king pins
-
-        // UI - shows the actual valid moves to the user
-        initialValidMoves.forEach(item => {
-            const prev = this.previewBoard[item.x][item.y].visible;
-            this.previewBoard[item.x][item.y].setVisible(!prev)
         })
     }
 
