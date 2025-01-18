@@ -6,15 +6,13 @@ import capture from "../../assets/sounds/Capture.ogg"
 import select from "../../assets/sounds/Select.ogg"
 import check from "../../assets/sounds/Check.mp3"
 import pieces, { Options as gameOptions, PieceNames, pieceImages, baseKingState } from "../utilities/constants";
-import { IBothKingsPosition, IKingState, IMoveInfo, IPhaserContextValues, IPiecesCoordinates, IValidMove, PromoteTo } from "../utilities/types";
+import { IBothKingsPosition, IKingState, IMoveInfo, IPhaserContextValues, IPiecesCoordinates, PromoteTo } from "../utilities/types";
 import { eventEmitter } from "../utilities/eventEmitter";
-import IsStalemate from "../logic/IsStaleMate";
-import IsCheck from "../logic/isCheck";
-import IsCheckMate from "../logic/isCheckMate";
 import KingCastled from "../logic/kingCastled";
 import PawnPromote from "../logic/pawnPromote";
 import PieceCapture from "../logic/pieceCapture";
 import ShowPossibleMoves from "../logic/showPossibleMoves";
+import ValidateCheckOrCheckMateOrStalemate from "../logic/validateCheckOrCheckmateOrStalemate";
 
 export class MainGameScene extends Scene{
     /**
@@ -308,7 +306,11 @@ export class MainGameScene extends Scene{
         this.resetMoves();
 
         // check for check or checkmate
-        const kingSafety = this.validateCheckOrCheckMateOrStalemate(isWhite);
+        const kingSafety = (new ValidateCheckOrCheckMateOrStalemate(
+            this.board, this.boardOrientationIsWhite
+            , this.pieceCoordinates, this.reactState
+            , this.bothKingsPosition
+        )).validate(isWhite);
 
         // play sound
         hasCapture ? this.sound.play("capture") : this.sound.play("move");
@@ -318,74 +320,4 @@ export class MainGameScene extends Scene{
     update(){
         // may not need this
     }
-
-    /**
-     *
-     * @param sprite
-     * @param isWhite
-     * @param newX
-     * @param newY
-     * @returns 0 = no check or checkmate, 1 = check, 2 = checkmate, 3 = stalemate
-     */
-    validateCheckOrCheckMateOrStalemate(isWhite: boolean) : 0 | 1 | 2 {
-        this.board[this.bothKingsPosition.black.x][this.bothKingsPosition.black.y]?.resetPostPipeline();
-        this.board[this.bothKingsPosition.white.x][this.bothKingsPosition.white.y]?.resetPostPipeline();
-
-        // reset all check or checkmate properties
-        this.reactState.kingsState.black.checkedBy = [];
-        this.reactState.kingsState.white.checkedBy = [];
-        this.reactState.kingsState.white.isInCheck = false;
-        this.reactState.kingsState.black.isInCheck = false;
-        this.reactState.kingsState.white.isCheckMate = false;
-        this.reactState.kingsState.black.isCheckMate = false;
-        this.reactState.kingsState.white.isInStalemate = false;
-        this.reactState.kingsState.black.isInStalemate = false;
-
-        // check
-        const isCheck = (new IsCheck(
-            this.board, this.reactState
-            ,this.bothKingsPosition, this.boardOrientationIsWhite
-        )).validateCheck(isWhite);
-
-        // 1. stalemate
-        if (!isCheck){
-            let isStalemate = (new IsStalemate(
-                this.board, this.boardOrientationIsWhite
-                ,this.pieceCoordinates, this.reactState
-                ,this.bothKingsPosition
-            )).isStalemate(!isWhite);
-
-            if (isStalemate){
-                this.reactState.kingsState[isWhite ? "black" : "white"].isInStalemate = true;
-                return 0;
-            }
-
-            return 0;
-        }
-
-        // 2. check
-        const king = isWhite ? this.bothKingsPosition.black : this.bothKingsPosition.white;
-        const kingSprite = this.board[king.x][king.y];
-        kingSprite?.postFX?.addGlow(0xE44C6A, 10, 2);
-
-        // 3. checkmate 
-        let isCheckMate = (new IsCheckMate(
-            this.board, this.reactState
-            ,this.bothKingsPosition, this.boardOrientationIsWhite
-            ,this.pieceCoordinates
-        )).isCheckmate();
-
-        if (isCheckMate){
-            if (this.reactState.kingsState.white.isInCheck){
-                this.reactState.kingsState.white.isCheckMate = true;
-            } else {
-                this.reactState.kingsState.black.isCheckMate = true;
-            }
-        }
-
-        eventEmitter.emit("setKingsState", this.reactState.kingsState);
-        return (isCheckMate ? 2 : 1);
-    }
-
-
 }
