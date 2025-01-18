@@ -279,7 +279,11 @@ export class MainGameScene extends Scene{
             })
         }
 
-        this.mSaveMoveHistory(isWhite, pieceName, this.selectedPiece, newX, newY);
+        // save to move history
+        this.reactState.moveHistory[isWhite ? "white" : "black"].push({
+            old: { pieceName, x: this.selectedPiece.x, y: this.selectedPiece.y },
+            new: { pieceName, x: newX, y: newY },
+        });
 
         // if the move is a king, update private king pos state - this is used by the this.validateCheckOrCheckMateOrStalemate() function
         if (sprite.name.toLowerCase().indexOf("king") >= 0){
@@ -313,15 +317,6 @@ export class MainGameScene extends Scene{
 
     update(){
         // may not need this
-    }
-
-    mSaveMoveHistory(isWhite: boolean, pieceName: string, selectedPiece: IMoveInfo, newX: number, newY: number){
-
-        this.reactState.moveHistory[isWhite ? "white" : "black"].push({
-            old: { pieceName, x: selectedPiece.x, y: selectedPiece.y },
-            new: { pieceName, x: newX, y: newY },
-        });
-        
     }
 
     /**
