@@ -38,14 +38,13 @@ after that, the web application should now be running.
 2. disconnect/leave logic
 4. refactor/clean react and signalr logic
 5. profile edit
-6. stalemate detection - if the piece value suffice
 7. promotion picker
 8. show notation on chessboard 
 9. beautify UI
-
+10. fifty move rule and/or 3 fold repetition
 ### Refactor issues:
-1. queenside castling
-2. pawn promotion
+11. queenside castling
+12. pawn promotion
 
 ### UI Possible Templates
 1. https://www.chesssquire.com/chess-vs-computer.html
