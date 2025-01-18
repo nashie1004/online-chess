@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
-import { ColorOptions, GameType } from '../game/utilities/constants';
-import { colorOptionsDisplay, gameTypeDisplay } from '../utils/helper';
+import { ColorOptions, GameType } from '../../game/utilities/constants';
+import { colorOptionsDisplay, gameTypeDisplay } from '../../utils/helper';
 import { Form } from 'react-bootstrap';
-import useSignalRContext from '../hooks/useSignalRContext';
-import { IGameRoomList } from '../game/utilities/types';
+import useSignalRContext from '../../hooks/useSignalRContext';
+import { IGameRoomList } from '../../game/utilities/types';
 
 interface ILobbyForm{
     setGameRoomList: React.Dispatch<React.SetStateAction<IGameRoomList>>;

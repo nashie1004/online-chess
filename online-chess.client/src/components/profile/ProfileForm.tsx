@@ -3,8 +3,8 @@ import { useState } from "react";
 import { Row, Col, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import useAuthContext from "../hooks/useAuthContext";
-import useIsFirstRender from "../hooks/useIsFirstRender";
+import useAuthContext from "../../hooks/useAuthContext";
+import useIsFirstRender from "../../hooks/useIsFirstRender";
 
 const schema = z.object({
     username: z.string().nonempty().min(8, "Username must contain at least 8 character(s)"),

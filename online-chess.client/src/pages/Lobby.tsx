@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { Alert, Spinner } from "react-bootstrap"
 import { IGameRoomList } from "../game/utilities/types";
-import LobbyTable from "../components/LobbyTable";
+import LobbyTable from "../components/lobby/LobbyTable";
 import { toast } from "react-toastify";
 import useSignalRContext from "../hooks/useSignalRContext";
 import useAuthContext from "../hooks/useAuthContext";
-import LobbyForm from "../components/LobbyForm";
+import LobbyForm from "../components/lobby/LobbyForm";
 import { useNavigate } from "react-router";
 
 export default function Lobby() {

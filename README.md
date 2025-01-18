@@ -36,26 +36,12 @@ after that, the web application should now be running.
 ## Todo
 1. play page game state (pieces coords, whose turn is it, timer)
 2. disconnect/leave logic
-3. refactor phaser logic
 4. refactor/clean react and signalr logic
 5. profile edit
 6. stalemate detection - if the piece value suffice
 7. promotion picker
 8. show notation on chessboard 
 9. beautify UI
-
-### Refactor functions in MainGameScene.ts
-~~1. showPossibleMoves~~
-~~2. getInitialMoves~~
-~~3. possibleMovesIfKingInCheck~~
-~~4. move~~
-~~6. mNormalCapture~~
-~~7. mEnPassantCapture~~
-~~8. mPawnPromote~~
-~~9. validateCheck~~
-~~10. castle~~
-~~11. isCheckMate~~
-~~12. isStalemate~~
 
 ### Refactor issues:
 1. queenside castling

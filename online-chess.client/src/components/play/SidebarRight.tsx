@@ -1,4 +1,4 @@
-import usePhaserContext from '../hooks/usePhaserContext';
+import usePhaserContext from '../../hooks/usePhaserContext';
 import PlayerInfo from './PlayerInfo';
 import Chatbar from './Chatbar';
 import MoveHistory from './MoveHistory';

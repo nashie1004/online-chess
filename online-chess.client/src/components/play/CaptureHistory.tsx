@@ -1,5 +1,5 @@
-import usePhaserContext from '../hooks/usePhaserContext';
-import { pieceImages, PieceNames } from '../game/utilities/constants';
+import usePhaserContext from '../../hooks/usePhaserContext';
+import { pieceImages, PieceNames } from '../../game/utilities/constants';
 
 export default function CaptureHistory() {
   

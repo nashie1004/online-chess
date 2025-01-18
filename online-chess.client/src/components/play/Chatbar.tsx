@@ -1,9 +1,9 @@
 import { Table, Form } from "react-bootstrap";
-import useReactContext from "../hooks/useGameContext";
+import useReactContext from "../../hooks/useGameContext";
 import moment from "moment";
-import useSignalRContext from "../hooks/useSignalRContext";
+import useSignalRContext from "../../hooks/useSignalRContext";
 import { useState } from "react";
-import useGameContext from "../hooks/useGameContext";
+import useGameContext from "../../hooks/useGameContext";
 
 export default function Chatbar() {
   const {messages} = useReactContext();

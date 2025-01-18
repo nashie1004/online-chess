@@ -1,6 +1,6 @@
 import React from 'react'
-import usePhaserContext from '../hooks/usePhaserContext';
-import { chessBoardNotation } from '../game/utilities/helpers';
+import usePhaserContext from '../../hooks/usePhaserContext';
+import { chessBoardNotation } from '../../game/utilities/helpers';
 import { Table } from 'react-bootstrap';
 
 const board = chessBoardNotation();

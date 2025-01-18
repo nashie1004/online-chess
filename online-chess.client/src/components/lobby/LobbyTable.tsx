@@ -1,10 +1,10 @@
 import moment from "moment"
 import { Table, Pagination, Modal, Button, Spinner } from "react-bootstrap"
-import { IGameRoom, IGameRoomList } from "../game/utilities/types"
+import { IGameRoom, IGameRoomList } from "../../game/utilities/types"
 import { useEffect, useState } from "react";
-import useSignalRContext from "../hooks/useSignalRContext";
-import { colorOptionsDisplay, gameTypeDisplay } from "../utils/helper";
-import useAuthContext from "../hooks/useAuthContext";
+import useSignalRContext from "../../hooks/useSignalRContext";
+import { colorOptionsDisplay, gameTypeDisplay } from "../../utils/helper";
+import useAuthContext from "../../hooks/useAuthContext";
 
 interface ILobbyTable{
     setGameRoomList: React.Dispatch<React.SetStateAction<IGameRoomList>>;

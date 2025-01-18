@@ -2,9 +2,9 @@ import moment from "moment"
 import { useEffect, useState } from "react"
 import { Table, Pagination, Spinner } from "react-bootstrap"
 import { toast } from "react-toastify";
-import { IGameHistoryList } from "../game/utilities/types";
-import BaseApiService from "../services/BaseApiService";
-import { gameStatusDisplay } from "../utils/helper";
+import { IGameHistoryList } from "../../game/utilities/types";
+import BaseApiService from "../../services/BaseApiService";
+import { gameStatusDisplay } from "../../utils/helper";
 
 const baseApiService = new BaseApiService();
 

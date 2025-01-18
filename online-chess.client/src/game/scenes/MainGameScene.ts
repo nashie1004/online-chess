@@ -60,11 +60,7 @@ export class MainGameScene extends Scene{
         this.board = Array.from({ length: 8}).map(_ => new Array(8).fill(null));
         this.previewBoard = Array.from({ length: 8 }).map(_ => new Array(8));
 
-        this.pieceCoordinates = {
-            white: [],
-            black: [],
-        };
-
+        this.pieceCoordinates = { white: [], black: [],};
     }
 
     // Load assets

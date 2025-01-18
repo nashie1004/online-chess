@@ -1,5 +1,5 @@
-import ProfileTable from "../components/ProfileTable";
-import ProfileForm from "../components/ProfileForm";
+import ProfileTable from "../components/profile/ProfileTable";
+import ProfileForm from "../components/profile/ProfileForm";
 
 export default function Profile() {
   return (
