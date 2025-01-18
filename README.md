@@ -46,17 +46,20 @@ after that, the web application should now be running.
 
 ### Refactor functions in MainGameScene.ts
 ~~1. showPossibleMoves~~
-2. getInitialMoves
-3. possibleMovesIfKingInCheck
+~~2. getInitialMoves~~
+~~3. possibleMovesIfKingInCheck~~
 ~~4. move~~
-5. findPieceCoordinates
-6. mNormalCapture
-7. mEnPassantCapture
-8. mPawnPromote
+~~6. mNormalCapture~~
+~~7. mEnPassantCapture~~
+~~8. mPawnPromote~~
 ~~9. validateCheck~~
-10. getAllFriendOrOpponentPieces
-11. isCheckMate
+~~10. castle~~
+~~11. isCheckMate~~
 ~~12. isStalemate~~
+
+### Refactor issues:
+1. queenside castling
+2. pawn promotion
 
 ### UI Possible Templates
 1. https://www.chesssquire.com/chess-vs-computer.html
