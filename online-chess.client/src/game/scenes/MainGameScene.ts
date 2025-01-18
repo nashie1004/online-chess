@@ -14,6 +14,7 @@ import QueenValidator from "../pieces/queenValidator";
 import KingValidator from "../pieces/kingValidator";
 import PawnValidator from "../pieces/pawnValidator";
 import { eventEmitter } from "../utilities/eventEmitter";
+import GetInitialMoves from "../logic/getInitialMoves";
 
 export class MainGameScene extends Scene{
     /**
@@ -226,7 +227,10 @@ export class MainGameScene extends Scene{
         y = actualCoordinates?.y ?? 0;
 
         // validate
-        let initialValidMoves: IValidMove[] = this.getInitialMoves(name, x, y, uniqueName);
+        let initialValidMoves: IValidMove[] = (new GetInitialMoves(
+            this.board, this.reactState, 
+            this.bothKingsPosition, this.boardOrientationIsWhite
+        )).getInitialMoves(name, x, y, uniqueName);
 
         // set selected piece
         this.selectedPiece = { x, y, pieceName: uniqueName };
@@ -246,45 +250,6 @@ export class MainGameScene extends Scene{
         })
     }
 
-    getInitialMoves(name: PieceNames, x: number, y: number, uniqueName: string, allowXRayOpponentKing: boolean = false){
-        let validMoves: IValidMove[] = [];
-
-        switch(name){
-            case PieceNames.bRook:
-            case PieceNames.wRook:
-                validMoves = (new RookValidator({ x, y, name, uniqueName }, this.board, this.reactState.moveHistory, allowXRayOpponentKing, this.bothKingsPosition)).validMoves();
-                break;
-            case PieceNames.bKnight:
-            case PieceNames.wKnight:
-                validMoves = (new KnightValidator({ x, y, name, uniqueName }, this.board, this.reactState.moveHistory, this.bothKingsPosition)).validMoves();
-                break;
-            case PieceNames.bBishop:
-            case PieceNames.wBishop:
-                validMoves = (new BishopValidator({ x, y, name, uniqueName }, this.board, this.reactState.moveHistory, allowXRayOpponentKing, this.bothKingsPosition)).validMoves();
-                break;
-            case PieceNames.bQueen:
-            case PieceNames.wQueen:
-                validMoves = (new QueenValidator({ x, y, name, uniqueName }, this.board, this.reactState.moveHistory, allowXRayOpponentKing, this.bothKingsPosition)).validMoves();
-                break;
-            case PieceNames.bKing:
-                validMoves = (new KingValidator(
-                    { x, y, name, uniqueName }, this.board, this.reactState.moveHistory, this.reactState.kingsState.black.isInCheck, this.bothKingsPosition, this.boardOrientationIsWhite)).validMoves();
-                break;
-            case PieceNames.wKing:
-                validMoves = (new KingValidator(
-                    { x, y, name, uniqueName }, this.board, this.reactState.moveHistory, this.reactState.kingsState.white.isInCheck, this.bothKingsPosition, this.boardOrientationIsWhite)).validMoves();
-                break;
-            case PieceNames.bPawn:
-            case PieceNames.wPawn:
-                //validMoves = (new PawnValidator(
-                //    { piece: { x, y, name, uniqueName },
-                //    board: this.board, moveHistory: this.reactState.moveHistory, showCaptureSquares: false })).validMoves();
-                validMoves = (new PawnValidator(
-                    { x, y, name, uniqueName }, this.board, this.reactState.moveHistory, false, this.bothKingsPosition, this.boardOrientationIsWhite)).validMoves();
-                break;
-            }
-        return validMoves;
-    }
 
     possibleMovesIfKingInCheck(name: PieceNames, initialValidMoves: IValidMove[]){
 
@@ -325,7 +290,11 @@ export class MainGameScene extends Scene{
             // get attacker piece attack squares (rook, bishop, queen)
             // , filter out those attack squares with the king
             // and also include x ray (moves behind the king that is in check by attacker)
-            const attackerSquares = this.getInitialMoves(attackerSpriteName, attacker.x, attacker.y, attackerSprite.name, true)
+            const attackerSquares = (new GetInitialMoves(
+                this.board, this.reactState, 
+                this.bothKingsPosition, this.boardOrientationIsWhite
+            )).getInitialMoves(attackerSpriteName, attacker.x, attacker.y, attackerSprite.name, true)
+            
             if (name === PieceNames.wKing || name === PieceNames.bKing)
             {
                 initialValidMoves.forEach(kingMove => {
@@ -390,7 +359,10 @@ export class MainGameScene extends Scene{
                                 (isWhite && currTile.name[0] === "w") ||
                                 (!isWhite && currTile.name[0] === "b")
                             ){
-                                const friendPieceMoves = this.getInitialMoves(spriteName, j, i, currTile.name);
+                                const friendPieceMoves = (new GetInitialMoves(
+                                    this.board, this.reactState,
+                                    this.bothKingsPosition, this.boardOrientationIsWhite
+                                )).getInitialMoves(spriteName, j, i, currTile.name);
                                 // if one of our friend move can block an enemey attack sqaure
                                 attackersLineOfPath.forEach(attackSquare => {
                                     const blockable = friendPieceMoves.find(friendMove => friendMove.x === attackSquare.x && friendMove.y === attackSquare.y);
@@ -936,7 +908,10 @@ export class MainGameScene extends Scene{
         friendPieces.forEach(friendPiece => {
             const friendPieceName = friendPiece.sprite.name.split("-")[0] as PieceNames;
 
-            const friendPieceMoves = this.getInitialMoves(
+            const friendPieceMoves = (new GetInitialMoves(
+                this.board, this.reactState
+                , this.bothKingsPosition, this.boardOrientationIsWhite
+            )).getInitialMoves(
                 friendPieceName, friendPiece.x, friendPiece.y
                 , friendPiece.sprite.name
             );
@@ -953,7 +928,10 @@ export class MainGameScene extends Scene{
                     const attackerSprite = this.board[attacker.x][attacker.y];
                     if (!attackerSprite) return null; // this is actually invalid
                     const attackerSpriteName = attackerSprite.name.split("-")[0] as PieceNames;
-                    const attackerSquares = this.getInitialMoves(attackerSpriteName, attacker.x, attacker.y, attackerSprite.name, true);
+                    const attackerSquares = (new GetInitialMoves(
+                        this.board, this.reactState,
+                        this.bothKingsPosition, this.boardOrientationIsWhite
+                    )).getInitialMoves(attackerSpriteName, attacker.x, attacker.y, attackerSprite.name, true);
 
                     // 1. Capture attacker
                     if (attacker.x === friendMove.x && attacker.y === friendMove.y){
@@ -1028,7 +1006,10 @@ export class MainGameScene extends Scene{
         
         this.pieceCoordinates[isWhite ? "white" : "black"].forEach(friendPiece => {
             const {x, y, name, uniqueName} = friendPiece;
-            const pieceMoves = this.getInitialMoves(name, x, y, uniqueName ?? `${name}-${x}-${y}`, false);
+            const pieceMoves = (new GetInitialMoves(
+                this.board, this.reactState
+                , this.bothKingsPosition, this.boardOrientationIsWhite
+            )).getInitialMoves(name, x, y, uniqueName ?? `${name}-${x}-${y}`, false);
 
             if (pieceMoves.length > 0){
                 hasAtleastOneLegalMove = true;
