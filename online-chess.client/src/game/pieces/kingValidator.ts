@@ -3,7 +3,7 @@ import { IBaseCoordinates, IBothKingsPosition, IMoveHistory, IPiece, IValidMove 
 import BasePieceValidator from "./basePieceValidator";
 import QueenValidator from "./queenValidator";
 import KnightValidator from "./knightValidator";
-import { PieceNames } from "../../utilities/constants";
+import { PieceNames } from "../utilities/constants";
 import BishopValidator from "./bishopValidator";
 import PawnValidator from "./pawnValidator";
 import RookValidator from "./rookValidator";

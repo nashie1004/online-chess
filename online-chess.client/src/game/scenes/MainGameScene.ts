@@ -7,12 +7,12 @@ import select from "../../assets/sounds/Select.ogg"
 import check from "../../assets/sounds/Check.mp3"
 import pieces, { Options as gameOptions, PieceNames, pieceImages, baseKingState } from "../utilities/constants";
 import { IBaseCoordinates, IBothKingsPosition, IKingState, IMoveInfo, INonTilePieces, IPhaserContextValues, IPiecesCoordinates, IValidMove, PromoteTo } from "../utilities/types";
-import RookValidator from "../logic/piece/rookValidator";
-import KnightValidator from "../logic/piece/knightValidator";
-import BishopValidator from "../logic/piece/bishopValidator";
-import QueenValidator from "../logic/piece/queenValidator";
-import KingValidator from "../logic/piece/kingValidator";
-import PawnValidator from "../logic/piece/pawnValidator";
+import RookValidator from "../pieces/rookValidator";
+import KnightValidator from "../pieces/knightValidator";
+import BishopValidator from "../pieces/bishopValidator";
+import QueenValidator from "../pieces/queenValidator";
+import KingValidator from "../pieces/kingValidator";
+import PawnValidator from "../pieces/pawnValidator";
 import { eventEmitter } from "../utilities/eventEmitter";
 
 export class MainGameScene extends Scene{
