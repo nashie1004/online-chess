@@ -14,6 +14,7 @@ import GetInitialMoves from "../logic/getInitialMoves";
 import IsStalemate from "../logic/IsStaleMate";
 import IsCheck from "../logic/isCheck";
 import PossibleMovesIfKingInCheck from "../logic/possibleMovesIfKingInCheck";
+import IsCheckMate from "../logic/isCheckMate";
 
 export class MainGameScene extends Scene{
     /**
@@ -240,7 +241,7 @@ export class MainGameScene extends Scene{
             ,this.reactState, this.bothKingsPosition
             ,this.boardOrientationIsWhite
         )).possibleMovesIfKingInCheck(name, initialValidMoves);
-        
+
         if (actualValidMoves){
             initialValidMoves = actualValidMoves;
         }
@@ -577,7 +578,11 @@ export class MainGameScene extends Scene{
         kingSprite?.postFX?.addGlow(0xE44C6A, 10, 2);
 
         // 3. checkmate 
-        let isCheckMate = this.isCheckmate();
+        let isCheckMate = (new IsCheckMate(
+            this.board, this.reactState
+            ,this.bothKingsPosition, this.boardOrientationIsWhite
+            ,this.pieceCoordinates
+        )).isCheckmate();
 
         if (isCheckMate){
             if (this.reactState.kingsState.white.isInCheck){
@@ -587,153 +592,9 @@ export class MainGameScene extends Scene{
             }
         }
 
-
         eventEmitter.emit("setKingsState", this.reactState.kingsState);
         return (isCheckMate ? 2 : 1);
     }
 
-    /**
-     *
-     * @param getFriends - if true = returns all friend pieces, false = returns all opponent pieces
-     * @returns object of (x, y, sprite)
-     */
-    getAllFriendOrOpponentPieces(getFriends: boolean = true, isWhite: boolean = true){
-        const nonTilePieces: INonTilePieces[] = []
-
-        for (let row = 0; row < this.board.length; row++){
-            for (let col = 0; col < this.board[row].length; col++){
-                const sprite = this.board[col][row];
-                if (!sprite) continue;
-                const spriteIsWhite = sprite.name[0] === "w";
-
-                // 1. get only friends
-                if (getFriends){
-                    if (isWhite && spriteIsWhite){
-                        nonTilePieces.push({ sprite, x: col, y: row })
-                    } else if (!isWhite && !spriteIsWhite){
-                        nonTilePieces.push({ sprite, x: col, y: row })
-                    }
-                }
-                // 2. get only enemies
-                else {
-                    if (isWhite && !spriteIsWhite){
-                        nonTilePieces.push({ sprite, x: col, y: row })
-                    } else if (!isWhite && spriteIsWhite){
-                        nonTilePieces.push({ sprite, x: col, y: row })
-                    }
-                }
-            }
-        }
-
-        return nonTilePieces;
-    }
-
-    /**
-     * - Will run after a piece moves, and the move results in a check
-     * - similar to possibleMovesIfKingInCheck()
-     * @param name
-     * @param initialValidMoves
-     * @returns
-     */
-    isCheckmate(){
-        const colorInCheckIsWhite = this.reactState.kingsState.white.isInCheck;
-        const friendPieces = this.getAllFriendOrOpponentPieces(true, colorInCheckIsWhite);
-        const attackersCoords = colorInCheckIsWhite ? this.reactState.kingsState.white.checkedBy
-            : this.reactState.kingsState.black.checkedBy;
-        const validMoves = { capturable: 0, movableKing: 0, blockable: 0 }; // for debug purposes
-        const kingInCheckCoords = colorInCheckIsWhite ? this.bothKingsPosition.white : this.bothKingsPosition.black;
-
-        if (attackersCoords.length < 0) return; // no attacker/checker
-
-        friendPieces.forEach(friendPiece => {
-            const friendPieceName = friendPiece.sprite.name.split("-")[0] as PieceNames;
-
-            const friendPieceMoves = (new GetInitialMoves(
-                this.board, this.reactState
-                , this.bothKingsPosition, this.boardOrientationIsWhite
-            )).getInitialMoves(
-                friendPieceName, friendPiece.x, friendPiece.y
-                , friendPiece.sprite.name
-            );
-
-            // for each friend piece move
-            // validate if they can: 1. capture attacker, 2. block attacker
-            // 3. if piece is king can move
-            friendPieceMoves.forEach(friendMove => {
-
-                // loop through each attacker/checker (for normal and discovered checks)
-                attackersCoords.forEach(attacker => {
-
-                    // 0. attacker information
-                    const attackerSprite = this.board[attacker.x][attacker.y];
-                    if (!attackerSprite) return null; // this is actually invalid
-                    const attackerSpriteName = attackerSprite.name.split("-")[0] as PieceNames;
-                    const attackerSquares = (new GetInitialMoves(
-                        this.board, this.reactState,
-                        this.bothKingsPosition, this.boardOrientationIsWhite
-                    )).getInitialMoves(attackerSpriteName, attacker.x, attacker.y, attackerSprite.name, true);
-
-                    // 1. Capture attacker
-                    if (attacker.x === friendMove.x && attacker.y === friendMove.y){
-                        validMoves.capturable++;
-                    }
-
-                    // 2. Move the checked king
-                    if (friendPieceName === PieceNames.wKing || friendPieceName === PieceNames.bKing){
-                        const kingCapturableTile = attackerSquares.find(attackerSquare => attackerSquare.x === friendMove.x && attackerSquare.y === friendMove.y);
-                        if (!kingCapturableTile){
-                            validMoves.movableKing++;
-                        }
-                    }
-
-                    // 3. Block the line of attack
-                    const kingTracer = new KingValidator({
-                        x: kingInCheckCoords.x, y: kingInCheckCoords.y, name: colorInCheckIsWhite ? PieceNames.wKing : PieceNames.bKing
-                    }, this.board, this.reactState.moveHistory, false, this.bothKingsPosition, this.boardOrientationIsWhite);
-
-                    let attackersLineOfPath: IBaseCoordinates[] = [];
-
-                    // trace the position of king in check and position of attacker
-                    switch(attackerSpriteName){
-                        case PieceNames.wBishop:
-                        case PieceNames.bBishop:
-                            attackersLineOfPath = kingTracer.traceDiagonalPath(attacker);
-                            break;
-                        case PieceNames.wRook:
-                        case PieceNames.bRook:
-                            attackersLineOfPath = kingTracer.traceStraightPath(attacker);
-                            break;
-                        case PieceNames.wQueen:
-                        case PieceNames.bQueen:
-                            const queenStraightPath = kingTracer.traceStraightPath(attacker);
-
-                            if (queenStraightPath.length <= 0){
-                                attackersLineOfPath = kingTracer.traceDiagonalPath(attacker);
-                            } else {
-                                attackersLineOfPath = queenStraightPath;
-                            }
-
-                            break;
-                    }
-
-                    // if a friend move blocks any attackers line of attack
-                    const blockableTiles = attackersLineOfPath.filter(attackerLineOfPath =>
-                        attackerLineOfPath.x === friendMove.x && attackerLineOfPath.y === friendMove.y
-                    );
-
-                    // attacker's line of attack can be blocked by current friend piece
-                    if (blockableTiles.length > 0){
-                        validMoves.blockable += blockableTiles.length;
-                    }
-
-                });
-
-            });
-        });
-
-        const validMovesTotal = validMoves.capturable + validMoves.blockable + validMoves.movableKing;
-        //console.info(`number of legal/valid moves that prevent checkmate: `, validMovesTotal)
-        return validMovesTotal <= 0;
-    }
 
 }
