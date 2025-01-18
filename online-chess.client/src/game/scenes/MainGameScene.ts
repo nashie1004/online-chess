@@ -295,7 +295,7 @@ export class MainGameScene extends Scene{
         // new coordinate
         this.board[newX][newY] = sprite;
 
-        // This is for stalemate detection
+        // Set new coordinate
         const pieceCoordinate = this.pieceCoordinates[isWhite ? "white" : "black"]
             .find(i => i.x === this.selectedPiece?.x && i.y === this.selectedPiece?.y);
 
@@ -363,18 +363,11 @@ export class MainGameScene extends Scene{
 
     mSaveMoveHistory(isWhite: boolean, pieceName: string, selectedPiece: IMoveInfo, newX: number, newY: number){
 
-        // save to move history
-        if (isWhite){
-            this.reactState.moveHistory.white.push({
-                old: { pieceName, x: selectedPiece.x, y: selectedPiece.y },
-                new: { pieceName, x: newX, y: newY },
-            });
-        } else {
-            this.reactState.moveHistory.black.push({
-                old: { pieceName, x: selectedPiece.x, y: selectedPiece.y },
-                new: { pieceName, x: newX, y: newY },
-            });
-        }
+        this.reactState.moveHistory[isWhite ? "white" : "black"].push({
+            old: { pieceName, x: selectedPiece.x, y: selectedPiece.y },
+            new: { pieceName, x: newX, y: newY },
+        });
+        
     }
 
     /**
