@@ -34,11 +34,12 @@ public class EditHandler : IRequestHandler<EditRequest, EditResponse>
                 return retVal;
             }
 
-            // edit username
-            if (req.OldUsername != req.NewUsername){
-                user.UserName = req.NewPassword;
-                await _userManager.UpdateAsync(user);
-                retVal.NewUsername = req.NewUsername;
+            // existing username
+            var existingName = await _userManager.FindByNameAsync(req.NewUsername); 
+            if (existingName != null)
+            {
+                retVal.ValidationErrors.Add("Username already exists");
+                return retVal;
             }
 
             // edit password
@@ -48,7 +49,25 @@ public class EditHandler : IRequestHandler<EditRequest, EditResponse>
                 return retVal;
             }
 
-            retVal.SuccessMessage = "Profile edited successfully";
+            retVal.SuccessMessage = "Password edited successfully. ";
+
+            // edit username
+            if (req.OldUsername != req.NewUsername)
+            {
+                user.UserName = req.NewUsername;
+                var updateRes = await _userManager.UpdateAsync(user);
+                if (updateRes.Succeeded)
+                {
+                    retVal.NewUsername = req.NewUsername;
+                    retVal.SuccessMessage += "Username edited successfully.";
+                }
+                else
+                {
+                    retVal.ValidationErrors.Add(retVal.SuccessMessage);
+                    retVal.ValidationErrors.AddRange(updateRes.Errors.Select(i => i.Description).ToList());
+                }
+            }
+
         } 
         catch (Exception err){
             retVal.ValidationErrors.Add(err.Message);

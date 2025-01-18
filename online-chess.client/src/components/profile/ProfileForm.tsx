@@ -27,7 +27,7 @@ type FormFields = z.infer<typeof schema>;
 const profileService = new BaseApiService();
 
 export default function ProfileForm(){
-    const { user } = useAuthContext();
+    const { user, setUserName } = useAuthContext();
     const [editableProfile, setEditableProfile] = useState(true);
     const isFirstRender = useIsFirstRender();
   
@@ -37,6 +37,7 @@ export default function ProfileForm(){
     } = useForm<FormFields>({
       defaultValues: {
         newUsername: user ? user.userName : "",
+        oldPassword: "sup3rADMIN@!!0_P@ssw0rd", newPassword: "sup3rADMIN@!!0_P@ssw0rd"
       },
       resolver: zodResolver(schema)
     });
@@ -46,12 +47,16 @@ export default function ProfileForm(){
         oldUserName: user?.userName, ...data 
       });
           
-      if (!res.isOk){
-        toast(res.message, { type: "error" })
-        return;
+      toast(res.message, { type: res.isOk ? "success" : "error" });
+
+      if (!res.isOk) return;
+
+      // if username is updated
+      if (res.data.newUsername){
+        setUserName(res.data.newUsername);
       }
 
-      console.log(res)
+      //console.log("profile form: ", res)
     }
     
     const formValues = watch();

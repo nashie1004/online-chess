@@ -11,6 +11,7 @@ interface IAuthContext {
     logout: () => void;
     user: IUser | null;
     setUserConnectionId: (val: string | null) => void;
+    setUserName: (val: string) => void;
 }
 
 interface IAuthContextProps {
@@ -22,7 +23,8 @@ export const authContext = createContext<IAuthContext>({
     login: (user: IUser) => { },
     logout: () => { },
     user: null,
-    setUserConnectionId: () => {}
+    setUserConnectionId: () => {},
+    setUserName: () => {}
 });
 
 export default function AuthContext(
@@ -52,6 +54,13 @@ export default function AuthContext(
         });
     }
 
+    function setUserName(userName: string){
+        setUser(prev => {
+            if (!prev) return prev;
+            return ({ ...prev, userName })
+        }); 
+    }
+
     useEffect(() => {
         async function authenticate() {
             const res = await authService.baseGet("/api/Auth/isSignedIn");
@@ -66,7 +75,7 @@ export default function AuthContext(
     }, [])
 
     const data = {
-        user, login, logout, isAuthenticating, setUserConnectionId
+        user, login, logout, isAuthenticating, setUserConnectionId, setUserName
     }
 
   return (

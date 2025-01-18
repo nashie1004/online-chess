@@ -5,5 +5,5 @@ namespace online_chess.Server.Features.Auth.Commands.Edit;
 
 public class EditResponse : BaseResponse
 {
-    public string NewUsername { get; set; }
+    public string? NewUsername { get; set; } = null;
 }
