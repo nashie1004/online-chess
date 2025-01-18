@@ -61,6 +61,11 @@ export default function PlayerInfo() {
                     {kingsState.black.isCheckMate ? " Black is checkmated." : ""}
                 </> : <></> 
             }
+            {
+                kingsState.white.isInStalemate || kingsState.black.isInStalemate ? <>
+                Stalemate.
+                </> : <></> 
+            }
         </Alert>
     </>
   )

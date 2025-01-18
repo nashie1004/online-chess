@@ -497,8 +497,6 @@ export class MainGameScene extends Scene{
         // play sound
         hasCapture ? this.sound.play("capture") : this.sound.play("move");
         if (kingSafety !== 0) this.sound.play("check");
-
-        console.log(this.pieceCoordinates)
     }
 
     // find by name
@@ -722,13 +720,25 @@ export class MainGameScene extends Scene{
         this.reactState.kingsState.white.checkedBy = [];
         this.reactState.kingsState.white.isInCheck = false;
         this.reactState.kingsState.black.isInCheck = false;
+        this.reactState.kingsState.white.isCheckMate = false;
         this.reactState.kingsState.black.isCheckMate = false;
-        this.reactState.kingsState.black.isCheckMate = false;
+        this.reactState.kingsState.white.isInStalemate = false;
+        this.reactState.kingsState.black.isInStalemate = false;
 
+        // check
         const isCheck = this.validateCheck(isWhite);
 
-        // 1. no check or no checkmate
-        if (!isCheck) return 0;
+        // 1. stalemate
+        if (!isCheck){
+            let isStalemate = this.isStalemate(!isWhite);
+
+            if (isStalemate){
+                this.reactState.kingsState[isWhite ? "black" : "white"].isInStalemate = true;
+                return 0;
+            }
+
+            return 0;
+        }
 
         // 2. check
         const king = isWhite ? this.bothKingsPosition.black : this.bothKingsPosition.white;
@@ -746,8 +756,6 @@ export class MainGameScene extends Scene{
             }
         }
 
-        // 4. stalemate
-        let isStalemate = this.isStalemate(isWhite);
 
         eventEmitter.emit("setKingsState", this.reactState.kingsState);
         return (isCheckMate ? 2 : 1);
@@ -1012,9 +1020,8 @@ export class MainGameScene extends Scene{
 
     /**
      * - if any friend piece has atleast one move
-     * - TODO check if king not in check
      * @param isWhite 
-     * @returns 
+     * @returns if player is stalemated
      */
     isStalemate(isWhite: boolean){
         let hasAtleastOneLegalMove = false;
@@ -1029,7 +1036,7 @@ export class MainGameScene extends Scene{
             }
         });
 
-        return hasAtleastOneLegalMove;
+        return !hasAtleastOneLegalMove;
     }
 
 }

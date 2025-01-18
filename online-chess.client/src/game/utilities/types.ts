@@ -40,6 +40,7 @@ export interface IKing{
     isInCheck: boolean;
     checkedBy: IBaseCoordinates[];
     isCheckMate: boolean;
+    isInStalemate: boolean;
 }
 
 export interface IKingState{
