@@ -6,7 +6,7 @@ import capture from "../../assets/sounds/Capture.ogg"
 import select from "../../assets/sounds/Select.ogg"
 import check from "../../assets/sounds/Check.mp3"
 import pieces, { Options as gameOptions, PieceNames, pieceImages, baseKingState } from "../utilities/constants";
-import { IBaseCoordinates, IBothKingsPosition, IKingState, IMoveInfo, INonTilePieces, IPhaserContextValues, IPiecesCoordinates, IValidMove, PromoteTo } from "../utilities/types";
+import { IBothKingsPosition, IKingState, IMoveInfo, IPhaserContextValues, IPiecesCoordinates, IValidMove, PromoteTo } from "../utilities/types";
 import PawnValidator from "../pieces/pawnValidator";
 import { eventEmitter } from "../utilities/eventEmitter";
 import GetInitialMoves from "../logic/getInitialMoves";
@@ -15,6 +15,7 @@ import IsCheck from "../logic/isCheck";
 import PossibleMovesIfKingInCheck from "../logic/possibleMovesIfKingInCheck";
 import IsCheckMate from "../logic/isCheckMate";
 import KingCastled from "../logic/kingCastled";
+import PawnPromote from "../logic/pawnPromote";
 
 export class MainGameScene extends Scene{
     /**
@@ -24,11 +25,11 @@ export class MainGameScene extends Scene{
     private readonly tileSize: number;
     private readonly board: (null | GameObjects.Sprite)[][]
     private readonly previewBoard: (GameObjects.Sprite)[][] // has a visible property
+    private readonly boardOrientationIsWhite: boolean;
+    private readonly pieceCoordinates: IPiecesCoordinates;
     private selectedPiece: IMoveInfo | null;
     private reactState: IPhaserContextValues;
     private bothKingsPosition: IBothKingsPosition;
-    private readonly boardOrientationIsWhite: boolean;
-    private readonly pieceCoordinates: IPiecesCoordinates;
 
     constructor(key: string, isColorWhite: boolean) {
         super({ key });
@@ -299,7 +300,9 @@ export class MainGameScene extends Scene{
         }
 
         // some special logic
-        this.mPawnPromote(pieceName, newX, newY, isWhite, sprite);
+        (new PawnPromote(
+            this.boardOrientationIsWhite, this.reactState
+        )).pawnPromote(pieceName, newX, newY, isWhite, sprite);
 
         const kingCastled = (new KingCastled(
             this.board, this.reactState
@@ -407,43 +410,6 @@ export class MainGameScene extends Scene{
 
         return false;
     }
-
-    mPawnPromote(pieceName: string, newX: number, newY: number, isWhite: boolean, sprite: GameObjects.Sprite | null){
-
-        // check if pawn and promotable
-        if (
-            (pieceName.toLowerCase().indexOf("pawn") >= 0)
-            && (
-                (newY === 0 && isWhite && this.boardOrientationIsWhite) ||
-                (newY === 7 && isWhite && !this.boardOrientationIsWhite) ||
-
-                (newY === 7 && !isWhite && this.boardOrientationIsWhite) ||
-                (newY === 0 && !isWhite && !this.boardOrientationIsWhite)
-            )
-            && sprite
-        ){
-            // change sprite name and image/texture from pawn to queen
-            switch(this.reactState.promoteTo){
-                case "rook":
-                    sprite.setName((isWhite ? PieceNames.wRook : PieceNames.bRook) + `-${newX}-${newY}`);
-                    sprite.setTexture(isWhite ? PieceNames.wRook : PieceNames.bRook);
-                    break;
-                case "knight":
-                    sprite.setName((isWhite ? PieceNames.wKnight : PieceNames.bKnight) + `-${newX}-${newY}`);
-                    sprite.setTexture(isWhite ? PieceNames.wKnight : PieceNames.bKnight);
-                    break;
-                case "bishop":
-                    sprite.setName((isWhite ? PieceNames.wBishop : PieceNames.bBishop) + `-${newX}-${newY}`);
-                    sprite.setTexture(isWhite ? PieceNames.wBishop : PieceNames.bBishop);
-                    break;
-                case "queen":
-                    sprite.setName((isWhite ? PieceNames.wQueen : PieceNames.bQueen) + `-${newX}-${newY}`);
-                    sprite.setTexture(isWhite ? PieceNames.wQueen : PieceNames.bQueen);
-                    break;
-                }
-        }
-    }
-
 
     mSaveMoveHistory(isWhite: boolean, pieceName: string, selectedPiece: IMoveInfo, newX: number, newY: number){
 

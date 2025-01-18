@@ -54,8 +54,12 @@ after that, the web application should now be running.
 8. mPawnPromote
 ~~9. validateCheck~~
 ~~10. castle~~
-11. isCheckMate
+~~11. isCheckMate~~
 ~~12. isStalemate~~
+
+### Refactor issues:
+1. queenside castling
+2. pawn promotion
 
 ### UI Possible Templates
 1. https://www.chesssquire.com/chess-vs-computer.html
