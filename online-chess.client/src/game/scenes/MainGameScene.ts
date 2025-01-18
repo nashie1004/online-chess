@@ -174,8 +174,8 @@ export class MainGameScene extends Scene{
                         ,this.bothKingsPosition
                     )).showPossibleMoves(pieceName, pieceX, pieceY);
                     
-                })
-;
+                });
+                
             this.board[x][y] = sprite;
         })
 

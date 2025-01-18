@@ -1,13 +1,15 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
-import { Row, Col, Form } from "react-bootstrap";
+import { Row, Col, Form, Button, Spinner } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import useAuthContext from "../../hooks/useAuthContext";
 import useIsFirstRender from "../../hooks/useIsFirstRender";
+import { toast } from "react-toastify";
+import BaseApiService from "../../services/BaseApiService";
 
 const schema = z.object({
-    username: z.string().nonempty().min(8, "Username must contain at least 8 character(s)"),
+    newUsername: z.string().nonempty().min(8, "New username must contain at least 8 character(s)"),
     oldPassword: z.string().nonempty().min(8, "Old password must contain at least 8 character(s)"),
     newPassword: z.string().nonempty().min(8, "New password must contain at least 8 character(s)")
   }).superRefine(({ oldPassword, newPassword }, ctx) => {
@@ -20,7 +22,9 @@ const schema = z.object({
     }
   });
   
-  type FormFields = z.infer<typeof schema>;
+type FormFields = z.infer<typeof schema>;
+
+const profileService = new BaseApiService();
 
 export default function ProfileForm(){
     const { user } = useAuthContext();
@@ -32,13 +36,22 @@ export default function ProfileForm(){
       formState: { errors, isSubmitting }
     } = useForm<FormFields>({
       defaultValues: {
-        username: user ? user.userName : "",
+        newUsername: user ? user.userName : "",
       },
       resolver: zodResolver(schema)
     });
   
     async function submitForm(data: FormFields){
-      console.log("data =>", data)
+      const res = await profileService.basePost("/api/Auth/edit", {
+        oldUserName: user?.userName, ...data 
+      });
+          
+      if (!res.isOk){
+        toast(res.message, { type: "error" })
+        return;
+      }
+
+      console.log(res)
     }
     
     const formValues = watch();
@@ -51,18 +64,18 @@ export default function ProfileForm(){
             <Row>
               <Col>
                   <Form.Group className="mb-3">
-                  <Form.Label>Username</Form.Label>
+                  <Form.Label>New Username</Form.Label>
                   <Form.Control 
-                    {...register("username")}
-                    isValid={!errors.username && !editableProfile && formValues.username !== ""}
-                    isInvalid={errors.username ? true : false}
+                    {...register("newUsername")}
+                    isValid={!errors.newUsername && !editableProfile && formValues.newUsername !== ""}
+                    isInvalid={errors.newUsername ? true : false}
                     type="text" 
-                    placeholder="Enter Username" 
+                    placeholder="Enter New Username" 
                     disabled={editableProfile} 
                     readOnly={editableProfile} 
                   />
                   <Form.Control.Feedback type="invalid">
-                    {errors.username ? errors.username.message : ""}
+                    {errors.newUsername ? errors.newUsername.message : ""}
                   </Form.Control.Feedback>
                 </Form.Group>
               </Col>
@@ -107,10 +120,20 @@ export default function ProfileForm(){
               type="checkbox"
               label="Edit Profile"
               onChange={() => setEditableProfile(prev => !prev)}
+              className="mb-3"
             />
-            <button 
-              disabled={editableProfile} 
-              type="submit" className="btn btn-primary w-100 mt-3">Edit</button>
+              <Button 
+              disabled={loading || editableProfile}
+              className="w-50" 
+              type="submit">
+              {
+                loading ? <>
+                  <Spinner 
+                    size="sm"
+                    animation="border" variant="dark" /> 
+                </> : <>Edit</>
+              }
+            </Button>
         </Form>
     </>
 }
