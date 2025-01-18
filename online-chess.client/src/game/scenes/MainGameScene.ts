@@ -10,18 +10,18 @@ import { IBaseCoordinates, IBothKingsPosition, IKingState, IMoveInfo, INonTilePi
 import RookValidator from "../pieces/rookValidator";
 import KnightValidator from "../pieces/knightValidator";
 import BishopValidator from "../pieces/bishopValidator";
-import QueenValidator from "../pieces/queenValidator";
 import KingValidator from "../pieces/kingValidator";
 import PawnValidator from "../pieces/pawnValidator";
 import { eventEmitter } from "../utilities/eventEmitter";
 import GetInitialMoves from "../logic/getInitialMoves";
+import IsStalemate from "../logic/IsStaleMate";
 
 export class MainGameScene extends Scene{
     /**
      * Board: 800 x 800, Square: 100
      * unique name = piecename + x + y, example: 'wPawn-0-6'
      */
-    private tileSize: number;
+    private readonly tileSize: number;
     private readonly board: (null | GameObjects.Sprite)[][]
     private readonly previewBoard: (GameObjects.Sprite)[][] // has a visible property
     private selectedPiece: IMoveInfo | null;
@@ -702,7 +702,11 @@ export class MainGameScene extends Scene{
 
         // 1. stalemate
         if (!isCheck){
-            let isStalemate = this.isStalemate(!isWhite);
+            let isStalemate = (new IsStalemate(
+                this.board, this.boardOrientationIsWhite
+                ,this.pieceCoordinates, this.reactState
+                ,this.bothKingsPosition
+            )).isStalemate(!isWhite);
 
             if (isStalemate){
                 this.reactState.kingsState[isWhite ? "black" : "white"].isInStalemate = true;
@@ -992,32 +996,8 @@ export class MainGameScene extends Scene{
         });
 
         const validMovesTotal = validMoves.capturable + validMoves.blockable + validMoves.movableKing;
-        console.info(`number of legal/valid moves that prevent checkmate: `, validMovesTotal)
+        //console.info(`number of legal/valid moves that prevent checkmate: `, validMovesTotal)
         return validMovesTotal <= 0;
-    }
-
-    /**
-     * - if any friend piece has atleast one move
-     * @param isWhite 
-     * @returns if player is stalemated
-     */
-    isStalemate(isWhite: boolean){
-        let hasAtleastOneLegalMove = false;
-        
-        this.pieceCoordinates[isWhite ? "white" : "black"].forEach(friendPiece => {
-            const {x, y, name, uniqueName} = friendPiece;
-            const pieceMoves = (new GetInitialMoves(
-                this.board, this.reactState
-                , this.bothKingsPosition, this.boardOrientationIsWhite
-            )).getInitialMoves(name, x, y, uniqueName ?? `${name}-${x}-${y}`, false);
-
-            if (pieceMoves.length > 0){
-                hasAtleastOneLegalMove = true;
-                return;
-            }
-        });
-
-        return !hasAtleastOneLegalMove;
     }
 
 }
