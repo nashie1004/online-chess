@@ -7,14 +7,12 @@ import select from "../../assets/sounds/Select.ogg"
 import check from "../../assets/sounds/Check.mp3"
 import pieces, { Options as gameOptions, PieceNames, pieceImages, baseKingState } from "../utilities/constants";
 import { IBaseCoordinates, IBothKingsPosition, IKingState, IMoveInfo, INonTilePieces, IPhaserContextValues, IPiecesCoordinates, IValidMove, PromoteTo } from "../utilities/types";
-import RookValidator from "../pieces/rookValidator";
-import KnightValidator from "../pieces/knightValidator";
-import BishopValidator from "../pieces/bishopValidator";
 import KingValidator from "../pieces/kingValidator";
 import PawnValidator from "../pieces/pawnValidator";
 import { eventEmitter } from "../utilities/eventEmitter";
 import GetInitialMoves from "../logic/getInitialMoves";
 import IsStalemate from "../logic/IsStaleMate";
+import IsCheck from "../logic/isCheck";
 
 export class MainGameScene extends Scene{
     /**
@@ -698,7 +696,10 @@ export class MainGameScene extends Scene{
         this.reactState.kingsState.black.isInStalemate = false;
 
         // check
-        const isCheck = this.validateCheck(isWhite);
+        const isCheck = (new IsCheck(
+            this.board, this.reactState
+            ,this.bothKingsPosition, this.boardOrientationIsWhite
+        )).validateCheck(isWhite);
 
         // 1. stalemate
         if (!isCheck){
@@ -735,125 +736,6 @@ export class MainGameScene extends Scene{
 
         eventEmitter.emit("setKingsState", this.reactState.kingsState);
         return (isCheckMate ? 2 : 1);
-    }
-
-    /**
-     * - gets the king position and validates if any opponent piece
-     * can get to the current king square
-     * @param isWhite
-     * @returns
-     */
-    validateCheck(isWhite: boolean){
-        const king = isWhite ? this.bothKingsPosition.black : this.bothKingsPosition.white;
-        const kingPiece = isWhite ? PieceNames.bKing : PieceNames.wKing;
-        const kingUpdate = (kingPiece === PieceNames.wKing) ? this.reactState.kingsState.white : this.reactState.kingsState.black;
-        const _this = this;
-
-        /**
-         * 1. handle normal checks - once an opponent piece moves and their move causes a direct check
-         * 2. discovered checks
-         */
-        // New Implementation
-        // first get positon of king under check
-        // then for each rook, bishop, knight move check if they attack the king
-
-        const rookMoves = (new RookValidator(
-            { x: king.x, y: king.y, name: kingPiece === PieceNames.wKing ? PieceNames.wRook : PieceNames.bRook }
-            , this.board, this.reactState.moveHistory, false, this.bothKingsPosition)).validMoves();
-        const bishopMoves = (new BishopValidator(
-            { x: king.x, y: king.y, name: kingPiece === PieceNames.wKing ? PieceNames.wBishop : PieceNames.bBishop }
-            , this.board, this.reactState.moveHistory, false, this.bothKingsPosition)).validMoves();
-        const knightMoves = (new KnightValidator(
-            { x: king.x, y: king.y, name: kingPiece === PieceNames.wKing ? PieceNames.wKnight : PieceNames.bKnight }
-            , this.board, this.reactState.moveHistory, this.bothKingsPosition)).validMoves();
-        const pawnMoves = (new PawnValidator(
-                { x: king.x, y: king.y, name: kingPiece === PieceNames.wKing ? PieceNames.wPawn : PieceNames.bPawn },
-                this.board, this.reactState.moveHistory, false, this.bothKingsPosition, this.boardOrientationIsWhite
-            )).validMoves();
-
-        // 1. rook
-        rookMoves.forEach(rookMove => {
-            const currTile = _this.board[rookMove.x][rookMove.y];
-            if (!currTile) return;
-            const currTileIsWhite = currTile.name[0] === "w";
-
-            if (
-                // opposite colors
-                ((kingPiece === PieceNames.wKing && !currTileIsWhite) ||
-                (kingPiece === PieceNames.bKing && currTileIsWhite)) &&
-                (
-                    (currTile.name.toLowerCase().indexOf("rook") >= 0) ||
-                    (currTile.name.toLowerCase().indexOf("queen") >= 0)
-                )
-            ){
-                kingUpdate.checkedBy.push({ x: rookMove.x, y: rookMove.y }); // under check
-            }
-        });
-
-        // 2. bishop
-        bishopMoves.forEach(rookMove => {
-            const currTile = _this.board[rookMove.x][rookMove.y];
-            if (!currTile) return;
-
-            if (
-                // opposite colors
-                ((kingPiece === PieceNames.wKing && currTile.name[0] === "b") ||
-                (kingPiece === PieceNames.bKing && currTile.name[0] === "w")) &&
-                (
-                    currTile.name.toLowerCase().indexOf("bishop") >= 0 ||
-                    currTile.name.toLowerCase().indexOf("queen") >= 0
-                )
-            ){
-                kingUpdate.checkedBy.push({ x: rookMove.x, y: rookMove.y }); // under check
-            }
-        });
-
-        // 3. knight
-        knightMoves.forEach(rookMove => {
-            const currTile = _this.board[rookMove.x][rookMove.y];
-            if (!currTile) return;
-
-            if (
-                // opposite colors
-                ((kingPiece === PieceNames.wKing && currTile.name[0] === "b") ||
-                (kingPiece === PieceNames.bKing && currTile.name[0] === "w")) &&
-                (
-                    currTile.name.toLowerCase().indexOf("knight") >= 0
-                )
-            ){
-                kingUpdate.checkedBy.push({ x: rookMove.x, y: rookMove.y }); // under check
-            }
-        });
-
-        // 4. ppawn
-        pawnMoves.forEach(pawnMove => {
-            const currTile = _this.board[pawnMove.x][pawnMove.y];
-            if (!currTile) return;
-
-            if (
-                // opposite colors
-                ((kingPiece === PieceNames.wKing && currTile.name[0] === "b") ||
-                (kingPiece === PieceNames.bKing && currTile.name[0] === "w")) &&
-                (
-                    currTile.name.toLowerCase().indexOf("pawn") >= 0
-                )
-            ){
-                kingUpdate.checkedBy.push({ x: pawnMove.x, y: pawnMove.y }); // under check
-            }
-        });
-
-        // consolidate if there any checks/attackers
-        if (kingUpdate.checkedBy.length > 0){
-            kingUpdate.isInCheck = true;
-            // remove any duplicate attackers/checkers
-            kingUpdate.checkedBy = kingUpdate.checkedBy.filter((value, index, self) =>
-                index === self.findIndex((t) => (
-                    t.x === value.x && t.y === value.y
-                ))
-            );
-
-        }
-        return kingUpdate.checkedBy.length > 0;
     }
 
     /**
