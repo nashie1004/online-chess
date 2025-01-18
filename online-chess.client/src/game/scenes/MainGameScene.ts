@@ -222,9 +222,12 @@ export class MainGameScene extends Scene{
     showPossibleMoves(name: PieceNames, x: number, y: number){
         // actual coords
         const uniqueName = `${name}-${x}-${y}`;
-        const actualCoordinates = this.findPieceCoordinates(uniqueName);
-        x = actualCoordinates?.x ?? 0;
-        y = actualCoordinates?.y ?? 0;
+        const isWhite = name[0] === "w";
+        const actualCoordinates = this.pieceCoordinates[isWhite ? "white" : "black"].find(i => i.uniqueName === uniqueName);
+        if (!actualCoordinates) return;
+
+        x = actualCoordinates.x;
+        y = actualCoordinates.y;
 
         // validate
         let initialValidMoves: IValidMove[] = (new GetInitialMoves(
@@ -254,9 +257,6 @@ export class MainGameScene extends Scene{
             this.previewBoard[item.x][item.y].setVisible(!prev)
         })
     }
-
-
-
 
     /**
      * - move piece to desired square
@@ -347,22 +347,6 @@ export class MainGameScene extends Scene{
         // play sound
         hasCapture ? this.sound.play("capture") : this.sound.play("move");
         if (kingSafety !== 0) this.sound.play("check");
-    }
-
-    // find by name
-    findPieceCoordinates(uniqueName: string){
-        for (let i = 0; i < this.board.length; i++){
-            for(let j = 0; j < this.board[i].length; j++){
-
-                const currTile = this.board[j][i];
-
-                // empty tile
-                if (!currTile) continue;
-
-                // found coords
-                if (currTile.name === uniqueName) return ({ x: j, y: i })
-            }
-        }
     }
 
     update(){
