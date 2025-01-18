@@ -7,7 +7,6 @@ import select from "../../assets/sounds/Select.ogg"
 import check from "../../assets/sounds/Check.mp3"
 import pieces, { Options as gameOptions, PieceNames, pieceImages, baseKingState } from "../utilities/constants";
 import { IBothKingsPosition, IKingState, IMoveInfo, IPhaserContextValues, IPiecesCoordinates, IValidMove, PromoteTo } from "../utilities/types";
-import PawnValidator from "../pieces/pawnValidator";
 import { eventEmitter } from "../utilities/eventEmitter";
 import GetInitialMoves from "../logic/getInitialMoves";
 import IsStalemate from "../logic/IsStaleMate";
@@ -16,6 +15,7 @@ import PossibleMovesIfKingInCheck from "../logic/possibleMovesIfKingInCheck";
 import IsCheckMate from "../logic/isCheckMate";
 import KingCastled from "../logic/kingCastled";
 import PawnPromote from "../logic/pawnPromote";
+import PieceCapture from "../logic/pieceCapture";
 
 export class MainGameScene extends Scene{
     /**
@@ -284,8 +284,13 @@ export class MainGameScene extends Scene{
         this.board[this.selectedPiece.x][this.selectedPiece.y] = null;
 
         // capture
-        if (this.mNormalCapture(newX, newY, isWhite)) hasCapture = true;
-        if (this.mEnPassantCapture(pieceName, this.selectedPiece, isWhite, newX, newY)) hasCapture = true;
+        const pieceCapture = new PieceCapture(
+            this.board, this.boardOrientationIsWhite, this.pieceCoordinates
+            ,this.reactState, this.bothKingsPosition
+        );
+
+        if (pieceCapture.normalCapture(newX, newY, isWhite)) hasCapture = true;
+        if (pieceCapture.enPassantCapture(pieceName, this.selectedPiece, isWhite, newX, newY)) hasCapture = true;
 
         // new coordinate
         this.board[newX][newY] = sprite;
@@ -354,61 +359,6 @@ export class MainGameScene extends Scene{
 
     update(){
         // may not need this
-    }
-
-    mNormalCapture(newX: number, newY: number, isWhite: boolean){
-        // if there is an opponent piece in the desired square, capture it
-        const opponentPiece = this.board[newX][newY];
-
-        if (opponentPiece){
-
-            // save to capture history
-            if (isWhite){
-                this.reactState.captureHistory.white.push({ x: newX, y: newY, pieceName: opponentPiece.name })
-            } else {
-                this.reactState.captureHistory.black.push({ x: newX, y: newY, pieceName: opponentPiece.name })
-            }
-
-            this.pieceCoordinates[isWhite ? "black" : "white"] = 
-                this.pieceCoordinates[isWhite ? "black" : "white"].filter(i => i.x !== newX || i.y !== newY);
-
-            opponentPiece.destroy();
-            return true;
-        }
-
-        return false;
-    }
-
-    mEnPassantCapture(pieceName: string, selectedPiece: IMoveInfo, isWhite: boolean, newX: number, newY: number): boolean{
-
-        // check if pawn type
-        if (pieceName.toLowerCase().indexOf("pawn") >= 0){
-
-            // get the previous pawn' square before moving diagonally
-            const pawnValidator = new PawnValidator(
-                { x: selectedPiece.x, y: selectedPiece.y, name: isWhite ? PieceNames.wPawn : PieceNames.bPawn, uniqueName: pieceName }
-                , this.board, this.reactState.moveHistory, false, this.bothKingsPosition, this.boardOrientationIsWhite);
-
-            const validCapture = pawnValidator.validEnPassantCapture();
-
-            if (validCapture){
-                // since our current moved pawn is in the same y square value as the opponent
-                // , (means the pawn is behind the opponent pawn) just subtract/add y direction
-                const opponentPiece = this.board[validCapture.x][validCapture.y - pawnValidator.captureYDirection];
-
-                if (opponentPiece && validCapture.x === newX && validCapture.y === newY){
-                    opponentPiece.destroy();
-
-                    this.pieceCoordinates[isWhite ? "black" : "white"] = 
-                        this.pieceCoordinates[isWhite ? "black" : "white"].filter(i => i.x !== newX || i.y !== newY);
-
-                    return true;
-                }
-            }
-
-        }
-
-        return false;
     }
 
     mSaveMoveHistory(isWhite: boolean, pieceName: string, selectedPiece: IMoveInfo, newX: number, newY: number){

@@ -49,9 +49,9 @@ after that, the web application should now be running.
 ~~2. getInitialMoves~~
 ~~3. possibleMovesIfKingInCheck~~
 ~~4. move~~
-6. mNormalCapture
-7. mEnPassantCapture
-8. mPawnPromote
+~~6. mNormalCapture~~
+~~7. mEnPassantCapture~~
+~~8. mPawnPromote~~
 ~~9. validateCheck~~
 ~~10. castle~~
 ~~11. isCheckMate~~
