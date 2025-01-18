@@ -1,0 +1,87 @@
+import { GameObjects } from "phaser";
+import KingValidator from "../pieces/kingValidator";
+import { PieceNames } from "../utilities/constants";
+import { IPhaserContextValues, IBothKingsPosition, IMoveInfo } from "../utilities/types";
+
+export default class KingCastled {
+    
+    private readonly board: (null | GameObjects.Sprite)[][]
+    private readonly reactState: IPhaserContextValues;
+    private readonly bothKingsPosition: IBothKingsPosition;
+    private readonly boardOrientationIsWhite: boolean;
+
+    constructor(
+        board: (null | GameObjects.Sprite)[][],
+        reactState: IPhaserContextValues,
+        bothKingsPosition: IBothKingsPosition,
+        boardOrientationIsWhite: boolean,
+    ) {
+        this.board = board;
+        this.reactState = reactState;
+        this.bothKingsPosition = bothKingsPosition;
+        this.boardOrientationIsWhite = boardOrientationIsWhite;
+    }
+
+    
+    public kingCastled(pieceName: string, selectedPiece: IMoveInfo, isWhite: boolean, newX: number, newY: number){
+        // check if king piece
+        if (pieceName.toLowerCase().indexOf("king") >= 0){
+            const kingValidator = new KingValidator(
+                {
+                    x: selectedPiece.x, y: selectedPiece.y
+                    , name: isWhite ? PieceNames.wKing : PieceNames.bKing
+                    , uniqueName: pieceName
+                }
+                    , this.board, this.reactState.moveHistory, false
+                    , this.bothKingsPosition
+                    , this.boardOrientationIsWhite
+            );
+
+            const validKingSide = kingValidator.validKingSideCastling(selectedPiece.x, selectedPiece.y);
+            const validQueenSide = kingValidator.validQueenSideCastling(selectedPiece.x, selectedPiece.y);
+
+            // check what castle side
+            // if the new king position is the same as a valid castle position
+            let isKingSideCastle: boolean | null = null;
+
+            if (validKingSide && validKingSide.x === newX && validKingSide.y === newY){
+                isKingSideCastle = true;
+            } else if (validQueenSide && validQueenSide.x === newX && validQueenSide.y === newY){
+                isKingSideCastle = false;
+            }
+
+            // if a castle move is actually performed
+            if (isKingSideCastle !== null)
+            {
+                const rookKingSideCastleInfo = {
+                    oldX: selectedPiece.x + (this.boardOrientationIsWhite ? 3 : -3),
+                    newX: (selectedPiece.x + (this.boardOrientationIsWhite ? 3 : -3)) + (this.boardOrientationIsWhite ? -2 : 2)
+                };
+
+                const rookQueenSideCastleInfo = {
+                    oldX: selectedPiece.x + (this.boardOrientationIsWhite ? -4 : 4),
+                    newX: (selectedPiece.x + (this.boardOrientationIsWhite ? -4 : 4)) + (this.boardOrientationIsWhite ? 3 : -3)
+                };
+
+                const rook = {
+                    oldX: (isKingSideCastle ? rookKingSideCastleInfo.oldX : rookQueenSideCastleInfo.oldX)
+                    , newX: (isKingSideCastle ? rookKingSideCastleInfo.newX : rookQueenSideCastleInfo.newX)
+                    , y: selectedPiece.y
+                };
+
+                const rookSprite = this.board[rook.oldX][rook.y];
+
+                // change coords
+                this.board[rook.oldX][rook.y] = null;
+                this.board[rook.newX][rook.y] = rookSprite;
+
+                return {
+                    rookSprite, rook
+                };
+
+            }
+        }
+
+        return null;
+    }
+}
