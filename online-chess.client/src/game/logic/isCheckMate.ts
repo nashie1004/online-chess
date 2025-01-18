@@ -1,0 +1,5 @@
+class IsCheckmate {
+    constructor(parameters) {
+        
+    }
+}
