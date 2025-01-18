@@ -93,8 +93,8 @@ export default pieces;
 
 
 export const baseKingState: IKingState = { 
-    white: { isCheckMate: false, isInCheck: false, checkedBy: [] }
-    , black: { isCheckMate: false, isInCheck: false, checkedBy: [] } 
+    white: { isCheckMate: false, isInCheck: false, checkedBy: [], isInStalemate: false }
+    , black: { isCheckMate: false, isInCheck: false, checkedBy: [],  isInStalemate: false } 
 };
 
 export enum GameType{

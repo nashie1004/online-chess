@@ -44,5 +44,19 @@ after that, the web application should now be running.
 8. show notation on chessboard 
 9. beautify UI
 
+### Refactor functions in MainGameScene.ts
+~~1. showPossibleMoves~~
+2. getInitialMoves
+3. possibleMovesIfKingInCheck
+~~4. move~~
+5. findPieceCoordinates
+6. mNormalCapture
+7. mEnPassantCapture
+8. mPawnPromote
+~~9. validateCheck~~
+10. getAllFriendOrOpponentPieces
+11. isCheckMate
+~~12. isStalemate~~
+
 ### UI Possible Templates
 1. https://www.chesssquire.com/chess-vs-computer.html
