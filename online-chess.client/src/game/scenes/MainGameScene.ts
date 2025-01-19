@@ -6,7 +6,7 @@ import capture from "../../assets/sounds/Capture.ogg"
 import select from "../../assets/sounds/Select.ogg"
 import check from "../../assets/sounds/Check.mp3"
 import pieces, { Options as gameOptions, PieceNames, pieceImages, baseKingState } from "../utilities/constants";
-import { IBothKingsPosition, IKingState, IMoveInfo, IPhaserContextValues, IPiecesCoordinates, PromoteTo } from "../utilities/types";
+import { IBothKingsPosition, IKingState, IMoveInfo, IPhaserContextValues, IPiece, IPiecesCoordinates, PromoteTo } from "../utilities/types";
 import { eventEmitter } from "../utilities/eventEmitter";
 import KingCastled from "../logic/kingCastled";
 import PawnPromote from "../logic/pawnPromote";
@@ -286,11 +286,13 @@ export class MainGameScene extends Scene{
         }
 
         // transfer data from phaser to react
-        //
-        eventEmitter.emit("setMovePiece", { x: newX, y: newY, uniqueName: uniquePieceName, name: pieceName });
+        const oldMove: IPiece = { x: this.selectedPiece.x, y: this.selectedPiece.y, uniqueName: uniquePieceName, name: pieceName };
+        const newMove: IPiece = { x: newX, y: newY, uniqueName: uniquePieceName, name: pieceName };
+
+        eventEmitter.emit("setMovePiece", { oldMove, newMove });
         eventEmitter.emit("setIsWhitesTurn", !isWhite)
-        eventEmitter.emit("setMoveHistory", this.reactState.moveHistory)
-        eventEmitter.emit("setCaptureHistory", this.reactState.captureHistory)
+        // eventEmitter.emit("setMoveHistory", this.reactState.moveHistory)
+        // eventEmitter.emit("setCaptureHistory", this.reactState.captureHistory)
 
         // display move to the user
         this.tweens.add({

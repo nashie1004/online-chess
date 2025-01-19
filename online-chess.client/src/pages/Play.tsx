@@ -2,11 +2,11 @@ import { useCallback, useEffect, useRef } from "react"
 import { Options as gameOptions } from "../game/utilities/constants";
 import { eventEmitter } from "../game/utilities/eventEmitter";
 import usePhaserContext from "../hooks/usePhaserContext";
-import { IMoveHistory , ICaptureHistory, IKingState, IInitialGameInfo, IChat, IPiece} from "../game/utilities/types";
+import { IKingState, IInitialGameInfo, IChat, IPiece } from "../game/utilities/types";
 import SidebarRight from "../components/play/SidebarRight";
 import { MainGameScene } from "../game/scenes/MainGameScene";
 import CaptureHistory from "../components/play/CaptureHistory";
-import { useLocation, useNavigate, useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import useGameContext from "../hooks/useGameContext";
 import useSignalRContext from "../hooks/useSignalRContext";
 
@@ -27,7 +27,7 @@ export default function Main(){
         , setKingsState
         , moveHistory
     } = usePhaserContext();
-    const { setMessages, setGameRoomKey } = useGameContext();
+    const { setMessages, setGameRoomKey, gameRoomKey } = useGameContext();
     const navigate = useNavigate();
     const signalRContext = useSignalRContext();
     const url = useParams();
@@ -57,15 +57,18 @@ export default function Main(){
 
         // connect react and phaser
         eventEmitter.on("setIsWhitesTurn", (data: boolean) => setIsWhitesTurn(data));
-        eventEmitter.on("setMoveHistory", (data: IMoveHistory) => setMoveHistory(data));
-        eventEmitter.on("setCaptureHistory", (data: ICaptureHistory) => setCaptureHistory(data));
+        // eventEmitter.on("setMoveHistory", (data: IMoveHistory) => setMoveHistory(data));
+        // eventEmitter.on("setCaptureHistory", (data: ICaptureHistory) => setCaptureHistory(data));
         eventEmitter.on("setKingsState", (data: IKingState) => setKingsState(data));
 
-        eventEmitter.on("setMovePiece", (data: IPiece) => {
-            console.log("event emitter move piece: ", data);
+        eventEmitter.on("setMovePiece", (move: any) => {
+            const oldMove = move.oldMove as IPiece;
+            const newMove = move.newMove as IPiece;
+            
+            signalRContext.invoke("MovePiece", gameRoomKey, oldMove, newMove);
         });
     }, []);
-    
+
     useEffect(() => {
         async function start() {
             await signalRContext.startConnection(_ => {});

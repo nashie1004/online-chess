@@ -6,6 +6,7 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
 {
     public class MovePieceRequest : BaseGameRequest, IRequest<Unit>
     {
-        public BaseMoveInfo MoveInfo { get; set; }
+        public BaseMoveInfo OldMove { get; set; }
+        public BaseMoveInfo NewMove { get; set; }
     }
 }

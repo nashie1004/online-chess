@@ -20,11 +20,6 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
 
         public async Task<Unit> Handle(MovePieceRequest request, CancellationToken cancellationToken)
         {
-            // TODO
-            // - save to move history
-            // - save to capture history
-            // - update timer
-            // - send new states to both players
             var room = _gameRoomService.GetOne(request.GameRoomKeyString);
 
             if (room == null)
@@ -33,9 +28,18 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
                 return Unit.Value;
             }
 
-            // DOING 1/19/2025 11:20AM
+            /*
+             * TODO
+             * - save to move history
+             * - save to capture history (if any)
+             * - update king state (check, checkmate, stalemate)
+             * - update timer
+             * - send to both players
+             */
+
+            //room.MoveHistory.Add(request.MoveInfo);
 
             return Unit.Value;
-        }
+         }
     }
 }

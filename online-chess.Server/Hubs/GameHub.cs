@@ -101,15 +101,17 @@ namespace online_chess.Server.Hubs
             });
         }
 
-        public async Task MovePiece(string gameRoomKey, BaseMoveInfo moveInfo)
+        public async Task MovePiece(string gameRoomKey, BaseMoveInfo oldMove, BaseMoveInfo newMove)
         {
             await _mediator.Send(new MovePieceRequest()
             {
                 UserConnectionId = Context.ConnectionId,
                 IdentityUserName = Context.User?.Identity?.Name,
                 GameRoomKeyString = gameRoomKey,
-                MoveInfo = moveInfo
+                OldMove = oldMove,
+                NewMove = newMove
             });
+        
         }
 
         public override async Task OnConnectedAsync()
