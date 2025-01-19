@@ -19,12 +19,16 @@ export class MainGameScene extends Scene{
      * Board: 800 x 800, Square: 100
      * unique name = piecename + x + y, example: 'wPawn-0-6'
      */
+
+    // internal state
     private readonly tileSize: number;
-    private readonly board: (null | GameObjects.Sprite)[][]
     private readonly previewBoard: (GameObjects.Sprite)[][] // has a visible property
     private readonly boardOrientationIsWhite: boolean;
-    private readonly pieceCoordinates: IPiecesCoordinates;
     private selectedPiece: IMoveInfo | null;
+    
+    // server state
+    private readonly board: (null | GameObjects.Sprite)[][]
+    private readonly pieceCoordinates: IPiecesCoordinates;
     private reactState: IPhaserContextValues;
     private bothKingsPosition: IBothKingsPosition;
 
@@ -60,7 +64,6 @@ export class MainGameScene extends Scene{
         this.pieceCoordinates = { white: [], black: [],};
     }
 
-    // Load assets
     preload(){
         this.load.image("bg", bg);
         this.load.image("previewMove", previewMove)
@@ -211,14 +214,6 @@ export class MainGameScene extends Scene{
         })
     }
 
-    /**
-     * - move piece to desired square
-     * - saves capture history
-     * - saves move history
-     * @param newX
-     * @param newY
-     * @returns if the move has capture
-     */
     move(newX: number, newY: number){
         let hasCapture = false;
 

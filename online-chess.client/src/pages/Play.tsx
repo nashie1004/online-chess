@@ -34,8 +34,9 @@ export default function Main(){
 
     const initPhaser = useCallback((initGameInfo: IInitialGameInfo) => {
         // init base state
-        setMessages(initGameInfo.messages);
+        // setMessages(initGameInfo.messages);
         setGameRoomKey(initGameInfo.gameRoomKey);
+        console.log(initGameInfo)
 
         // init phaser
         if (!gameRef.current){
@@ -45,8 +46,11 @@ export default function Main(){
                 height: gameOptions.height,
                 parent: 'game-container',
                 backgroundColor: '#028af8',
+                scale: {
+                    // mode: Phaser.Scale.RESIZE
+                },
                 scene: [
-                    new MainGameScene("mainChessboard", initGameInfo.isColorWhite)
+                    new MainGameScene("mainChessboard", true)
                 ],
             });
         }

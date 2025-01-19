@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.SignalR;
 using online_chess.Server.Hubs;
 using online_chess.Server.Service;
 using online_chess.Server.Enums;
+using online_chess.Server.Models.Play;
 
 namespace online_chess.Server.Features.Game.Commands.GameStart
 {
@@ -44,10 +45,6 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
             Start The Game
             - passed to Play.tsx > MainGameScene constructor
             */
-            var playerColor = (gameRoom.CreatedByUserId == request.IdentityUserName)
-                ? gameRoom.CreatedByUserColor
-                : (gameRoom.CreatedByUserColor == Color.White ? Color.Black : Color.White);
-
             gameRoom.GameStartedAt = DateTime.Now;
             gameRoom.ChatMessages = new List<Models.Play.Chat>()
             {
@@ -65,19 +62,34 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
                 }
             };
 
-            var initGameinfo = new
+            var baseGameInfo = new CurrentGameInfo()
             {
-                gameRoomKey,
-                isColorWhite = playerColor == Color.White,
-                moveHistory = gameRoom.MoveHistory,
-                captureHistory = gameRoom.CaptureHistory,
-                gameStartedAtDate = gameRoom.GameStartedAt,
-                messages = gameRoom.ChatMessages,
-                createdByUserInfo = gameRoom.CreatedByUserInfo,
-                joinedByUserInfo = gameRoom.JoinByUserInfo,
+                GameRoomKey = gameRoomKey,
+                LastMoveInfo = new BaseMoveInfo(),
+                LastCapture = null,
+                MoveCount = 0,
+                CreatedByUserInfo = new PlayerInfo(){
+                    UserName = gameRoom.CreatedByUserId
+                    , IsPlayersTurnToMove = gameRoom.CreatedByUserColor == Color.White
+                    , TimeLeft = new TimeSpan()
+                    , IsColorWhite = gameRoom.CreatedByUserColor == Color.White
+                    , KingInCheck = false
+                    , KingInCheckMate = false
+                    , KingInStaleMate = false
+                },
+                JoinedByUserInfo = new PlayerInfo(){
+                    UserName = gameRoom.JoinedByUserId
+                    , IsPlayersTurnToMove = gameRoom.CreatedByUserColor != Color.White
+                    , TimeLeft = new TimeSpan()
+                    , IsColorWhite = gameRoom.CreatedByUserColor != Color.White
+                    , KingInCheck = false
+                    , KingInCheckMate = false
+                    , KingInStaleMate = false
+                }
             };
 
-            await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync("InitializeGameInfo", initGameinfo);
+            await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync("InitializeGameInfo", baseGameInfo);
+            await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync("ReceiveMessages", gameRoom.ChatMessages);
 
             return Unit.Value;
         }

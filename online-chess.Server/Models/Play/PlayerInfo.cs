@@ -8,6 +8,6 @@
         public bool IsColorWhite { get; set; }
         public bool KingInCheck { get; set; }
         public bool KingInCheckMate { get; set; }
-        public bool KingInStalemate { get; set; }
+        public bool KingInStaleMate { get; set; }
     }
 }

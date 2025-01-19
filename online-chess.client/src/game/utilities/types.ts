@@ -171,16 +171,23 @@ export interface IGameHistoryList{
     data: IGameHistory[];
 }
 
+interface IPlayerInfo{
+    userName: string;
+    isPlayersTurnToMove: boolean;
+    timeLeft: any; // DATE TIME
+    isColorWhite: boolean;
+    kingInCheck: boolean;
+    kingInCheckMate: boolean;
+    kingInStaleMate: boolean;
+}
+
 export interface IInitialGameInfo{
     gameRoomKey: string;
-    isColorWhite: boolean;
-    moveHistory: IMoveHistory[];
-    captureHistory: ICaptureHistory[];
-    gameStartedAtDate: Date;
-    messages: IChat[];
-    // TODO
-    createdByUserInfo: any;
-    joinedByUserInfo: any;
+    lastMoveInfo: IPiece;
+    lastCapture: string | null;
+    moveCount: number;
+    createdByUserInfo: IPlayerInfo;
+    joinedByUserInfo: IPlayerInfo;
 }
 
 export interface IPiecesCoordinates{

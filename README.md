@@ -37,7 +37,7 @@ after that, the web application should now be running.
 1. play page game state (pieces coords, whose turn is it, timer)
 2. disconnect/leave logic
 4. refactor/clean react and signalr logic
-5. profile edit
+~~5. profile edit~~
 7. promotion picker
 8. show notation on chessboard 
 9. beautify UI
