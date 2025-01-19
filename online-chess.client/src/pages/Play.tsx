@@ -32,11 +32,8 @@ export default function Main(){
     const signalRContext = useSignalRContext();
     const url = useParams();
 
-    const initPhaser = useCallback((initGameInfo: IInitialGameInfo) => {
-        // init base state
-        // setMessages(initGameInfo.messages);
+    const initPhaser = (initGameInfo: IInitialGameInfo) => {
         setGameRoomKey(initGameInfo.gameRoomKey);
-        console.log(initGameInfo)
 
         // init phaser
         if (!gameRef.current){
@@ -64,10 +61,10 @@ export default function Main(){
         eventEmitter.on("setMovePiece", (move: any) => {
             const oldMove = move.oldMove as IPiece;
             const newMove = move.newMove as IPiece;
-            
-            signalRContext.invoke("MovePiece", gameRoomKey, oldMove, newMove);
+
+            signalRContext.invoke("MovePiece", initGameInfo.gameRoomKey, oldMove, newMove);
         });
-    }, []);
+    };
 
     useEffect(() => {
         async function start() {

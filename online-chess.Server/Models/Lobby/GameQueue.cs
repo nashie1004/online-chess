@@ -7,6 +7,7 @@ namespace online_chess.Server.Models.Lobby
     // For Lobby Page
     public class GameQueue
     {
+        public Guid GameKey { get; set; }
         public string CreatedByUserId { get; set; }
         public DateTime CreateDate { get; set; }
         public GameType GameType { get; set; }

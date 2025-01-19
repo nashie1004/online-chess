@@ -23,23 +23,23 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
         public async Task<Unit> Handle(GameStartRequest request, CancellationToken cancellationToken)
         {
             // not a valid guid
-            if (!Guid.TryParse(request.GameRoomKeyString, out Guid gameRoomKey))
+            var gameRoom = _gameRoomService.GetOne(request.GameRoomKeyString);
+
+            if (gameRoom == null)
             {
                 await _hubContext.Clients.Client(request.UserConnectionId).SendAsync("NotFound", true);
                 return Unit.Value;
             }
 
-            var gameRoom = _gameRoomService.GetOne(gameRoomKey);
-
             // TODO: if user disconnects re apply new connectid as 
             // it may cause null here _authenticatedUserService
             await _hubContext.Groups.AddToGroupAsync(
                 _authenticatedUserService.GetConnectionId(gameRoom.CreatedByUserId)
-                , gameRoomKey.ToString());
+                , request.GameRoomKeyString);
 
             await _hubContext.Groups.AddToGroupAsync(
                 _authenticatedUserService.GetConnectionId(gameRoom.JoinedByUserId)
-                , gameRoomKey.ToString());
+                , request.GameRoomKeyString);
 
             /*
             Start The Game
@@ -64,7 +64,7 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
 
             var baseGameInfo = new CurrentGameInfo()
             {
-                GameRoomKey = gameRoomKey,
+                GameRoomKey = gameRoom.GameKey,
                 LastMoveInfo = new BaseMoveInfo(),
                 LastCapture = null,
                 MoveCount = 0,

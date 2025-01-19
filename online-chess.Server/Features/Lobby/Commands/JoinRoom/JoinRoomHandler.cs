@@ -24,14 +24,14 @@ namespace online_chess.Server.Features.Lobby.Commands.JoinRoom
 
         public async Task<Unit> Handle(JoinRoomRequest request, CancellationToken cancellationToken)
         {
-            // 1. if not a valid guid, redirect to 404 not found
-            if (!Guid.TryParse(request.GameRoomKeyString, out Guid gameRoomKey))
+            // 1. if not a valid guid, redirect to 404 not found'
+            var room = _gameQueueService.GetOne(request.GameRoomKeyString);
+
+            if (room == null)
             {
                 await _hubContext.Clients.Client(request.UserConnectionId).SendAsync("NotFound", true);
                 return Unit.Value;
             }
-
-            var room = _gameQueueService.GetOne(gameRoomKey);
 
             // 2. if room is not found, redirect to 404 not found
             if (room == null)
@@ -47,7 +47,8 @@ namespace online_chess.Server.Features.Lobby.Commands.JoinRoom
             var newColor = room.CreatedByUserColor == Color.Random ? randomColor : room.CreatedByUserColor;
 
             // remove from game queue and add to game room
-            _gameRoomService.Add(gameRoomKey, new GameRoom(){
+            _gameRoomService.Add(room.GameKey, new GameRoom(){
+                GameKey = room.GameKey,
                 CreatedByUserId = room.CreatedByUserId,
                 CreateDate = room.CreateDate,
                 GameType = room.GameType,
@@ -57,16 +58,16 @@ namespace online_chess.Server.Features.Lobby.Commands.JoinRoom
                 //GameStartedAt = DateTime.Now,
             });
 
-            _gameQueueService.Remove(gameRoomKey);
+            _gameQueueService.Remove(room.GameKey);
 
             // redirect both users
             await _hubContext.Clients.Client(
                 _authenticatedUserService.GetConnectionId(room.CreatedByUserId)
-            ).SendAsync("MatchFound", gameRoomKey.ToString());
+            ).SendAsync("MatchFound", room.GameKey.ToString());
             
             await _hubContext.Clients.Client(
                 _authenticatedUserService.GetConnectionId(room.JoinedByUserId)
-            ).SendAsync("MatchFound", gameRoomKey.ToString());
+            ).SendAsync("MatchFound", room.GameKey.ToString());
 
             return Unit.Value;
         }

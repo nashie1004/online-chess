@@ -25,6 +25,7 @@ namespace online_chess.Server.Features.Lobby.Commands.AddToQueue
 
             _gameRoomService.Add(roomKey, new GameQueue()
             {
+                GameKey = roomKey,
                 CreatedByUserId = request.IdentityUserName,
                 CreateDate = DateTime.Now,
                 GameType = request.GameType,

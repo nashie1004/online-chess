@@ -33,6 +33,17 @@ namespace online_chess.Server.Service
             _gameRoomIds.TryGetValue(key, out GameQueue? value);
             return value;
         }
+        
+        public GameQueue? GetOne(string keyString)
+        {
+            if (!Guid.TryParse(keyString, out Guid key))
+            {
+                return null;
+            }
+
+            _gameRoomIds.TryGetValue(key, out GameQueue? value);
+            return value;
+        }
 
         public ConcurrentDictionary<Guid, GameQueue> GetDictionary()
         {
