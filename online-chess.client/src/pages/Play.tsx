@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef } from "react"
 import { Options as gameOptions } from "../game/utilities/constants";
 import { eventEmitter } from "../game/utilities/eventEmitter";
 import usePhaserContext from "../hooks/usePhaserContext";
-import { IMoveHistory , ICaptureHistory, IKingState, IInitialGameInfo, IChat} from "../game/utilities/types";
+import { IMoveHistory , ICaptureHistory, IKingState, IInitialGameInfo, IChat, IPiece} from "../game/utilities/types";
 import SidebarRight from "../components/play/SidebarRight";
 import { MainGameScene } from "../game/scenes/MainGameScene";
 import CaptureHistory from "../components/play/CaptureHistory";
@@ -60,6 +60,10 @@ export default function Main(){
         eventEmitter.on("setMoveHistory", (data: IMoveHistory) => setMoveHistory(data));
         eventEmitter.on("setCaptureHistory", (data: ICaptureHistory) => setCaptureHistory(data));
         eventEmitter.on("setKingsState", (data: IKingState) => setKingsState(data));
+
+        eventEmitter.on("setMovePiece", (data: IPiece) => {
+            console.log("event emitter move piece: ", data);
+        });
     }, []);
     
     useEffect(() => {

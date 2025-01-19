@@ -223,8 +223,9 @@ export class MainGameScene extends Scene{
         const sprite = this.board[this.selectedPiece.x][this.selectedPiece.y];
         if (!sprite) return false;
 
-        const isWhite = sprite?.name[0] === "w"
-        const pieceName = sprite?.name ?? "";
+        const isWhite = sprite.name[0] === "w"
+        const uniquePieceName = sprite.name;
+        const pieceName = sprite.name.split("-")[0] as PieceNames;
         this.reactState.isWhitesTurn = !isWhite;
 
         // old coordinate
@@ -237,7 +238,7 @@ export class MainGameScene extends Scene{
         );
 
         if (pieceCapture.normalCapture(newX, newY, isWhite)) hasCapture = true;
-        if (pieceCapture.enPassantCapture(pieceName, this.selectedPiece, isWhite, newX, newY)) hasCapture = true;
+        if (pieceCapture.enPassantCapture(uniquePieceName, this.selectedPiece, isWhite, newX, newY)) hasCapture = true;
 
         // new coordinate
         this.board[newX][newY] = sprite;
@@ -254,12 +255,12 @@ export class MainGameScene extends Scene{
         // some special logic
         (new PawnPromote(
             this.boardOrientationIsWhite, this.reactState
-        )).pawnPromote(pieceName, newX, newY, isWhite, sprite);
+        )).pawnPromote(uniquePieceName, newX, newY, isWhite, sprite);
 
         const kingCastled = (new KingCastled(
             this.board, this.reactState
             , this.bothKingsPosition, this.boardOrientationIsWhite
-        )).kingCastled(pieceName, this.selectedPiece, isWhite, newX, newY);
+        )).kingCastled(uniquePieceName, this.selectedPiece, isWhite, newX, newY);
 
         if (kingCastled){
             // display rook move to the user
@@ -274,8 +275,8 @@ export class MainGameScene extends Scene{
 
         // save to move history
         this.reactState.moveHistory[isWhite ? "white" : "black"].push({
-            old: { pieceName, x: this.selectedPiece.x, y: this.selectedPiece.y },
-            new: { pieceName, x: newX, y: newY },
+            old: { pieceName: uniquePieceName, x: this.selectedPiece.x, y: this.selectedPiece.y },
+            new: { pieceName: uniquePieceName, x: newX, y: newY },
         });
 
         // if the move is a king, update private king pos state - this is used by the this.validateCheckOrCheckMateOrStalemate() function
@@ -285,6 +286,8 @@ export class MainGameScene extends Scene{
         }
 
         // transfer data from phaser to react
+        //
+        eventEmitter.emit("setMovePiece", { x: newX, y: newY, uniqueName: uniquePieceName, name: pieceName });
         eventEmitter.emit("setIsWhitesTurn", !isWhite)
         eventEmitter.emit("setMoveHistory", this.reactState.moveHistory)
         eventEmitter.emit("setCaptureHistory", this.reactState.captureHistory)

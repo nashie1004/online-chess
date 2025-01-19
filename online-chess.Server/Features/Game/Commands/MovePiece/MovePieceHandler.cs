@@ -20,18 +20,20 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
 
         public async Task<Unit> Handle(MovePieceRequest request, CancellationToken cancellationToken)
         {
-            if (!Guid.TryParse(request.GameRoomKeyString, out Guid gameRoomKey))
-            {
-                await _hubContext.Clients.Client(request.UserConnectionId).SendAsync("NotFound", true);
-                return Unit.Value;
-            }
-
             // TODO
             // - save to move history
             // - save to capture history
             // - update timer
             // - send new states to both players
-            var room = _gameRoomService.GetOne(gameRoomKey);
+            var room = _gameRoomService.GetOne(request.GameRoomKeyString);
+
+            if (room == null)
+            {
+                await _hubContext.Clients.Client(request.UserConnectionId).SendAsync("NotFound", true);
+                return Unit.Value;
+            }
+
+            // DOING 1/19/2025 11:20AM
 
             return Unit.Value;
         }
