@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.SignalR;
 using online_chess.Server.Hubs;
+using online_chess.Server.Models.Play;
 using online_chess.Server.Service;
 
 namespace online_chess.Server.Features.Game.Commands.MovePiece
@@ -24,7 +25,7 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
 
             if (room == null)
             {
-                await _hubContext.Clients.Client(request.UserConnectionId).SendAsync("NotFound", true);
+                //await _hubContext.Clients.Client(request.UserConnectionId).SendAsync("NotFound", true);
                 return Unit.Value;
             }
 
@@ -37,7 +38,33 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
              * - send to both players
              */
 
-            //room.MoveHistory.Add(request.MoveInfo);
+            // 1. set color
+            bool pieceMoveIsWhite = true;
+
+            if (room.CreatedByUserId == request.IdentityUserName){
+                if (room.CreatedByUserColor == Enums.Color.Black){
+                    pieceMoveIsWhite = false;
+                }
+            } else {
+                if (room.CreatedByUserColor == Enums.Color.Black){
+                    pieceMoveIsWhite = true;
+                }
+            }
+
+            // 2. add to move history
+            if (pieceMoveIsWhite){
+                room.MoveHistory.White.Add(new Move(){
+                    Old = request.OldMove,
+                    New = request.NewMove
+                });
+            } else {
+                room.MoveHistory.Black.Add(new Move(){
+                    Old = request.OldMove,
+                    New = request.NewMove
+                });
+            }
+
+            await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync("APieceHasMoved", "TODO piece has moved broadcast");
 
             return Unit.Value;
          }

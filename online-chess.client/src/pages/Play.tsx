@@ -32,7 +32,7 @@ export default function Main(){
     const signalRContext = useSignalRContext();
     const url = useParams();
 
-    const initPhaser = (initGameInfo: IInitialGameInfo) => {
+    const initPhaser = useCallback((initGameInfo: IInitialGameInfo) => {
         setGameRoomKey(initGameInfo.gameRoomKey);
 
         // init phaser
@@ -59,12 +59,9 @@ export default function Main(){
         eventEmitter.on("setKingsState", (data: IKingState) => setKingsState(data));
 
         eventEmitter.on("setMovePiece", (move: any) => {
-            const oldMove = move.oldMove as IPiece;
-            const newMove = move.newMove as IPiece;
-
-            signalRContext.invoke("MovePiece", initGameInfo.gameRoomKey, oldMove, newMove);
+            signalRContext.invoke("MovePiece", initGameInfo.gameRoomKey, move.oldMove, move.newMove);
         });
-    };
+    }, []);
 
     useEffect(() => {
         async function start() {
@@ -72,7 +69,13 @@ export default function Main(){
 
             await signalRContext.addHandler("NotFound", _ => navigate("/notFound"));
             await signalRContext.addHandler("InitializeGameInfo", initPhaser);
+
             await signalRContext.addHandler("ReceiveMessages", (messages: IChat[]) => setMessages(messages));
+            await signalRContext.addHandler("APieceHasMoved", (data) => {
+                // TODO
+                console.log("APieceHasMoved: ", data)
+                // setMoveHistory(prev => [...prev]);
+            });
 
             await signalRContext.invoke("GameStart", url.gameRoomId);
         }

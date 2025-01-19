@@ -2,8 +2,8 @@
 {
     public class MoveHistory
     {
-        public Move White { get; set; }
-        public Move Black { get; set; }
+        public List<Move> White { get; set; } = new List<Move>();
+        public List<Move> Black { get; set; } = new List<Move>();
     }
 
     public class Move
