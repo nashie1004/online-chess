@@ -5,9 +5,26 @@ Custom CSS
   padding: 0;
   margin: 0;
   box-sizing: border-box;
+  /* font-family: "Roboto"; */
+  /* font-family: 'Space Grotesk', sans-serif; */
+  font-family: 'Fira Sans', sans-serif;
+
+  /* font-size: 1.1rem !important; */
 }  
 #root{
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+}
+nav{
+  background-color: #121212 !important;
+  /* height: 120px; */
+}
+body{
+  background-color: #333333 !important;
+}
+button{
+  background-color: #36b66b !important;
+  border: 1px solid rgb(187, 111, 111, 0) !important;
+  color: #F5F5F5 !important;
 }

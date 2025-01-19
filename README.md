@@ -34,7 +34,7 @@ after that, the web application should now be running.
 - https://www.piskelapp.com/
 
 ## Todo
-1. play page game state (pieces coords, whose turn is it, timer)
+(as of 1/19/2025) 1. play page game state (pieces coords, whose turn is it, timer)
 2. disconnect/leave logic
 4. refactor/clean react and signalr logic
 ~~5. profile edit~~
@@ -48,3 +48,4 @@ after that, the web application should now be running.
 
 ### UI Possible Templates
 1. https://www.chesssquire.com/chess-vs-computer.html
+2. https://play.chessclub.com/
