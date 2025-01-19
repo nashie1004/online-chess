@@ -65,8 +65,8 @@ export interface IPhaserContextValues{
 
 export interface IPhaserContext extends IPhaserContextValues{
     setIsWhitesTurn: (val: boolean) => void;
-    setMoveHistory: (val: IMoveHistory) => void;
-    setCaptureHistory: (val: ICaptureHistory) => void;
+    setMoveHistory: React.Dispatch<React.SetStateAction<IMoveHistory>>;
+    setCaptureHistory: React.Dispatch<React.SetStateAction<ICaptureHistory>>;
     setPromoteTo: (val: PromoteTo) => void;
     setIsColorWhite: (val: boolean) => void;
     setIsWhitesOrientation: (val: boolean) => void;

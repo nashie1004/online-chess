@@ -39,32 +39,31 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
              */
 
             // 1. set color
-            bool pieceMoveIsWhite = true;
+            bool isRoomCreator = room.CreatedByUserId == request.IdentityUserName;
 
-            if (room.CreatedByUserId == request.IdentityUserName){
-                if (room.CreatedByUserColor == Enums.Color.Black){
-                    pieceMoveIsWhite = false;
-                }
-            } else {
-                if (room.CreatedByUserColor == Enums.Color.Black){
-                    pieceMoveIsWhite = true;
-                }
-            }
+            // Assign pieceMoveIsWhite based on the room creator's color
+            bool pieceMoveIsWhite = isRoomCreator 
+                ? room.CreatedByUserColor == Enums.Color.White 
+                : room.CreatedByUserColor == Enums.Color.Black;
 
             // 2. add to move history
+            Move moveInfo = new Move(){
+                Old = request.OldMove,
+                New = request.NewMove
+            };
+
             if (pieceMoveIsWhite){
-                room.MoveHistory.White.Add(new Move(){
-                    Old = request.OldMove,
-                    New = request.NewMove
-                });
+                room.MoveHistory.White.Add(moveInfo);
             } else {
-                room.MoveHistory.Black.Add(new Move(){
-                    Old = request.OldMove,
-                    New = request.NewMove
-                });
+                room.MoveHistory.Black.Add(moveInfo);
             }
 
-            await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync("APieceHasMoved", "TODO piece has moved broadcast");
+            var retVal = new{
+                moveInfo
+                , moveIsWhite = pieceMoveIsWhite
+            };
+
+            await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync("APieceHasMoved", retVal);
 
             return Unit.Value;
          }

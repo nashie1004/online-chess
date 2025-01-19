@@ -2,21 +2,14 @@ import { useCallback, useEffect, useRef } from "react"
 import { Options as gameOptions } from "../game/utilities/constants";
 import { eventEmitter } from "../game/utilities/eventEmitter";
 import usePhaserContext from "../hooks/usePhaserContext";
-import { IKingState, IInitialGameInfo, IChat, IPiece } from "../game/utilities/types";
+import { IKingState, IInitialGameInfo, IChat, IPiece, IMove } from "../game/utilities/types";
 import SidebarRight from "../components/play/SidebarRight";
 import { MainGameScene } from "../game/scenes/MainGameScene";
 import CaptureHistory from "../components/play/CaptureHistory";
 import { useNavigate, useParams } from "react-router";
 import useGameContext from "../hooks/useGameContext";
 import useSignalRContext from "../hooks/useSignalRContext";
-
-/*
- setMessages(prev => ([...prev, { 
-    createDate: new Date(moment().format()) 
-    , createdByUserId: 999
-    , message: data
-}]));
-*/
+import useAuthContext from "../hooks/useAuthContext";
 
 export default function Main(){
     const gameRef = useRef<Phaser.Game | null>();
@@ -31,9 +24,13 @@ export default function Main(){
     const navigate = useNavigate();
     const signalRContext = useSignalRContext();
     const url = useParams();
+    const { user } = useAuthContext();
 
     const initPhaser = useCallback((initGameInfo: IInitialGameInfo) => {
         setGameRoomKey(initGameInfo.gameRoomKey);
+        const playerIsWhite = (initGameInfo.createdByUserInfo.userName === user?.userName) 
+            ? initGameInfo.createdByUserInfo.isColorWhite
+            : initGameInfo.joinedByUserInfo.isColorWhite;
 
         // init phaser
         if (!gameRef.current){
@@ -47,7 +44,7 @@ export default function Main(){
                     // mode: Phaser.Scale.RESIZE
                 },
                 scene: [
-                    new MainGameScene("mainChessboard", true)
+                    new MainGameScene("mainChessboard", playerIsWhite)
                 ],
             });
         }
@@ -72,9 +69,17 @@ export default function Main(){
 
             await signalRContext.addHandler("ReceiveMessages", (messages: IChat[]) => setMessages(messages));
             await signalRContext.addHandler("APieceHasMoved", (data) => {
-                // TODO
-                console.log("APieceHasMoved: ", data)
-                // setMoveHistory(prev => [...prev]);
+                const moveInfo = data.moveInfo as IMove[];
+                const moveIsWhite = data.moveIsWhite as boolean;
+
+                console.log("piece moved: ", data)
+
+                setMoveHistory(prev => {
+                    if (moveIsWhite){
+                        return ({ ...prev, white: [...prev.white, moveInfo] })
+                    }
+                    return ({ ...prev, black: [...prev.black, moveInfo] })
+                })
             });
 
             await signalRContext.invoke("GameStart", url.gameRoomId);
