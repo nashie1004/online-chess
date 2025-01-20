@@ -8,7 +8,7 @@ export default function NavigationBar() {
   const {logout, user} = useAuthContext();
   
   return (
-    <Navbar bg="dark" data-bs-theme="dark" collapseOnSelect expand="lg">
+    <Navbar bg="dark" data-bs-theme="dark" collapseOnSelect expand="lg" id="navbar">
       <Container>
         <Navbar.Brand>ONLINE-CHESS.COM</Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />

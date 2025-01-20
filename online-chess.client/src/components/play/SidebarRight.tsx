@@ -8,8 +8,8 @@ export default function SidebarRight() {
     const { isColorWhite, promoteTo, setPromoteTo } = usePhaserContext();
 
   return (
-    <div className=''>
-      <h5 className='border-bottom border-secondary pb-2 my-2'>Game Information</h5>
+    <div className='' id="sidebarRight">
+      <h1 className=' pb-2 my-2'>Game Information</h1>
       <GameOutcome />
       <PlayerInfo />
       <h5 className='border-bottom border-secondary pb-2 my-2'>Move History</h5>

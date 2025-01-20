@@ -1,30 +1,138 @@
 /*
 Custom CSS
 */
-*{
+* {
   padding: 0;
   margin: 0;
   box-sizing: border-box;
-  /* font-family: "Roboto"; */
-  /* font-family: 'Space Grotesk', sans-serif; */
   font-family: 'Fira Sans', sans-serif;
+}
 
-  /* font-size: 1.1rem !important; */
-}  
-#root{
+#root {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
-nav{
-  background-color: #121212 !important;
-  /* height: 120px; */
+
+#navbar {
+  background-color: #222222  !important;
+  font-size: 1.25rem;
+  min-height: 60px;
 }
-body{
-  background-color: #333333 !important;
+
+body {
+  background-color: #333333  !important;
 }
-button{
-  background-color: #36b66b !important;
-  border: 1px solid rgb(187, 111, 111, 0) !important;
-  color: #F5F5F5 !important;
+
+button {
+  background-color: #66c2a3  !important; /* Green button */
+  border: 1px solid transparent; /* Ensuring no border color */
+  color: #F5F5F5  !important;
+  padding: 0.75rem 1rem;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #4e9f7e  !important; /* Button hover color */
+}
+
+#sidebarRight {
+  background-color: #222222  !important; /* Dark background for sidebar */
+  padding: 1rem;
+}
+
+h1, h3, h5 {
+  color: #eaeaea  !important; /* Light gray for headings */
+}
+
+p {
+  color: #b0b0b0  !important; /* Muted gray for paragraphs */
+  line-height: 1.5;
+}
+
+input {
+  background-color: #444444  !important; /* Darker background for input */
+  border: 1px solid #4a4a4a  !important; /* Muted border color */
+  color: #eaeaea  !important; /* Light text color */
+  padding: 0.5rem;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+label {
+  color: #eaeaea  !important; /* Light gray for label text */
+  font-weight: 600;
+}
+
+select {
+  background-color: #444444  !important; /* Dark background for select */
+  border: 1px solid #4a4a4a  !important; /* Muted border color */
+  color: #eaeaea  !important; /* Light text color */
+  padding: 0.5rem;
+  border-radius: 5px;
+  font-size: 1rem;
+  appearance: none;
+  transition: border-color 0.3s ease;
+}
+
+select:focus {
+  border-color: #66c2a3  !important; /* Green focus color */
+  outline: none;
+}
+
+/* Table styling */
+table {
+  width: 100%;
+  border-collapse: collapse  !important; /* Removes space between cells */
+  background-color: #222222  !important; /* Dark background for the table */
+  color: #eaeaea  !important; /* Light gray text color */
+}
+
+th {
+  background-color: #444444  !important; /* Darker gray for table header */
+  color: #eaeaea  !important; /* Light gray text for headers */
+  padding: 0.75rem;
+  text-align: left;
+  font-weight: bold;
+  border-bottom: 2px solid #4a4a4a  !important; /* Muted border between header and rows */
+}
+
+td {
+  background-color: #333333  !important; /* Slightly lighter background for rows */
+  color: #eaeaea  !important; /* Light gray text for cells */
+  padding: 0.75rem;
+  border-bottom: 1px solid #4a4a4a  !important; /* Muted border between rows */
+  text-align: left;
+}
+
+tr:hover {
+  background-color: #4e8dff  !important; /* Blue hover effect on rows */
+  color: #333333  !important; /* Darker text color on hover for contrast */
+}
+
+tr:nth-child(even) {
+  background-color: #444444  !important; /* Darker rows for alternating pattern */
+}
+
+td:focus {
+  outline: 2px solid #66c2a3  !important; /* Green outline for focused cells */
+}
+
+/* Additional aesthetic adjustments */
+/* a {
+  color: #4e8dff  !important; 
+  text-decoration: none;
+  transition: color 0.3s ease;
+} */
+
+a:hover {
+  color: #66c2a3  !important; /* Green hover effect */
+  text-decoration: underline;
+}
+
+input:focus, select:focus {
+  border-color: #66c2a3 !important; /* Green border when focused */
 }

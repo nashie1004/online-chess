@@ -38,7 +38,7 @@ export default function Home() {
   return (
     <div className="col">
       <h3 className="mt-5">Leaderboard</h3>
-      <Table responsive striped>
+      <Table responsive >
       <thead>
         <tr>
           <th className="col-1">#</th>
