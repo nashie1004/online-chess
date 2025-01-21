@@ -10,7 +10,9 @@ export default function NavigationBar() {
   return (
     <Navbar bg="dark" data-bs-theme="dark" collapseOnSelect expand="lg" id="navbar">
       <Container>
-        <Navbar.Brand>ONLINE-CHESS.COM</Navbar.Brand>
+        <Navbar.Brand id="page-title">
+          <i className="bi bi-app-indicator" style={{color: "#FFFFFF"}}></i> ONLINE-CHESS.COM
+        </Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav className='me-auto'>
@@ -44,7 +46,9 @@ export default function NavigationBar() {
                 )
               })
             }
-            <NavLink to="https://github.com/nashie1004/online-chess" style={{  }} className="nav-link">Source Code</NavLink>
+            <NavLink to="https://github.com/nashie1004/online-chess" style={{  }} className="nav-link">
+              <i className="bi bi-github mr-2" style={{  }}></i> Source Code
+            </NavLink>
           </Nav>
           <Nav className='hstack gap-2'>
             {

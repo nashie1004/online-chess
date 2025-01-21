@@ -59,45 +59,49 @@ export default function Login() {
             onSubmit={handleSubmit(submitForm)}
             className="w-50 mt-5"
           >
-            <h3>Sign in to your account</h3>
-            <NavLink to="/register" className="nav-link text-primary">Or Register</NavLink>
-            <Form.Group className="my-3">
-              <Form.Label>Username</Form.Label>
-              <Form.Control 
-                {...register("userName")}
-                isValid={!errors.userName}
-                isInvalid={errors.userName ? true : false}
-                type="text" 
-                placeholder="Enter Username" />
-              <Form.Control.Feedback type="invalid">
-                {errors.userName ? errors.userName.message : ""}
-              </Form.Control.Feedback>
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>Password</Form.Label>
-              <Form.Control 
-                {...register("password")}
-                isValid={!errors.password}
-                isInvalid={errors.password ? true : false}
-                type="password" 
-                placeholder="Enter Password" />
-              <Form.Control.Feedback type="invalid">
-                {errors.password ? errors.password.message : ""}
-              </Form.Control.Feedback>
-            </Form.Group>
-            <div className="d-flex justify-content-end">
-              <Button 
-                disabled={loading}
-                className="w-50" 
-                type="submit">
-                {
-                  loading ? <>
-                    <Spinner 
-                      size="sm"
-                      animation="border" variant="dark" /> 
-                  </> : <>Submit</>
-                }
-              </Button>
+            <div className="form-header">
+              <h5 className="">SIGN IN TO YOUR ACCOUNT</h5>
+            </div>
+            <div className="form-body">
+              <Form.Group className="my-3">
+                <Form.Label>Username</Form.Label>
+                <Form.Control 
+                  {...register("userName")}
+                  isValid={!errors.userName}
+                  isInvalid={errors.userName ? true : false}
+                  type="text" 
+                  placeholder="Enter Username" />
+                <Form.Control.Feedback type="invalid">
+                  {errors.userName ? errors.userName.message : ""}
+                </Form.Control.Feedback>
+              </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Label>Password</Form.Label>
+                <Form.Control 
+                  {...register("password")}
+                  isValid={!errors.password}
+                  isInvalid={errors.password ? true : false}
+                  type="password" 
+                  placeholder="Enter Password" />
+                <Form.Control.Feedback type="invalid">
+                  {errors.password ? errors.password.message : ""}
+                </Form.Control.Feedback>
+              </Form.Group>
+              <NavLink to="/register" className="nav-link">Or Register</NavLink>
+              <div className="d-flex justify-content-end">
+                <Button 
+                  disabled={loading}
+                  className="w-50" 
+                  type="submit">
+                  {
+                    loading ? <>
+                      <Spinner 
+                        size="sm"
+                        animation="border" variant="dark" /> 
+                    </> : <>Submit</>
+                  }
+                </Button>
+              </div>
             </div>
           </Form>
       </div>

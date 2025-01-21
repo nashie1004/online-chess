@@ -66,20 +66,6 @@ p {
   line-height: 1.5;
 }
 
-input {
-  background-color: #444444  !important; /* Darker background for input */
-  border: 1px solid #4a4a4a  !important; /* Muted border color */
-  color: #eaeaea  !important; /* Light text color */
-  padding: 0.5rem;
-  border-radius: 5px;
-  font-size: 1rem;
-}
-
-label {
-  color: #eaeaea  !important; /* Light gray for label text */
-  font-weight: 600;
-}
-
 select {
   background-color: #444444  !important; /* Dark background for select */
   border: 1px solid #4a4a4a  !important; /* Muted border color */
@@ -114,10 +100,10 @@ table {
   padding-left: 2rem;
   margin-bottom: .8rem;
 }
+
 .table-title > *{
   margin-top: .5rem !important;
 }
-
 
 th {
   background-color: #2C293A  !important; /* Darker gray for table header */
@@ -139,34 +125,11 @@ td {
   border-left: 1px solid #4C4757  !important; /* Muted border between header and rows */
 }
 
-tr:hover {
-  background-color: #4e8dff  !important; /* Blue hover effect on rows */
-  color: #333333  !important; /* Darker text color on hover for contrast */
-}
-
-tr:nth-child(even) {
-  background-color: #444444  !important; /* Darker rows for alternating pattern */
-}
-
-td:focus {
-  outline: 2px solid #66c2a3  !important; /* Green outline for focused cells */
-}
-
-/* Additional aesthetic adjustments */
-/* a {
-  color: #4e8dff  !important; 
-  text-decoration: none;
-  transition: color 0.3s ease;
-} */
-
 a:hover {
-  color: #66c2a3  !important; /* Green hover effect */
+  color: #478872  !important; /* Green hover effect */
   text-decoration: underline;
 }
 
-input:focus, select:focus {
-  border-color: #66c2a3 !important; /* Green border when focused */
-}
 
 .pagination-select{
   display: flex;
@@ -201,3 +164,106 @@ input:focus, select:focus {
   background-color: #5B5764  !important; 
   cursor: pointer;
 }
+#page-title{
+  font-weight: 500;
+  font-size: 1.5rem;
+}
+
+/* Form */
+
+.form-header{
+  background-color: #3D3849 !important;
+  /* padding: .5rem; */
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  padding: 1.4rem;  
+  padding-bottom: .4rem;
+  /* margin-bottom: .8rem; */
+}
+
+.form-body {
+  background-color: #2C293A !important; /* Dark background */
+  padding: 20px;
+}
+.form-body a{
+  color: #FFFEFF !important; /* Secondary gray for labels */
+}
+
+label {
+  font-size: 1rem;
+  color: #FFFEFF !important; /* Secondary gray for labels */
+  margin-bottom: 8px;
+  display: block;
+}
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="number"],
+textarea,
+select {
+  background-color: #202030 !important; /* Slightly lighter dark background */
+  color: #FFFFFF !important; /* White text */
+  border: 1px solid #4C4757 !important; /* Light border color */
+  padding: 12px 16px;
+  font-size: 1rem;
+  border-radius: 4px;
+  width: 100%;
+  margin-bottom: 16px;
+  transition: all 0.3s ease-in-out;
+}
+
+/* Input Focus State */
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="email"]:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: #B36D7C !important; /* Soft red for focus */
+  box-shadow: 0 0 5px rgba(179, 109, 124, 0.5) !important; /* Soft red glow on focus */
+}
+select {
+  background-color: #2C293A !important; /* Slightly lighter background */
+  color: #FFFFFF !important; /* White text */
+  border: 1px solid #4C4757 !important; /* Light border */
+  padding: 12px 16px;
+  font-size: 1rem;
+  border-radius: 4px;
+  width: 100%;
+  margin-bottom: 16px;
+  appearance: none; /* Remove default dropdown arrow */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+/* Custom dropdown arrow */
+select::-ms-expand {
+  display: none; /* Hide the default dropdown arrow in IE */
+}
+
+select:focus {
+  outline: none;
+  border-color: #B36D7C !important; /* Red border on focus */
+  box-shadow: 0 0 5px rgba(179, 109, 124, 0.5) !important; /* Soft red glow */
+}
+button {
+  background-color: #B36D7C !important; /* Soft muted red for the button */
+  color: #FFFFFF !important; /* White text */
+  /* border: none;#2C293A */
+  padding: 12px 20px;
+  font-size: 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+button:hover {
+  background-color: #9A5F6B !important; /* Darker red on hover */
+}
+
+button:focus {
+  outline: none;
+  box-shadow: 0 0 5px rgba(179, 109, 124, 0.7) !important; /* Red glow when focused */
+}
+
