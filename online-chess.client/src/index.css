@@ -141,7 +141,7 @@ a:hover {
 }
 .pagination-select > li > i{
   color: #FFFFFF;
-  font-size: 2rem;
+  font-size: 1.6rem;
 }
 .skip-end, .skip-start, .page-no{
   background-color: #202030  !important; 
@@ -149,12 +149,12 @@ a:hover {
   display: flex;
   justify-self: center;
   align-items: center;
-  padding: .7rem 1.2rem;
+  padding: .7rem .8rem;
   color: #FFFFFF;
 }
 .page-no{
   font-size: 1rem;
-  background-color: #3D3849 !important;
+  background-color: #3D3849  !important; /* Slightly lighter background for rows */
   padding: .7rem 1.2rem;
 }
 .skip-start, .skip-end{

@@ -62,19 +62,26 @@ export default function ProfileTable(){
         })}
       </tbody>
       </Table>
-      <Pagination>
-        <Pagination.Prev
-          disabled={pageNo === 1}
-          onClick={() => {
-            setPageNo(prev => Math.max(prev - 1, 1));
-          }}
-         />
-        <Pagination.Item disabled>{pageNo}</Pagination.Item>
-        <Pagination.Next
-          onClick={() => {
-            setPageNo(prev => prev + 1);
-          }}
-        />
-      </Pagination>
+      <div>
+        <ul className="pagination-select">
+          <li
+            className="skip-end"
+            onClick={() => {
+              setPageNo(prev => Math.max(prev - 1, 1));
+            }}
+          >
+            <i className="bi bi-skip-start-fill" ></i>
+          </li>
+          <li className="page-no">{pageNo}</li>
+          <li
+            className="skip-start"
+            onClick={() => {
+              setPageNo(prev => prev + 1);
+            }}
+          >
+            <i className="bi bi-skip-end-fill" ></i>
+          </li>
+        </ul>
+      </div>
     </>
 }

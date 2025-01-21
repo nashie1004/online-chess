@@ -60,24 +60,31 @@ export default function LobbyTable({
                 })}
             </tbody>
         </Table>
-        <Pagination>
-            <Pagination.Prev 
-                disabled={pageNo === 1}
-                onClick={() => {
-                    if (pageNo > 1){
+        <div>
+            <ul className="pagination-select">
+                <li
+                    className="skip-end"
+                    onClick={() => {
+                        if (pageNo > 1){
+                            setGameRoomList(prev => ({ ...prev, isLoading: true }));
+                        }
+                        setPageNo(prev => Math.max(prev - 1, 1));
+                    }}
+                >
+                    <i className="bi bi-skip-start-fill" ></i>
+                </li>
+                <li className="page-no">{pageNo}</li>
+                <li
+                    className="skip-start"
+                    onClick={() => {
                         setGameRoomList(prev => ({ ...prev, isLoading: true }));
-                    }
-                    setPageNo(prev => Math.max(prev - 1, 1));
-                }}
-            />
-            <Pagination.Item disabled>{pageNo}</Pagination.Item>
-            <Pagination.Next 
-                onClick={() => {
-                    setGameRoomList(prev => ({ ...prev, isLoading: true }));
-                    setPageNo(prev => prev + 1);
-                }}
-            />
-        </Pagination>
+                        setPageNo(prev => prev + 1);
+                    }}
+                >
+                    <i className="bi bi-skip-end-fill" ></i>
+                </li>
+                </ul>
+            </div>
         
         <Modal
             size="lg"
