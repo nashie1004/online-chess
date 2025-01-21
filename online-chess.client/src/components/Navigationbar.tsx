@@ -44,7 +44,7 @@ export default function NavigationBar() {
                 )
               })
             }
-            <NavLink to="https://github.com/nashie1004/online-chess" className="text-warning nav-link">Source Code</NavLink>
+            <NavLink to="https://github.com/nashie1004/online-chess" style={{  }} className="nav-link">Source Code</NavLink>
           </Nav>
           <Nav className='hstack gap-2'>
             {

@@ -1,5 +1,16 @@
 /*
 Custom CSS
+
+bg: #312E3F
+dark color: #202030
+slightly ligher bg: #2C293A
+text color white?: #FFFFFF
+text color gray secondary: #8F8F9A
+light dark color: #3D3849
+another gray: #5B5764
+border light: #4C4757
+red: #B36D7C
+
 */
 * {
   padding: 0;
@@ -15,24 +26,26 @@ Custom CSS
 }
 
 #navbar {
-  background-color: #222222  !important;
+  background-color: #2C293A  !important;
   font-size: 1.25rem;
   min-height: 60px;
 }
 
 body {
-  background-color: #333333  !important;
+  background-color: #312E3F  !important;
 }
 
 button {
-  background-color: #66c2a3  !important; /* Green button */
-  border: 1px solid transparent; /* Ensuring no border color */
+  background-color: #B36D7C  !important; /* Green button */
+  border: none !important; /* Ensuring no border color */
   color: #F5F5F5  !important;
   padding: 0.75rem 1rem;
   border-radius: 5px;
   font-size: 1rem;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  padding-inline: 1rem !important;
+  padding-block: .6rem !important;
 }
 
 button:hover {
@@ -44,7 +57,7 @@ button:hover {
   padding: 1rem;
 }
 
-h1, h3, h5 {
+h1, h2, h3, h5, h4, h6 {
   color: #eaeaea  !important; /* Light gray for headings */
 }
 
@@ -90,22 +103,40 @@ table {
   background-color: #222222  !important; /* Dark background for the table */
   color: #eaeaea  !important; /* Light gray text color */
 }
+.table-title{
+  background-color: #3D3849 !important;
+  margin-top: 2rem;
+  /* padding: .5rem; */
+  min-height: 50px;
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  padding-left: 2rem;
+  margin-bottom: .8rem;
+}
+.table-title > *{
+  margin-top: .5rem !important;
+}
+
 
 th {
-  background-color: #444444  !important; /* Darker gray for table header */
-  color: #eaeaea  !important; /* Light gray text for headers */
-  padding: 0.75rem;
+  background-color: #2C293A  !important; /* Darker gray for table header */
+  color: #FFFFFF  !important; /* Light gray text for headers */
   text-align: left;
-  font-weight: bold;
-  border-bottom: 2px solid #4a4a4a  !important; /* Muted border between header and rows */
+  border-bottom: 1px solid #4C4757  !important; /* Muted border between header and rows */
+  border-left: 1px solid #4C4757  !important; /* Muted border between header and rows */
+  padding: 1rem !important;
+  font-weight: 400;
+  
 }
 
 td {
-  background-color: #333333  !important; /* Slightly lighter background for rows */
-  color: #eaeaea  !important; /* Light gray text for cells */
-  padding: 0.75rem;
-  border-bottom: 1px solid #4a4a4a  !important; /* Muted border between rows */
+  background-color: #3D3849  !important; /* Slightly lighter background for rows */
+  color: #FFFFFF  !important; /* Light gray text for cells */
+  padding: .7rem !important;
+  border-bottom: 1px solid #4C4757  !important; /* Muted border between rows */
   text-align: left;
+  border-left: 1px solid #4C4757  !important; /* Muted border between header and rows */
 }
 
 tr:hover {
@@ -135,4 +166,38 @@ a:hover {
 
 input:focus, select:focus {
   border-color: #66c2a3 !important; /* Green border when focused */
+}
+
+.pagination-select{
+  display: flex;
+  gap: .6rem;
+  height: 45px !important;
+  list-style-type: none;
+  padding-left: 0;
+  justify-content: left;
+}
+.pagination-select > li > i{
+  color: #FFFFFF;
+  font-size: 2rem;
+}
+.skip-end, .skip-start, .page-no{
+  background-color: #202030  !important; 
+  border-radius: .2rem;
+  display: flex;
+  justify-self: center;
+  align-items: center;
+  padding: .7rem 1.2rem;
+  color: #FFFFFF;
+}
+.page-no{
+  font-size: 1rem;
+  background-color: #3D3849 !important;
+  padding: .7rem 1.2rem;
+}
+.skip-start, .skip-end{
+  transition: background-color 0.3s ease;
+}
+.skip-end:hover, .skip-start:hover{
+  background-color: #5B5764  !important; 
+  cursor: pointer;
 }

@@ -37,16 +37,30 @@ export default function Home() {
 
   return (
     <div className="col">
-      <h3 className="mt-5">Leaderboard</h3>
+      <div className="table-title">
+       <h5 className="">LEADERBOARD</h5>
+      </div>
       <Table responsive >
       <thead>
         <tr>
-          <th className="col-1">#</th>
-          <th className="col-3">Player Username</th>
-          <th className="col-2">Wins</th>
-          <th className="col-2">Loses</th>
-          <th className="col-2">Draw</th>
-          <th className="col-2">Last Game Date</th>
+          <th className="col-1">
+          <i className="bi bi-bar-chart-fill" style={{ color: "#FFFFFF",  }}></i>
+          </th>
+          <th className="col-3">
+            Best Players <i className="bi bi-trophy-fill" style={{color: "#FFEB3B"}}></i>
+          </th>
+          <th className="col-2">
+            <i className="bi bi-check-lg" style={{color: "#FFFFFF"}}></i> Wins 
+          </th>
+          <th className="col-2">
+            <i className="bi bi-x-circle" style={{color: "#B36D7C"}}></i> Loses 
+          </th>
+          <th className="col-2">
+            <i className="bi bi-dash" style={{color: "#FFFFFF"}}></i> Draw 
+          </th>
+          <th className="col-2">
+            <i className="bi bi-calendar2-fill" style={{color: "#FFFFFF"}}></i> Last Game Date 
+          </th>
         </tr>
       </thead>
       <tbody>
@@ -66,20 +80,27 @@ export default function Home() {
         </>}
       </tbody>
       </Table>
-      <Pagination>
-        <Pagination.Prev 
-          disabled={pageNo === 1}
-          onClick={() => {
-            setPageNo(prev => Math.max(prev - 1, 1));
-          }}
-        />
-        <Pagination.Item disabled>{pageNo}</Pagination.Item>
-        <Pagination.Next 
-          onClick={() => {
-            setPageNo(prev => prev + 1);
-          }}
-        />
-      </Pagination>
+      <div>
+        <ul className="pagination-select">
+          <li
+            className="skip-end"
+            onClick={() => {
+              setPageNo(prev => Math.max(prev - 1, 1));
+            }}
+          >
+            <i className="bi bi-skip-start-fill" ></i>
+          </li>
+          <li className="page-no">{pageNo}</li>
+          <li
+            className="skip-start"
+            onClick={() => {
+              setPageNo(prev => prev + 1);
+            }}
+          >
+            <i className="bi bi-skip-end-fill" ></i>
+          </li>
+        </ul>
+      </div>
     </div>
   );
 }
