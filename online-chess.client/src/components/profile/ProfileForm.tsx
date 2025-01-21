@@ -66,79 +66,84 @@ export default function ProfileForm(){
         <Form
             onSubmit={handleSubmit(submitForm)}
           >
-            <Row>
-              <Col>
+            <div className="form-header">
+              <h5 className="">ACCOUNT INFORMATION</h5>
+            </div>
+            <div className="form-body">
+              <Row>
+                <Col>
+                    <Form.Group className="mb-3">
+                    <Form.Label>New Username</Form.Label>
+                    <Form.Control 
+                      {...register("newUsername")}
+                      isValid={!errors.newUsername && !editableProfile && formValues.newUsername !== ""}
+                      isInvalid={errors.newUsername ? true : false}
+                      type="text" 
+                      placeholder="Enter New Username" 
+                      disabled={editableProfile} 
+                      readOnly={editableProfile} 
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      {errors.newUsername ? errors.newUsername.message : ""}
+                    </Form.Control.Feedback>
+                  </Form.Group>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
                   <Form.Group className="mb-3">
-                  <Form.Label>New Username</Form.Label>
-                  <Form.Control 
-                    {...register("newUsername")}
-                    isValid={!errors.newUsername && !editableProfile && formValues.newUsername !== ""}
-                    isInvalid={errors.newUsername ? true : false}
-                    type="text" 
-                    placeholder="Enter New Username" 
-                    disabled={editableProfile} 
-                    readOnly={editableProfile} 
-                  />
-                  <Form.Control.Feedback type="invalid">
-                    {errors.newUsername ? errors.newUsername.message : ""}
-                  </Form.Control.Feedback>
-                </Form.Group>
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <Form.Group className="mb-3">
-                  <Form.Label>Old Password</Form.Label>
-                  <Form.Control 
-                    {...register("oldPassword")}
-                    isValid={!errors.oldPassword && !editableProfile && formValues.oldPassword !== ""}
-                    isInvalid={errors.oldPassword ? true : false}
-                    type="password" 
-                    placeholder="Enter Old Password" 
-                    disabled={editableProfile} 
-                    readOnly={editableProfile} 
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      {errors.oldPassword ? errors.oldPassword.message : ""}
-                    </Form.Control.Feedback>
-                </Form.Group>
-              </Col>
-              <Col>
-                <Form.Group className="mb-3">
-                  <Form.Label>New Password</Form.Label>
-                  <Form.Control 
-                    {...register("newPassword")}
-                    isValid={!errors.newPassword && !editableProfile && formValues.newPassword !== ""}
-                    isInvalid={errors.newPassword ? true : false}
-                    type="password" 
-                    placeholder="Enter New Password" 
-                    disabled={editableProfile} 
-                    readOnly={editableProfile} 
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      {errors.newPassword ? errors.newPassword.message : ""}
-                    </Form.Control.Feedback>
-                </Form.Group>
-              </Col>
-            </Row>
-            <Form.Check  
-              type="checkbox"
-              label="Edit Profile"
-              onChange={() => setEditableProfile(prev => !prev)}
-              className="mb-3"
-            />
-              <Button 
-              disabled={loading || editableProfile}
-              className="w-50" 
-              type="submit">
-              {
-                loading ? <>
-                  <Spinner 
-                    size="sm"
-                    animation="border" variant="dark" /> 
-                </> : <>Edit</>
-              }
-            </Button>
+                    <Form.Label>Old Password</Form.Label>
+                    <Form.Control 
+                      {...register("oldPassword")}
+                      isValid={!errors.oldPassword && !editableProfile && formValues.oldPassword !== ""}
+                      isInvalid={errors.oldPassword ? true : false}
+                      type="password" 
+                      placeholder="Enter Old Password" 
+                      disabled={editableProfile} 
+                      readOnly={editableProfile} 
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {errors.oldPassword ? errors.oldPassword.message : ""}
+                      </Form.Control.Feedback>
+                  </Form.Group>
+                </Col>
+                <Col>
+                  <Form.Group className="mb-3">
+                    <Form.Label>New Password</Form.Label>
+                    <Form.Control 
+                      {...register("newPassword")}
+                      isValid={!errors.newPassword && !editableProfile && formValues.newPassword !== ""}
+                      isInvalid={errors.newPassword ? true : false}
+                      type="password" 
+                      placeholder="Enter New Password" 
+                      disabled={editableProfile} 
+                      readOnly={editableProfile} 
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {errors.newPassword ? errors.newPassword.message : ""}
+                      </Form.Control.Feedback>
+                  </Form.Group>
+                </Col>
+              </Row>
+              <Form.Check  
+                type="checkbox"
+                label="Edit Profile"
+                onChange={() => setEditableProfile(prev => !prev)}
+                className="mb-3"
+              />
+                <Button 
+                disabled={loading || editableProfile}
+                className="w-50" 
+                type="submit">
+                {
+                  loading ? <>
+                    <Spinner 
+                      size="sm"
+                      animation="border" variant="dark" /> 
+                  </> : <>Edit</>
+                }
+                </Button>
+            </div>
         </Form>
     </>
 }

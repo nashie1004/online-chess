@@ -50,3 +50,4 @@ after that, the web application should now be running.
 1. https://www.chesssquire.com/chess-vs-computer.html
 2. https://play.chessclub.com/
 3. https://dribbble.com/shots/16771869-Chess-Game-Web-Online-UI-v1/attachments/11821577?mode=media
+4. https://dribbble.com/shots/16792508-Chess-Game-Web-Online-UI-v2/attachments/11845053?mode=media

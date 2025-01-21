@@ -25,14 +25,27 @@ export default function LobbyTable({
     }, [pageNo])
 
     return <>
+        <div className="table-title">
+        <h5 className="">JOIN A MATCH</h5>
+        </div>
         <Table responsive striped>
             <thead className="bg-warning">
                 <tr>
-                    <th className="col-1">Action</th>
-                    <th className="col-4">Player Username</th>
-                    <th className="col-3">Looking for Game Type</th>
-                    <th className="col-2">Color</th>
-                    <th className="col-2">Create Date</th>
+                    <th className="col-1">
+                        <i className="bi bi-gear"  style={{ color: "#FFFFFF",  }}></i> Action
+                    </th>
+                    <th className="col-4">
+                        <i className="bi bi-person"  style={{ color: "#FFFFFF",  }}></i> Username
+                    </th>
+                    <th className="col-3">
+                        <i className="bi bi-hourglass" style={{color: "#FFFFFF"}}></i> Game Type 
+                    </th>
+                    <th className="col-2">
+                        <i className="bi bi-circle-half"  style={{ color: "#FFFFFF",  }}></i> Color
+                    </th>
+                    <th className="col-2">
+                        <i className="bi bi-calendar2-fill" style={{color: "#FFFFFF"}}></i> Create Date 
+                    </th>
                 </tr>
             </thead>
             <tbody>

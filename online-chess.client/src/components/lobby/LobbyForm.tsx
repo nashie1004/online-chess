@@ -22,8 +22,7 @@ export default function LobbyForm(
 
   return (
     <>
-        <div className="mt-5 mt-3 w-50">
-            <h3 className="">Find a match</h3>
+        <div className="mt-5 mb-3 w-50">
             <Form
                 onSubmit={(e) => {
                     e.preventDefault();
@@ -31,38 +30,43 @@ export default function LobbyForm(
                     invoke("AddToQueue", gameType, colorOption)
                 }}
             >
-                <Form.Group className="mb-3">
-                    <Form.Select 
-                        onChange={(e) => {
-                            const val = Number(e.target.value) as GameType;
-                            setGameType(val);
-                        }}
-                        aria-label="Game Type"
-                    >
-                        {gameTypes.map((item, idx) => {
-                            return <option key={idx} value={item}>
-                                {gameTypeDisplay(item)}
-                            </option>
-                        })}
-                    </Form.Select>
-                </Form.Group>
-                <Form.Group className='mb-3'>
-                    <Form.Select
-                        onChange={(e) => {
-                            const val = Number(e.target.value) as ColorOptions;
-                            setColorOption(val);
-                        }}
-                    >
-                        {colorOptions.map((item, idx) => {
-                            return <option value={item} key={idx}>
-                                {colorOptionsDisplay(item)}
-                            </option>
-                        })}
-                    </Form.Select>
-                </Form.Group>
-                <button
-                    disabled={roomKey ? true : false} 
-                    type="submit" className="btn btn-primary w-100">Queue</button>
+                <div className="form-header">
+                <h5 className="">CREATE A MATCH</h5>
+                </div>
+                <div className="form-body">
+                    <Form.Group className="mb-3">
+                        <Form.Select 
+                            onChange={(e) => {
+                                const val = Number(e.target.value) as GameType;
+                                setGameType(val);
+                            }}
+                            aria-label="Game Type"
+                        >
+                            {gameTypes.map((item, idx) => {
+                                return <option key={idx} value={item}>
+                                    {gameTypeDisplay(item)}
+                                </option>
+                            })}
+                        </Form.Select>
+                    </Form.Group>
+                    <Form.Group className='mb-3'>
+                        <Form.Select
+                            onChange={(e) => {
+                                const val = Number(e.target.value) as ColorOptions;
+                                setColorOption(val);
+                            }}
+                        >
+                            {colorOptions.map((item, idx) => {
+                                return <option value={item} key={idx}>
+                                    {colorOptionsDisplay(item)}
+                                </option>
+                            })}
+                        </Form.Select>
+                    </Form.Group>
+                    <button
+                        disabled={roomKey ? true : false} 
+                        type="submit" className="btn btn-primary w-100">Queue</button>
+                </div>
             </Form>
         </div>
     </>

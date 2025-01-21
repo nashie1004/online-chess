@@ -42,7 +42,6 @@ export default function Lobby() {
             setGameRoomList={setGameRoomList}
             roomKey={roomKey}
         />
-        <h3 className="my-3">Join</h3>
         {roomKey ? <>
             <Alert variant="warning">
                 <Spinner size="sm" animation="border" variant="success" className="mt-3" /> You have a game queuing... <a href="#" className="alert-link" onClick={() => {

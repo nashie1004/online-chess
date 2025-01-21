@@ -37,14 +37,28 @@ export default function ProfileTable(){
   }, [pageNo])
 
     return <>
+    <div className="table-title">
+     <h5 className="">GAME HISTORY</h5>
+    </div>
     <Table responsive striped size="sm">
       <thead>
         <tr>
-          <th className="col-1">#</th>
-          <th className="col-2">Game Status</th>
-          <th className="col-2">Color</th>
-          <th className="col-4">Opponent</th>
-          <th className="col-3">Date</th>
+          <th className="col-1">
+            <i className="bi bi-hash" style={{ color: "#FFFFFF",  }}></i>
+          </th>
+          <th className="col-2">
+            <i className="bi bi-circle-fill"  style={{ color: "#FFFFFF",  }}></i> Game Status
+          </th>
+          <th className="col-2">
+            <i className="bi bi-circle-half"  style={{ color: "#FFFFFF",  }}></i> Color
+          </th>
+          <th className="col-4">
+            <i className="bi bi-person"  style={{ color: "#FFFFFF",  }}></i> Opponent
+          </th>
+          <th className="col-3">
+            <i className="bi bi-calendar2-fill" style={{color: "#FFFFFF"}}></i> Date 
+
+          </th>
         </tr>
       </thead>
       <tbody>
