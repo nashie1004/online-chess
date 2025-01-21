@@ -37,8 +37,12 @@ export default function Home() {
 
   return (
     <div className="col">
-      <div className="table-title">
-       <h5 className="">LEADERBOARD</h5>
+      <div className="table-title hstack gap-2 align-items-center mt-5 mb-3">
+        <i className="bi bi-trophy-fill" style={{ color: "#FFEB3B", fontSize: "1.5rem" }}></i>
+        <h4 className="p-0 m-0">LEADERBOARD</h4>
+      </div>
+      <div className="sidebar-right-body">
+
       </div>
       <Table responsive >
       <thead>
@@ -47,7 +51,7 @@ export default function Home() {
           <i className="bi bi-bar-chart-fill" style={{ color: "#FFFFFF",  }}></i>
           </th>
           <th className="col-3">
-            Best Players <i className="bi bi-trophy-fill" style={{color: "#FFEB3B"}}></i>
+            <i className="bi bi-person-fill" style={{color: "#FFFFFF"}}></i> Best Players
           </th>
           <th className="col-2">
             <i className="bi bi-check-lg" style={{color: "#FFFFFF"}}></i> Wins 
@@ -69,11 +73,13 @@ export default function Home() {
         </> : <>
           {list.data.map((item, idx) => {
             return <tr key={idx}>
-              <td>{idx + 1}</td>
+              <td>
+                #{idx + 1}
+              </td>
               <td>{item.userName}</td>
-              <td>{item.wins === 0 ? "-" : item.wins}</td>
-              <td>{item.loses === 0 ? "-" : item.loses}</td>
-              <td>{item.draws === 0 ? "-" : item.draws}</td>
+              <td className="table-win">{item.wins === 0 ? "0" : item.wins}</td>
+              <td className="table-lose">{item.loses === 0 ? "0" : item.loses}</td>
+              <td className="table-draw">{item.draws === 0 ? "0" : item.draws}</td>
               <td>{moment(item.lastGameDate).fromNow()}</td>
             </tr>
           })}

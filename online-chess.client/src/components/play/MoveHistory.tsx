@@ -27,7 +27,7 @@ export default function MoveHistory() {
                 <tbody>
                     {Array.from({ length: Math.max(moveHistory.white.length, moveHistory.black.length) }).map((_, idx) => (
                         <tr key={idx}>
-                            <td>{idx + 1}</td>
+                            <td className='table-row-no'>{idx + 1}</td>
                             <td>{moveHistory.white[idx] ? board[moveHistory.white[idx].new.x][moveHistory.white[idx].new.y] : '-'}</td>
                             <td>{moveHistory.black[idx] ? board[moveHistory.black[idx].new.x][moveHistory.black[idx].new.y] : '-'}</td>
                         </tr>

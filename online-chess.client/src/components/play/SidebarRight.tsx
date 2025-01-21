@@ -9,13 +9,17 @@ export default function SidebarRight() {
 
   return (
     <div className='' id="sidebarRight">
-      <h1 className=' pb-2 my-2'>Game Information</h1>
-      <GameOutcome />
-      <PlayerInfo />
-      <h5 className='border-bottom border-secondary pb-2 my-2'>Move History</h5>
-      <MoveHistory />
-      <h5 className='border-bottom border-secondary pb-2 my-2'>Chat Bar</h5>
-      <Chatbar />
+      <div className="table-title">
+        <h5 className="">GAME INFORMATION</h5>
+      </div>
+      <div className='sidebar-right-body'>
+        <GameOutcome />
+        <PlayerInfo />
+        <h5 className='border-bottom border-secondary pb-2 my-2'>Move History</h5>
+        <MoveHistory />
+        <h5 className='border-bottom border-secondary pb-2 my-2'>Chat Bar</h5>
+        <Chatbar />
+      </div>
     </div>
   )
 }

@@ -1,270 +1,58 @@
 /*
 Custom CSS
-
-bg: #312E3F
-dark color: #202030
-slightly ligher bg: #2C293A
-text color white?: #FFFFFF
-text color gray secondary: #8F8F9A
-light dark color: #3D3849
-another gray: #5B5764
-border light: #4C4757
-red: #B36D7C
-
 */
-* {
+:root{
+  --bg-primary:  #302E2B;
+  --bg-dark-1: #262522;
+  --bg-dark-2: #1D1B1A;
+  --bg-secondary:  #262522;
+  --btn-green: #36b66b;
+  --text-1: #F5F5F5;
+  --text-2: #A8A8A7;
+  --text-3: #6D9643;
+  --text-4: #F3402D;
+}
+*{
   padding: 0;
   margin: 0;
   box-sizing: border-box;
   font-family: 'Fira Sans', sans-serif;
-}
 
-#root {
+}  
+#root{
   min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
-
-#navbar {
-  background-color: #2C293A  !important;
-  font-size: 1.25rem;
-  min-height: 60px;
+nav{
+  background-color: var(--bg-secondary) !important;
 }
-
-body {
-  background-color: #312E3F  !important;
+body{
+  background-color: var(--bg-primary)  !important;
 }
-
-button {
-  background-color: #B36D7C  !important; /* Green button */
-  border: none !important; /* Ensuring no border color */
-  color: #F5F5F5  !important;
-  padding: 0.75rem 1rem;
-  border-radius: 5px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  padding-inline: 1rem !important;
-  padding-block: .6rem !important;
+button{
+  background-color: var(--btn-green)  !important;
+  border: 1px solid rgb(187, 111, 111, 0) !important;
+  color: var(--text-1) !important;
 }
-
-button:hover {
-  background-color: #4e9f7e  !important; /* Button hover color */
+h1, h2, h3, h4, h5, h6{
+  color: var(--text-1) !important;
 }
-
-#sidebarRight {
-  background-color: #222222  !important; /* Dark background for sidebar */
-  padding: 1rem;
+table thead{
 }
-
-h1, h2, h3, h5, h4, h6 {
-  color: #eaeaea  !important; /* Light gray for headings */
+table th{
+  background-color: var(--bg-dark-2) !important;
+  color: var(--text-2) !important;
+  border: none;
 }
-
-p {
-  color: #b0b0b0  !important; /* Muted gray for paragraphs */
-  line-height: 1.5;
+table td{
+  background-color: var(--bg-dark-1) !important;
+  color: var(--text-2) !important;
+  border: none;
 }
-
-select {
-  background-color: #444444  !important; /* Dark background for select */
-  border: 1px solid #4a4a4a  !important; /* Muted border color */
-  color: #eaeaea  !important; /* Light text color */
-  padding: 0.5rem;
-  border-radius: 5px;
-  font-size: 1rem;
-  appearance: none;
-  transition: border-color 0.3s ease;
+table td.table-win{
+  color: var(--text-3) !important;
 }
-
-select:focus {
-  border-color: #66c2a3  !important; /* Green focus color */
-  outline: none;
+table td.table-lose{
+  color: var(--text-4) !important;
 }
-
-/* Table styling */
-table {
-  width: 100%;
-  border-collapse: collapse  !important; /* Removes space between cells */
-  background-color: #222222  !important; /* Dark background for the table */
-  color: #eaeaea  !important; /* Light gray text color */
-}
-.table-title{
-  background-color: #3D3849 !important;
-  margin-top: 2rem;
-  /* padding: .5rem; */
-  min-height: 50px;
-  display: flex;
-  justify-content: start;
-  align-items: center;
-  padding-left: 1rem;
-  margin-bottom: .5rem;
-}
-
-.table-title > *{
-  margin-top: .5rem !important;
-}
-
-th {
-  background-color: #2C293A  !important; /* Darker gray for table header */
-  color: #FFFFFF  !important; /* Light gray text for headers */
-  text-align: left;
-  border-bottom: 1px solid #4C4757  !important; /* Muted border between header and rows */
-  border-left: 1px solid #4C4757  !important; /* Muted border between header and rows */
-  padding: 1rem !important;
-  font-weight: 400;
-  
-}
-
-td {
-  background-color: #3D3849  !important; /* Slightly lighter background for rows */
-  color: #FFFFFF  !important; /* Light gray text for cells */
-  padding: .7rem !important;
-  border-bottom: 1px solid #4C4757  !important; /* Muted border between rows */
-  text-align: left;
-  border-left: 1px solid #4C4757  !important; /* Muted border between header and rows */
-}
-
-a:hover {
-  color: #478872  !important; /* Green hover effect */
-  text-decoration: underline;
-}
-
-
-.pagination-select{
-  display: flex;
-  gap: .6rem;
-  height: 45px !important;
-  list-style-type: none;
-  padding-left: 0;
-  justify-content: left;
-}
-.pagination-select > li > i{
-  color: #FFFFFF;
-  font-size: 1.6rem;
-}
-.skip-end, .skip-start, .page-no{
-  background-color: #202030  !important; 
-  border-radius: .2rem;
-  display: flex;
-  justify-self: center;
-  align-items: center;
-  padding: .7rem .8rem;
-  color: #FFFFFF;
-}
-.page-no{
-  font-size: 1rem;
-  background-color: #3D3849  !important; /* Slightly lighter background for rows */
-  padding: .7rem 1.2rem;
-}
-.skip-start, .skip-end{
-  transition: background-color 0.3s ease;
-}
-.skip-end:hover, .skip-start:hover{
-  background-color: #5B5764  !important; 
-  cursor: pointer;
-}
-#page-title{
-  font-weight: 500;
-  font-size: 1.5rem;
-}
-
-/* Form */
-
-.form-header{
-  background-color: #3D3849 !important;
-  /* padding: .5rem; */
-  display: flex;
-  justify-content: start;
-  align-items: center;
-  padding: 1.4rem;  
-  padding-bottom: .4rem;
-  margin-bottom: .5rem;
-  /* margin-bottom: .8rem; */
-}
-
-.form-body {
-  background-color: #2C293A !important; /* Dark background */
-  padding: 20px;
-}
-.form-body a{
-  color: #FFFEFF !important; /* Secondary gray for labels */
-}
-
-label {
-  font-size: 1rem;
-  color: #FFFEFF !important; /* Secondary gray for labels */
-  margin-bottom: 8px;
-  display: block;
-}
-input[type="text"],
-input[type="password"],
-input[type="email"],
-input[type="number"],
-textarea,
-select {
-  background-color: #202030 !important; /* Slightly lighter dark background */
-  color: #FFFFFF !important; /* White text */
-  border: 1px solid #4C4757 !important; /* Light border color */
-  padding: 12px 16px;
-  font-size: 1rem;
-  border-radius: 4px;
-  width: 100%;
-  margin-bottom: 16px;
-  transition: all 0.3s ease-in-out;
-}
-
-/* Input Focus State */
-input[type="text"]:focus,
-input[type="password"]:focus,
-input[type="email"]:focus,
-textarea:focus,
-select:focus {
-  outline: none;
-  border-color: #B36D7C !important; /* Soft red for focus */
-  box-shadow: 0 0 5px rgba(179, 109, 124, 0.5) !important; /* Soft red glow on focus */
-}
-select {
-  background-color: #2C293A !important; /* Slightly lighter background */
-  color: #FFFFFF !important; /* White text */
-  border: 1px solid #4C4757 !important; /* Light border */
-  padding: 12px 16px;
-  font-size: 1rem;
-  border-radius: 4px;
-  width: 100%;
-  margin-bottom: 16px;
-  appearance: none; /* Remove default dropdown arrow */
-  -webkit-appearance: none;
-  -moz-appearance: none;
-}
-
-/* Custom dropdown arrow */
-select::-ms-expand {
-  display: none; /* Hide the default dropdown arrow in IE */
-}
-
-select:focus {
-  outline: none;
-  border-color: #B36D7C !important; /* Red border on focus */
-  box-shadow: 0 0 5px rgba(179, 109, 124, 0.5) !important; /* Soft red glow */
-}
-button {
-  background-color: #B36D7C !important; /* Soft muted red for the button */
-  color: #FFFFFF !important; /* White text */
-  /* border: none;#2C293A */
-  padding: 12px 20px;
-  font-size: 1rem;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.3s ease-in-out;
-}
-
-button:hover {
-  background-color: #9A5F6B !important; /* Darker red on hover */
-}
-
-button:focus {
-  outline: none;
-  box-shadow: 0 0 5px rgba(179, 109, 124, 0.7) !important; /* Red glow when focused */
-}
-
