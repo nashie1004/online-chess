@@ -2,11 +2,14 @@
 Custom CSS
 */
 :root{
-  --bg-primary:  #302E2B;
-  --bg-dark-1: #262522;
-  --bg-dark-2: #1D1B1A;
-  --bg-secondary:  #262522;
-  --btn-green: #36b66b;
+  --bg-1:  #302E2B;
+  --bg-2:  #262522;
+  --bg-3: #262522;
+  --bg-4: #1D1B1A;
+  --bg-5: #21201D;
+  --bg-6: #373633;
+  --btn-1: #81B64C;
+  --btn-2: #3C3B39;
   --text-1: #F5F5F5;
   --text-2: #A8A8A7;
   --text-3: #6D9643;
@@ -25,28 +28,43 @@ Custom CSS
   flex-direction: column;
 }
 nav{
-  background-color: var(--bg-secondary) !important;
+  background-color: var(--bg-2) !important;
 }
 body{
-  background-color: var(--bg-primary)  !important;
+  background-color: var(--bg-1)  !important;
 }
 button{
-  background-color: var(--btn-green)  !important;
+  background-color: var(--btn-1)  !important;
   border: 1px solid rgb(187, 111, 111, 0) !important;
   color: var(--text-1) !important;
+  font-size: 1rem;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  opacity: .8;
+}
+
+.btn-2{
+  background-color: var(--btn-2) !important;
 }
 h1, h2, h3, h4, h5, h6{
   color: var(--text-1) !important;
+  margin-bottom: 0 !important;
 }
 table thead{
 }
 table th{
-  background-color: var(--bg-dark-2) !important;
+  background-color: var(--bg-4) !important;
   color: var(--text-2) !important;
   border: none;
 }
 table td{
-  background-color: var(--bg-dark-1) !important;
+  background-color: var(--bg-3) !important;
   color: var(--text-2) !important;
   border: none;
 }
@@ -55,4 +73,97 @@ table td.table-win{
 }
 table td.table-lose{
   color: var(--text-4) !important;
+}
+table tr td.stripe-td{
+  background-color: var(--bg-6) !important;
+}
+
+form {
+  /* background-color: var(--bg-1) !important; */
+  padding: 20px;
+  border-radius: 8px;
+  /* box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2) !important; */
+}
+
+/* Style for labels */
+label {
+  font-size: 14px;
+  color: var(--text-2) !important;
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+/* Style for inputs and selects */
+input, select {
+  background-color: var(--bg-3) !important;
+  color: var(--text-1) !important;
+  font-size: 16px;
+  padding: 10px;
+  border: 1px solid var(--bg-4) !important;
+  border-radius: 4px;
+  width: 100%;
+  margin-bottom: 12px;
+  transition: all 0.3s ease;
+}
+
+input:focus, select:focus {
+  outline: none;
+  border-color: var(--btn-1) !important;
+  box-shadow: 0 0 4px var(--btn-1) !important;
+}
+
+/* Input placeholder styling */
+input::placeholder {
+  color: var(--text-2) !important;
+  opacity: 0.8;
+}
+
+
+/* Disabled input and select */
+input:disabled, select:disabled {
+  background-color: var(--bg-4) !important;
+  color: var(--text-2) !important;
+  cursor: not-allowed;
+}
+
+input:disabled::placeholder {
+  color: var(--text-2);
+  opacity: 0.6;
+}
+.sidebar{
+  margin-top: 1rem;
+}
+.sidebar-header{
+  background-color: var(--bg-5);
+  border-top-left-radius: 1rem;
+  border-top-right-radius: 1rem;
+  padding: 1rem;
+}
+.sidebar-body{
+  background-color: var(--bg-2);
+  padding: 1rem;
+  padding-top: 0;
+}
+.sidebar-footer{
+  background-color: var(--bg-2);
+}
+.sidebar .game-alert{
+  background-color: var(--bg-6);
+  color: var(--text-1);
+  padding: 1rem;
+  border-radius: .5rem;
+}
+.sidebar .timer-info{
+  /* background-color: var(--text-1); */
+  /* color: var(--bg-4) !important; */
+}
+.sidebar .chat-bar p{
+}
+
+.sidebar form{
+  padding: 0;
+}
+.sidebar form input, .sidebar form button{
+  border-radius: 0;
 }

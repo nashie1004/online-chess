@@ -27,17 +27,19 @@ export default function Chatbar() {
   return (
     <>
       <div style={{ height: "250px", overflowY: "scroll", scrollBehavior: "smooth" }} ref={chatContainerRef}>
-          <Table striped size="sm">
+          <Table striped size="sm" className="chat-bar">
             <tbody>
               {messages.map((item, idx) => {
                 return <tr key={idx}>
-                  <p><b>{item.createdByUser}:</b> {item.message} - <small>{moment(item.createDate).fromNow()}</small></p>
+                  <td className={idx % 2 === 0 ? "stripe-td" : ""}>
+                    <b>{item.createdByUser}:</b> {item.message} - <small>{moment(item.createDate).fromNow()}</small>
+                  </td>
                 </tr>
               })}
             </tbody>
           </Table>
         </div>
-        <Form onSubmit={submitForm} className='hstack gap-1'>
+        <Form onSubmit={submitForm} className='hstack'>
           <input 
             type="text" 
             className='form-control' 

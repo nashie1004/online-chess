@@ -39,7 +39,7 @@ export default function Home() {
     <div className="col">
       <div className="table-title hstack gap-2 align-items-center mt-5 mb-3">
         <i className="bi bi-trophy-fill" style={{ color: "#FFEB3B", fontSize: "1.5rem" }}></i>
-        <h4 className="p-0 m-0">LEADERBOARD</h4>
+        <h4 className="">LEADERBOARD</h4>
       </div>
       <div className="sidebar-right-body">
 
@@ -73,7 +73,7 @@ export default function Home() {
         </> : <>
           {list.data.map((item, idx) => {
             return <tr key={idx}>
-              <td>
+              <td >
                 #{idx + 1}
               </td>
               <td>{item.userName}</td>

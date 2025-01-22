@@ -8,16 +8,21 @@ export default function SidebarRight() {
     const { isColorWhite, promoteTo, setPromoteTo } = usePhaserContext();
 
   return (
-    <div className='' id="sidebarRight">
-      <div className="table-title">
-        <h5 className="">GAME INFORMATION</h5>
+    <div className='sidebar vstack'>
+      <div className="sidebar-header hstack justify-content-center">
+        <h4 className="">
+          <i className="bi bi-lightning-charge-fill"  style={{ color: "#FFEB3B", fontSize: "1.6rem" }}></i> BLITZ 3 MINUTES
+        </h4>
       </div>
-      <div className='sidebar-right-body'>
+      <div className='sidebar-body'>
         <GameOutcome />
         <PlayerInfo />
-        <h5 className='border-bottom border-secondary pb-2 my-2'>Move History</h5>
         <MoveHistory />
-        <h5 className='border-bottom border-secondary pb-2 my-2'>Chat Bar</h5>
+      </div>
+      <div className="sidebar-footer">
+        <div className='hstack justify-content-left'>
+          <i className="bi bi-chat-fill ps-2" style={{color: "#373633", fontSize: "1.5rem"}}></i>
+        </div>
         <Chatbar />
       </div>
     </div>

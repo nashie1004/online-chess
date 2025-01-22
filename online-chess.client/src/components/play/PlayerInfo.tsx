@@ -32,21 +32,21 @@ export default function PlayerInfo() {
 
   return (
     <>
-        <div className="row my-2">
-            <div className='col'>
+        <div className="hstack my-3">
+            <div className='timer-info w-100'>
                 <h6 className='text-secondary'>Lorem, ipsum.</h6>
-                <h1>
-                    <Badge bg="dark">{timer.white}.00s</Badge>
-                </h1>
+                <h2>
+                    <i className="bi bi-clock"></i> <span>{timer.white}.00s</span>
+                </h2>
             </div>
-            <div className='col'>
+            <div className='timer-info w-100'>
                 <h6  className='text-secondary'>Lorem, ipsum.</h6>
-                <h1>
-                    <Badge bg="dark">{timer.black}.00s</Badge>
-                </h1>
+                <h2>
+                    <i className="bi bi-clock"></i> <span>{timer.black}.00s</span>
+                </h2>
             </div>
         </div>
-        <Alert variant='secondary'>
+        <div className='game-alert'>
             {isWhitesTurn ? <>White's</> : <>Black's</>} turn to move.
             {
                 kingsState.white.isInCheck || kingsState.black.isInCheck ? <>
@@ -65,7 +65,7 @@ export default function PlayerInfo() {
                 Stalemate.
                 </> : <></> 
             }
-        </Alert>
+        </div>
     </>
   )
 }

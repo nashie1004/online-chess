@@ -10,11 +10,15 @@ export default function GameOutcome() {
             <button 
                 type='button'
                 onClick={() =>  setModalShow(true)}
-                className='btn btn-outline-danger btn-md w-100'>Resign</button>
+                className='btn w-100 btn-2'>
+                  <i className="bi bi-flag-fill"></i> Resign
+                </button>
             <button 
                 type='button'
                 onClick={() =>  setModalShow(true)}
-                className='btn btn-outline-secondary btn-md w-100'>Offer a Draw</button>
+                className='btn w-100  btn-2'>
+                  <i className="bi bi-person-fill-dash"></i> Offer a Draw
+                </button>
         </div>
 
         <Modal
