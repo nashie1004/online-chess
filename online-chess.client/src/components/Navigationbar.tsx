@@ -8,7 +8,7 @@ export default function NavigationBar() {
   const {logout, user} = useAuthContext();
   
   return (
-    <Navbar bg="dark" data-bs-theme="dark" collapseOnSelect expand="lg" id="navbar">
+    <Navbar collapseOnSelect expand="lg" id="navbar">
       <Container>
         <Navbar.Brand id="page-title">
           <i className="bi bi-app-indicator" style={{color: "#FFFFFF"}}></i> ONLINE-CHESS.COM

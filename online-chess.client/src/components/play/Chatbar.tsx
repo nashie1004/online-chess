@@ -13,6 +13,7 @@ export default function Chatbar() {
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
   async function submitForm(e: React.FormEvent<HTMLFormElement>) {
+    if (message === "") return;
     e.preventDefault()
     invoke("AddMessageToRoom", gameRoomKey, message)
     setMessage("");
@@ -46,7 +47,7 @@ export default function Chatbar() {
             placeholder='Your Message' 
             onChange={e => setMessage(e.target.value)}
             value={message} />
-          <button className='btn btn-outline-primary' type='submit'>Send</button>
+          <button className='btn btn-2' type='submit'>Send</button>
         </Form>
     </>
   )

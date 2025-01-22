@@ -30,6 +30,13 @@ Custom CSS
 nav{
   background-color: var(--bg-2) !important;
 }
+nav a{
+  color: var(--text-2) !important;
+}
+nav #page-title{
+  color: var(--text-1);
+  font-weight: 500;
+}
 body{
   background-color: var(--bg-1)  !important;
 }
@@ -80,8 +87,8 @@ table tr td.stripe-td{
 
 form {
   /* background-color: var(--bg-1) !important; */
-  padding: 20px;
-  border-radius: 8px;
+  /* padding: 20px;
+  border-radius: 8px; */
   /* box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2) !important; */
 }
 
@@ -100,7 +107,8 @@ input, select {
   color: var(--text-1) !important;
   font-size: 16px;
   padding: 10px;
-  border: 1px solid var(--bg-4) !important;
+  border: none !important;
+  /* border: 1px solid var(--bg-4) !important; */
   border-radius: 4px;
   width: 100%;
   margin-bottom: 12px;
@@ -109,8 +117,8 @@ input, select {
 
 input:focus, select:focus {
   outline: none;
-  border-color: var(--btn-1) !important;
-  box-shadow: 0 0 4px var(--btn-1) !important;
+  /* border-color: var(--btn-1) !important;
+  box-shadow: 0 0 4px var(--btn-1) !important; */
 }
 
 /* Input placeholder styling */
@@ -140,10 +148,16 @@ input:disabled::placeholder {
   border-top-right-radius: 1rem;
   padding: 1rem;
 }
-.sidebar-body{
+.sidebar-body-1{
   background-color: var(--bg-2);
   padding: 1rem;
   padding-top: 0;
+}
+.sidebar-bar{
+  /* background-color: var(--bg-5); */
+}
+.sidebar-body-2{
+  background-color: var(--bg-2);
 }
 .sidebar-footer{
   background-color: var(--bg-2);
