@@ -29,11 +29,14 @@ export default function LobbyForm(
                     setGameRoomList(prev => ({ ...prev, isLoading: true }));
                     invoke("AddToQueue", gameType, colorOption)
                 }}
+                className='match-form'
             >
-                <div className="form-header">
-                <h5 className="">CREATE A MATCH</h5>
+                <div className="match-form-header">
+                    <h5 className="">
+                        <i className="bi bi-broadcast-pin pe-2"  style={{ color: "#FFEB3B", fontSize: "1.6rem" }}></i> CREATE A MATCH
+                    </h5>
                 </div>
-                <div className="form-body">
+                <div className="match-form-body">
                     <Form.Group className="mb-3">
                         <Form.Select 
                             onChange={(e) => {
@@ -65,7 +68,7 @@ export default function LobbyForm(
                     </Form.Group>
                     <button
                         disabled={roomKey ? true : false} 
-                        type="submit" className="btn btn-primary w-100">Queue</button>
+                        type="submit" className="btn btn-2 w-100">Queue</button>
                 </div>
             </Form>
         </div>

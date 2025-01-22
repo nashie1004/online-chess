@@ -43,12 +43,15 @@ export default function Lobby() {
             roomKey={roomKey}
         />
         {roomKey ? <>
-            <Alert variant="warning">
-                <Spinner size="sm" animation="border" variant="success" className="mt-3" /> You have a game queuing... <a href="#" className="alert-link" onClick={() => {
-                    invoke("DeleteRoom", roomKey)
-                    setRoomKey(null);
-                }}>Stop queuing?</a>
-            </Alert>
+            <div className="game-alert">
+                <Spinner size="sm" animation="border" variant="info" className="mt-3" /> 
+                <span className="ps-2">
+                    You have a game queuing... <a href="#" className="alert-link" onClick={() => {
+                        invoke("DeleteRoom", roomKey)
+                        setRoomKey(null);
+                    }}>Stop queuing?</a>
+                </span>
+            </div>
         </> : <></>}
         <LobbyTable 
             gameRoomList={gameRoomList}

@@ -63,6 +63,9 @@ h1, h2, h3, h4, h5, h6{
   color: var(--text-1) !important;
   margin-bottom: 0 !important;
 }
+table{
+  margin-bottom: 0 !important;
+}
 table thead{
 }
 table th{
@@ -84,7 +87,23 @@ table td.table-lose{
 table tr td.stripe-td{
   background-color: var(--bg-6) !important;
 }
-
+.table-footer{
+  background-color: var(--bg-3);
+  min-height: 70px;
+}
+.table-pagination{
+  display: flex;
+  padding-left: 0;
+  padding-top: 1rem;
+}
+.table-pagination li{
+  list-style-type: none;
+  background-color: var(--btn-2);
+}
+.table-pagination li i{
+  font-size: 1rem;
+  padding: 2rem;
+}
 form {
   /* background-color: var(--bg-1) !important; */
   /* padding: 20px;
@@ -139,19 +158,37 @@ input:disabled::placeholder {
   color: var(--text-2);
   opacity: 0.6;
 }
+
 .sidebar{
   margin-top: 1rem;
 }
-.sidebar-header{
+.sidebar-header, .match-form-header{
   background-color: var(--bg-5);
   border-top-left-radius: 1rem;
   border-top-right-radius: 1rem;
   padding: 1rem;
 }
-.sidebar-body-1{
+.sidebar-body-1, .match-form-body{
   background-color: var(--bg-2);
   padding: 1rem;
   padding-top: 0;
+}
+.match-form-body{
+  padding-top: 1rem;
+}
+.table-title{
+  background-color: var(--bg-2);
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: .5rem;
+}
+.game-alert{
+  background-color: var(--btn-2);
+  padding: 1rem;
+  border-radius: .5rem;
+  color: var(--text-1);
+  margin-bottom: 19px;
+  padding-top: .5rem !important;
 }
 .sidebar-bar{
   /* background-color: var(--bg-5); */

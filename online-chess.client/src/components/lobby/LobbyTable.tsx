@@ -26,7 +26,9 @@ export default function LobbyTable({
 
     return <>
         <div className="table-title">
-        <h5 className="">JOIN A MATCH</h5>
+            <h5 className="">
+                <i className="bi bi-people-fill pe-2"></i> <span>JOIN A MATCH</span>
+            </h5>
         </div>
         <Table responsive striped>
             <thead className="bg-warning">
@@ -62,7 +64,7 @@ export default function LobbyTable({
                                         setSelectedRoom(item)
                                         setModal(true)
                                     }}
-                                    className="btn btn-outline-primary btn-sm">View</button>
+                                    className="btn btn-2 btn-sm w-100">View</button>
                             </> : <></>}
                         </td>
                         <td>{user?.userName === item.value.createdByUserId ? "You" : item.value.createdByUserId}</td>

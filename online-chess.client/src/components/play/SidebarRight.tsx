@@ -10,9 +10,9 @@ export default function SidebarRight() {
   return (
     <div className='sidebar vstack'>
       <div className="sidebar-header hstack justify-content-center">
-        <h4 className="">
-          <i className="bi bi-lightning-charge-fill"  style={{ color: "#FFEB3B", fontSize: "1.6rem" }}></i> BLITZ 3 MINUTES
-        </h4>
+      <h4 className="">
+        <i className="bi bi-lightning-charge-fill"  style={{ color: "#FFEB3B", fontSize: "1.6rem" }}></i> BLITZ 3 MINUTES
+      </h4>
       </div>
       <div className='sidebar-body-1'>
         <GameOutcome />
