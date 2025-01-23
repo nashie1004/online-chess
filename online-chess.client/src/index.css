@@ -14,6 +14,7 @@ Custom CSS
   --text-2: #A8A8A7;
   --text-3: #6D9643;
   --text-4: #F3402D;
+  --text-5: #FFEB3B;
 }
 *{
   padding: 0;
@@ -111,6 +112,24 @@ form {
   /* box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2) !important; */
 }
 
+form .form-body{
+  background-color: var(--bg-3);
+  border-radius: .7rem;
+}
+form .form-body-content{
+  padding: 2rem;
+}
+
+form .form-footer{
+  background-color: var(--bg-5);
+  border-radius: 0 0 .5rem .5rem;
+  padding: .8rem .8rem;
+}
+form .form-footer a{
+  color: var(--text-2);
+  text-decoration: underline;
+}
+
 /* Style for labels */
 label {
   font-size: 14px;
@@ -122,16 +141,16 @@ label {
 
 /* Style for inputs and selects */
 input, select {
-  background-color: var(--bg-3) !important;
-  color: var(--text-1) !important;
+  background-color: var(--btn-2) !important;
+  color: var(--text-2) !important;
   font-size: 16px;
   padding: 10px;
-  border: none !important;
-  /* border: 1px solid var(--bg-4) !important; */
+  border: 1px solid var(--bg-6) !important;
   border-radius: 4px;
   width: 100%;
   margin-bottom: 12px;
   transition: all 0.3s ease;
+  padding: .6rem 1rem !important;
 }
 
 input:focus, select:focus {
@@ -217,4 +236,16 @@ input:disabled::placeholder {
 }
 .sidebar form input, .sidebar form button{
   border-radius: 0;
+}
+.about-page{
+  background-color: var(--bg-2);
+  padding: 1rem;
+  border-radius: .6rem;
+  padding-bottom: .3rem;
+}
+.about-page p {
+  color: var(--text-2);
+}
+.about-page a{
+  color: var(--text-1);
 }

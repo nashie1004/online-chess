@@ -65,11 +65,14 @@ export default function ProfileForm(){
     return <>
         <Form
             onSubmit={handleSubmit(submitForm)}
+            className="mb-3"
           >
-            <div className="form-header">
-              <h5 className="">ACCOUNT INFORMATION</h5>
-            </div>
-            <div className="form-body">
+          <div className="match-form-header">
+              <h5 className="">
+                  <i className="bi bi-clipboard2-check pe-2"  style={{ color: "#FFEB3B", fontSize: "1.6rem" }}></i> ACCOUNT INFORMATION
+              </h5>
+          </div>
+            <div className="match-form-body">
               <Row>
                 <Col>
                     <Form.Group className="mb-3">
@@ -133,7 +136,7 @@ export default function ProfileForm(){
               />
                 <Button 
                 disabled={loading || editableProfile}
-                className="w-50" 
+                className="w-100" 
                 type="submit">
                 {
                   loading ? <>

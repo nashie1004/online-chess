@@ -57,50 +57,54 @@ export default function Login() {
       <div className="d-flex justify-content-center"> 
           <Form
             onSubmit={handleSubmit(submitForm)}
-            className="w-50 mt-5"
+            className="w-50 mt-5 form-fill-up"
           >
-            <div className="form-header">
-              <h5 className="">SIGN IN TO YOUR ACCOUNT</h5>
-            </div>
-            <div className="form-body">
-              <Form.Group className="my-3">
-                <Form.Label>Username</Form.Label>
-                <Form.Control 
-                  {...register("userName")}
-                  isValid={!errors.userName}
-                  isInvalid={errors.userName ? true : false}
-                  type="text" 
-                  placeholder="Enter Username" />
-                <Form.Control.Feedback type="invalid">
-                  {errors.userName ? errors.userName.message : ""}
-                </Form.Control.Feedback>
-              </Form.Group>
-              <Form.Group className="mb-3">
-                <Form.Label>Password</Form.Label>
-                <Form.Control 
-                  {...register("password")}
-                  isValid={!errors.password}
-                  isInvalid={errors.password ? true : false}
-                  type="password" 
-                  placeholder="Enter Password" />
-                <Form.Control.Feedback type="invalid">
-                  {errors.password ? errors.password.message : ""}
-                </Form.Control.Feedback>
-              </Form.Group>
-              <NavLink to="/register" className="nav-link">Or Register</NavLink>
-              <div className="d-flex justify-content-end">
+            <h1 className="hstack justify-content-center">
+              <i className="bi bi-emoji-sunglasses-fill pe-2" style={{color: "#FFEB3B"}}></i>
+              <span>
+                ONLINE-CHESS.COM
+              </span>
+            </h1>
+            <div className="form-body mt-4">
+              <div className="form-body-content">
+                <Form.Group className="mb-4 mt-3">
+                  <Form.Control 
+                    {...register("userName")}
+                    isValid={!errors.userName}
+                    isInvalid={errors.userName ? true : false}
+                    type="text" 
+                    placeholder="Enter Username" />
+                  <Form.Control.Feedback type="invalid">
+                    {errors.userName ? errors.userName.message : ""}
+                  </Form.Control.Feedback>
+                </Form.Group>
+                <Form.Group className="mb-4">
+                  <Form.Control 
+                    {...register("password")}
+                    isValid={!errors.password}
+                    isInvalid={errors.password ? true : false}
+                    type="password" 
+                    placeholder="Enter Password" />
+                  <Form.Control.Feedback type="invalid">
+                    {errors.password ? errors.password.message : ""}
+                  </Form.Control.Feedback>
+                </Form.Group>
                 <Button 
                   disabled={loading}
-                  className="w-50" 
+                  className="w-100" 
+                  size="lg"
                   type="submit">
                   {
                     loading ? <>
                       <Spinner 
                         size="sm"
                         animation="border" variant="dark" /> 
-                    </> : <>Submit</>
+                    </> : <>Log In</>
                   }
                 </Button>
+              </div>
+              <div className="form-footer hstack justify-content-center">
+                <NavLink to="/register" className="nav-link">No account yet? Register here.</NavLink>
               </div>
             </div>
           </Form>
