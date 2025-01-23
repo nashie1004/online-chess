@@ -89,21 +89,37 @@ table tr td.stripe-td{
   background-color: var(--bg-6) !important;
 }
 .table-footer{
-  background-color: var(--bg-3);
-  min-height: 70px;
+  background-color: var(--bg-5);
+  padding-left: .5rem;
+  border-radius: 0rem 0rem .5rem .5rem;
 }
 .table-pagination{
   display: flex;
   padding-left: 0;
-  padding-top: 1rem;
+  /* padding-top: 1rem; */
+  cursor: pointer;
+  gap: .5rem;
+  height: 35px;
+  justify-content: left;
 }
 .table-pagination li{
+  background-color: var(--bg-1);
   list-style-type: none;
   background-color: var(--btn-2);
+  padding: .5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: .35rem;
 }
-.table-pagination li i{
-  font-size: 1rem;
-  padding: 2rem;
+.table-pagination li:hover{
+  opacity: .8;
+}
+.table-pagination .page-no{
+  font-size: .9rem;
+  color: var(--text-2);
+  padding-inline: 1rem;
+  font-weight: 500;
 }
 form {
   /* background-color: var(--bg-1) !important; */
