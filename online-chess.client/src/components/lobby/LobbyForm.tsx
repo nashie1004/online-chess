@@ -68,7 +68,7 @@ export default function LobbyForm(
                     </Form.Group>
                     <button
                         disabled={roomKey ? true : false} 
-                        type="submit" className="btn btn-2 w-100">Queue</button>
+                        type="submit" className="btn btn-1 w-100">Queue</button>
                 </div>
             </Form>
         </div>

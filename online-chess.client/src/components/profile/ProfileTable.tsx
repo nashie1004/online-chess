@@ -38,7 +38,10 @@ export default function ProfileTable(){
 
     return <>
     <div className="table-title">
-     <h5 className="">GAME HISTORY</h5>
+     <h5 className="">
+      <i className="bi bi-clock-history" style={{ color: "#FFFFFF", fontSize: "1.5rem" }}></i>
+      <span className="ps-2">GAME HISTORY</span>
+     </h5>
     </div>
     <Table responsive striped size="sm">
       <thead>

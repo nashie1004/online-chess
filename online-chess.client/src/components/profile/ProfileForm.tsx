@@ -128,15 +128,16 @@ export default function ProfileForm(){
                   </Form.Group>
                 </Col>
               </Row>
-              <Form.Check  
-                type="checkbox"
-                label="Edit Profile"
-                onChange={() => setEditableProfile(prev => !prev)}
-                className="mb-3"
-              />
+              
+              <div className="form-check mb-3">
+                <input 
+                  onChange={() => setEditableProfile(prev => !prev)}
+                  type="checkbox" className="form-check-input" />
+                <label htmlFor="" className="form-check-label mt-1 ps-1">Edit Profile</label>
+              </div>
                 <Button 
                 disabled={loading || editableProfile}
-                className="w-100" 
+                className="w-100 btn-1" 
                 type="submit">
                 {
                   loading ? <>
