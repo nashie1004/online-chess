@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef } from "react"
 import { Options as gameOptions } from "../game/utilities/constants";
 import { eventEmitter } from "../game/utilities/eventEmitter";
 import usePhaserContext from "../hooks/usePhaserContext";
-import { IKingState, IInitialGameInfo, IChat, IPiece, IMove } from "../game/utilities/types";
+import { IKingState, IInitialGameInfo, IChat, IPiece, IMove, IPieceMove } from "../game/utilities/types";
 import SidebarRight from "../components/play/SidebarRight";
 import { MainGameScene } from "../game/scenes/MainGameScene";
 import CaptureHistory from "../components/play/CaptureHistory";
@@ -69,17 +69,26 @@ export default function Main(){
 
             await signalRContext.addHandler("ReceiveMessages", (messages: IChat[]) => setMessages(messages));
             await signalRContext.addHandler("APieceHasMoved", (data) => {
-                const moveInfo = data.moveInfo as IMove[];
+                const moveInfo = data.moveInfo as IPieceMove;
                 const moveIsWhite = data.moveIsWhite as boolean;
+                const whoseMoveNext = data.whoseMoveNext as string;
 
-                console.log("piece moved: ", data)
+                // console.log("APieceHasMoved: ", data)
 
                 setMoveHistory(prev => {
                     if (moveIsWhite){
                         return ({ ...prev, white: [...prev.white, moveInfo] })
                     }
                     return ({ ...prev, black: [...prev.black, moveInfo] })
-                })
+                });
+
+                const thisPlayersTurnToMove = user?.userName === whoseMoveNext
+                eventEmitter.emit("setIsPlayersTurn", !thisPlayersTurnToMove);
+                
+                if (thisPlayersTurnToMove){
+                    eventEmitter.emit("setEnemyMove", moveInfo);
+                }
+
             });
 
             await signalRContext.invoke("GameStart", url.gameRoomId);

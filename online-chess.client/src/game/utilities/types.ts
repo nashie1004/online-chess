@@ -21,6 +21,11 @@ export interface IMoveInfo extends IBaseCoordinates{
     pieceName: string
 }
 
+export interface IPieceMove{
+    old: IPiece;
+    new: IPiece;
+}
+
 export interface IMove{
     old: IMoveInfo;
     new: IMoveInfo;

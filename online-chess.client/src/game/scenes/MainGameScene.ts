@@ -6,7 +6,7 @@ import capture from "../../assets/sounds/Capture.ogg"
 import select from "../../assets/sounds/Select.ogg"
 import check from "../../assets/sounds/Check.mp3"
 import pieces, { Options as gameOptions, PieceNames, pieceImages, baseKingState } from "../utilities/constants";
-import { IBothKingsPosition, IKingState, IMoveInfo, IPhaserContextValues, IPiece, IPiecesCoordinates, PromoteTo } from "../utilities/types";
+import { IBothKingsPosition, IKingState, IMoveInfo, IPhaserContextValues, IPiece, IPieceMove, IPiecesCoordinates, PromoteTo } from "../utilities/types";
 import { eventEmitter } from "../utilities/eventEmitter";
 import KingCastled from "../logic/kingCastled";
 import PawnPromote from "../logic/pawnPromote";
@@ -25,6 +25,7 @@ export class MainGameScene extends Scene{
     private readonly previewBoard: (GameObjects.Sprite)[][] // has a visible property
     private readonly boardOrientationIsWhite: boolean;
     private selectedPiece: IMoveInfo | null;
+    private isPlayersTurnToMove;
     
     // server state
     private readonly board: (null | GameObjects.Sprite)[][]
@@ -47,6 +48,7 @@ export class MainGameScene extends Scene{
         }
 
         // game internal state
+        this.isPlayersTurnToMove = isColorWhite;
         this.selectedPiece = null;
         this.boardOrientationIsWhite = isColorWhite;
         this.bothKingsPosition = {
@@ -140,8 +142,12 @@ export class MainGameScene extends Scene{
 
                     // not allowed to move
                     if (
-                        (name[0] !== "w" && this.reactState.isWhitesTurn) ||
-                        (name[0] !== "b" && !this.reactState.isWhitesTurn)
+                        !this.isPlayersTurnToMove || (
+                            (this.boardOrientationIsWhite && name[0] !== "w") ||
+                            (!this.boardOrientationIsWhite && name[0] !== "b")
+                        ) 
+                        // (name[0] !== "w" && this.reactState.isWhitesTurn) ||
+                        // (name[0] !== "b" && !this.reactState.isWhitesTurn)
                     ){
                         return;
                     }
@@ -155,8 +161,12 @@ export class MainGameScene extends Scene{
 
                     // not allowed to move
                     if (
-                        (name[0] !== "w" && this.reactState.isWhitesTurn) ||
-                        (name[0] !== "b" && !this.reactState.isWhitesTurn)
+                        !this.isPlayersTurnToMove || (
+                            (this.boardOrientationIsWhite && name[0] !== "w") ||
+                            (!this.boardOrientationIsWhite && name[0] !== "b")
+                        ) 
+                        // (name[0] !== "w" && this.reactState.isWhitesTurn) ||
+                        // (name[0] !== "b" && !this.reactState.isWhitesTurn)
                     ){
                         return;
                     }
@@ -198,6 +208,22 @@ export class MainGameScene extends Scene{
         eventEmitter.on("setPromoteTo", (data: PromoteTo) => this.reactState.promoteTo = data);
         eventEmitter.on("setIsWhitesOrientation", (data: boolean) => this.reactState.isWhitesOrientation = data);
         eventEmitter.on("setKingsState", (data: IKingState) => this.reactState.kingsState = data);
+        eventEmitter.on("setIsPlayersTurn", (data: boolean) => this.isPlayersTurnToMove = data);
+        eventEmitter.on("setEnemyMove", (data: IPieceMove) => {
+           
+            if (!this.boardOrientationIsWhite) {
+                // flip y
+                data.old.y = Math.abs(data.old.y - 7);
+                data.new.y = Math.abs(data.new.y - 7);
+            }
+
+            this.selectedPiece = {
+                x: data.old.x,
+                y: data.old.y,
+                pieceName: data.old.uniqueName ?? ``
+            }
+            this.move(data.new.x, data.new.y);
+        });
     }
 
     resetMoves(){
@@ -289,8 +315,11 @@ export class MainGameScene extends Scene{
         const oldMove: IPiece = { x: this.selectedPiece.x, y: this.selectedPiece.y, uniqueName: uniquePieceName, name: pieceName };
         const newMove: IPiece = { x: newX, y: newY, uniqueName: uniquePieceName, name: pieceName };
 
-        eventEmitter.emit("setMovePiece", { oldMove, newMove });
-        eventEmitter.emit("setIsWhitesTurn", !isWhite)
+        if (this.isPlayersTurnToMove){
+            console.log(this.isPlayersTurnToMove)
+            eventEmitter.emit("setMovePiece", { oldMove, newMove });
+            eventEmitter.emit("setIsWhitesTurn", !isWhite);
+        }
         // eventEmitter.emit("setMoveHistory", this.reactState.moveHistory)
         // eventEmitter.emit("setCaptureHistory", this.reactState.captureHistory)
 
