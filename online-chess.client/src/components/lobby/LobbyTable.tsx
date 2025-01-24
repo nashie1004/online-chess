@@ -109,28 +109,29 @@ export default function LobbyTable({
                 setModal(false);
             }}
             >
-            <Modal.Header closeButton>
-                <Modal.Title id="contained-modal-title-vcenter">
-                    Confirmation
-                </Modal.Title>
-            </Modal.Header>
             <Modal.Body>
-                <h5>Are you sure you want to join this game?</h5>
-                {
-                    selectedRoom ? <>
-                        <p>Connection Id: {selectedRoom.key}</p>
-                        <p>Created By User: {selectedRoom.value.createdByUserId}</p>
-                        <p>Game Type: { gameTypeDisplay(selectedRoom.value.gameType)}</p>
-                        <p>Last Update Date: {moment(selectedRoom.value.createDate).fromNow()}</p>
-                    </> : <></>
-                }
+                <div className="m-header">
+                    <h5>Are you sure you want to join this game?</h5>
+                </div>
+                <div className="m-body">
+                    {
+                        selectedRoom ? <>
+                            <p><b>Connection Id:</b> {selectedRoom.key}</p>
+                            <p><b>Created By User:</b> {selectedRoom.value.createdByUserId}</p>
+                            <p><b>Game Type:</b> {gameTypeDisplay(selectedRoom.value.gameType)}</p>
+                            <p><b>Create Date Time:</b> {moment(selectedRoom.value.createDate).fromNow()}</p>
+                        </> : <></>
+                    }
+                </div>
+                <div className="m-footer">
+                    <button 
+                        className="btn btn-1 w-25"
+                        onClick={() => {
+                            setModal(false);
+                            invoke("JoinRoom", selectedRoom?.key);
+                        }}>Play</button>
+                </div>
             </Modal.Body>
-            <Modal.Footer>
-                <Button onClick={() => {
-                    setModal(false);
-                    invoke("JoinRoom", selectedRoom?.key);
-                }}>Play</Button>
-            </Modal.Footer>
             </Modal>
     </>
 }

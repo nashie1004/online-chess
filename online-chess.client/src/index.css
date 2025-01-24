@@ -265,3 +265,31 @@ input:disabled::placeholder {
 .about-page a{
   color: var(--text-1);
 }
+div.modal-body,
+div.modal-content
+{
+  background-color: var(--bg-1);
+  border-radius: 1rem;
+  padding: 0;
+}
+.modal-body .m-header{
+  background-color: var(--bg-2);
+  border-radius: 1rem 1rem 0 0;
+  padding: 1.5rem;
+  border: none;
+  outline: none;
+}
+.modal-body .m-body{
+  color: var(--text-2);
+  padding: 1rem;
+}
+.modal-body .m-body b{
+  /* color: var(--text-1); */
+}
+.modal-body .m-footer{
+  display: flex;
+  justify-content: right;
+  background-color: var(--bg-6);
+  border-radius:  0 0 1rem 1rem;
+  padding: 1rem;
+}
