@@ -1,5 +1,6 @@
 import { GameObjects, Scene } from "phaser";
 import bg from "../../assets/wood4-800x800.jpg"
+//import bg from "../../assets/boards/brown.png"
 import previewMove from "../../assets/indicator.png"
 import move from "../../assets/sounds/Move.ogg"
 import capture from "../../assets/sounds/Capture.ogg"
