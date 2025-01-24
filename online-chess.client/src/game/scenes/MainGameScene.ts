@@ -210,25 +210,22 @@ export class MainGameScene extends Scene{
         eventEmitter.on("setPromoteTo", (data: PromoteTo) => this.reactState.promoteTo = data);
         eventEmitter.on("setIsWhitesOrientation", (data: boolean) => this.reactState.isWhitesOrientation = data);
         eventEmitter.on("setKingsState", (data: IKingState) => this.reactState.kingsState = data);
-        eventEmitter.on("setIsPlayersTurn", (data: boolean) => {
-            this.isPlayersTurnToMove = data;
-            console.log("setIsPlayersTurn:", this.isPlayersTurnToMove)            
-        });
+        
         eventEmitter.on("setEnemyMove", (data: IPieceMove) => {
-           
-            if (!this.boardOrientationIsWhite) {
-                // flip y
-                data.old.y = Math.abs(data.old.y - 7);
-                data.new.y = Math.abs(data.new.y - 7);
-            } 
-            //console.log("setEnemyMove: ", data)
+            // flip y
+            const oldY = 7 - data.old.y;
+            const newY = 7 - data.new.y;
+            
+            console.log("setEnemyMove: ", { oldY, newY })
 
             this.selectedPiece = {
                 x: data.old.x,
-                y: data.old.y,
+                y: oldY,
                 pieceName: data.old.uniqueName ?? ``
             }
-            this.move(data.new.x, data.new.y);
+            this.move(data.new.x, newY);
+            
+            this.isPlayersTurnToMove = true;
         });
     }
 
@@ -325,9 +322,8 @@ export class MainGameScene extends Scene{
 
         if (this.isPlayersTurnToMove){
             this.isPlayersTurnToMove = false;
-            console.log(`this.isPlayersTurnToMove: `, this.isPlayersTurnToMove)
             eventEmitter.emit("setMovePiece", { oldMove, newMove });
-            eventEmitter.emit("setIsWhitesTurn", !isWhite);
+            //eventEmitter.emit("setIsWhitesTurn", !isWhite);
         }
         // eventEmitter.emit("setMoveHistory", this.reactState.moveHistory)
         // eventEmitter.emit("setCaptureHistory", this.reactState.captureHistory)

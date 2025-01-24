@@ -25,7 +25,7 @@ export default function Main(){
     const signalRContext = useSignalRContext();
     const url = useParams();
     const { user } = useAuthContext();
-    const connectionRef = useRef<boolean | null>(null);
+    const signalRConnectionRef = useRef<boolean | null>(null);
 
     const initPhaser = useCallback((initGameInfo: IInitialGameInfo) => {
         setGameRoomKey(initGameInfo.gameRoomKey);
@@ -51,7 +51,7 @@ export default function Main(){
         }
 
         // connect react and phaser
-        eventEmitter.on("setIsWhitesTurn", (data: boolean) => setIsWhitesTurn(data));
+        //eventEmitter.on("setIsWhitesTurn", (data: boolean) => setIsWhitesTurn(data));
         // eventEmitter.on("setMoveHistory", (data: IMoveHistory) => setMoveHistory(data));
         // eventEmitter.on("setCaptureHistory", (data: ICaptureHistory) => setCaptureHistory(data));
         eventEmitter.on("setKingsState", (data: IKingState) => setKingsState(data));
@@ -73,19 +73,14 @@ export default function Main(){
     useEffect(() => {
         async function start() {
             await signalRContext.startConnection(_ => {});
-            connectionRef.current = true;
+            signalRConnectionRef.current = true;
 
             await signalRContext.addHandler("NotFound", _ => navigate("/notFound"));
             await signalRContext.addHandler("InitializeGameInfo", initPhaser);
 
             await signalRContext.addHandler("ReceiveMessages", (messages: IChat[]) => setMessages(messages));
             await signalRContext.addHandler("OpponentPieceMoved", (data) => {
-                const moveInfo = data.moveInfo as IPieceMove;
-
-                console.log("OpponentPieceMoved", data)
-
-                eventEmitter.emit("setIsPlayersTurn", true);
-                eventEmitter.emit("setEnemyMove", moveInfo);
+                eventEmitter.emit("setEnemyMove", data.moveInfo as IPieceMove);
             });
             await signalRContext.addHandler("UpdateMoveHistory", (data) => {
                 const moveInfo = data.moveInfo as IPieceMove;
@@ -102,7 +97,7 @@ export default function Main(){
             await signalRContext.invoke("GameStart", url.gameRoomId);
         }
 
-        if (!connectionRef.current){
+        if (!signalRConnectionRef.current){
             console.log("start")
             start();
         }
@@ -110,16 +105,15 @@ export default function Main(){
         return () => {
             // cleanup phaser
             if (gameRef.current){
-                signalRContext.removeHandler("NotFound");
-                signalRContext.removeHandler("InitializeGameInfo");
-                signalRContext.removeHandler("ReceiveMessages");
-                signalRContext.removeHandler("OpponentPieceMoved");
-                signalRContext.removeHandler("UpdateMoveHistory");
-
                 gameRef.current.destroy(true);
                 gameRef.current = null;
             }
             
+            signalRContext.removeHandler("NotFound");
+            signalRContext.removeHandler("InitializeGameInfo");
+            signalRContext.removeHandler("ReceiveMessages");
+            signalRContext.removeHandler("OpponentPieceMoved");
+            signalRContext.removeHandler("UpdateMoveHistory");
             signalRContext.stopConnection();
         };
     }, [])
