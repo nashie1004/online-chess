@@ -39,6 +39,7 @@ export default function LobbyForm(
                 <div className="match-form-body pb-4">
                     <Form.Group className="mb-3">
                         <Form.Select 
+                            disabled={roomKey ? true : false} 
                             onChange={(e) => {
                                 const val = Number(e.target.value) as GameType;
                                 setGameType(val);
@@ -54,6 +55,7 @@ export default function LobbyForm(
                     </Form.Group>
                     <Form.Group className='mb-3'>
                         <Form.Select
+                            disabled={roomKey ? true : false} 
                             onChange={(e) => {
                                 const val = Number(e.target.value) as ColorOptions;
                                 setColorOption(val);

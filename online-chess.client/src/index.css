@@ -74,10 +74,14 @@ table th{
   color: var(--text-2) !important;
   border: none;
 }
+table tbody tr{
+  height: 50px;
+}
 table td{
   background-color: var(--bg-3) !important;
   color: var(--text-2) !important;
   border: none;
+  vertical-align: middle;
 }
 table td.table-win{
   color: var(--text-3) !important;
@@ -88,14 +92,31 @@ table td.table-lose{
 table tr td.stripe-td{
   background-color: var(--bg-6) !important;
 }
+.rank-1, .rank-2, .rank-3{
+  color: var(--bg-2) !important;
+  text-align: center;
+  padding: .5rem;
+  border-radius: .3rem;
+  width: 50px;
+}
+.rank-1{
+  background-color: var(--text-5) !important;
+}
+.rank-2{
+  background-color: var(--text-2) !important;
+}
+.rank-3{
+  background-color: var(--btn-1) !important;
+}
 .table-footer{
   background-color: var(--bg-5);
-  padding-left: .5rem;
   border-radius: 0rem 0rem .5rem .5rem;
+  padding: .5rem;
 }
-.table-pagination{
+ul.table-pagination{
   display: flex;
-  padding-left: 0;
+  padding: 0;
+  margin: 0;
   /* padding-top: 1rem; */
   cursor: pointer;
   gap: .5rem;
@@ -206,7 +227,7 @@ input:disabled::placeholder {
 .sidebar-body-1, .match-form-body{
   background-color: var(--bg-2);
   padding: 1rem;
-  padding-block: 0;
+  /* padding-block: 0; */
 }
 .match-form-body{
   padding-top: 1rem;

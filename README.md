@@ -34,13 +34,11 @@ after that, the web application should now be running.
 - https://www.piskelapp.com/
 
 ## Todo
-(as of 1/19/2025) 1. play page game state (pieces coords, whose turn is it, timer)
+1. play page game state (pieces coords, whose turn is it, timer)
 2. disconnect/leave logic
 4. refactor/clean react and signalr logic
-~~5. profile edit~~
 7. promotion picker
 8. show notation on chessboard 
-9. beautify UI
 10. fifty move rule and/or 3 fold repetition
 ### Refactor issues:
 11. queenside castling
