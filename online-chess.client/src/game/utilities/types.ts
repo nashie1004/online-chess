@@ -95,6 +95,7 @@ export interface ISignalRContext {
     stopConnection: () => void;
     invoke: (methodName: string, ...args: any[]) => void;
     addHandler: (methodName: string, method: (...args: any[]) => void) => void;
+    removeHandler: (methodName: string) => void;
 }
 
 export interface IBothKingsPosition{

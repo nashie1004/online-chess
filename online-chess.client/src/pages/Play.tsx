@@ -25,6 +25,7 @@ export default function Main(){
     const signalRContext = useSignalRContext();
     const url = useParams();
     const { user } = useAuthContext();
+    const connectionRef = useRef<boolean | null>(null);
 
     const initPhaser = useCallback((initGameInfo: IInitialGameInfo) => {
         setGameRoomKey(initGameInfo.gameRoomKey);
@@ -58,7 +59,7 @@ export default function Main(){
         eventEmitter.on("setMovePiece", (move: any) => {
             const oldMove = move.oldMove as IPiece;
 
-            console.log("setMovePiece: ", move, oldMove.name) //
+            //console.log("setMovePiece: ", move, oldMove.name) //
             // only emit if 
             if (
                 (oldMove.name[0] === "w" && playerIsWhite) ||
@@ -72,17 +73,23 @@ export default function Main(){
     useEffect(() => {
         async function start() {
             await signalRContext.startConnection(_ => {});
+            connectionRef.current = true;
 
             await signalRContext.addHandler("NotFound", _ => navigate("/notFound"));
             await signalRContext.addHandler("InitializeGameInfo", initPhaser);
 
             await signalRContext.addHandler("ReceiveMessages", (messages: IChat[]) => setMessages(messages));
-            await signalRContext.addHandler("APieceHasMoved", (data) => {
+            await signalRContext.addHandler("OpponentPieceMoved", (data) => {
+                const moveInfo = data.moveInfo as IPieceMove;
+
+                console.log("OpponentPieceMoved", data)
+
+                eventEmitter.emit("setIsPlayersTurn", true);
+                eventEmitter.emit("setEnemyMove", moveInfo);
+            });
+            await signalRContext.addHandler("UpdateMoveHistory", (data) => {
                 const moveInfo = data.moveInfo as IPieceMove;
                 const moveIsWhite = data.moveIsWhite as boolean;
-                const whoseMoveNext = data.whoseMoveNext as string;
-
-                // console.log("APieceHasMoved: ", data)
 
                 setMoveHistory(prev => {
                     if (moveIsWhite){
@@ -90,29 +97,25 @@ export default function Main(){
                     }
                     return ({ ...prev, black: [...prev.black, moveInfo] })
                 });
-
-                const thisPlayersTurnToMove = user?.userName === whoseMoveNext
-                
-                console.log("APieceHasMoved", user?.userName, whoseMoveNext)
-
-                if (thisPlayersTurnToMove){
-                    eventEmitter.emit("setIsPlayersTurn", true);
-                    eventEmitter.emit("setEnemyMove", moveInfo);
-                } 
-                else {
-                    eventEmitter.emit("setIsPlayersTurn", false);
-                }
-
-            });
+            })
 
             await signalRContext.invoke("GameStart", url.gameRoomId);
         }
 
-        start();
+        if (!connectionRef.current){
+            console.log("start")
+            start();
+        }
 
         return () => {
             // cleanup phaser
             if (gameRef.current){
+                signalRContext.removeHandler("NotFound");
+                signalRContext.removeHandler("InitializeGameInfo");
+                signalRContext.removeHandler("ReceiveMessages");
+                signalRContext.removeHandler("OpponentPieceMoved");
+                signalRContext.removeHandler("UpdateMoveHistory");
+
                 gameRef.current.destroy(true);
                 gameRef.current = null;
             }
@@ -120,6 +123,8 @@ export default function Main(){
             signalRContext.stopConnection();
         };
     }, [])
+
+    //console.log("render")
  
     return <> 
         <div className="col-auto pt-2">

@@ -61,10 +61,17 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
             var retVal = new{
                 moveInfo
                 , moveIsWhite = pieceMoveIsWhite
-                , whoseMoveNext = request.IdentityUserName == room.CreatedByUserId ? room.JoinedByUserId : room.CreatedByUserId
             };
 
-            await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync("APieceHasMoved", retVal);
+
+            // send move to opponent player
+            string opponentConnectionId = _authenticatedUserService.GetConnectionId(
+                request.IdentityUserName == room.CreatedByUserId ? room.JoinedByUserId : room.CreatedByUserId
+            );
+            await _hubContext.Clients.Client(opponentConnectionId).SendAsync("OpponentPieceMoved", retVal);
+
+            // send updated move history to both players
+            await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync("UpdateMoveHistory", retVal);
 
             return Unit.Value;
          }

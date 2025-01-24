@@ -159,6 +159,8 @@ export class MainGameScene extends Scene{
                  })
                 .on("pointerdown", () => {
 
+                    //console.log(`player's turn to move: ${this.isPlayersTurnToMove}`)
+
                     // not allowed to move
                     if (
                         !this.isPlayersTurnToMove || (
@@ -210,7 +212,7 @@ export class MainGameScene extends Scene{
         eventEmitter.on("setKingsState", (data: IKingState) => this.reactState.kingsState = data);
         eventEmitter.on("setIsPlayersTurn", (data: boolean) => {
             this.isPlayersTurnToMove = data;
-            //console.log("setIsPlayersTurn:", data, this.isPlayersTurnToMove)            
+            console.log("setIsPlayersTurn:", this.isPlayersTurnToMove)            
         });
         eventEmitter.on("setEnemyMove", (data: IPieceMove) => {
            
@@ -322,6 +324,8 @@ export class MainGameScene extends Scene{
         const newMove: IPiece = { x: newX, y: newY, uniqueName: uniquePieceName, name: pieceName };
 
         if (this.isPlayersTurnToMove){
+            this.isPlayersTurnToMove = false;
+            console.log(`this.isPlayersTurnToMove: `, this.isPlayersTurnToMove)
             eventEmitter.emit("setMovePiece", { oldMove, newMove });
             eventEmitter.emit("setIsWhitesTurn", !isWhite);
         }
