@@ -76,31 +76,35 @@ export default function LobbyTable({
             </tbody>
         </Table>
         <div>
-            <ul className="pagination-select">
-                <li
-                    className="skip-end"
-                    onClick={() => {
-                        if (pageNo > 1){
-                            setGameRoomList(prev => ({ ...prev, isLoading: true }));
-                        }
-                        setPageNo(prev => Math.max(prev - 1, 1));
-                    }}
-                >
-                    <i className="bi bi-skip-start-fill" ></i>
-                </li>
-                <li className="page-no">{pageNo}</li>
-                <li
-                    className="skip-start"
-                    onClick={() => {
+        <div className="table-footer">
+            <ul className="table-pagination">
+            <li
+                className="skip-end"
+                onClick={() => {
+                    if (pageNo > 1){
                         setGameRoomList(prev => ({ ...prev, isLoading: true }));
-                        setPageNo(prev => prev + 1);
-                    }}
-                >
-                    <i className="bi bi-skip-end-fill" ></i>
-                </li>
-                </ul>
-            </div>
-        
+                    }
+                    setPageNo(prev => Math.max(prev - 1, 1));
+                }}
+            >
+                <i className="bi bi-skip-start-fill" style={{ color: "#A8A8A7", fontSize: "1.35rem" }}  ></i>
+            </li>
+            <li className="page-no">
+                {pageNo}
+            </li>
+            <li
+                className="skip-start"
+                onClick={() => {
+                    setGameRoomList(prev => ({ ...prev, isLoading: true }));
+                    setPageNo(prev => prev + 1);
+                }}
+            >
+                <i className="bi bi-skip-end-fill" style={{ color: "#A8A8A7", fontSize: "1.35rem" }} ></i>
+            </li>
+            </ul>
+        </div>
+        </div>
+
         <Modal
             size="lg"
             centered

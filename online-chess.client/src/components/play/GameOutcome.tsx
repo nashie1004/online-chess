@@ -22,23 +22,23 @@ export default function GameOutcome() {
         </div>
 
         <Modal
-      size="lg"
       aria-labelledby="contained-modal-title-vcenter"
       centered
       show={modalShow}
       onHide={() => setModalShow(false)}
     >
-      <Modal.Header closeButton>
-        <Modal.Title id="contained-modal-title-vcenter">
-          Resignation
-        </Modal.Title>
-      </Modal.Header>
       <Modal.Body>
-        <p>Are you sure you want to resign?</p>
+        <div className="m-body">
+          <h5>Are you sure you want to resign?</h5>
+          <div className="d-flex justify-content-end">
+            <button 
+              className="btn btn-1 w-100 mt-5 btn-lg"
+              onClick={() => setModalShow(false)}>
+              Yes
+            </button>
+          </div>
+        </div>
       </Modal.Body>
-      <Modal.Footer>
-        <Button onClick={() => setModalShow(false)}>Yes</Button>
-      </Modal.Footer>
     </Modal>
     </>
   )
