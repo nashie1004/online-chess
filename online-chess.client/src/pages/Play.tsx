@@ -56,7 +56,16 @@ export default function Main(){
         eventEmitter.on("setKingsState", (data: IKingState) => setKingsState(data));
 
         eventEmitter.on("setMovePiece", (move: any) => {
-            signalRContext.invoke("MovePiece", initGameInfo.gameRoomKey, move.oldMove, move.newMove);
+            const oldMove = move.oldMove as IPiece;
+
+            console.log("setMovePiece: ", move, oldMove.name) //
+            // only emit if 
+            if (
+                (oldMove.name[0] === "w" && playerIsWhite) ||
+                (oldMove.name[0] === "b" && !playerIsWhite)
+            ){
+                signalRContext.invoke("MovePiece", initGameInfo.gameRoomKey, move.oldMove, move.newMove);
+            }
         });
     }, []);
 
@@ -83,10 +92,15 @@ export default function Main(){
                 });
 
                 const thisPlayersTurnToMove = user?.userName === whoseMoveNext
-                eventEmitter.emit("setIsPlayersTurn", !thisPlayersTurnToMove);
                 
+                console.log("APieceHasMoved", user?.userName, whoseMoveNext)
+
                 if (thisPlayersTurnToMove){
+                    eventEmitter.emit("setIsPlayersTurn", true);
                     eventEmitter.emit("setEnemyMove", moveInfo);
+                } 
+                else {
+                    eventEmitter.emit("setIsPlayersTurn", false);
                 }
 
             });

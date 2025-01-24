@@ -25,7 +25,7 @@ export class MainGameScene extends Scene{
     private readonly previewBoard: (GameObjects.Sprite)[][] // has a visible property
     private readonly boardOrientationIsWhite: boolean;
     private selectedPiece: IMoveInfo | null;
-    private isPlayersTurnToMove;
+    private isPlayersTurnToMove: boolean;
     
     // server state
     private readonly board: (null | GameObjects.Sprite)[][]
@@ -208,14 +208,18 @@ export class MainGameScene extends Scene{
         eventEmitter.on("setPromoteTo", (data: PromoteTo) => this.reactState.promoteTo = data);
         eventEmitter.on("setIsWhitesOrientation", (data: boolean) => this.reactState.isWhitesOrientation = data);
         eventEmitter.on("setKingsState", (data: IKingState) => this.reactState.kingsState = data);
-        eventEmitter.on("setIsPlayersTurn", (data: boolean) => this.isPlayersTurnToMove = data);
+        eventEmitter.on("setIsPlayersTurn", (data: boolean) => {
+            this.isPlayersTurnToMove = data;
+            //console.log("setIsPlayersTurn:", data, this.isPlayersTurnToMove)            
+        });
         eventEmitter.on("setEnemyMove", (data: IPieceMove) => {
            
             if (!this.boardOrientationIsWhite) {
                 // flip y
                 data.old.y = Math.abs(data.old.y - 7);
                 data.new.y = Math.abs(data.new.y - 7);
-            }
+            } 
+            //console.log("setEnemyMove: ", data)
 
             this.selectedPiece = {
                 x: data.old.x,
@@ -241,6 +245,8 @@ export class MainGameScene extends Scene{
     }
 
     move(newX: number, newY: number){
+        //console.log("move func: ", this.selectedPiece, newX, newY)
+
         let hasCapture = false;
 
         if (!this.selectedPiece) return hasCapture;
@@ -316,7 +322,6 @@ export class MainGameScene extends Scene{
         const newMove: IPiece = { x: newX, y: newY, uniqueName: uniquePieceName, name: pieceName };
 
         if (this.isPlayersTurnToMove){
-            console.log(this.isPlayersTurnToMove)
             eventEmitter.emit("setMovePiece", { oldMove, newMove });
             eventEmitter.emit("setIsWhitesTurn", !isWhite);
         }
