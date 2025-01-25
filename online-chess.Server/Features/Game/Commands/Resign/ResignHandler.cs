@@ -1,6 +1,9 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
+using online_chess.Server.Enums;
 using online_chess.Server.Hubs;
+using online_chess.Server.Models.Entities;
 using online_chess.Server.Persistence;
 using online_chess.Server.Service;
 
@@ -12,25 +15,59 @@ namespace online_chess.Server.Features.Game.Commands.Resign
         private readonly IHubContext<GameHub> _hubContext;
         private readonly MainDbContext _mainContext;
         private readonly AuthenticatedUserService _authenticatedUserService;
-        private readonly UserIdentityDbContext _userIdentityDbContext;
+        private readonly UserManager<User> _userManager;
 
         public ResignHandler(
             GameRoomService gameRoomService
             , IHubContext<GameHub> hubContext
             , MainDbContext mainDbContext
             , AuthenticatedUserService authenticatedUserService
-            , UserIdentityDbContext userIdentityDbContext
+            , UserManager<User> userManager
             )
         {
             _gameRoomService = gameRoomService;
             _hubContext = hubContext;
             _mainContext = mainDbContext;
             _authenticatedUserService = authenticatedUserService;
-            _userIdentityDbContext = userIdentityDbContext;
+            _userManager = userManager;
         }
         public async Task<Unit> Handle(ResignRequest request, CancellationToken cancellationToken)
         {
-            
+            var room = _gameRoomService.GetOne(request.GameRoomKeyString);
+        
+            if (room == null)
+            {
+                await _hubContext.Clients.Client(request.UserConnectionId).SendAsync("NotFound", true);
+                return Unit.Value;
+            }
+
+            // retrieve ids
+            var creator = await _userManager.FindByNameAsync(room.CreatedByUserId);
+            var joiner = await _userManager.FindByNameAsync(room.JoinedByUserId);
+
+            if (creator == null || joiner == null)
+            {
+                await _hubContext.Clients.Client(request.UserConnectionId).SendAsync("NotFound", true);
+                return Unit.Value;
+            }
+
+            await _mainContext.GameHistories.AddAsync(new GameHistory(){
+                GameStartDate = room.GameStartedAt
+                , GameEndDate = room.CreateDate
+
+                , PlayerOneId = creator.Id
+                , PlayerOneColor = room.CreatedByUserColor
+                , PlayerTwoId = joiner.Id
+                , PlayerTwoColor = room.CreatedByUserColor == Color.White ? Color.Black : Color.White
+                
+                , WinnerPlayerId = request.IdentityUserName == room.CreatedByUserId ? joiner.Id : creator.Id
+                , IsDraw = false
+                , GameType = room.GameType
+            }, cancellationToken);
+
+            await _mainContext.SaveChangesAsync(cancellationToken);
+
+            await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync("GameOver", true);
 
             return Unit.Value;
         }

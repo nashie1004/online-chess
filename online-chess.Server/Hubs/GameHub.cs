@@ -15,6 +15,7 @@ using online_chess.Server.Features.Lobby.Queries.GetRoomList;
 using online_chess.Server.Features.Game.Commands.GameStart;
 using online_chess.Server.Features.Game.Commands.MovePiece;
 using online_chess.Server.Models.Play;
+using online_chess.Server.Features.Game.Commands.Resign;
 
 namespace online_chess.Server.Hubs
 {
@@ -111,7 +112,16 @@ namespace online_chess.Server.Hubs
                 OldMove = oldMove,
                 NewMove = newMove
             });
+        }
         
+        public async Task Resign(string gameRoomKey)
+        {
+            await _mediator.Send(new ResignRequest()
+            {
+                UserConnectionId = Context.ConnectionId,
+                IdentityUserName = Context.User?.Identity?.Name,
+                GameRoomKeyString = gameRoomKey,
+            });
         }
 
         public override async Task OnConnectedAsync()
