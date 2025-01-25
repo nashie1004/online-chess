@@ -33,19 +33,25 @@ after that, the web application should now be running.
 - https://github.com/lichess-org/lila/blob/master/public/images/board/wood4.jpg
 - https://www.piskelapp.com/
 
-## Todo
-1. play page game state (pieces coords, whose turn is it, timer)
-2. disconnect/leave logic
-4. refactor/clean react and signalr logic
-7. promotion picker
-8. show notation on chessboard 
-10. fifty move rule and/or 3 fold repetition
-### Refactor issues:
-11. queenside castling
-12. pawn promotion
+## TODO (Game)
+1. timer
+2. resign
+3. request a draw
+4. fix bugs on piece moves
+5. promotion bug and promotion picker
+6. disconnect or leave logic
+7. save game to db
 
-### UI Possible Templates
-1. https://www.chesssquire.com/chess-vs-computer.html
-2. https://play.chessclub.com/
-3. https://dribbble.com/shots/16771869-Chess-Game-Web-Online-UI-v1/attachments/11821577?mode=media
-4. https://dribbble.com/shots/16792508-Chess-Game-Web-Online-UI-v2/attachments/11845053?mode=media
+## TODO (List pages)
+1. properly get data
+
+## Others
+1. fifty move rule
+2. show proper chess move notation
+3. 3 fold repetition
+
+### SQLite
+```
+cd /online-chess.Server/SQLiteDB
+C:/Users/Nash/Downloads/sqlite-tools-win-x64-3480000/sqlite3.exe app.db
+```

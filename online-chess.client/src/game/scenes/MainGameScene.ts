@@ -147,8 +147,6 @@ export class MainGameScene extends Scene{
                             (this.boardOrientationIsWhite && name[0] !== "w") ||
                             (!this.boardOrientationIsWhite && name[0] !== "b")
                         ) 
-                        // (name[0] !== "w" && this.reactState.isWhitesTurn) ||
-                        // (name[0] !== "b" && !this.reactState.isWhitesTurn)
                     ){
                         return;
                     }
@@ -160,16 +158,12 @@ export class MainGameScene extends Scene{
                  })
                 .on("pointerdown", () => {
 
-                    //console.log(`player's turn to move: ${this.isPlayersTurnToMove}`)
-
                     // not allowed to move
                     if (
                         !this.isPlayersTurnToMove || (
                             (this.boardOrientationIsWhite && name[0] !== "w") ||
                             (!this.boardOrientationIsWhite && name[0] !== "b")
                         ) 
-                        // (name[0] !== "w" && this.reactState.isWhitesTurn) ||
-                        // (name[0] !== "b" && !this.reactState.isWhitesTurn)
                     ){
                         return;
                     }
@@ -213,19 +207,13 @@ export class MainGameScene extends Scene{
         eventEmitter.on("setKingsState", (data: IKingState) => this.reactState.kingsState = data);
         
         eventEmitter.on("setEnemyMove", (data: IPieceMove) => {
-            // flip y
-            const oldY = 7 - data.old.y;
-            const newY = 7 - data.new.y;
-            
-            console.log("setEnemyMove: ", { oldY, newY })
-
             this.selectedPiece = {
                 x: data.old.x,
-                y: oldY,
+                y: data.old.y,
                 pieceName: data.old.uniqueName ?? ``
             }
-            this.move(data.new.x, newY);
-            
+
+            this.move(data.new.x, data.new.y);
             this.isPlayersTurnToMove = true;
         });
     }
@@ -245,8 +233,6 @@ export class MainGameScene extends Scene{
     }
 
     move(newX: number, newY: number){
-        //console.log("move func: ", this.selectedPiece, newX, newY)
-
         let hasCapture = false;
 
         if (!this.selectedPiece) return hasCapture;
