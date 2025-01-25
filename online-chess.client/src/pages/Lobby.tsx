@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Alert, Spinner } from "react-bootstrap"
 import { IGameRoomList } from "../game/utilities/types";
 import LobbyTable from "../components/lobby/LobbyTable";
@@ -10,14 +10,16 @@ import { useNavigate } from "react-router";
 
 export default function Lobby() {
     const [gameRoomList, setGameRoomList] = useState<IGameRoomList>({ list: [], isLoading: true });
-    const { startConnection, stopConnection, addHandler, invoke } = useSignalRContext();
+    const { startConnection, stopConnection, addHandler, removeHandler, invoke } = useSignalRContext();
     const { setUserConnectionId } = useAuthContext(); 
     const [roomKey, setRoomKey] = useState<string | null>(null);
     const navigate = useNavigate();
+    const signalRConnectionRef = useRef<boolean | null>(null);
 
     useEffect(() => {
         async function start(){
-            await startConnection((e) => {});
+            await startConnection(() => {});
+            signalRConnectionRef.current = true;
     
             await addHandler("RefreshRoomList", (roomList) => setGameRoomList({ isLoading: false, list: roomList }));
             await addHandler("InvalidRoomKey", (msg) => toast(msg, { type: "error" }));
@@ -29,9 +31,17 @@ export default function Lobby() {
             await invoke("GetCreatedRoomKey");
         }
 
-        start();
+        if (!signalRConnectionRef.current){
+            console.log("start")
+            start();
+        }
         
         return () => {
+            removeHandler("RefreshRoomList");
+            removeHandler("InvalidRoomKey");
+            removeHandler("GetUserConnectionId");
+            removeHandler("GetRoomKey");
+            removeHandler("MatchFound");
             stopConnection();
             setUserConnectionId(null);
         }

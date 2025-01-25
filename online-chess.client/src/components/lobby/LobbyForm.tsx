@@ -36,9 +36,10 @@ export default function LobbyForm(
                         <i className="bi bi-broadcast-pin pe-2"  style={{ color: "#FFEB3B", fontSize: "1.6rem" }}></i> CREATE A MATCH
                     </h5>
                 </div>
-                <div className="match-form-body">
+                <div className="match-form-body pb-4">
                     <Form.Group className="mb-3">
                         <Form.Select 
+                            disabled={roomKey ? true : false} 
                             onChange={(e) => {
                                 const val = Number(e.target.value) as GameType;
                                 setGameType(val);
@@ -54,6 +55,7 @@ export default function LobbyForm(
                     </Form.Group>
                     <Form.Group className='mb-3'>
                         <Form.Select
+                            disabled={roomKey ? true : false} 
                             onChange={(e) => {
                                 const val = Number(e.target.value) as ColorOptions;
                                 setColorOption(val);

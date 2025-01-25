@@ -81,25 +81,28 @@ export default function ProfileTable(){
           </tr>
         })}
       </tbody>
-      </Table>
-      <div>
-        <ul className="pagination-select">
+    </Table>
+     
+    <div className="table-footer">
+        <ul className="table-pagination">
           <li
             className="skip-end"
             onClick={() => {
               setPageNo(prev => Math.max(prev - 1, 1));
             }}
           >
-            <i className="bi bi-skip-start-fill" ></i>
+            <i className="bi bi-skip-start-fill" style={{ color: "#A8A8A7", fontSize: "1.35rem" }}  ></i>
           </li>
-          <li className="page-no">{pageNo}</li>
+          <li className="page-no">
+            {pageNo}
+          </li>
           <li
             className="skip-start"
             onClick={() => {
               setPageNo(prev => prev + 1);
             }}
           >
-            <i className="bi bi-skip-end-fill" ></i>
+            <i className="bi bi-skip-end-fill" style={{ color: "#A8A8A7", fontSize: "1.35rem" }} ></i>
           </li>
         </ul>
       </div>

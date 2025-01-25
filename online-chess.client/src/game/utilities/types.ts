@@ -21,6 +21,11 @@ export interface IMoveInfo extends IBaseCoordinates{
     pieceName: string
 }
 
+export interface IPieceMove{
+    old: IPiece;
+    new: IPiece;
+}
+
 export interface IMove{
     old: IMoveInfo;
     new: IMoveInfo;
@@ -90,6 +95,7 @@ export interface ISignalRContext {
     stopConnection: () => void;
     invoke: (methodName: string, ...args: any[]) => void;
     addHandler: (methodName: string, method: (...args: any[]) => void) => void;
+    removeHandler: (methodName: string) => void;
 }
 
 export interface IBothKingsPosition{

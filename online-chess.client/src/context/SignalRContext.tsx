@@ -61,13 +61,17 @@ export default function SignalRContext(
         }
     }
 
+    function removeHandler(methodName: string){
+        hubConnection.off(methodName);
+    }
+
     useEffect(() => {
 
     }, [])
 
   return (
     <signalRContext.Provider value={{
-        startConnection, stopConnection, addHandler, invoke
+        startConnection, stopConnection, addHandler, invoke, removeHandler
     }}>
         {children}
     </signalRContext.Provider>

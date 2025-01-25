@@ -1,3 +1,4 @@
+/*
 import wPawn from "../../assets/pieces/wP.svg?raw"
 import wRook from "../../assets/pieces/wR.svg?raw"
 import wKnight from "../../assets/pieces/wN.svg?raw"
@@ -11,6 +12,20 @@ import bKnight from "../../assets/pieces/bN.svg?raw"
 import bBishop from "../../assets/pieces/bB.svg?raw"
 import bQueen from "../../assets/pieces/bQ.svg?raw"
 import bKing from "../../assets/pieces/bK.svg?raw"
+*/
+import wPawn from "../../assets/pieces/cburnett/wP.svg?raw"
+import wRook from "../../assets/pieces/cburnett/wR.svg?raw"
+import wKnight from "../../assets/pieces/cburnett/wN.svg?raw"
+import wBishop from "../../assets/pieces/cburnett/wB.svg?raw"
+import wQueen from "../../assets/pieces/cburnett/wQ.svg?raw"
+import wKing from "../../assets/pieces/cburnett/wK.svg?raw"
+
+import bPawn from "../../assets/pieces/cburnett/bP.svg?raw"
+import bRook from "../../assets/pieces/cburnett/bR.svg?raw"
+import bKnight from "../../assets/pieces/cburnett/bN.svg?raw"
+import bBishop from "../../assets/pieces/cburnett/bB.svg?raw"
+import bQueen from "../../assets/pieces/cburnett/bQ.svg?raw"
+import bKing from "../../assets/pieces/cburnett/bK.svg?raw"
 import { IKingState, IPiece } from "./types"
 
 export enum PieceNames{
