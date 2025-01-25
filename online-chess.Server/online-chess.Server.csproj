@@ -34,6 +34,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Features\Game\Commands\RequestADraw\" />
     <Folder Include="Features\Game\Queries\" />
     <Folder Include="Migrations\" />
     <Folder Include="SQLiteDB\" />

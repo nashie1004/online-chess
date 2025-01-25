@@ -67,7 +67,14 @@ namespace online_chess.Server.Features.Game.Commands.Resign
 
             await _mainContext.SaveChangesAsync(cancellationToken);
 
-            await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync("GameOver", true);
+            string opponentConnectionId = _authenticatedUserService.GetConnectionId(
+                request.IdentityUserName == room.CreatedByUserId ? room.JoinedByUserId : room.CreatedByUserId
+            );
+
+            // lose
+            await _hubContext.Clients.Client(request.UserConnectionId).SendAsync("GameOver", 1);
+            // win
+            await _hubContext.Clients.Client(opponentConnectionId).SendAsync("GameOver", 0);
 
             return Unit.Value;
         }

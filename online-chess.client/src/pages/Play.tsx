@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useRef } from "react"
-import { Options as gameOptions } from "../game/utilities/constants";
+import { useCallback, useEffect, useRef, useState } from "react"
+import { Options as gameOptions, GameStatus } from "../game/utilities/constants";
 import { eventEmitter } from "../game/utilities/eventEmitter";
 import usePhaserContext from "../hooks/usePhaserContext";
 import { IKingState, IInitialGameInfo, IChat, IPiece, IMove, IPieceMove } from "../game/utilities/types";
@@ -10,22 +10,21 @@ import { useNavigate, useParams } from "react-router";
 import useGameContext from "../hooks/useGameContext";
 import useSignalRContext from "../hooks/useSignalRContext";
 import useAuthContext from "../hooks/useAuthContext";
+import OutcomeModal from "../components/play/OutcomeModal";
 
 export default function Main(){
     const gameRef = useRef<Phaser.Game | null>();
     const {
-        setIsWhitesTurn
-        , setMoveHistory
-        , setCaptureHistory
-        , setKingsState
-        , moveHistory
+        setIsWhitesTurn, setMoveHistory, setCaptureHistory
+        , setKingsState, moveHistory
     } = usePhaserContext();
-    const { setMessages, setGameRoomKey, gameRoomKey } = useGameContext();
+    const { setMessages, setGameRoomKey } = useGameContext();
     const navigate = useNavigate();
     const signalRContext = useSignalRContext();
     const url = useParams();
     const { user } = useAuthContext();
     const signalRConnectionRef = useRef<boolean | null>(null);
+    const [gameOutcome, setGameOutcome] = useState<GameStatus | null>(null);
 
     const initPhaser = useCallback((initGameInfo: IInitialGameInfo) => {
         setGameRoomKey(initGameInfo.gameRoomKey);
@@ -57,16 +56,7 @@ export default function Main(){
         eventEmitter.on("setKingsState", (data: IKingState) => setKingsState(data));
 
         eventEmitter.on("setMovePiece", (move: any) => {
-            const oldMove = move.oldMove as IPiece;
-
-            //console.log("setMovePiece: ", move, oldMove.name) //
-            // only emit if 
-            if (
-                (oldMove.name[0] === "w" && playerIsWhite) ||
-                (oldMove.name[0] === "b" && !playerIsWhite)
-            ){
-                signalRContext.invoke("MovePiece", initGameInfo.gameRoomKey, move.oldMove, move.newMove);
-            }
+            signalRContext.invoke("MovePiece", initGameInfo.gameRoomKey, move.oldMove, move.newMove);
         });
     }, []);
 
@@ -77,11 +67,9 @@ export default function Main(){
 
             await signalRContext.addHandler("NotFound", _ => navigate("/notFound"));
             await signalRContext.addHandler("InitializeGameInfo", initPhaser);
-
+            await signalRContext.addHandler("GameOver", (outcome: GameStatus) => setGameOutcome(outcome));
             await signalRContext.addHandler("ReceiveMessages", (messages: IChat[]) => setMessages(messages));
-            await signalRContext.addHandler("OpponentPieceMoved", (data) => {
-                eventEmitter.emit("setEnemyMove", data.moveInfo as IPieceMove);
-            });
+            await signalRContext.addHandler("OpponentPieceMoved", (data) => eventEmitter.emit("setEnemyMove", data.moveInfo as IPieceMove));
             await signalRContext.addHandler("UpdateMoveHistory", (data) => {
                 const moveInfo = data.moveInfo as IPieceMove;
                 const moveIsWhite = data.moveIsWhite as boolean;
@@ -111,6 +99,7 @@ export default function Main(){
             
             signalRContext.removeHandler("NotFound");
             signalRContext.removeHandler("InitializeGameInfo");
+            signalRContext.removeHandler("GameOver");
             signalRContext.removeHandler("ReceiveMessages");
             signalRContext.removeHandler("OpponentPieceMoved");
             signalRContext.removeHandler("UpdateMoveHistory");
@@ -130,5 +119,6 @@ export default function Main(){
         <div className="col">
             <SidebarRight />
         </div>
+        <OutcomeModal outcome={gameOutcome} />
     </>
 }
