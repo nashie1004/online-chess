@@ -1,16 +1,17 @@
-import BlitzTable from "../components/home/BlitzTable";
-import ClassicalTable from "../components/home/ClassicalTable";
+import GameTypeTable from "../components/home/GameTypeTable";
 import MainLeaderboardTable from "../components/home/MainLeaderboardTable";
-import RapidTable from "../components/home/RapidTable";
+import { GameType } from "../game/utilities/constants";
 
 export default function Home() {
   
   return (
     <div className="col pb-5">
       <MainLeaderboardTable />
-      <BlitzTable />
-      <RapidTable />
-      <ClassicalTable />
+      <GameTypeTable 
+        gameType={GameType.Classical} 
+        gameTypeLabel="Blitz" 
+        icon="bi bi-trophy-fill" 
+      />
     </div>
   );
 }

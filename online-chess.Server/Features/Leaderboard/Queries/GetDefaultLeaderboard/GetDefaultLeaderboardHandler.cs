@@ -25,7 +25,7 @@ public class GetDefaultLeaderboardHandler : IRequestHandler<GetDefaultLeaderboar
             /*
             Username, Wins, Loses, Draw, Last Game Date
             */
-            var userList = _userIdentityDbContext.Users.Skip((req.PageNumber - 1) * 10).Take(10).ToList();
+            var userList = _userIdentityDbContext.Users.Skip((req.PageNumber - 1) * 5).Take(5).ToList();
 
             foreach(var user in userList){
                 if (user == null) continue;
