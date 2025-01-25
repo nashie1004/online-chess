@@ -46,6 +46,12 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
                 ? room.CreatedByUserColor == Enums.Color.White 
                 : room.CreatedByUserColor == Enums.Color.Black;
 
+            // 1.1 invert orientation
+            request.OldMove.Y = 7 - request.OldMove.Y;
+            request.NewMove.Y = 7 - request.NewMove.Y;
+            request.OldMove.X = 7 - request.OldMove.X;
+            request.NewMove.X = 7 - request.NewMove.X;
+
             // 2. add to move history
             Move moveInfo = new Move(){
                 Old = request.OldMove,
