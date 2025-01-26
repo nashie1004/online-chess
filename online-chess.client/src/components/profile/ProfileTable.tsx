@@ -1,10 +1,10 @@
 import moment from "moment"
 import { useEffect, useState } from "react"
-import { Table, Pagination, Spinner } from "react-bootstrap"
+import { Table, Spinner } from "react-bootstrap"
 import { toast } from "react-toastify";
 import { IGameHistoryList } from "../../game/utilities/types";
 import BaseApiService from "../../services/BaseApiService";
-import { gameStatusDisplay } from "../../utils/helper";
+import { gameStatusDisplay, gameTypeDisplay } from "../../utils/helper";
 
 const baseApiService = new BaseApiService();
 
@@ -71,12 +71,11 @@ export default function ProfileTable(){
           <Spinner animation="border" variant="dark" className="mt-3" /> 
         </> : list.data.map((item, idx) => {
           return <tr key={idx}>
-            <td>{idx + 1}</td>
+            <td>{item.indexNo}</td>
             <td>{gameStatusDisplay(item.gameStatus)}</td>
             <td>{item.isColorWhite ? "White" : "Black"}</td>
-            {/* <td>{item.opponentName}</td> */}
-            <td>Lorem, ipsum dolor.</td>
-            <td>Lorem, ipsum dolor.</td>
+            <td>{gameTypeDisplay(item.gameType)}</td>
+            <td>{item.opponentName}</td>
             <td>{moment(item.createDate).format("M/D/YYYY h:mmA")}</td>
           </tr>
         })}

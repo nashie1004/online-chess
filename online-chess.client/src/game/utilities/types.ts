@@ -182,8 +182,10 @@ export interface IGameTypeList{
 }
 
 export interface IGameHistory{
+    indexNo: number;
     gameStatus: GameStatus;
     isColorWhite: boolean;
+    gameType: GameType;
     opponentName: string;
     createDate: Date;
 }

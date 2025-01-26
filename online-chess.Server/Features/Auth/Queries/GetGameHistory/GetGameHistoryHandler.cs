@@ -1,6 +1,8 @@
 using System;
 using System.Security.Claims;
 using MediatR;
+using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 using online_chess.Server.Enums;
 using online_chess.Server.Models.DTOs;
 using online_chess.Server.Persistence;
@@ -20,24 +22,18 @@ public class GetGameHistoryHandler : IRequestHandler<GetGameHistoryRequest, GetG
     public async Task<GetGameHistoryResponse> Handle(GetGameHistoryRequest req, CancellationToken ct){
         var retVal = new GetGameHistoryResponse();
 
-        var userId = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
         try{
-            retVal.Items = new List<GameHistoryDTO>()
-            {
-                new GameHistoryDTO(){
-                    GameStatus = GameHistoryStatus.Won,
-                    IsColorWhite = true,
-                    OpponentName = string.Empty,
-                    CreateDate = DateTime.Now
-                },  
-                new GameHistoryDTO(){
-                    GameStatus = GameHistoryStatus.Draw,
-                    IsColorWhite = false,
-                    OpponentName = string.Empty,
-                    CreateDate = DateTime.Now
-                }, 
-            };
+            int pageSize = 5;
+            var path = Path.Combine(Environment.CurrentDirectory, "Queries","ProfileGameHistory.txt");
+            var query = await File.ReadAllTextAsync(path);
+            var userId = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            retVal.Items = await _mainDbContext.Set<GameHistoryList>().FromSqlRaw(
+                query 
+                ,new SqliteParameter("@PlayerId", userId)
+                ,new SqliteParameter("@PageSize", pageSize)
+                ,new SqliteParameter("@PaginationOffset", pageSize * (req.PageNumber - 1))
+            ).ToListAsync();
         } 
         catch (Exception err)
         {

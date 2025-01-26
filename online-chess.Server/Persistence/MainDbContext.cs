@@ -18,6 +18,7 @@ namespace online_chess.Server.Persistence
 
             modelBuilder.Entity<GameTypeList>().HasNoKey();
             modelBuilder.Entity<LeaderboardList>().HasNoKey();
+            modelBuilder.Entity<GameHistoryList>().HasNoKey();
         }
     }
 }
