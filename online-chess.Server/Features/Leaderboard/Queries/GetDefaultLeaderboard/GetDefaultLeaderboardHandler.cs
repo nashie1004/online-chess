@@ -1,5 +1,7 @@
 using System;
 using MediatR;
+using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 using online_chess.Server.Models;
 using online_chess.Server.Models.DTOs;
 using online_chess.Server.Persistence;
@@ -22,23 +24,16 @@ public class GetDefaultLeaderboardHandler : IRequestHandler<GetDefaultLeaderboar
         var retVal = new GetDefaultLeaderboardResponse();
 
         try{
-            /*
-            Username, Wins, Loses, Draw, Last Game Date
-            */
-            var userList = _userIdentityDbContext.Users.Skip((req.PageNumber - 1) * 5).Take(5).ToList();
+            int pageSize = 5;
+            var path = Path.Combine(Environment.CurrentDirectory, "Queries","LeaderboardList.txt");
+            var query = await File.ReadAllTextAsync(path);
 
-            foreach(var user in userList){
-                if (user == null) continue;
+            retVal.Items = await _mainDbContext.Set<LeaderboardList>().FromSqlRaw(
+                query 
+                ,new SqliteParameter("@PageSize", pageSize)
+                ,new SqliteParameter("@PaginationOffset", pageSize * (req.PageNumber - 1))
+            ).ToListAsync();
 
-                retVal.LeaderboardList.Add(new LeaderboardList(){
-                    UserName = user?.UserName,
-                    Wins = 0,
-                    Loses = 0,
-                    Draws = 0,
-                    LastGameDate = user.CreateDate
-                });
-            }
-            
         } 
         catch (Exception err){
             retVal.ValidationErrors.Add(err.Message);

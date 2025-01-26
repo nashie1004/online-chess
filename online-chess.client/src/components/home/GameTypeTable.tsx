@@ -2,7 +2,7 @@ import moment from "moment";
 import { useState, useEffect } from "react";
 import { Table, Spinner } from "react-bootstrap";
 import { toast } from "react-toastify";
-import { ILeaderboardList } from "../../game/utilities/types";
+import { IGameTypeList, ILeaderboardList } from "../../game/utilities/types";
 import BaseApiService from "../../services/BaseApiService";
 import { GameType } from "../../game/utilities/constants";
 
@@ -18,33 +18,26 @@ export default function GameTypeTable(
   { gameTypeLabel, icon, gameType } : IGameTypeTable
 ){
     const [pageNo, setPageNo] = useState<number>(1);
-    const [list, setList] = useState<ILeaderboardList>({
+    const [list, setList] = useState<IGameTypeList>({
       isLoading: true, data: []
     });
   
     async function getData(){
       setList({ isLoading: true, data: [] });
   
-      const res = await baseApiService.baseGetList(
-        `/api/Home/gameTypeList?gameType=${gameType}`, {
-        pageSize: 5,
-        pageNumber: pageNo,
-        sortBy: "",
-        filters: "",
-      });
-  
+      const res = await baseApiService.baseGet(`/api/Home/gameTypeList?gameType=${gameType}&pageNumber=${pageNo}`);
+      
       if (!res.isOk){
         toast(res.message, { type: "error" })
         return;
       }
   
-      setList({ isLoading: false, data: res.data.leaderboardList });
+      setList({ isLoading: false, data: res.data.items });
     }
   
     useEffect(() => {
       getData();
     }, [pageNo])
-  
 
     return <>
     
@@ -82,14 +75,14 @@ export default function GameTypeTable(
             {list.data.map((item, idx) => {
               let rankColor = "ps-3";
 
-              switch(idx){
-                case 0:
+              switch(item.rank){
+                case 1:
                   rankColor = "rank-1";
                   break;
-                case 1:
+                case 2:
                   rankColor = "rank-2";
                   break;
-                case 2:
+                case 3:
                   rankColor = "rank-3";
                   break;
                 default:
@@ -101,13 +94,13 @@ export default function GameTypeTable(
                   <div 
                     className={rankColor}
                   >
-                    #{idx + 1}
+                    #{item.rank}
                   </div>
                 </td>
-                <td>{item.userName}</td>
-                <td className="table-win">{item.wins === 0 ? "0" : item.wins}</td>
-                <td className="table-lose">{item.loses === 0 ? "0" : item.loses}</td>
-                <td className="table-draw">{item.draws === 0 ? "0" : item.draws}</td>
+                <td>{item.username}</td>
+                <td className="table-win">{item.wins === 0 ? "-" : item.wins}</td>
+                <td className="table-lose">{item.loses === 0 ? "-" : item.loses}</td>
+                <td className="table-draw">{item.draws === 0 ? "-" : item.draws}</td>
                 <td>{moment(item.lastGameDate).fromNow()}</td>
               </tr>
             })}

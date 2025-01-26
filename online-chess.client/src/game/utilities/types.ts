@@ -153,16 +153,31 @@ export interface IUser {
 }
 
 export interface ILeaderboard{
+    rank: number;
     userName: string;
+    wins: number;
+    loses: number;
+    draws: number;
+    sinceDate: Date;
+}
+
+export interface ILeaderboardList{
+    isLoading: boolean;
+    data: ILeaderboard[];
+}
+
+interface IGameType{
+    rank: number;
+    username: string;
     wins: number;
     loses: number;
     draws: number;
     lastGameDate: Date;
 }
 
-export interface ILeaderboardList{
+export interface IGameTypeList{
     isLoading: boolean;
-    data: ILeaderboard[];
+    data: IGameType[];
 }
 
 export interface IGameHistory{

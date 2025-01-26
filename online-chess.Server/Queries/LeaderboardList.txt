@@ -1,0 +1,36 @@
+WITH MainQuery AS (
+    SELECT
+        0 AS Rank,
+        U.UserName AS UserName,
+        (SELECT COUNT(GameHistoryId) 
+        FROM GameHistories G 
+        WHERE G.WinnerPlayerId = U.Id
+        ) AS Wins,
+        (SELECT COUNT(GameHistoryId) 
+        FROM GameHistories G 
+        WHERE 
+            (G.PlayerOneId = U.Id OR G.PlayerTwoId = U.Id) 
+            AND G.WinnerPlayerId != U.Id 
+            AND G.IsDraw = 0
+        ) AS Loses,
+        (SELECT 
+        COUNT(GameHistoryId) 
+        FROM GameHistories G 
+        WHERE 
+            (G.PlayerOneId = U.Id OR G.PlayerTwoId = U.Id) 
+            AND G.IsDraw = 1
+        ) AS Draws,
+        U.CreateDate AS SinceDate
+    FROM AspNetUsers U
+)
+
+
+SELECT 
+      ROW_NUMBER() OVER (ORDER BY Wins DESC) AS Rank,
+      UserName,
+      Wins,
+      Loses,
+      Draws,
+      SinceDate
+FROM MainQuery ORDER BY Wins DESC
+    LIMIT @PageSize OFFSET @PaginationOffset

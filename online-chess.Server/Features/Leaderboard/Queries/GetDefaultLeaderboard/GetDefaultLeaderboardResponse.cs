@@ -4,7 +4,6 @@ using online_chess.Server.Models.DTOs;
 
 namespace online_chess.Server.Features.Leaderboard.Queries.GetDefaultLeaderboard;
 
-public class GetDefaultLeaderboardResponse : BaseResponse
+public class GetDefaultLeaderboardResponse : BaseResponseList<LeaderboardList>
 {
-    public List<LeaderboardList> LeaderboardList { get; set; } = new();
 }

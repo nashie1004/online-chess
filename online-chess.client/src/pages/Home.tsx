@@ -9,8 +9,13 @@ export default function Home() {
       <MainLeaderboardTable />
       <GameTypeTable 
         gameType={GameType.Classical} 
-        gameTypeLabel="Blitz" 
-        icon="bi bi-trophy-fill" 
+        gameTypeLabel="Classical" 
+        icon="bi bi-lightning-charge-fill" 
+      />
+      <GameTypeTable 
+        gameType={GameType.Rapid10Mins} 
+        gameTypeLabel="Rapid" 
+        icon="bi bi-lightning-charge-fill" 
       />
     </div>
   );

@@ -3,10 +3,36 @@ WITH MainQuery AS (
         DISTINCT
       0 AS Rank,
       U1.UserName AS Username,
-      (SELECT COUNT(GameHistoryId) FROM GameHistories GH2 WHERE GH2.WinnerPlayerId = U1.Id) AS Wins,
-      (SELECT COUNT(GameHistoryId) FROM GameHistories GH2 WHERE (GH2.PlayerOneId = U1.Id OR GH2.PlayerTwoId = U1.Id) AND GH2.WinnerPlayerId != U1.Id AND GH2.IsDraw = 0) AS Loses,
-      (SELECT COUNT(GameHistoryId) FROM GameHistories GH2 WHERE (GH2.PlayerOneId = U1.Id OR GH2.PlayerTwoId = U1.Id) AND GH2.IsDraw = 1) AS Draws,
-      (SELECT GameEndDate FROM GameHistories GH2 WHERE (GH2.PlayerOneId = U1.Id OR GH2.PlayerTwoId = U1.Id) ORDER BY GH2.GameHistoryId DESC LIMIT 1) AS LastGameDate
+      (SELECT COUNT(GameHistoryId) 
+        FROM GameHistories G 
+        WHERE G.WinnerPlayerId = U1.Id
+        AND G.GameType = @GameType
+        ) AS Wins,
+      (SELECT 
+        COUNT(GameHistoryId) 
+        FROM GameHistories G 
+        WHERE 
+            (G.PlayerOneId = U1.Id OR G.PlayerTwoId = U1.Id) 
+            AND G.WinnerPlayerId != U1.Id 
+            AND G.IsDraw = 0
+            AND G.GameType = @GameType
+        ) AS Loses,
+      (SELECT 
+        COUNT(GameHistoryId) 
+        FROM GameHistories G 
+        WHERE 
+            (G.PlayerOneId = U1.Id OR G.PlayerTwoId = U1.Id) 
+            AND G.IsDraw = 1
+            AND G.GameType = @GameType
+        ) AS Draws,
+      (SELECT 
+        GameEndDate 
+        FROM GameHistories G 
+        WHERE 
+            (G.PlayerOneId = U1.Id OR G.PlayerTwoId = U1.Id) 
+            AND G.GameType = @GameType
+        ORDER BY G.GameHistoryId DESC LIMIT 1
+    ) AS LastGameDate
     FROM AspNetUsers U1
     LEFT JOIN GameHistories P1 ON P1.PlayerOneId = U1.Id
     LEFT JOIN GameHistories P2 ON P2.PlayerTwoId = U1.Id
