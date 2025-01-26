@@ -187,7 +187,7 @@ export interface IGameHistory{
     isColorWhite: boolean;
     gameType: GameType;
     opponentName: string;
-    createDate: Date;
+    gameDate: Date;
 }
 
 export interface IGameHistoryList{

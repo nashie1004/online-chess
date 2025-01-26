@@ -102,7 +102,9 @@ export default function MainLeaderboardTable(){
                 <td className="table-lose">{item.loses === 0 ? "-" : item.loses}</td>
                 <td className="table-draw">{item.draws === 0 ? "-" : item.draws}</td>
                 <td>{moment(item.sinceDate).fromNow()}</td>
-                <td>{moment(item.lastGameDate).fromNow()}</td>
+                <td>{moment("1/1/2000").isBefore(moment(item.lastGameDate)) ? 
+              moment(item.lastGameDate).fromNow() : ""  
+              }</td>
               </tr>
             })}
           </>}

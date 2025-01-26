@@ -70,13 +70,14 @@ export default function ProfileTable(){
         {list.isLoading ? <>
           <Spinner animation="border" variant="dark" className="mt-3" /> 
         </> : list.data.map((item, idx) => {
+
           return <tr key={idx}>
             <td>{item.indexNo}</td>
             <td>{gameStatusDisplay(item.gameStatus)}</td>
             <td>{item.isColorWhite ? "White" : "Black"}</td>
             <td>{gameTypeDisplay(item.gameType)}</td>
             <td>{item.opponentName}</td>
-            <td>{moment(item.createDate).format("M/D/YYYY h:mmA")}</td>
+            <td>{moment(item.gameDate).fromNow()}</td>
           </tr>
         })}
       </tbody>
