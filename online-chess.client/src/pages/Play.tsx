@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import { Options as gameOptions, GameStatus } from "../game/utilities/constants";
 import { eventEmitter } from "../game/utilities/eventEmitter";
 import usePhaserContext from "../hooks/usePhaserContext";
-import { IKingState, IInitialGameInfo, IChat, IPiece, IMove, IPieceMove } from "../game/utilities/types";
+import { IKingState, IInitialGameInfo, IChat, IMove, IPieceMove } from "../game/utilities/types";
 import SidebarRight from "../components/play/SidebarRight";
 import { MainGameScene } from "../game/scenes/MainGameScene";
 import CaptureHistory from "../components/play/CaptureHistory";
@@ -14,10 +14,7 @@ import OutcomeModal from "../components/play/OutcomeModal";
 
 export default function Main(){
     const gameRef = useRef<Phaser.Game | null>();
-    const {
-        setIsWhitesTurn, setMoveHistory, setCaptureHistory
-        , setKingsState, moveHistory
-    } = usePhaserContext();
+    const { setMoveHistory, setCaptureHistory, setKingsState } = usePhaserContext();
     const { setMessages, setGameRoomKey } = useGameContext();
     const navigate = useNavigate();
     const signalRContext = useSignalRContext();
@@ -54,9 +51,9 @@ export default function Main(){
         // eventEmitter.on("setMoveHistory", (data: IMoveHistory) => setMoveHistory(data));
         // eventEmitter.on("setCaptureHistory", (data: ICaptureHistory) => setCaptureHistory(data));
         eventEmitter.on("setKingsState", (data: IKingState) => setKingsState(data));
-
         eventEmitter.on("setMovePiece", (move: any) => {
             signalRContext.invoke("MovePiece", initGameInfo.gameRoomKey, move.oldMove, move.newMove);
+            console.log("You moved a piece")
         });
     }, []);
 
@@ -69,8 +66,17 @@ export default function Main(){
             await signalRContext.addHandler("InitializeGameInfo", initPhaser);
             await signalRContext.addHandler("GameOver", (outcome: GameStatus) => setGameOutcome(outcome));
             await signalRContext.addHandler("ReceiveMessages", (messages: IChat[]) => setMessages(messages));
-            await signalRContext.addHandler("OpponentPieceMoved", (data) => eventEmitter.emit("setEnemyMove", data.moveInfo as IPieceMove));
-            await signalRContext.addHandler("UpdateMoveHistory", (data) => {
+            await signalRContext.addHandler("OpponentPieceMoved", (data) => {
+                eventEmitter.emit("setEnemyMove", data.moveInfo as IPieceMove);
+                console.log("Opponent moved a piece");
+            });
+            /**
+             * This updates:
+             * - move history
+             * - TODO capture history
+             * - TODO timer
+             */
+            await signalRContext.addHandler("UpdateBoard", (data) => {
                 const moveInfo = data.moveInfo as IPieceMove;
                 const moveIsWhite = data.moveIsWhite as boolean;
 

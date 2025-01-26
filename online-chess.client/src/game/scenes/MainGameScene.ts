@@ -39,7 +39,6 @@ export class MainGameScene extends Scene{
 
         // sync react and phaser state
         this.reactState = {
-            isWhitesTurn: true,
             moveHistory: { white: [], black: [] },
             captureHistory: { white: [], black: [] },
             promoteTo: "queen",
@@ -244,7 +243,6 @@ export class MainGameScene extends Scene{
         const isWhite = sprite.name[0] === "w"
         const uniquePieceName = sprite.name;
         const pieceName = sprite.name.split("-")[0] as PieceNames;
-        this.reactState.isWhitesTurn = !isWhite;
 
         // old coordinate
         this.board[this.selectedPiece.x][this.selectedPiece.y] = null;

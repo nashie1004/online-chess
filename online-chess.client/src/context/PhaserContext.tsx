@@ -7,10 +7,11 @@ interface PhaserContextProps{
 }
 
 export const phaserContext = createContext<IPhaserContext>({
-    isWhitesTurn: true, setIsWhitesTurn: () => {}
-    , moveHistory: { white: [], black: [] }, setMoveHistory: () => {}
+    moveHistory: { white: [], black: [] }, setMoveHistory: () => {}
     , captureHistory: { white: [], black: [] }, setCaptureHistory: () => {}
     , promoteTo: "queen", setPromoteTo: () => {}
+
+    // local state
     , isColorWhite: true, setIsColorWhite: () => {}
     , isWhitesOrientation: true, setIsWhitesOrientation: () => {}
     , kingsState: baseKingState, setKingsState: () => {}
@@ -19,7 +20,6 @@ export const phaserContext = createContext<IPhaserContext>({
 export default function PhaserContext(
     {children} : PhaserContextProps
 ) {
-    const [isWhitesTurn, setIsWhitesTurn] = useState(true);
     const [moveHistory, setMoveHistory] = useState<IMoveHistory>({ white: [], black: [] });
     const [captureHistory, setCaptureHistory] = useState<ICaptureHistory>({ white: [], black: [] });
     const [kingsState, setKingsState] = useState<IKingState>(baseKingState);
@@ -30,7 +30,6 @@ export default function PhaserContext(
     const [promoteTo, setPromoteTo] = useState<PromoteTo>("queen");
 
     const data: IPhaserContext = {
-        isWhitesTurn, setIsWhitesTurn, 
         moveHistory, setMoveHistory,
         captureHistory, setCaptureHistory,
         promoteTo, setPromoteTo,

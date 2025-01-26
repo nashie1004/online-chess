@@ -56,10 +56,10 @@ export interface IKingState{
 export interface ITimer{
     white: number;
     black: number;
+    isWhitesTurn: boolean;
 }
 
 export interface IPhaserContextValues{
-    isWhitesTurn: boolean;
     moveHistory: IMoveHistory;
     captureHistory: ICaptureHistory;
     promoteTo: PromoteTo;
@@ -69,7 +69,6 @@ export interface IPhaserContextValues{
 }
 
 export interface IPhaserContext extends IPhaserContextValues{
-    setIsWhitesTurn: (val: boolean) => void;
     setMoveHistory: React.Dispatch<React.SetStateAction<IMoveHistory>>;
     setCaptureHistory: React.Dispatch<React.SetStateAction<ICaptureHistory>>;
     setPromoteTo: (val: PromoteTo) => void;

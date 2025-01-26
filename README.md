@@ -35,14 +35,10 @@ after that, the web application should now be running.
 
 ## TODO (Game)
 1. timer
-~~2. resign~~
 3. request a draw
 4. fix bugs on piece moves
 5. promotion bug and promotion picker
 6. disconnect or leave logic
-
-## TODO (List pages)
-1. properly get data
 
 ## Others
 1. fifty move rule

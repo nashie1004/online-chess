@@ -77,7 +77,7 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
             await _hubContext.Clients.Client(opponentConnectionId).SendAsync("OpponentPieceMoved", retVal);
 
             // send updated move history to both players
-            await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync("UpdateMoveHistory", retVal);
+            await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync("UpdateBoard", retVal);
 
             return Unit.Value;
          }
