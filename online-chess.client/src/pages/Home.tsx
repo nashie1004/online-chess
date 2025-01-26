@@ -10,8 +10,15 @@ export default function Home() {
       <GameTypeTable 
         gameType={GameType.Classical} 
         gameTypeLabel="Classical" 
-        icon="bi bi-lightning-charge-fill" 
+        icon="bi bi-hourglass" 
       />
+      {/** Blitz 3 and 5 mins */}
+      <GameTypeTable 
+        gameType={GameType.Blitz3Mins} 
+        gameTypeLabel="Blitz" 
+        icon="bi bi-fire" 
+      />
+      {/** Rapid 10 and 25 mins */}
       <GameTypeTable 
         gameType={GameType.Rapid10Mins} 
         gameTypeLabel="Rapid" 

@@ -53,7 +53,7 @@ namespace online_chess.Server.Features.Game.Commands.Resign
 
             await _mainContext.GameHistories.AddAsync(new GameHistory(){
                 GameStartDate = room.GameStartedAt
-                , GameEndDate = room.CreateDate
+                , GameEndDate = DateTime.Now
 
                 , PlayerOneId = creator.Id
                 , PlayerOneColor = room.CreatedByUserColor

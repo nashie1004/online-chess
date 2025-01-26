@@ -6,7 +6,7 @@ WITH MainQuery AS (
       (SELECT COUNT(GameHistoryId) 
         FROM GameHistories G 
         WHERE G.WinnerPlayerId = U1.Id
-        AND G.GameType = @GameType
+        AND G.GameType IN (@GameType)
         ) AS Wins,
       (SELECT 
         COUNT(GameHistoryId) 
@@ -15,7 +15,7 @@ WITH MainQuery AS (
             (G.PlayerOneId = U1.Id OR G.PlayerTwoId = U1.Id) 
             AND G.WinnerPlayerId != U1.Id 
             AND G.IsDraw = 0
-            AND G.GameType = @GameType
+            AND G.GameType IN (@GameType)
         ) AS Loses,
       (SELECT 
         COUNT(GameHistoryId) 
@@ -23,29 +23,29 @@ WITH MainQuery AS (
         WHERE 
             (G.PlayerOneId = U1.Id OR G.PlayerTwoId = U1.Id) 
             AND G.IsDraw = 1
-            AND G.GameType = @GameType
+            AND G.GameType IN (@GameType)
         ) AS Draws,
       (SELECT 
         GameEndDate 
         FROM GameHistories G 
         WHERE 
             (G.PlayerOneId = U1.Id OR G.PlayerTwoId = U1.Id) 
-            AND G.GameType = @GameType
+            AND G.GameType IN (@GameType)
         ORDER BY G.GameHistoryId DESC LIMIT 1
     ) AS LastGameDate
     FROM AspNetUsers U1
     LEFT JOIN GameHistories P1 ON P1.PlayerOneId = U1.Id
     LEFT JOIN GameHistories P2 ON P2.PlayerTwoId = U1.Id
-    WHERE (P1.GameType = @GameType OR P2.GameType = @GameType)
+    WHERE (P1.GameType IN (@GameType) OR P2.GameType IN (@GameType))
     GROUP BY U1.UserName, P1.GameType, P2.GameType
-    LIMIT @PageSize OFFSET @PaginationOffset
 )
 
 SELECT 
-      ROW_NUMBER() OVER (ORDER BY Wins DESC) AS Rank,
-      Username,
-      Wins,
-      Loses,
-      Draws,
-      LastGameDate
+  ROW_NUMBER() OVER (ORDER BY Wins DESC) AS Rank,
+  Username,
+  Wins,
+  Loses,
+  Draws,
+  LastGameDate
 FROM MainQuery ORDER BY Wins DESC
+    LIMIT @PageSize OFFSET @PaginationOffset

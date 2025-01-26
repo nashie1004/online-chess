@@ -159,6 +159,7 @@ export interface ILeaderboard{
     loses: number;
     draws: number;
     sinceDate: Date;
+    lastGameDate: Date;
 }
 
 export interface ILeaderboardList{

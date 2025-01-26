@@ -48,20 +48,23 @@ export default function MainLeaderboardTable(){
             <th className="col-1">
             <i className="bi bi-bar-chart-fill" style={{ color: "#FFFFFF",  }}></i>
             </th>
-            <th className="col-3">
+            <th className="col-4">
               <i className="bi bi-person-fill" style={{color: "#FFFFFF"}}></i> Best Players
             </th>
-            <th className="col-2">
+            <th className="col-1">
               <i className="bi bi-check-lg" style={{color: "#FFFFFF"}}></i> Wins 
             </th>
-            <th className="col-2">
+            <th className="col-1">
               <i className="bi bi-x-circle" style={{color: "#B36D7C"}}></i> Loses 
             </th>
-            <th className="col-2">
+            <th className="col-1">
               <i className="bi bi-dash" style={{color: "#FFFFFF"}}></i> Draw 
             </th>
             <th className="col-2">
               <i className="bi bi-calendar2-fill" style={{color: "#FFFFFF"}}></i> Join Date 
+            </th>
+            <th className="col-2">
+              <i className="bi bi-calendar2-fill" style={{color: "#FFFFFF"}}></i> Last Game Date 
             </th>
           </tr>
         </thead>
@@ -99,6 +102,7 @@ export default function MainLeaderboardTable(){
                 <td className="table-lose">{item.loses === 0 ? "-" : item.loses}</td>
                 <td className="table-draw">{item.draws === 0 ? "-" : item.draws}</td>
                 <td>{moment(item.sinceDate).fromNow()}</td>
+                <td>{moment(item.lastGameDate).fromNow()}</td>
               </tr>
             })}
           </>}
