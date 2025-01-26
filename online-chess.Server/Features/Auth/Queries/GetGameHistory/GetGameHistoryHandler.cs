@@ -24,7 +24,7 @@ public class GetGameHistoryHandler : IRequestHandler<GetGameHistoryRequest, GetG
 
         try{
             int pageSize = 5;
-            var path = Path.Combine(Environment.CurrentDirectory, "Queries","ProfileGameHistory.txt");
+            var path = Path.Combine(Environment.CurrentDirectory, "Queries","GameHistoryList.txt");
             var query = await File.ReadAllTextAsync(path);
             var userId = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 

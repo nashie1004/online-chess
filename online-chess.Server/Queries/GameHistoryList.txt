@@ -1,0 +1,38 @@
+WITH MainQuery AS (
+    SELECT
+        0 AS IndexNo,
+        (CASE 
+            WHEN G.WinnerPlayerId = @PlayerId AND G.IsDraw = 0 THEN 0
+            WHEN G.WinnerPlayerId != @PlayerId AND G.IsDraw = 0 THEN 1
+            ELSE 2
+        END) AS GameStatus,
+        (CASE 
+            WHEN G.PlayerOneId = @PlayerId THEN 
+                CASE WHEN G.PlayerOneColor = 1 THEN 1 ELSE 0 END
+            WHEN G.PlayerTwoId = @PlayerId THEN 
+                CASE WHEN G.PlayerTwoColor = 1 THEN 1 ELSE 0 END
+            ELSE 0
+        END) AS IsColorWhite,
+        G.GameType AS GameType,
+        (CASE 
+            WHEN G.PlayerOneId = @PlayerId THEN P2.UserName
+            WHEN G.PlayerTwoId = @PlayerId THEN P1.UserName
+            ELSE ''
+        END) AS OpponentName,
+        G.GameStartDate AS GameDate
+    FROM GameHistories G
+    LEFT JOIN AspNetUsers P1 ON P1.Id = G.PlayerOneId
+    LEFT JOIN AspNetUsers P2 ON P2.Id = G.PlayerTwoId
+    WHERE P1.Id = @PlayerId OR P2.Id = @PlayerId
+)
+
+SELECT
+    ROW_NUMBER() OVER (ORDER BY GameDate DESC) AS IndexNo,
+    GameStatus,
+    IsColorWhite,
+    GameType,
+    OpponentName,
+    GameDate
+FROM MainQuery 
+ORDER BY GameDate DESC
+LIMIT @PageSize OFFSET @PaginationOffset;

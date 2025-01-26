@@ -52,10 +52,10 @@ export default function ProfileTable(){
           <th className="col-2">
             <i className="bi bi-question-circle"  style={{ color: "#FFFFFF",  }}></i> Game Status
           </th>
-          <th className="col-2">
+          <th className="col-1">
             <i className="bi bi-circle-half"  style={{ color: "#FFFFFF",  }}></i> Color
           </th>
-          <th className="col-2">
+          <th className="col-3">
             <i className="bi bi-hourglass"  style={{ color: "#FFFFFF",  }}></i> Game Type
           </th>
           <th className="col-3">
