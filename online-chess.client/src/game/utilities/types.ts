@@ -197,7 +197,7 @@ export interface IGameHistoryList{
 interface IPlayerInfo{
     userName: string;
     isPlayersTurnToMove: boolean;
-    timeLeft: any; // DATE TIME
+    timeLeft: string; 
     isColorWhite: boolean;
     kingInCheck: boolean;
     kingInCheckMate: boolean;

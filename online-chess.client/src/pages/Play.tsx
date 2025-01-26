@@ -11,11 +11,12 @@ import useGameContext from "../hooks/useGameContext";
 import useSignalRContext from "../hooks/useSignalRContext";
 import useAuthContext from "../hooks/useAuthContext";
 import OutcomeModal from "../components/play/OutcomeModal";
+import moment from "moment";
 
 export default function Main(){
     const gameRef = useRef<Phaser.Game | null>();
     const { setMoveHistory, setCaptureHistory, setKingsState } = usePhaserContext();
-    const { setMessages, setGameRoomKey } = useGameContext();
+    const { setMessages, setGameRoomKey, setTimer } = useGameContext();
     const navigate = useNavigate();
     const signalRContext = useSignalRContext();
     const url = useParams();
@@ -24,10 +25,20 @@ export default function Main(){
     const [gameOutcome, setGameOutcome] = useState<GameStatus | null>(null);
 
     const initPhaser = useCallback((initGameInfo: IInitialGameInfo) => {
-        setGameRoomKey(initGameInfo.gameRoomKey);
+        const createdByUserTime = moment.duration(initGameInfo.createdByUserInfo.timeLeft).asMilliseconds();
+        const joinedByUserTime = moment.duration(initGameInfo.joinedByUserInfo.timeLeft).asMilliseconds();
+        
         const playerIsWhite = (initGameInfo.createdByUserInfo.userName === user?.userName) 
             ? initGameInfo.createdByUserInfo.isColorWhite
             : initGameInfo.joinedByUserInfo.isColorWhite;
+            
+        setTimer({
+            white: playerIsWhite && initGameInfo.createdByUserInfo.userName === user?.userName ? createdByUserTime : joinedByUserTime,
+            black: !playerIsWhite && initGameInfo.createdByUserInfo.userName !== user?.userName ? joinedByUserTime : createdByUserTime,
+            isWhitesTurn: true
+        });
+        
+        setGameRoomKey(initGameInfo.gameRoomKey);
 
         // init phaser
         if (!gameRef.current){
@@ -53,7 +64,7 @@ export default function Main(){
         eventEmitter.on("setKingsState", (data: IKingState) => setKingsState(data));
         eventEmitter.on("setMovePiece", (move: any) => {
             signalRContext.invoke("MovePiece", initGameInfo.gameRoomKey, move.oldMove, move.newMove);
-            console.log("You moved a piece")
+            // console.log("You moved a piece")
         });
     }, []);
 
@@ -68,7 +79,7 @@ export default function Main(){
             await signalRContext.addHandler("ReceiveMessages", (messages: IChat[]) => setMessages(messages));
             await signalRContext.addHandler("OpponentPieceMoved", (data) => {
                 eventEmitter.emit("setEnemyMove", data.moveInfo as IPieceMove);
-                console.log("Opponent moved a piece");
+                // console.log("Opponent moved a piece");
             });
             /**
              * This updates:

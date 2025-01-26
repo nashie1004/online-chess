@@ -4,6 +4,7 @@ using online_chess.Server.Hubs;
 using online_chess.Server.Service;
 using online_chess.Server.Enums;
 using online_chess.Server.Models.Play;
+using online_chess.Server.Constants;
 
 namespace online_chess.Server.Features.Game.Commands.GameStart
 {
@@ -45,11 +46,51 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
             Start The Game
             - passed to Play.tsx > MainGameScene constructor
             */
+            TimeSpan initialCreatorTime; 
+            TimeSpan initialJoinerTime; 
+
+            switch(gameRoom.GameType){
+                case GameType.Classical:
+                    initialCreatorTime = TimeSpan.FromMinutes(60);
+                    initialJoinerTime = TimeSpan.FromMinutes(60);
+                    break;
+                case GameType.Blitz3Mins:
+                    initialCreatorTime = TimeSpan.FromMinutes(3);
+                    initialJoinerTime = TimeSpan.FromMinutes(3);
+                    break;
+                case GameType.Blitz5Mins:
+                    initialCreatorTime = TimeSpan.FromMinutes(5);
+                    initialJoinerTime = TimeSpan.FromMinutes(5);
+                    break;
+                case GameType.Rapid10Mins:
+                    initialCreatorTime = TimeSpan.FromMinutes(10);
+                    initialJoinerTime = TimeSpan.FromMinutes(10);
+                    break;
+                case GameType.Rapid25Mins:
+                    initialCreatorTime = TimeSpan.FromMinutes(25);
+                    initialJoinerTime = TimeSpan.FromMinutes(25);
+                    break;
+                default:
+                    initialCreatorTime = TimeSpan.FromMinutes(5);
+                    initialJoinerTime = TimeSpan.FromMinutes(5);
+                    break;
+            }
+
+            // add small buffer for player white
+            initialCreatorTime = 
+                (gameRoom.CreatedByUserColor == Color.White) 
+                ? initialCreatorTime.Add(TimeSpan.FromSeconds(5)) 
+                : initialCreatorTime;
+            initialJoinerTime = 
+                (gameRoom.CreatedByUserColor != Color.White) 
+                ? initialJoinerTime.Add(TimeSpan.FromSeconds(5)) 
+                : initialJoinerTime;
+
             gameRoom.GameStartedAt = DateTime.Now;
             gameRoom.CreatedByUserInfo = new PlayerInfo(){
                 UserName = gameRoom.CreatedByUserId
                 , IsPlayersTurnToMove = gameRoom.CreatedByUserColor == Color.White
-                , TimeLeft = new TimeSpan()
+                , TimeLeft = initialCreatorTime
                 , IsColorWhite = gameRoom.CreatedByUserColor == Color.White
                 , KingInCheck = false
                 , KingInCheckMate = false
@@ -58,7 +99,7 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
             gameRoom.JoinByUserInfo = new PlayerInfo(){
                 UserName = gameRoom.JoinedByUserId
                 , IsPlayersTurnToMove = gameRoom.CreatedByUserColor != Color.White
-                , TimeLeft = new TimeSpan()
+                , TimeLeft = initialJoinerTime
                 , IsColorWhite = gameRoom.CreatedByUserColor != Color.White
                 , KingInCheck = false
                 , KingInCheckMate = false
