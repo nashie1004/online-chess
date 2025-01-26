@@ -1,5 +1,8 @@
-﻿namespace online_chess.Server.Models.DTOs
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace online_chess.Server.Models.DTOs
 {
+    [NotMapped]
     public class GameTypeList
     {
         public int Rank { get; set; }
