@@ -27,7 +27,7 @@ namespace online_chess.Server.Features.Game.Commands.AddMessageToRoom
                 Message = request.Message
             });
 
-            await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync("ReceiveMessages", room?.ChatMessages);
+            await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync("onReceiveMessages", room?.ChatMessages);
 
             return Unit.Value;
         }

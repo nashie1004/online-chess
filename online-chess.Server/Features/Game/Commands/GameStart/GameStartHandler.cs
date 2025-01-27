@@ -28,7 +28,7 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
 
             if (gameRoom == null)
             {
-                await _hubContext.Clients.Client(request.UserConnectionId).SendAsync("NotFound", true);
+                await _hubContext.Clients.Client(request.UserConnectionId).SendAsync("onNotFound", true);
                 return Unit.Value;
             }
 
@@ -133,8 +133,8 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
                 JoinedByUserInfo = gameRoom.JoinByUserInfo
             };
 
-            await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync("InitializeGameInfo", baseGameInfo);
-            await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync("ReceiveMessages", gameRoom.ChatMessages);
+            await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync("onInitializeGameInfo", baseGameInfo);
+            await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync("onReceiveMessages", gameRoom.ChatMessages);
 
             return Unit.Value;
         }
