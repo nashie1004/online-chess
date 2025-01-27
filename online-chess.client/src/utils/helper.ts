@@ -21,13 +21,15 @@ export function msToMinuteDisplay(milliseconds: number){
     let hours = duration.hours();
     let minutes = duration.minutes();
     let seconds = duration.seconds();
+    let ms = duration.milliseconds();  // Extract the milliseconds
 
     let formattedHours = String(hours).padStart(2, '0');
     let formattedMinutes = String(minutes).padStart(2, '0');
     let formattedSeconds = String(seconds).padStart(2, '0');
+    // let formattedMilliseconds = String(ms).padStart(1, '0'); // Ensure 3 digits for milliseconds
 
-    const retVal = `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
-    // console.log(retVal)
+    // const retVal = `${formattedHours}:${formattedMinutes}:${formattedSeconds}.${formattedMilliseconds}`; // Include milliseconds
+    const retVal = `${formattedHours}:${formattedMinutes}:${formattedSeconds}`; // Include milliseconds
     return retVal;
 }
 
