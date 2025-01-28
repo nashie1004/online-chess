@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Modal, Button } from 'react-bootstrap';
+import { Modal } from 'react-bootstrap';
 import useSignalRContext from '../../hooks/useSignalRContext';
 import useGameContext from '../../hooks/useGameContext';
 
@@ -7,11 +7,11 @@ export default function GameOutcome() {
     const [modalShow, setModalShow] = React.useState(false);
     const [outcome, setOutcome] = useState<0 | 1>(0); // 0 = resign, 1 = draw
     const { invoke } = useSignalRContext();
-    const { gameRoomKey } = useGameContext();
+    const { gameState } = useGameContext();
   
     async function formSubmit(e: React.FormEvent<HTMLFormElement>){
       e.preventDefault();
-      invoke(outcome === 0 ? "Resign" : "Draw", gameRoomKey);
+      invoke(outcome === 0 ? "Resign" : "Draw", gameState.gameRoomKey);
       setModalShow(false);
     }
 

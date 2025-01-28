@@ -4,16 +4,16 @@ import usePhaserContext from '../../hooks/usePhaserContext';
 import { msToMinuteDisplay } from '../../utils/helper';
 
 export default function PlayerInfo() {
-    const {timer} = useGameContext();
-    const [actualTime, setActualTime] = useState(timer);
+    const { gameState } = useGameContext();
+    const [actualTime, setActualTime] = useState(gameState.timer);
   const { kingsState } = usePhaserContext();
     
     useEffect(() => {
         
-        setActualTime(timer);
+        setActualTime(gameState.timer);
         let intervalId: number;
 
-        if (timer.isWhitesTurn){
+        if (gameState.timer.isWhitesTurn){
             intervalId = setInterval(() => {
                 setActualTime(prev => ({ ...prev, white: prev.white - 100 }));
             }, 100)
@@ -27,7 +27,7 @@ export default function PlayerInfo() {
             clearInterval(intervalId);
         }
         
-    }, [timer])
+    }, [gameState.timer])
 
   return (
     <>

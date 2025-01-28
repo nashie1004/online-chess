@@ -12,7 +12,7 @@ import useAuthContext from "../../hooks/useAuthContext";
 export default function useInitializePhaser(
     gameRef: React.MutableRefObject<Phaser.Game | null | undefined>
 ){
-    const {  setGameRoomKey, setTimer } = useGameContext();
+    const { setGameState } = useGameContext();
     const { setKingsState } = usePhaserContext();
     const signalRContext = useSignalRContext();
     const { user } = useAuthContext();
@@ -25,13 +25,16 @@ export default function useInitializePhaser(
             ? initGameInfo.createdByUserInfo.isColorWhite
             : initGameInfo.joinedByUserInfo.isColorWhite;
 
-        setTimer({
-            white: playerIsWhite && initGameInfo.createdByUserInfo.userName === user?.userName ? createdByUserTime : joinedByUserTime,
-            black: !playerIsWhite && initGameInfo.createdByUserInfo.userName !== user?.userName ? joinedByUserTime : createdByUserTime,
-            isWhitesTurn: true
-        });
+        setGameState({
+            type: "SET_TIMER",
+            payload: {
+                white: playerIsWhite && initGameInfo.createdByUserInfo.userName === user?.userName ? createdByUserTime : joinedByUserTime,
+                black: !playerIsWhite && initGameInfo.createdByUserInfo.userName !== user?.userName ? joinedByUserTime : createdByUserTime,
+                isWhitesTurn: true
+            }
+        })
 
-        setGameRoomKey(initGameInfo.gameRoomKey);
+        setGameState({ type: "SET_GAMEROOMKEY", payload: initGameInfo.gameRoomKey });
 
         // init phaser
         if (!gameRef.current){

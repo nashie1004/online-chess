@@ -77,18 +77,6 @@ export interface IPhaserContext extends IPhaserContextValues{
     setKingsState: (val: IKingState) => void;
 }
 
-export interface IGameContextValues{
-    timer: ITimer;
-    messages: IChat[];
-    gameRoomKey: string;
-}
-
-export interface IGameContext extends IGameContextValues{
-    setTimer: React.Dispatch<React.SetStateAction<ITimer>>;
-    setMessages: React.Dispatch<React.SetStateAction<IChat[]>>;
-    setGameRoomKey: React.Dispatch<React.SetStateAction<string>>;
-}
-
 export interface ISignalRContext {
     startConnection: (closeEventCallback: (arg: any) => void) => void;
     stopConnection: () => void;
@@ -216,4 +204,20 @@ export interface IInitialGameInfo{
 export interface IPiecesCoordinates{
     white: IPiece[];
     black: IPiece[];
+}
+
+export interface IGameContextReducerState{
+    timer: ITimer;
+    messages: IChat[];
+    gameRoomKey: string | null;
+}
+
+export type IGameContextReducerActions = 
+{ type: "SET_TIMER"; payload: ITimer }
+| { type: "SET_MESSAGES"; payload: IChat[] }
+| { type: "SET_GAMEROOMKEY"; payload: string }
+
+export interface IGameContext{
+    gameState: IGameContextReducerState;
+    setGameState: React.Dispatch<IGameContextReducerActions>;
 }

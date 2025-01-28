@@ -15,9 +15,9 @@ import useUpdateBoard from "../game/signalRhandlers/useUpdateBoard";
 export default function Main(){
     const gameRef = useRef<Phaser.Game | null>();
     const { } = usePhaserContext();
-    const { setMessages } = useGameContext();
+    const { setGameState } = useGameContext();
     const navigate = useNavigate();
-    const signalRContext = useSignalRContext();
+    const { startConnection, addHandler, invoke, removeHandler, stopConnection } = useSignalRContext();
     const url = useParams();
     const signalRConnectionRef = useRef<boolean | null>(null);
     const [gameOutcome, setGameOutcome] = useState<GameStatus | null>(null);
@@ -26,17 +26,17 @@ export default function Main(){
 
     useEffect(() => {
         async function start() {
-            await signalRContext.startConnection(_ => {});
+            await startConnection(_ => {});
             signalRConnectionRef.current = true;
 
-            await signalRContext.addHandler("onNotFound", _ => navigate("/notFound"));
-            await signalRContext.addHandler("onInitializeGameInfo", initPhaser);
-            await signalRContext.addHandler("onGameOver", (outcome: GameStatus) => setGameOutcome(outcome));
-            await signalRContext.addHandler("onReceiveMessages", (messages: IChat[]) => setMessages(messages));
-            await signalRContext.addHandler("onOpponentPieceMoved", (data) => eventEmitter.emit("setEnemyMove", data.moveInfo as IPieceMove));
-            await signalRContext.addHandler("onUpdateBoard", updateBoard)
+            await addHandler("onNotFound", _ => navigate("/notFound"));
+            await addHandler("onInitializeGameInfo", initPhaser);
+            await addHandler("onGameOver", (outcome: GameStatus) => setGameOutcome(outcome));
+            await addHandler("onReceiveMessages", (messages: IChat[]) => setGameState({ type: "SET_MESSAGES", payload: messages }));
+            await addHandler("onOpponentPieceMoved", (data) => eventEmitter.emit("setEnemyMove", data.moveInfo as IPieceMove));
+            await addHandler("onUpdateBoard", updateBoard)
 
-            await signalRContext.invoke("GameStart", url.gameRoomId);
+            await invoke("GameStart", url.gameRoomId);
         }
 
         if (!signalRConnectionRef.current){
@@ -51,13 +51,13 @@ export default function Main(){
                 gameRef.current = null;
             }
             
-            signalRContext.removeHandler("onNotFound");
-            signalRContext.removeHandler("onInitializeGameInfo");
-            signalRContext.removeHandler("onGameOver");
-            signalRContext.removeHandler("onReceiveMessages");
-            signalRContext.removeHandler("onOpponentPieceMoved");
-            signalRContext.removeHandler("onUpdateMoveHistory");
-            signalRContext.stopConnection();
+            removeHandler("onNotFound");
+            removeHandler("onInitializeGameInfo");
+            removeHandler("onGameOver");
+            removeHandler("onReceiveMessages");
+            removeHandler("onOpponentPieceMoved");
+            removeHandler("onUpdateMoveHistory");
+            stopConnection();
         };
     }, [])
 

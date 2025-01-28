@@ -1,5 +1,5 @@
-import { createContext, ReactNode, useReducer, useState } from 'react'
-import { IGameContext, IChat, ITimer } from '../game/utilities/types';
+import { createContext, ReactNode, useReducer } from 'react'
+import { IGameContext, IGameContextReducerActions, IGameContextReducerState } from '../game/utilities/types';
 
 interface GameContextProps{
     children: ReactNode
@@ -7,23 +7,31 @@ interface GameContextProps{
 
 export const gameContext = createContext<IGameContext | null>(null);
 
-function reducerFn(state, action){
-    return state;
+function reducerFn(state: IGameContextReducerState, action: IGameContextReducerActions){
+    
+    switch(action.type){
+        case "SET_TIMER":
+            return {  ...state, timer: action.payload }
+        case "SET_MESSAGES":
+            return {  ...state, messages: action.payload }
+        case "SET_GAMEROOMKEY":
+            return {  ...state, gameRoomKey: action.payload }
+        default:
+            return state;
+    }
 }
 
 export default function GameContext(
     {children}: GameContextProps
 ) {
-    const [timer, setTimer] = useState<ITimer>({ white: 0, black: 0, isWhitesTurn: true });
-    const [messages, setMessages] = useState<IChat[]>([]);
-    const [gameRoomKey, setGameRoomKey] = useState("");
-
-    const [state, dispatch] = useReducer(reducerFn, {});
+    const [gameState, setGameState] = useReducer(reducerFn, {
+        timer: { white: 0, black: 0, isWhitesTurn: true }
+        ,messages: []
+        ,gameRoomKey: null
+    });
 
   return (
-    <gameContext.Provider value={{
-        timer, setTimer, messages, setMessages, gameRoomKey, setGameRoomKey
-    }}>
+    <gameContext.Provider value={{ gameState, setGameState }}>
         {children}
     </gameContext.Provider>
   )
