@@ -24,7 +24,7 @@ export default function DrawRequestModal(){
       >
         <Modal.Body>
           <form className="m-body" onSubmit={formSubmit}>
-          <h5>{gameState.opponentInfo.userName} is requesting a draw.</h5>
+          <h5>{gameState.opponentInfo.userName} is offering a draw.</h5>
             <div className="">
               <button 
                 type='submit'

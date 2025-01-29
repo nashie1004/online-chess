@@ -181,6 +181,7 @@ export interface IInitialGameInfo{
     moveCount: number;
     createdByUserInfo: IInitialPlayerInfo;
     joinedByUserInfo: IInitialPlayerInfo;
+    gameType: GameType
 }
 
 export interface IPiecesCoordinates{
@@ -225,6 +226,7 @@ export interface IGameContextReducerState{
     myInfo: IPlayerInfo;
     opponentInfo: IPlayerInfo;
     gameStatus: gameStat
+    gameType: GameType 
 }
 
 export type IGameContextReducerActions = 
@@ -237,6 +239,7 @@ export type IGameContextReducerActions =
 | { type: "SET_GAMESTATUS"; payload: gameStat }
 | { type: "SET_CLEARGAMESTATE"; }
 | { type: "SET_OPPONENTINFO_REQUESTDRAW"; payload: boolean }
+| { type: "SET_GAMETYPE"; payload: GameType }
 
 export interface IGameContext{
     gameState: IGameContextReducerState;

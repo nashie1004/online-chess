@@ -60,6 +60,8 @@ function reducerFn(state: IGameContextReducerState, action: IGameContextReducerA
             }
         case "SET_GAMESTATUS":
             return {  ...state, gameStatus: action.payload }
+        case "SET_GAMETYPE":
+            return {  ...state, gameType: action.payload }
         case "SET_CLEARGAMESTATE":
             return baseGameState;
         default:

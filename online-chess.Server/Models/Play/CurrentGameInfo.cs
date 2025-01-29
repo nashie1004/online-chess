@@ -1,4 +1,6 @@
-﻿namespace online_chess.Server.Models.Play
+﻿using online_chess.Server.Constants;
+
+namespace online_chess.Server.Models.Play
 {
     public record CurrentGameInfo
     {
@@ -8,5 +10,6 @@
         public int MoveCount { get; set; }
         public PlayerInfo CreatedByUserInfo { get; set; }
         public PlayerInfo JoinedByUserInfo { get; set; }
+        public GameType GameType { get; set; }
     }
 }

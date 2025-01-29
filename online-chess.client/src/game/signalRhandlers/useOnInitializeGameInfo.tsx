@@ -79,6 +79,8 @@ export default function useOnInitializeGameInfo(
 
         setGameState({ type: "SET_GAMEROOMKEY", payload: initGameInfo.gameRoomKey });
 
+        setGameState({ type: "SET_GAMETYPE", payload: initGameInfo.gameType });
+
         // connect react and phaser
         eventEmitter.on("setKingsState", (data: IKingState) => {
             
