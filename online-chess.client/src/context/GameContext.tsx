@@ -1,5 +1,6 @@
 import { createContext, ReactNode, useReducer } from 'react'
-import { IGameContext, IGameContextReducerActions, IGameContextReducerState, IMove, IPieceMove } from '../game/utilities/types';
+import { IGameContext, IGameContextReducerActions, IGameContextReducerState, IMove } from '../game/utilities/types';
+import { baseKingState } from '../game/utilities/constants';
 
 interface GameContextProps{
     children: ReactNode
@@ -29,7 +30,7 @@ function reducerFn(state: IGameContextReducerState, action: IGameContextReducerA
                     pieceName: action.payload.moveInfo.new.uniqueName
                 }
             };
-            
+
             const moveIsWhite = action.payload.moveIsWhite as boolean;
 
             if (moveIsWhite){
@@ -48,8 +49,10 @@ function reducerFn(state: IGameContextReducerState, action: IGameContextReducerA
                 }  
             };
 
-        case "SET_GAMEHISTORY":
+        case "SET_CAPTUREHISTORY":
             return {  ...state, gameHistory: action.payload }
+        case "SET_KINGSTATE":
+            return {  ...state, kingsState: action.payload }
         default:
             return state;
     }
@@ -64,6 +67,7 @@ export default function GameContext(
         ,gameRoomKey: null
         ,moveHistory: { white: [], black: [] }
         ,captureHistory: { white: [], black: [] }
+        ,kingsState: baseKingState
     });
 
   return (

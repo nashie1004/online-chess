@@ -1,6 +1,6 @@
 import { GameObjects } from "phaser";
 import { PieceNames } from "../utilities/constants";
-import { IPiecesCoordinates, IMoveInfo, IPhaserContextValues, IBothKingsPosition, IValidMove, IMoveHistory } from "../utilities/types";
+import { IPiecesCoordinates, IMoveInfo, IPhaserContextValues, IBothKingsPosition, IValidMove, IMoveHistory, IKingState } from "../utilities/types";
 import GetInitialMoves from "./getInitialMoves";
 import PossibleMovesIfKingInCheck from "./possibleMovesIfKingInCheck";
 
@@ -14,6 +14,7 @@ export default class ShowPossibleMoves {
     private readonly bothKingsPosition: IBothKingsPosition;
     private readonly moveHistory: IMoveHistory;
     private selectedPiece: IMoveInfo | null;
+    private readonly kingsState: IKingState;
 
     constructor(
         board: (null | GameObjects.Sprite)[][],
@@ -23,7 +24,8 @@ export default class ShowPossibleMoves {
         selectedPiece: IMoveInfo | null,
         reactState: IPhaserContextValues,
         bothKingsPosition: IBothKingsPosition,
-        moveHistory: IMoveHistory
+        moveHistory: IMoveHistory,
+        kingsState: IKingState
     ) {
         this.board = board;        
         this.previewBoard = previewBoard;        
@@ -33,6 +35,7 @@ export default class ShowPossibleMoves {
         this.reactState = reactState;        
         this.bothKingsPosition = bothKingsPosition;      
         this.moveHistory = moveHistory;  
+        this.kingsState = kingsState;
     }
     
     /**
@@ -57,7 +60,7 @@ export default class ShowPossibleMoves {
         let initialValidMoves: IValidMove[] = (new GetInitialMoves(
             this.board, this.reactState, 
             this.bothKingsPosition, this.boardOrientationIsWhite,
-            this.moveHistory
+            this.moveHistory, this.kingsState
         )).getInitialMoves(name, x, y, uniqueName);
 
         // set selected piece
@@ -68,7 +71,7 @@ export default class ShowPossibleMoves {
             this.board, this.selectedPiece
             ,this.reactState, this.bothKingsPosition
             ,this.boardOrientationIsWhite
-            ,this.moveHistory
+            ,this.moveHistory, this.kingsState
         )).possibleMovesIfKingInCheck(name, initialValidMoves);
 
         if (actualValidMoves){

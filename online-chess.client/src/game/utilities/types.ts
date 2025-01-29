@@ -63,14 +63,12 @@ export interface IPhaserContextValues{
     promoteTo: PromoteTo;
     isColorWhite: boolean;
     isWhitesOrientation: boolean;
-    kingsState: IKingState;
 }
 
 export interface IPhaserContext extends IPhaserContextValues{
     setPromoteTo: (val: PromoteTo) => void;
     setIsColorWhite: (val: boolean) => void;
     setIsWhitesOrientation: (val: boolean) => void;
-    setKingsState: (val: IKingState) => void;
 }
 
 export interface ISignalRContext {
@@ -208,6 +206,7 @@ export interface IGameContextReducerState{
     gameRoomKey: string | null;
     moveHistory: IMoveHistory;
     captureHistory: ICaptureHistory;
+    kingsState: IKingState;
 }
 
 export type IGameContextReducerActions = 
@@ -215,7 +214,8 @@ export type IGameContextReducerActions =
 | { type: "SET_MESSAGES"; payload: IChat[] }
 | { type: "SET_GAMEROOMKEY"; payload: string }
 | { type: "SET_MOVEHISTORY"; payload: any }
-| { type: "SET_GAMEHISTORY"; payload: ICaptureHistory }
+| { type: "SET_CAPTUREHISTORY"; payload: ICaptureHistory }
+| { type: "SET_KINGSTATE"; payload: IKingState }
 
 export interface IGameContext{
     gameState: IGameContextReducerState;

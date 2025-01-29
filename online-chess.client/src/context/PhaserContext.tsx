@@ -12,13 +12,11 @@ export const phaserContext = createContext<IPhaserContext>({
     // local state
     , isColorWhite: true, setIsColorWhite: () => {}
     , isWhitesOrientation: true, setIsWhitesOrientation: () => {}
-    , kingsState: baseKingState, setKingsState: () => {}
 })
 
 export default function PhaserContext(
     {children} : PhaserContextProps
 ) {
-    const [kingsState, setKingsState] = useState<IKingState>(baseKingState);
 
     // local state
     const [isColorWhite, setIsColorWhite] = useState<boolean>(true);
@@ -29,7 +27,6 @@ export default function PhaserContext(
         promoteTo, setPromoteTo,
         isColorWhite, setIsColorWhite,
         isWhitesOrientation, setIsWhitesOrientation,
-        kingsState, setKingsState,
     }
 
   return (

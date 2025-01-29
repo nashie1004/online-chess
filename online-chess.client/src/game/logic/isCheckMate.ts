@@ -1,7 +1,7 @@
 import { GameObjects } from "phaser";
 import KingValidator from "../pieces/kingValidator";
 import { PieceNames } from "../utilities/constants";
-import { IPhaserContextValues, IBothKingsPosition, IPiecesCoordinates, IBaseCoordinates, IMoveHistory } from "../utilities/types";
+import { IPhaserContextValues, IBothKingsPosition, IPiecesCoordinates, IBaseCoordinates, IMoveHistory, IKingState } from "../utilities/types";
 import GetInitialMoves from "./getInitialMoves";
 
 export default class IsCheckMate {
@@ -12,6 +12,7 @@ export default class IsCheckMate {
     private readonly boardOrientationIsWhite: boolean;
     private readonly pieceCoordinates: IPiecesCoordinates;
     private readonly moveHistory: IMoveHistory;
+    private readonly kingsState: IKingState;
 
     constructor(
         board: (null | GameObjects.Sprite)[][],
@@ -19,7 +20,8 @@ export default class IsCheckMate {
         bothKingsPosition: IBothKingsPosition,
         boardOrientationIsWhite: boolean,
         pieceCoordinates: IPiecesCoordinates,
-        moveHistory: IMoveHistory
+        moveHistory: IMoveHistory,
+        kingsState: IKingState
     ) {
         this.board = board;
         this.reactState = reactState;
@@ -27,6 +29,7 @@ export default class IsCheckMate {
         this.boardOrientationIsWhite = boardOrientationIsWhite;
         this.pieceCoordinates = pieceCoordinates;
         this.moveHistory = moveHistory;
+        this.kingsState = kingsState;
     }
 
     /**
@@ -37,10 +40,10 @@ export default class IsCheckMate {
      * @returns
      */
     isCheckmate(){
-        const colorInCheckIsWhite = this.reactState.kingsState.white.isInCheck;
+        const colorInCheckIsWhite = this.kingsState.white.isInCheck;
         const friendPieces = this.pieceCoordinates[colorInCheckIsWhite ? "white" : "black"];
-        const attackersCoords = colorInCheckIsWhite ? this.reactState.kingsState.white.checkedBy
-            : this.reactState.kingsState.black.checkedBy;
+        const attackersCoords = colorInCheckIsWhite ? this.kingsState.white.checkedBy
+            : this.kingsState.black.checkedBy;
         const validMoves = { capturable: 0, movableKing: 0, blockable: 0 }; // for debug purposes
         const kingInCheckCoords = colorInCheckIsWhite ? this.bothKingsPosition.white : this.bothKingsPosition.black;
 
@@ -54,7 +57,7 @@ export default class IsCheckMate {
             const friendPieceMoves = (new GetInitialMoves(
                 this.board, this.reactState
                 , this.bothKingsPosition, this.boardOrientationIsWhite
-                , this.moveHistory
+                , this.moveHistory, this.kingsState
             )).getInitialMoves(
                 friendPieceName, friendPiece.x, friendPiece.y
                 , friendPiece.uniqueName
@@ -75,7 +78,7 @@ export default class IsCheckMate {
                     const attackerSquares = (new GetInitialMoves(
                         this.board, this.reactState,
                         this.bothKingsPosition, this.boardOrientationIsWhite,
-                        this.moveHistory
+                        this.moveHistory, this.kingsState
                     )).getInitialMoves(attackerSpriteName, attacker.x, attacker.y, attackerSprite.name, true);
 
                     // 1. Capture attacker

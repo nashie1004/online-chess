@@ -6,7 +6,7 @@ import PawnValidator from "../pieces/pawnValidator";
 import QueenValidator from "../pieces/queenValidator";
 import RookValidator from "../pieces/rookValidator";
 import { PieceNames } from "../utilities/constants";
-import { IBothKingsPosition, IMoveHistory, IPhaserContextValues, IValidMove } from "../utilities/types";
+import { IBothKingsPosition, IKingState, IMoveHistory, IPhaserContextValues, IValidMove } from "../utilities/types";
 
 export default class GetInitialMoves {
     private readonly board: (null | GameObjects.Sprite)[][]
@@ -14,19 +14,22 @@ export default class GetInitialMoves {
     private readonly bothKingsPosition: IBothKingsPosition;
     private readonly boardOrientationIsWhite: boolean;
     private readonly moveHistory: IMoveHistory;
+    private readonly kingsState: IKingState;
 
     constructor(
         board: (null | GameObjects.Sprite)[][],
         reactState: IPhaserContextValues,
         bothKingsPosition: IBothKingsPosition,
         boardOrientationIsWhite: boolean,
-        moveHistory: IMoveHistory
+        moveHistory: IMoveHistory,
+        kingsState: IKingState
     ) {
         this.board = board;
         this.reactState = reactState;
         this.bothKingsPosition = bothKingsPosition;
         this.boardOrientationIsWhite = boardOrientationIsWhite;
         this.moveHistory = moveHistory;
+        this.kingsState = kingsState;
     }
 
     public getInitialMoves(name: PieceNames, x: number, y: number, uniqueName: string, allowXRayOpponentKing: boolean = false): IValidMove[]{
@@ -51,11 +54,11 @@ export default class GetInitialMoves {
                 break;
             case PieceNames.bKing:
                 validMoves = (new KingValidator(
-                    { x, y, name, uniqueName }, this.board, this.moveHistory, this.reactState.kingsState.black.isInCheck, this.bothKingsPosition, this.boardOrientationIsWhite)).validMoves();
+                    { x, y, name, uniqueName }, this.board, this.moveHistory, this.kingsState.black.isInCheck, this.bothKingsPosition, this.boardOrientationIsWhite)).validMoves();
                 break;
             case PieceNames.wKing:
                 validMoves = (new KingValidator(
-                    { x, y, name, uniqueName }, this.board, this.moveHistory, this.reactState.kingsState.white.isInCheck, this.bothKingsPosition, this.boardOrientationIsWhite)).validMoves();
+                    { x, y, name, uniqueName }, this.board, this.moveHistory, this.kingsState.white.isInCheck, this.bothKingsPosition, this.boardOrientationIsWhite)).validMoves();
                 break;
             case PieceNames.bPawn:
             case PieceNames.wPawn:

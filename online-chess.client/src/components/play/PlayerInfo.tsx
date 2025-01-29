@@ -1,13 +1,12 @@
 import { useEffect, useState } from 'react'
 import useGameContext from '../../hooks/useGameContext';
-import usePhaserContext from '../../hooks/usePhaserContext';
 import { msToMinuteDisplay } from '../../utils/helper';
 
 export default function PlayerInfo() {
     const { gameState } = useGameContext();
     const [actualTime, setActualTime] = useState(gameState.timer);
-  const { kingsState } = usePhaserContext();
-    
+    const kingsState = gameState.kingsState;
+
     useEffect(() => {
         
         setActualTime(gameState.timer);

@@ -4,7 +4,6 @@ import { MainGameScene } from "../scenes/MainGameScene";
 import { eventEmitter } from "../utilities/eventEmitter";
 import { IInitialGameInfo, IKingState } from "../utilities/types";
 import { Options as gameOptions } from "../utilities/constants";
-import usePhaserContext from "../../hooks/usePhaserContext";
 import useGameContext from "../../hooks/useGameContext";
 import useSignalRContext from "../../hooks/useSignalRContext";
 import useAuthContext from "../../hooks/useAuthContext";
@@ -13,7 +12,6 @@ export default function useInitializePhaser(
     gameRef: React.MutableRefObject<Phaser.Game | null | undefined>
 ){
     const { setGameState } = useGameContext();
-    const { setKingsState } = usePhaserContext();
     const signalRContext = useSignalRContext();
     const { user } = useAuthContext();
 
@@ -55,9 +53,7 @@ export default function useInitializePhaser(
 
         // connect react and phaser
         //eventEmitter.on("setIsWhitesTurn", (data: boolean) => setIsWhitesTurn(data));
-        // eventEmitter.on("setMoveHistory", (data: IMoveHistory) => setMoveHistory(data));
-        // eventEmitter.on("setCaptureHistory", (data: ICaptureHistory) => setCaptureHistory(data));
-        eventEmitter.on("setKingsState", (data: IKingState) => setKingsState(data));
+        eventEmitter.on("setKingsState", (data: IKingState) => setGameState({ type: "SET_KINGSTATE", payload: data }));
         eventEmitter.on("setMovePiece", (move: any) => {
             signalRContext.invoke("MovePiece", initGameInfo.gameRoomKey, move.oldMove, move.newMove);
             // console.log("You moved a piece")

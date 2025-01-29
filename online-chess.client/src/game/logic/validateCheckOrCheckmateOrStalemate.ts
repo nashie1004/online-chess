@@ -1,6 +1,6 @@
 import { GameObjects } from "phaser";
 import { eventEmitter } from "../utilities/eventEmitter";
-import { IPiecesCoordinates, IPhaserContextValues, IBothKingsPosition, IMoveHistory } from "../utilities/types";
+import { IPiecesCoordinates, IPhaserContextValues, IBothKingsPosition, IMoveHistory, IKingState } from "../utilities/types";
 import IsCheck from "./isCheck";
 import IsCheckMate from "./isCheckMate";
 import IsStalemate from "./IsStaleMate";
@@ -13,6 +13,7 @@ export default class ValidateCheckOrCheckMateOrStalemate {
     private readonly reactState: IPhaserContextValues;
     private readonly bothKingsPosition: IBothKingsPosition;
     private readonly moveHistory: IMoveHistory;
+    private readonly kingsState: IKingState;
     
     constructor(
         board: (null | GameObjects.Sprite)[][],
@@ -20,7 +21,8 @@ export default class ValidateCheckOrCheckMateOrStalemate {
         pieceCoordinates: IPiecesCoordinates,
         reactState: IPhaserContextValues,
         bothKingsPosition: IBothKingsPosition,
-        moveHistory: IMoveHistory
+        moveHistory: IMoveHistory,
+        kingsState: IKingState
     ) {
         this.board = board;   
         this.boardOrientationIsWhite = boardOrientationIsWhite;   
@@ -28,6 +30,7 @@ export default class ValidateCheckOrCheckMateOrStalemate {
         this.reactState = reactState;   
         this.bothKingsPosition = bothKingsPosition;   
         this.moveHistory = moveHistory;
+        this.kingsState = kingsState;
     }
 
     /**
@@ -43,20 +46,20 @@ export default class ValidateCheckOrCheckMateOrStalemate {
         this.board[this.bothKingsPosition.white.x][this.bothKingsPosition.white.y]?.resetPostPipeline();
 
         // reset all check or checkmate properties
-        this.reactState.kingsState.black.checkedBy = [];
-        this.reactState.kingsState.white.checkedBy = [];
-        this.reactState.kingsState.white.isInCheck = false;
-        this.reactState.kingsState.black.isInCheck = false;
-        this.reactState.kingsState.white.isCheckMate = false;
-        this.reactState.kingsState.black.isCheckMate = false;
-        this.reactState.kingsState.white.isInStalemate = false;
-        this.reactState.kingsState.black.isInStalemate = false;
+        this.kingsState.black.checkedBy = [];
+        this.kingsState.white.checkedBy = [];
+        this.kingsState.white.isInCheck = false;
+        this.kingsState.black.isInCheck = false;
+        this.kingsState.white.isCheckMate = false;
+        this.kingsState.black.isCheckMate = false;
+        this.kingsState.white.isInStalemate = false;
+        this.kingsState.black.isInStalemate = false;
 
         // check
         const isCheck = (new IsCheck(
             this.board, this.reactState
             ,this.bothKingsPosition, this.boardOrientationIsWhite
-            ,this.moveHistory
+            ,this.moveHistory, this.kingsState
         )).validateCheck(isWhite);
 
         // 1. stalemate
@@ -68,7 +71,7 @@ export default class ValidateCheckOrCheckMateOrStalemate {
             )).isStalemate(!isWhite);
 
             if (isStalemate){
-                this.reactState.kingsState[isWhite ? "black" : "white"].isInStalemate = true;
+                this.kingsState[isWhite ? "black" : "white"].isInStalemate = true;
                 return 0;
             }
 
@@ -85,17 +88,18 @@ export default class ValidateCheckOrCheckMateOrStalemate {
             this.board, this.reactState
             ,this.bothKingsPosition, this.boardOrientationIsWhite
             ,this.pieceCoordinates, this.moveHistory
+            ,this.kingsState
         )).isCheckmate();
 
         if (isCheckMate){
-            if (this.reactState.kingsState.white.isInCheck){
-                this.reactState.kingsState.white.isCheckMate = true;
+            if (this.kingsState.white.isInCheck){
+                this.kingsState.white.isCheckMate = true;
             } else {
-                this.reactState.kingsState.black.isCheckMate = true;
+                this.kingsState.black.isCheckMate = true;
             }
         }
 
-        eventEmitter.emit("setKingsState", this.reactState.kingsState);
+        eventEmitter.emit("setKingsState", this.kingsState);
         return (isCheckMate ? 2 : 1);
     }
 

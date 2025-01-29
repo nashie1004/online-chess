@@ -28,13 +28,15 @@ export class MainGameScene extends Scene{
     private readonly boardOrientationIsWhite: boolean;
     private selectedPiece: IMoveInfo | null;
     private isPlayersTurnToMove: boolean;
+    private bothKingsPosition: IBothKingsPosition;
     
     // server state
     private readonly board: (null | GameObjects.Sprite)[][]
     private readonly pieceCoordinates: IPiecesCoordinates;
     private moveHistory: IMoveHistory;
     private reactState: IPhaserContextValues;
-    private bothKingsPosition: IBothKingsPosition;
+
+    private kingsState: IKingState;
 
     constructor(key: string, isColorWhite: boolean) {
         super({ key });
@@ -44,7 +46,6 @@ export class MainGameScene extends Scene{
             promoteTo: "queen",
             isColorWhite, // player's color of choice
             isWhitesOrientation: isColorWhite,
-            kingsState: baseKingState
         }
 
         // game internal state
@@ -65,6 +66,8 @@ export class MainGameScene extends Scene{
 
         this.pieceCoordinates = { white: [], black: [],};
         this.moveHistory = { white: [], black: [] };
+
+        this.kingsState = baseKingState;
     }
 
     preload(){
@@ -182,6 +185,7 @@ export class MainGameScene extends Scene{
                         ,this.boardOrientationIsWhite, this.pieceCoordinates
                         ,this.selectedPiece, this.reactState
                         ,this.bothKingsPosition, this.moveHistory
+                        ,this.kingsState
                     )).showPossibleMoves(pieceName, pieceX, pieceY);
                     
                 });
@@ -203,7 +207,7 @@ export class MainGameScene extends Scene{
 
         // sync / listen to upcoming react state changes
         eventEmitter.on("setPromoteTo", (data: PromoteTo) => this.reactState.promoteTo = data);
-        eventEmitter.on("setKingsState", (data: IKingState) => this.reactState.kingsState = data);
+        //eventEmitter.on("setKingsState", (data: IKingState) => this.kingsState = data);
         eventEmitter.on("setEnemyMove", (data: IPieceMove) => {
             this.selectedPiece = {
                 x: data.old.x,
@@ -214,7 +218,9 @@ export class MainGameScene extends Scene{
             this.move(data.new.x, data.new.y);
             this.isPlayersTurnToMove = true;
         });
-        eventEmitter.on("setMoveHistory", (data: IMoveHistory) => this.moveHistory = data);
+        eventEmitter.on("setMoveHistory", (data: IMoveHistory) => {
+            this.moveHistory = data;
+        });
     }
 
     resetMoves(){
@@ -322,6 +328,7 @@ export class MainGameScene extends Scene{
             this.board, this.boardOrientationIsWhite
             , this.pieceCoordinates, this.reactState
             , this.bothKingsPosition, this.moveHistory
+            , this.kingsState
         )).validate(isWhite);
 
         // play sound

@@ -4,7 +4,7 @@ import KnightValidator from "../pieces/knightValidator";
 import PawnValidator from "../pieces/pawnValidator";
 import RookValidator from "../pieces/rookValidator";
 import { PieceNames } from "../utilities/constants";
-import { IPhaserContextValues, IBothKingsPosition, IMoveHistory } from "../utilities/types";
+import { IPhaserContextValues, IBothKingsPosition, IMoveHistory, IKingState } from "../utilities/types";
 
 export default class IsCheck {
     private readonly board: (null | GameObjects.Sprite)[][]
@@ -12,19 +12,22 @@ export default class IsCheck {
     private readonly bothKingsPosition: IBothKingsPosition;
     private readonly boardOrientationIsWhite: boolean;
     private readonly moveHistory: IMoveHistory;
+    private readonly kingsState: IKingState;
 
     constructor(
         board: (null | GameObjects.Sprite)[][], 
         reactState: IPhaserContextValues, 
         bothKingsPosition: IBothKingsPosition, 
         boardOrientationIsWhite: boolean, 
-        moveHistory: IMoveHistory
+        moveHistory: IMoveHistory,
+        kingsState: IKingState
     ) {
         this.board = board;
         this.reactState = reactState;
         this.bothKingsPosition = bothKingsPosition;
         this.boardOrientationIsWhite = boardOrientationIsWhite;
         this.moveHistory = moveHistory;
+        this.kingsState = kingsState;
     }
     
     /**
@@ -36,7 +39,7 @@ export default class IsCheck {
     validateCheck(isWhite: boolean){
         const king = isWhite ? this.bothKingsPosition.black : this.bothKingsPosition.white;
         const kingPiece = isWhite ? PieceNames.bKing : PieceNames.wKing;
-        const kingUpdate = (kingPiece === PieceNames.wKing) ? this.reactState.kingsState.white : this.reactState.kingsState.black;
+        const kingUpdate = (kingPiece === PieceNames.wKing) ? this.kingsState.white : this.kingsState.black;
         const _this = this;
 
         /**
