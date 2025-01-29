@@ -8,14 +8,14 @@ import useGameContext from "../../hooks/useGameContext";
 import useSignalRContext from "../../hooks/useSignalRContext";
 import useAuthContext from "../../hooks/useAuthContext";
 
-export default function useInitializePhaser(
+export default function useOnInitializeGameInfo(
     gameRef: React.MutableRefObject<Phaser.Game | null | undefined>
 ){
     const { setGameState, gameState } = useGameContext();
     const signalRContext = useSignalRContext();
     const { user } = useAuthContext();
 
-    const initPhaser = useCallback((initGameInfo: IInitialGameInfo) => {
+    const onInitializeGameInfo = useCallback((initGameInfo: IInitialGameInfo) => {
         const playerIsWhite = (initGameInfo.createdByUserInfo.userName === user?.userName)
             ? initGameInfo.createdByUserInfo.isColorWhite
             : initGameInfo.joinedByUserInfo.isColorWhite;
@@ -109,5 +109,5 @@ export default function useInitializePhaser(
         });
     }, []);
 
-    return initPhaser;
+    return onInitializeGameInfo;
 }

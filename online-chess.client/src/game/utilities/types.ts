@@ -205,7 +205,7 @@ export interface IPiecesCoordinates{
  * 
  */
 
-type gameStat = "ONGOING" | "PAUSED" | "LOADING";
+type gameStat = "ONGOING" | "PAUSED" | "LOADING" | "FINISHED";
 
 export interface IPlayerInfo{
     userName: string;

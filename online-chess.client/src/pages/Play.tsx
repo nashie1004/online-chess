@@ -4,35 +4,44 @@ import { eventEmitter } from "../game/utilities/eventEmitter";
 import { IChat, IPieceMove } from "../game/utilities/types";
 import SidebarRight from "../components/play/SidebarRight";
 import CaptureHistory from "../components/play/CaptureHistory";
-import { useNavigate, useParams } from "react-router";
+import { useParams } from "react-router";
 import useGameContext from "../hooks/useGameContext";
 import useSignalRContext from "../hooks/useSignalRContext";
 import OutcomeModal from "../components/play/OutcomeModal";
-import useInitializePhaser from "../game/signalRhandlers/useInitializePhaser";
-import useUpdateBoard from "../game/signalRhandlers/useUpdateBoard";
+import useOnInitializeGameInfo from "../game/signalRhandlers/useOnInitializeGameInfo";
+import useOnUpdateBoard from "../game/signalRhandlers/useOnUpdateBoard";
+import useOpponentDrawRequest from "../game/signalRhandlers/useOpponentDrawRequest";
+import useOnNotFound from "../game/signalRhandlers/useOnNotFound";
+import useOnReceiveMessages from "../game/signalRhandlers/useOnReceiveMessages";
+import useOnOpponentPieceMoved from "../game/signalRhandlers/useOnOpponentPieceMoved";
 
 export default function Main(){
     const gameRef = useRef<Phaser.Game | null>();
+    const signalRConnectionRef = useRef<boolean | null>(null);
     const { setGameState } = useGameContext();
-    const navigate = useNavigate();
     const { startConnection, addHandler, invoke, removeHandler, stopConnection } = useSignalRContext();
     const url = useParams();
-    const signalRConnectionRef = useRef<boolean | null>(null);
     const [gameOutcome, setGameOutcome] = useState<GameStatus | null>(null);
-    const initPhaser = useInitializePhaser(gameRef);
-    const updateBoard = useUpdateBoard();
+    
+    const onInitializeGameInfo = useOnInitializeGameInfo(gameRef);
+    const onUpdateBoard = useOnUpdateBoard();
+    const onOpponentDrawRequest = useOpponentDrawRequest();
+    const onNotFound = useOnNotFound();
+    const onReceiveMessages = useOnReceiveMessages();
+    const onOpponentPieceMoved = useOnOpponentPieceMoved();
 
     useEffect(() => {
         async function start() {
             await startConnection(_ => {});
             signalRConnectionRef.current = true;
 
-            await addHandler("onNotFound", _ => navigate("/notFound"));
-            await addHandler("onInitializeGameInfo", initPhaser);
+            await addHandler("onNotFound", onNotFound);
+            await addHandler("onInitializeGameInfo", onInitializeGameInfo);
             await addHandler("onGameOver", (outcome: GameStatus) => setGameOutcome(outcome));
-            await addHandler("onReceiveMessages", (messages: IChat[]) => setGameState({ type: "SET_MESSAGES", payload: messages }));
-            await addHandler("onOpponentPieceMoved", (data) => eventEmitter.emit("setEnemyMove", data.moveInfo as IPieceMove));
-            await addHandler("onUpdateBoard", updateBoard)
+            await addHandler("onReceiveMessages", onReceiveMessages);
+            await addHandler("onOpponentPieceMoved", onOpponentPieceMoved);
+            await addHandler("onUpdateBoard", onUpdateBoard)
+            await addHandler("onOpponentDrawRequest", onOpponentDrawRequest)
 
             await invoke("GameStart", url.gameRoomId);
         }

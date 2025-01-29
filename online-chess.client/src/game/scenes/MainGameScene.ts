@@ -32,7 +32,6 @@ export class MainGameScene extends Scene{
     private isPlayersTurnToMove: boolean;
     private bothKingsPosition: IBothKingsPosition;
     private promotePreference: PromoteTo;
-    private readonly playerColorIsWhite: boolean;
 
     // server state
     private moveHistory: IMoveHistory;
@@ -46,7 +45,6 @@ export class MainGameScene extends Scene{
         this.kingsState = baseKingState;
 
         // internal state
-        this.playerColorIsWhite = isColorWhite;
         this.isPlayersTurnToMove = isColorWhite;
         this.boardOrientationIsWhite = isColorWhite;
         this.selectedPiece = null;
