@@ -1,6 +1,6 @@
 import { GameObjects } from "phaser";
 import { PieceNames } from "../utilities/constants";
-import { IPiecesCoordinates, IMoveInfo, IPhaserContextValues, IBothKingsPosition, IValidMove } from "../utilities/types";
+import { IPiecesCoordinates, IMoveInfo, IPhaserContextValues, IBothKingsPosition, IValidMove, IMoveHistory } from "../utilities/types";
 import GetInitialMoves from "./getInitialMoves";
 import PossibleMovesIfKingInCheck from "./possibleMovesIfKingInCheck";
 
@@ -12,6 +12,7 @@ export default class ShowPossibleMoves {
     private readonly pieceCoordinates: IPiecesCoordinates;
     private readonly reactState: IPhaserContextValues;
     private readonly bothKingsPosition: IBothKingsPosition;
+    private readonly moveHistory: IMoveHistory;
     private selectedPiece: IMoveInfo | null;
 
     constructor(
@@ -21,7 +22,8 @@ export default class ShowPossibleMoves {
         pieceCoordinates: IPiecesCoordinates,
         selectedPiece: IMoveInfo | null,
         reactState: IPhaserContextValues,
-        bothKingsPosition: IBothKingsPosition
+        bothKingsPosition: IBothKingsPosition,
+        moveHistory: IMoveHistory
     ) {
         this.board = board;        
         this.previewBoard = previewBoard;        
@@ -29,7 +31,8 @@ export default class ShowPossibleMoves {
         this.pieceCoordinates = pieceCoordinates;        
         this.selectedPiece = selectedPiece;        
         this.reactState = reactState;        
-        this.bothKingsPosition = bothKingsPosition;        
+        this.bothKingsPosition = bothKingsPosition;      
+        this.moveHistory = moveHistory;  
     }
     
     /**
@@ -53,7 +56,8 @@ export default class ShowPossibleMoves {
         // validate
         let initialValidMoves: IValidMove[] = (new GetInitialMoves(
             this.board, this.reactState, 
-            this.bothKingsPosition, this.boardOrientationIsWhite
+            this.bothKingsPosition, this.boardOrientationIsWhite,
+            this.moveHistory
         )).getInitialMoves(name, x, y, uniqueName);
 
         // set selected piece
@@ -64,6 +68,7 @@ export default class ShowPossibleMoves {
             this.board, this.selectedPiece
             ,this.reactState, this.bothKingsPosition
             ,this.boardOrientationIsWhite
+            ,this.moveHistory
         )).possibleMovesIfKingInCheck(name, initialValidMoves);
 
         if (actualValidMoves){

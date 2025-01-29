@@ -1,6 +1,6 @@
 import { GameObjects } from "phaser";
 import { eventEmitter } from "../utilities/eventEmitter";
-import { IPiecesCoordinates, IPhaserContextValues, IBothKingsPosition } from "../utilities/types";
+import { IPiecesCoordinates, IPhaserContextValues, IBothKingsPosition, IMoveHistory } from "../utilities/types";
 import IsCheck from "./isCheck";
 import IsCheckMate from "./isCheckMate";
 import IsStalemate from "./IsStaleMate";
@@ -12,19 +12,22 @@ export default class ValidateCheckOrCheckMateOrStalemate {
     private readonly pieceCoordinates: IPiecesCoordinates;
     private readonly reactState: IPhaserContextValues;
     private readonly bothKingsPosition: IBothKingsPosition;
+    private readonly moveHistory: IMoveHistory;
     
     constructor(
         board: (null | GameObjects.Sprite)[][],
         boardOrientationIsWhite: boolean,
         pieceCoordinates: IPiecesCoordinates,
         reactState: IPhaserContextValues,
-        bothKingsPosition: IBothKingsPosition
+        bothKingsPosition: IBothKingsPosition,
+        moveHistory: IMoveHistory
     ) {
         this.board = board;   
         this.boardOrientationIsWhite = boardOrientationIsWhite;   
         this.pieceCoordinates = pieceCoordinates;   
         this.reactState = reactState;   
         this.bothKingsPosition = bothKingsPosition;   
+        this.moveHistory = moveHistory;
     }
 
     /**
@@ -53,6 +56,7 @@ export default class ValidateCheckOrCheckMateOrStalemate {
         const isCheck = (new IsCheck(
             this.board, this.reactState
             ,this.bothKingsPosition, this.boardOrientationIsWhite
+            ,this.moveHistory
         )).validateCheck(isWhite);
 
         // 1. stalemate
@@ -60,7 +64,7 @@ export default class ValidateCheckOrCheckMateOrStalemate {
             let isStalemate = (new IsStalemate(
                 this.board, this.boardOrientationIsWhite
                 ,this.pieceCoordinates, this.reactState
-                ,this.bothKingsPosition
+                ,this.bothKingsPosition, this.moveHistory
             )).isStalemate(!isWhite);
 
             if (isStalemate){
@@ -80,7 +84,7 @@ export default class ValidateCheckOrCheckMateOrStalemate {
         let isCheckMate = (new IsCheckMate(
             this.board, this.reactState
             ,this.bothKingsPosition, this.boardOrientationIsWhite
-            ,this.pieceCoordinates
+            ,this.pieceCoordinates, this.moveHistory
         )).isCheckmate();
 
         if (isCheckMate){

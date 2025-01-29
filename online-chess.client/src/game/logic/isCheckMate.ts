@@ -1,7 +1,7 @@
 import { GameObjects } from "phaser";
 import KingValidator from "../pieces/kingValidator";
 import { PieceNames } from "../utilities/constants";
-import { IPhaserContextValues, IBothKingsPosition, IPiecesCoordinates, IBaseCoordinates } from "../utilities/types";
+import { IPhaserContextValues, IBothKingsPosition, IPiecesCoordinates, IBaseCoordinates, IMoveHistory } from "../utilities/types";
 import GetInitialMoves from "./getInitialMoves";
 
 export default class IsCheckMate {
@@ -11,19 +11,22 @@ export default class IsCheckMate {
     private readonly bothKingsPosition: IBothKingsPosition;
     private readonly boardOrientationIsWhite: boolean;
     private readonly pieceCoordinates: IPiecesCoordinates;
+    private readonly moveHistory: IMoveHistory;
 
     constructor(
         board: (null | GameObjects.Sprite)[][],
         reactState: IPhaserContextValues,
         bothKingsPosition: IBothKingsPosition,
         boardOrientationIsWhite: boolean,
-        pieceCoordinates: IPiecesCoordinates
+        pieceCoordinates: IPiecesCoordinates,
+        moveHistory: IMoveHistory
     ) {
         this.board = board;
         this.reactState = reactState;
         this.bothKingsPosition = bothKingsPosition;
         this.boardOrientationIsWhite = boardOrientationIsWhite;
         this.pieceCoordinates = pieceCoordinates;
+        this.moveHistory = moveHistory;
     }
 
     /**
@@ -51,6 +54,7 @@ export default class IsCheckMate {
             const friendPieceMoves = (new GetInitialMoves(
                 this.board, this.reactState
                 , this.bothKingsPosition, this.boardOrientationIsWhite
+                , this.moveHistory
             )).getInitialMoves(
                 friendPieceName, friendPiece.x, friendPiece.y
                 , friendPiece.uniqueName
@@ -70,7 +74,8 @@ export default class IsCheckMate {
                     const attackerSpriteName = attackerSprite.name.split("-")[0] as PieceNames;
                     const attackerSquares = (new GetInitialMoves(
                         this.board, this.reactState,
-                        this.bothKingsPosition, this.boardOrientationIsWhite
+                        this.bothKingsPosition, this.boardOrientationIsWhite,
+                        this.moveHistory
                     )).getInitialMoves(attackerSpriteName, attacker.x, attacker.y, attackerSprite.name, true);
 
                     // 1. Capture attacker
@@ -89,7 +94,7 @@ export default class IsCheckMate {
                     // 3. Block the line of attack
                     const kingTracer = new KingValidator({
                         x: kingInCheckCoords.x, y: kingInCheckCoords.y, name: colorInCheckIsWhite ? PieceNames.wKing : PieceNames.bKing
-                    }, this.board, this.reactState.moveHistory, false, this.bothKingsPosition, this.boardOrientationIsWhite);
+                    }, this.board, this.moveHistory, false, this.bothKingsPosition, this.boardOrientationIsWhite);
 
                     let attackersLineOfPath: IBaseCoordinates[] = [];
 

@@ -8,7 +8,7 @@ import capture from "../../assets/sounds/Capture.ogg"
 import select from "../../assets/sounds/Select.ogg"
 import check from "../../assets/sounds/Check.mp3"
 import pieces, { Options as gameOptions, PieceNames, pieceImages, baseKingState } from "../utilities/constants";
-import { IBothKingsPosition, IKingState, IMoveInfo, IPhaserContextValues, IPiece, IPieceMove, IPiecesCoordinates, PromoteTo } from "../utilities/types";
+import { IBothKingsPosition, IKingState, IMoveHistory, IMoveInfo, IPhaserContextValues, IPiece, IPieceMove, IPiecesCoordinates, PromoteTo } from "../utilities/types";
 import { eventEmitter } from "../utilities/eventEmitter";
 import KingCastled from "../logic/kingCastled";
 import PawnPromote from "../logic/pawnPromote";
@@ -32,6 +32,7 @@ export class MainGameScene extends Scene{
     // server state
     private readonly board: (null | GameObjects.Sprite)[][]
     private readonly pieceCoordinates: IPiecesCoordinates;
+    private moveHistory: IMoveHistory;
     private reactState: IPhaserContextValues;
     private bothKingsPosition: IBothKingsPosition;
 
@@ -40,8 +41,6 @@ export class MainGameScene extends Scene{
 
         // sync react and phaser state
         this.reactState = {
-            moveHistory: { white: [], black: [] },
-            captureHistory: { white: [], black: [] },
             promoteTo: "queen",
             isColorWhite, // player's color of choice
             isWhitesOrientation: isColorWhite,
@@ -65,6 +64,7 @@ export class MainGameScene extends Scene{
         this.previewBoard = Array.from({ length: 8 }).map(_ => new Array(8));
 
         this.pieceCoordinates = { white: [], black: [],};
+        this.moveHistory = { white: [], black: [] };
     }
 
     preload(){
@@ -181,7 +181,7 @@ export class MainGameScene extends Scene{
                         this.board, this.previewBoard
                         ,this.boardOrientationIsWhite, this.pieceCoordinates
                         ,this.selectedPiece, this.reactState
-                        ,this.bothKingsPosition
+                        ,this.bothKingsPosition, this.moveHistory
                     )).showPossibleMoves(pieceName, pieceX, pieceY);
                     
                 });
@@ -203,9 +203,7 @@ export class MainGameScene extends Scene{
 
         // sync / listen to upcoming react state changes
         eventEmitter.on("setPromoteTo", (data: PromoteTo) => this.reactState.promoteTo = data);
-        eventEmitter.on("setIsWhitesOrientation", (data: boolean) => this.reactState.isWhitesOrientation = data);
         eventEmitter.on("setKingsState", (data: IKingState) => this.reactState.kingsState = data);
-        
         eventEmitter.on("setEnemyMove", (data: IPieceMove) => {
             this.selectedPiece = {
                 x: data.old.x,
@@ -216,6 +214,7 @@ export class MainGameScene extends Scene{
             this.move(data.new.x, data.new.y);
             this.isPlayersTurnToMove = true;
         });
+        eventEmitter.on("setMoveHistory", (data: IMoveHistory) => this.moveHistory = data);
     }
 
     resetMoves(){
@@ -252,6 +251,7 @@ export class MainGameScene extends Scene{
         const pieceCapture = new PieceCapture(
             this.board, this.boardOrientationIsWhite, this.pieceCoordinates
             ,this.reactState, this.bothKingsPosition
+            ,this.moveHistory
         );
 
         if (pieceCapture.normalCapture(newX, newY, isWhite)) hasCapture = true;
@@ -277,6 +277,7 @@ export class MainGameScene extends Scene{
         const kingCastled = (new KingCastled(
             this.board, this.reactState
             , this.bothKingsPosition, this.boardOrientationIsWhite
+            , this.moveHistory
         )).kingCastled(uniquePieceName, this.selectedPiece, isWhite, newX, newY);
 
         if (kingCastled){
@@ -289,12 +290,6 @@ export class MainGameScene extends Scene{
                 duration: 100,
             })
         }
-
-        // save to move history
-        this.reactState.moveHistory[isWhite ? "white" : "black"].push({
-            old: { pieceName: uniquePieceName, x: this.selectedPiece.x, y: this.selectedPiece.y },
-            new: { pieceName: uniquePieceName, x: newX, y: newY },
-        });
 
         // if the move is a king, update private king pos state - this is used by the this.validateCheckOrCheckMateOrStalemate() function
         if (sprite.name.toLowerCase().indexOf("king") >= 0){
@@ -309,10 +304,7 @@ export class MainGameScene extends Scene{
         if (this.isPlayersTurnToMove){
             this.isPlayersTurnToMove = false;
             eventEmitter.emit("setMovePiece", { oldMove, newMove });
-            //eventEmitter.emit("setIsWhitesTurn", !isWhite);
         }
-        // eventEmitter.emit("setMoveHistory", this.reactState.moveHistory)
-        // eventEmitter.emit("setCaptureHistory", this.reactState.captureHistory)
 
         // display move to the user
         this.tweens.add({
@@ -329,7 +321,7 @@ export class MainGameScene extends Scene{
         const kingSafety = (new ValidateCheckOrCheckMateOrStalemate(
             this.board, this.boardOrientationIsWhite
             , this.pieceCoordinates, this.reactState
-            , this.bothKingsPosition
+            , this.bothKingsPosition, this.moveHistory
         )).validate(isWhite);
 
         // play sound

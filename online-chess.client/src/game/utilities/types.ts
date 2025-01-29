@@ -60,8 +60,6 @@ export interface ITimer{
 }
 
 export interface IPhaserContextValues{
-    moveHistory: IMoveHistory;
-    captureHistory: ICaptureHistory;
     promoteTo: PromoteTo;
     isColorWhite: boolean;
     isWhitesOrientation: boolean;
@@ -69,8 +67,6 @@ export interface IPhaserContextValues{
 }
 
 export interface IPhaserContext extends IPhaserContextValues{
-    setMoveHistory: React.Dispatch<React.SetStateAction<IMoveHistory>>;
-    setCaptureHistory: React.Dispatch<React.SetStateAction<ICaptureHistory>>;
     setPromoteTo: (val: PromoteTo) => void;
     setIsColorWhite: (val: boolean) => void;
     setIsWhitesOrientation: (val: boolean) => void;
@@ -210,12 +206,16 @@ export interface IGameContextReducerState{
     timer: ITimer;
     messages: IChat[];
     gameRoomKey: string | null;
+    moveHistory: IMoveHistory;
+    captureHistory: ICaptureHistory;
 }
 
 export type IGameContextReducerActions = 
 { type: "SET_TIMER"; payload: ITimer }
 | { type: "SET_MESSAGES"; payload: IChat[] }
 | { type: "SET_GAMEROOMKEY"; payload: string }
+| { type: "SET_MOVEHISTORY"; payload: any }
+| { type: "SET_GAMEHISTORY"; payload: ICaptureHistory }
 
 export interface IGameContext{
     gameState: IGameContextReducerState;

@@ -4,24 +4,27 @@ import KnightValidator from "../pieces/knightValidator";
 import PawnValidator from "../pieces/pawnValidator";
 import RookValidator from "../pieces/rookValidator";
 import { PieceNames } from "../utilities/constants";
-import { IPhaserContextValues, IBothKingsPosition } from "../utilities/types";
+import { IPhaserContextValues, IBothKingsPosition, IMoveHistory } from "../utilities/types";
 
 export default class IsCheck {
     private readonly board: (null | GameObjects.Sprite)[][]
     private readonly reactState: IPhaserContextValues;
     private readonly bothKingsPosition: IBothKingsPosition;
     private readonly boardOrientationIsWhite: boolean;
+    private readonly moveHistory: IMoveHistory;
 
     constructor(
         board: (null | GameObjects.Sprite)[][], 
         reactState: IPhaserContextValues, 
         bothKingsPosition: IBothKingsPosition, 
         boardOrientationIsWhite: boolean, 
+        moveHistory: IMoveHistory
     ) {
         this.board = board;
         this.reactState = reactState;
         this.bothKingsPosition = bothKingsPosition;
         this.boardOrientationIsWhite = boardOrientationIsWhite;
+        this.moveHistory = moveHistory;
     }
     
     /**
@@ -46,16 +49,16 @@ export default class IsCheck {
 
         const rookMoves = (new RookValidator(
             { x: king.x, y: king.y, name: kingPiece === PieceNames.wKing ? PieceNames.wRook : PieceNames.bRook }
-            , this.board, this.reactState.moveHistory, false, this.bothKingsPosition)).validMoves();
+            , this.board, this.moveHistory, false, this.bothKingsPosition)).validMoves();
         const bishopMoves = (new BishopValidator(
             { x: king.x, y: king.y, name: kingPiece === PieceNames.wKing ? PieceNames.wBishop : PieceNames.bBishop }
-            , this.board, this.reactState.moveHistory, false, this.bothKingsPosition)).validMoves();
+            , this.board, this.moveHistory, false, this.bothKingsPosition)).validMoves();
         const knightMoves = (new KnightValidator(
             { x: king.x, y: king.y, name: kingPiece === PieceNames.wKing ? PieceNames.wKnight : PieceNames.bKnight }
-            , this.board, this.reactState.moveHistory, this.bothKingsPosition)).validMoves();
+            , this.board, this.moveHistory, this.bothKingsPosition)).validMoves();
         const pawnMoves = (new PawnValidator(
                 { x: king.x, y: king.y, name: kingPiece === PieceNames.wKing ? PieceNames.wPawn : PieceNames.bPawn },
-                this.board, this.reactState.moveHistory, false, this.bothKingsPosition, this.boardOrientationIsWhite
+                this.board, this.moveHistory, false, this.bothKingsPosition, this.boardOrientationIsWhite
             )).validMoves();
 
         // 1. rook

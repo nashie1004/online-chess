@@ -1,5 +1,5 @@
 import { createContext, ReactNode, useState } from 'react'
-import { IMoveHistory, ICaptureHistory, PromoteTo, IPhaserContext, IKingState, ITimer } from '../game/utilities/types';
+import { PromoteTo, IPhaserContext, IKingState } from '../game/utilities/types';
 import { baseKingState } from '../game/utilities/constants';
 
 interface PhaserContextProps{
@@ -7,9 +7,7 @@ interface PhaserContextProps{
 }
 
 export const phaserContext = createContext<IPhaserContext>({
-    moveHistory: { white: [], black: [] }, setMoveHistory: () => {}
-    , captureHistory: { white: [], black: [] }, setCaptureHistory: () => {}
-    , promoteTo: "queen", setPromoteTo: () => {}
+    promoteTo: "queen", setPromoteTo: () => {}
 
     // local state
     , isColorWhite: true, setIsColorWhite: () => {}
@@ -20,8 +18,6 @@ export const phaserContext = createContext<IPhaserContext>({
 export default function PhaserContext(
     {children} : PhaserContextProps
 ) {
-    const [moveHistory, setMoveHistory] = useState<IMoveHistory>({ white: [], black: [] });
-    const [captureHistory, setCaptureHistory] = useState<ICaptureHistory>({ white: [], black: [] });
     const [kingsState, setKingsState] = useState<IKingState>(baseKingState);
 
     // local state
@@ -30,8 +26,6 @@ export default function PhaserContext(
     const [promoteTo, setPromoteTo] = useState<PromoteTo>("queen");
 
     const data: IPhaserContext = {
-        moveHistory, setMoveHistory,
-        captureHistory, setCaptureHistory,
         promoteTo, setPromoteTo,
         isColorWhite, setIsColorWhite,
         isWhitesOrientation, setIsWhitesOrientation,

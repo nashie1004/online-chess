@@ -1,6 +1,5 @@
 import { useCallback } from "react";
-import usePhaserContext from "../../hooks/usePhaserContext";
-import { IPieceMove } from "../utilities/types";
+import useGameContext from "../../hooks/useGameContext";
 /**
  * This updates:
  * - move history
@@ -8,18 +7,17 @@ import { IPieceMove } from "../utilities/types";
  * - TODO timer
  */
 export default function useUpdateBoard(){
-    const { setMoveHistory } = usePhaserContext();
+    const { setGameState } = useGameContext();
     
     const updateBoard = useCallback((data: any) => {
-        const moveInfo = data.moveInfo as IPieceMove;
-        const moveIsWhite = data.moveIsWhite as boolean;
+        
+        // console.log(data)
 
-        setMoveHistory(prev => {
-            if (moveIsWhite){
-                return ({ ...prev, white: [...prev.white, moveInfo] })
-            }
-            return ({ ...prev, black: [...prev.black, moveInfo] })
+        setGameState({
+            type: "SET_MOVEHISTORY",
+            payload: data
         });
+
     }, [])
     
     return updateBoard; 
