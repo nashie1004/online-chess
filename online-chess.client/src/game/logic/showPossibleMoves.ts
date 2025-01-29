@@ -10,7 +10,6 @@ export default class ShowPossibleMoves {
     private readonly previewBoard: (GameObjects.Sprite)[][] // has a visible property
     private readonly boardOrientationIsWhite: boolean;
     private readonly pieceCoordinates: IPiecesCoordinates;
-    private readonly reactState: IPhaserContextValues;
     private readonly bothKingsPosition: IBothKingsPosition;
     private readonly moveHistory: IMoveHistory;
     private selectedPiece: IMoveInfo | null;
@@ -22,7 +21,6 @@ export default class ShowPossibleMoves {
         boardOrientationIsWhite: boolean,
         pieceCoordinates: IPiecesCoordinates,
         selectedPiece: IMoveInfo | null,
-        reactState: IPhaserContextValues,
         bothKingsPosition: IBothKingsPosition,
         moveHistory: IMoveHistory,
         kingsState: IKingState
@@ -32,7 +30,6 @@ export default class ShowPossibleMoves {
         this.boardOrientationIsWhite = boardOrientationIsWhite;        
         this.pieceCoordinates = pieceCoordinates;        
         this.selectedPiece = selectedPiece;        
-        this.reactState = reactState;        
         this.bothKingsPosition = bothKingsPosition;      
         this.moveHistory = moveHistory;  
         this.kingsState = kingsState;
@@ -58,7 +55,7 @@ export default class ShowPossibleMoves {
 
         // validate
         let initialValidMoves: IValidMove[] = (new GetInitialMoves(
-            this.board, this.reactState, 
+            this.board,
             this.bothKingsPosition, this.boardOrientationIsWhite,
             this.moveHistory, this.kingsState
         )).getInitialMoves(name, x, y, uniqueName);
@@ -69,7 +66,7 @@ export default class ShowPossibleMoves {
         // this returns null if the king isnt in check
         const actualValidMoves = (new PossibleMovesIfKingInCheck(
             this.board, this.selectedPiece
-            ,this.reactState, this.bothKingsPosition
+            , this.bothKingsPosition
             ,this.boardOrientationIsWhite
             ,this.moveHistory, this.kingsState
         )).possibleMovesIfKingInCheck(name, initialValidMoves);

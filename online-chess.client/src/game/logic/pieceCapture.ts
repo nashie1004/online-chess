@@ -7,7 +7,6 @@ export default class PieceCapture {
     private readonly board: (null | GameObjects.Sprite)[][]
     private readonly boardOrientationIsWhite: boolean;
     private readonly pieceCoordinates: IPiecesCoordinates;
-    private readonly reactState: IPhaserContextValues;
     private readonly bothKingsPosition: IBothKingsPosition;
     private readonly moveHistory: IMoveHistory;
 
@@ -15,14 +14,12 @@ export default class PieceCapture {
         board: (null | GameObjects.Sprite)[][],
         boardOrientationIsWhite: boolean,
         pieceCoordinates: IPiecesCoordinates,
-        reactState: IPhaserContextValues,
         bothKingsPosition: IBothKingsPosition,
         moveHistory: IMoveHistory
     ) {
         this.board = board;
         this.boardOrientationIsWhite = boardOrientationIsWhite;
         this.pieceCoordinates = pieceCoordinates;
-        this.reactState = reactState;
         this.bothKingsPosition = bothKingsPosition;
         this.moveHistory = moveHistory;
     }

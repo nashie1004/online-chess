@@ -10,7 +10,6 @@ import { IBothKingsPosition, IKingState, IMoveHistory, IPhaserContextValues, IVa
 
 export default class GetInitialMoves {
     private readonly board: (null | GameObjects.Sprite)[][]
-    private readonly reactState: IPhaserContextValues;
     private readonly bothKingsPosition: IBothKingsPosition;
     private readonly boardOrientationIsWhite: boolean;
     private readonly moveHistory: IMoveHistory;
@@ -18,14 +17,12 @@ export default class GetInitialMoves {
 
     constructor(
         board: (null | GameObjects.Sprite)[][],
-        reactState: IPhaserContextValues,
         bothKingsPosition: IBothKingsPosition,
         boardOrientationIsWhite: boolean,
         moveHistory: IMoveHistory,
         kingsState: IKingState
     ) {
         this.board = board;
-        this.reactState = reactState;
         this.bothKingsPosition = bothKingsPosition;
         this.boardOrientationIsWhite = boardOrientationIsWhite;
         this.moveHistory = moveHistory;
@@ -62,9 +59,6 @@ export default class GetInitialMoves {
                 break;
             case PieceNames.bPawn:
             case PieceNames.wPawn:
-                //validMoves = (new PawnValidator(
-                //    { piece: { x, y, name, uniqueName },
-                //    board: this.board, moveHistory: this.reactState.moveHistory, showCaptureSquares: false })).validMoves();
                 validMoves = (new PawnValidator(
                     { x, y, name, uniqueName }, this.board, this.moveHistory, false, this.bothKingsPosition, this.boardOrientationIsWhite)).validMoves();
                 break;

@@ -1,6 +1,6 @@
 import { createContext, ReactNode, useReducer } from 'react'
 import { IGameContext, IGameContextReducerActions, IGameContextReducerState, IMove } from '../game/utilities/types';
-import { baseKingState } from '../game/utilities/constants';
+import { baseGameState } from '../game/utilities/constants';
 
 interface GameContextProps{
     children: ReactNode
@@ -11,8 +11,6 @@ export const gameContext = createContext<IGameContext | null>(null);
 function reducerFn(state: IGameContextReducerState, action: IGameContextReducerActions){
     
     switch(action.type){
-        case "SET_TIMER":
-            return {  ...state, timer: action.payload }
         case "SET_MESSAGES":
             return {  ...state, messages: action.payload }
         case "SET_GAMEROOMKEY":
@@ -51,8 +49,21 @@ function reducerFn(state: IGameContextReducerState, action: IGameContextReducerA
 
         case "SET_CAPTUREHISTORY":
             return {  ...state, gameHistory: action.payload }
-        case "SET_KINGSTATE":
-            return {  ...state, kingsState: action.payload }
+        case "SET_MYINFO":
+            return {  ...state, myInfo: action.payload }
+        case "SET_OPPONENTINFO":
+            return {  ...state, opponentInfo: action.payload }
+        case "SET_OPPONENTINFO_REQUESTDRAW":
+            return {  ...state, opponentInfo: {
+                    ...state.opponentInfo, isOfferingADraw: action.payload
+                } 
+            }
+        case "SET_GAMESTATUS":
+            return {  ...state, gameStatus: action.payload }
+        case "SET_GAMETYPE":
+            return {  ...state, gameType: action.payload }
+        case "SET_CLEARGAMESTATE":
+            return baseGameState;
         default:
             return state;
     }
@@ -61,14 +72,7 @@ function reducerFn(state: IGameContextReducerState, action: IGameContextReducerA
 export default function GameContext(
     {children}: GameContextProps
 ) {
-    const [gameState, setGameState] = useReducer<React.Reducer<IGameContextReducerState, IGameContextReducerActions>>(reducerFn, {
-        timer: { white: 0, black: 0, isWhitesTurn: true }
-        ,messages: []
-        ,gameRoomKey: null
-        ,moveHistory: { white: [], black: [] }
-        ,captureHistory: { white: [], black: [] }
-        ,kingsState: baseKingState
-    });
+    const [gameState, setGameState] = useReducer<React.Reducer<IGameContextReducerState, IGameContextReducerActions>>(reducerFn, baseGameState);
 
   return (
     <gameContext.Provider value={{ gameState, setGameState }}>

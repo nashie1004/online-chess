@@ -130,7 +130,8 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
                 LastCapture = null,
                 MoveCount = 0,
                 CreatedByUserInfo = gameRoom.CreatedByUserInfo,
-                JoinedByUserInfo = gameRoom.JoinByUserInfo
+                JoinedByUserInfo = gameRoom.JoinByUserInfo,
+                GameType = gameRoom.GameType
             };
 
             await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync("onInitializeGameInfo", baseGameInfo);

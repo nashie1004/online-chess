@@ -16,6 +16,8 @@ using online_chess.Server.Features.Game.Commands.GameStart;
 using online_chess.Server.Features.Game.Commands.MovePiece;
 using online_chess.Server.Models.Play;
 using online_chess.Server.Features.Game.Commands.Resign;
+using online_chess.Server.Features.Game.Commands.RequestADraw;
+using online_chess.Server.Features.Game.Commands.DrawAgree;
 
 namespace online_chess.Server.Hubs
 {
@@ -123,6 +125,28 @@ namespace online_chess.Server.Hubs
                 GameRoomKeyString = gameRoomKey,
             });
         }
+
+        public async Task RequestADraw(string gameRoomKey)
+        {
+            await _mediator.Send(new RequestADrawRequest()
+            {
+                UserConnectionId = Context.ConnectionId,
+                IdentityUserName = Context.User?.Identity?.Name,
+                GameRoomKeyString = gameRoomKey,
+            });
+        }
+
+        public async Task DrawAgree(string gameRoomKey, bool agreeOnDraw)
+        {
+            await _mediator.Send(new DrawAgreeRequest()
+            {
+                UserConnectionId = Context.ConnectionId,
+                IdentityUserName = Context.User?.Identity?.Name,
+                GameRoomKeyString = gameRoomKey,
+                AgreeOnDraw = agreeOnDraw
+            });
+        }
+
 
         public override async Task OnConnectedAsync()
         {

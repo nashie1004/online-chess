@@ -44,6 +44,8 @@ after that, the web application should now be running.
 1. fifty move rule
 2. show proper chess move notation
 3. 3 fold repetition
+4. user piece and board ui preference
+5. responsive
 
 ### SQLite
 ```

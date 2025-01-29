@@ -59,18 +59,6 @@ export interface ITimer{
     isWhitesTurn: boolean;
 }
 
-export interface IPhaserContextValues{
-    promoteTo: PromoteTo;
-    isColorWhite: boolean;
-    isWhitesOrientation: boolean;
-}
-
-export interface IPhaserContext extends IPhaserContextValues{
-    setPromoteTo: (val: PromoteTo) => void;
-    setIsColorWhite: (val: boolean) => void;
-    setIsWhitesOrientation: (val: boolean) => void;
-}
-
 export interface ISignalRContext {
     startConnection: (closeEventCallback: (arg: any) => void) => void;
     stopConnection: () => void;
@@ -176,7 +164,7 @@ export interface IGameHistoryList{
     data: IGameHistory[];
 }
 
-interface IPlayerInfo{
+interface IInitialPlayerInfo{
     userName: string;
     isPlayersTurnToMove: boolean;
     timeLeft: string; 
@@ -191,8 +179,9 @@ export interface IInitialGameInfo{
     lastMoveInfo: IPiece;
     lastCapture: string | null;
     moveCount: number;
-    createdByUserInfo: IPlayerInfo;
-    joinedByUserInfo: IPlayerInfo;
+    createdByUserInfo: IInitialPlayerInfo;
+    joinedByUserInfo: IInitialPlayerInfo;
+    gameType: GameType
 }
 
 export interface IPiecesCoordinates{
@@ -200,24 +189,60 @@ export interface IPiecesCoordinates{
     black: IPiece[];
 }
 
+/**
+ * Global state for both players
+ * 
+ * {
+ * 
+ *  name: "player1",
+ *  kingsState: {
+ *     isCheckMate: false, isInCheck: false, checkedBy: [], isInStalemate: false 
+ *  },
+ *  isPlayersTurn: false,
+ *  timeInfo: {},
+ *  playerIsWhite: false
+ * 
+ * }
+ * 
+ */
+
+type gameStat = "ONGOING" | "PAUSED" | "LOADING" | "FINISHED";
+
+export interface IPlayerInfo{
+    userName: string;
+    kingsState: IKing;
+    isPlayersTurn: boolean;
+    timeLeft: number;
+    playerIsWhite: boolean;
+    isOfferingADraw: boolean;
+    resign: boolean;
+}
+
 export interface IGameContextReducerState{
-    timer: ITimer;
     messages: IChat[];
     gameRoomKey: string | null;
     moveHistory: IMoveHistory;
     captureHistory: ICaptureHistory;
-    kingsState: IKingState;
+    myInfo: IPlayerInfo;
+    opponentInfo: IPlayerInfo;
+    gameStatus: gameStat
+    gameType: GameType 
 }
 
 export type IGameContextReducerActions = 
-{ type: "SET_TIMER"; payload: ITimer }
 | { type: "SET_MESSAGES"; payload: IChat[] }
 | { type: "SET_GAMEROOMKEY"; payload: string }
-| { type: "SET_MOVEHISTORY"; payload: any }
+| { type: "SET_MOVEHISTORY"; payload: any } // IMoveHistory
 | { type: "SET_CAPTUREHISTORY"; payload: ICaptureHistory }
-| { type: "SET_KINGSTATE"; payload: IKingState }
+| { type: "SET_MYINFO"; payload: IPlayerInfo }
+| { type: "SET_OPPONENTINFO"; payload: IPlayerInfo }
+| { type: "SET_GAMESTATUS"; payload: gameStat }
+| { type: "SET_CLEARGAMESTATE"; }
+| { type: "SET_OPPONENTINFO_REQUESTDRAW"; payload: boolean }
+| { type: "SET_GAMETYPE"; payload: GameType }
 
 export interface IGameContext{
     gameState: IGameContextReducerState;
     setGameState: React.Dispatch<IGameContextReducerActions>;
 }
+

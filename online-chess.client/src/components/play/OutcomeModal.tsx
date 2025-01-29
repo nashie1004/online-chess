@@ -1,32 +1,23 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Modal } from 'react-bootstrap';
-import { GameStatus } from '../../game/utilities/constants';
 import { useNavigate } from 'react-router';
+import useGameContext from '../../hooks/useGameContext';
 
-interface IOutcomeModal{
-    // show: boolean;
-    // playerWon: boolean;
-    // draw: boolean;
-    outcome: GameStatus | null;
-}
 
 export default function OutcomeModal(
-    { outcome }: IOutcomeModal
 ) {
     const navigate = useNavigate();
     const [show, setShow] = useState(false);
+    const { gameState } = useGameContext();
     let msg = "";
 
-    if (outcome === null){
-        msg = "";
-    }
-    else if (outcome === GameStatus.Won){
+    if (gameState.opponentInfo.resign){
         msg = "You Won!";
     } 
-    else if (outcome === GameStatus.Lose){
+    else if (gameState.myInfo.resign){
         msg = "You Lose!"
     } 
-    else if (outcome === GameStatus.Draw){
+    else if (gameState.myInfo.kingsState.isInStalemate || gameState.opponentInfo.kingsState.isInStalemate){
         msg = "Draw!"
     } 
 
@@ -35,7 +26,7 @@ export default function OutcomeModal(
     
     <Modal
         centered
-        show={outcome !== null || show}
+        show={show || gameState.gameStatus === "FINISHED"}
         onHide={() => setShow(false)}
         >
         <Modal.Body>

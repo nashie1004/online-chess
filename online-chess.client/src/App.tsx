@@ -1,7 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router";
 import Play from "./pages/Play";
 import NotFound from "./pages/NotFound";
-import PhaserContext from "./context/PhaserContext";
 import ReactContext from "./context/GameContext";
 import './index.css'
 import Layout from "./components/Layout";
@@ -20,26 +19,24 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 export default function App(){
     return <>
         <ReactContext>
-            <PhaserContext>
-                <AuthContext>
-                    <SignalRContext>
-                        <BrowserRouter>
-                            <Routes>
-                                <Route path="/" element={<Layout />}>
-                                    <Route path="/" element={<Home /> } />
-                                    <Route path="/play/:gameRoomId" element={<Play /> } />
-                                    <Route path="/register" element={<Register /> } />
-                                    <Route path="/login" element={<Login /> } />
-                                    <Route path="/profile" element={<Profile /> } />
-                                    <Route path="/about" element={<About /> } />
-                                    <Route path="/lobby" element={<Lobby /> } />
-                                    <Route path="*" element={<NotFound /> } />
-                                </Route>
-                            </Routes>
-                        </BrowserRouter>
-                    </SignalRContext>
-                </AuthContext>
-            </PhaserContext>
+            <AuthContext>
+                <SignalRContext>
+                    <BrowserRouter>
+                        <Routes>
+                            <Route path="/" element={<Layout />}>
+                                <Route path="/" element={<Home /> } />
+                                <Route path="/play/:gameRoomId" element={<Play /> } />
+                                <Route path="/register" element={<Register /> } />
+                                <Route path="/login" element={<Login /> } />
+                                <Route path="/profile" element={<Profile /> } />
+                                <Route path="/about" element={<About /> } />
+                                <Route path="/lobby" element={<Lobby /> } />
+                                <Route path="*" element={<NotFound /> } />
+                            </Route>
+                        </Routes>
+                    </BrowserRouter>
+                </SignalRContext>
+            </AuthContext>
         </ReactContext>
     </>
 }

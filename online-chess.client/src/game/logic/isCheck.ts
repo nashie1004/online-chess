@@ -8,7 +8,6 @@ import { IPhaserContextValues, IBothKingsPosition, IMoveHistory, IKingState } fr
 
 export default class IsCheck {
     private readonly board: (null | GameObjects.Sprite)[][]
-    private readonly reactState: IPhaserContextValues;
     private readonly bothKingsPosition: IBothKingsPosition;
     private readonly boardOrientationIsWhite: boolean;
     private readonly moveHistory: IMoveHistory;
@@ -16,14 +15,12 @@ export default class IsCheck {
 
     constructor(
         board: (null | GameObjects.Sprite)[][], 
-        reactState: IPhaserContextValues, 
         bothKingsPosition: IBothKingsPosition, 
         boardOrientationIsWhite: boolean, 
         moveHistory: IMoveHistory,
         kingsState: IKingState
     ) {
         this.board = board;
-        this.reactState = reactState;
         this.bothKingsPosition = bothKingsPosition;
         this.boardOrientationIsWhite = boardOrientationIsWhite;
         this.moveHistory = moveHistory;

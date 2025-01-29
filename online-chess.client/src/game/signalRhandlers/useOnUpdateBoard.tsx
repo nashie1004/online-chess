@@ -7,10 +7,10 @@ import { eventEmitter } from "../utilities/eventEmitter";
  * - TODO capture history
  * - TODO timer
  */
-export default function useUpdateBoard(){
+export default function useOnUpdateBoard(){
     const { setGameState, gameState } = useGameContext();
     
-    const updateBoard = useCallback((data: any) => {
+    const onUpdateBoard = useCallback((data: any) => {
         
         setGameState({ type: "SET_MOVEHISTORY", payload: data });
 
@@ -18,5 +18,5 @@ export default function useUpdateBoard(){
 
     }, [])
     
-    return updateBoard; 
+    return onUpdateBoard; 
 }

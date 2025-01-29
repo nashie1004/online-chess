@@ -7,11 +7,12 @@ export default function GameOutcome() {
     const [modalShow, setModalShow] = React.useState(false);
     const [outcome, setOutcome] = useState<0 | 1>(0); // 0 = resign, 1 = draw
     const { invoke } = useSignalRContext();
-    const { gameState } = useGameContext();
-  
+    const { gameState, setGameState } = useGameContext();
+
     async function formSubmit(e: React.FormEvent<HTMLFormElement>){
       e.preventDefault();
-      invoke(outcome === 0 ? "Resign" : "Draw", gameState.gameRoomKey);
+      setGameState({ type: "SET_GAMESTATUS", payload: "LOADING" });
+      invoke(outcome === 0 ? "Resign" : "RequestADraw", gameState.gameRoomKey);
       setModalShow(false);
     }
 
@@ -54,7 +55,7 @@ export default function GameOutcome() {
           <div className="d-flex justify-content-end">
             <button 
               type='submit'
-              className="btn btn-1 w-100 mt-5 btn-lg"
+              className="btn btn-1 w-100 mt-5 "
               >
               Yes
             </button>

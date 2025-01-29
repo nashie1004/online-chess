@@ -1,25 +1,22 @@
 import { GameObjects } from "phaser";
 import KingValidator from "../pieces/kingValidator";
 import { PieceNames } from "../utilities/constants";
-import { IPhaserContextValues, IBothKingsPosition, IMoveInfo, IMoveHistory } from "../utilities/types";
+import { IBothKingsPosition, IMoveInfo, IMoveHistory } from "../utilities/types";
 
 export default class KingCastled {
     
     private readonly board: (null | GameObjects.Sprite)[][]
-    private readonly reactState: IPhaserContextValues;
     private readonly bothKingsPosition: IBothKingsPosition;
     private readonly boardOrientationIsWhite: boolean;
     private readonly moveHistory: IMoveHistory;
 
     constructor(
         board: (null | GameObjects.Sprite)[][],
-        reactState: IPhaserContextValues,
         bothKingsPosition: IBothKingsPosition,
         boardOrientationIsWhite: boolean,
         moveHistory: IMoveHistory
     ) {
         this.board = board;
-        this.reactState = reactState;
         this.bothKingsPosition = bothKingsPosition;
         this.boardOrientationIsWhite = boardOrientationIsWhite;
         this.moveHistory = moveHistory;
