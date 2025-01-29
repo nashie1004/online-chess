@@ -56,7 +56,8 @@ export default function useOnInitializeGameInfo(
                 isPlayersTurn: myInfo.isPlayersTurnToMove,
                 timeLeft: moment.duration(myInfo.timeLeft).asMilliseconds(),
                 playerIsWhite: myInfo.isColorWhite,
-                isOfferingADraw: false
+                isOfferingADraw: false,
+                resign: false
             }
         });
         
@@ -71,7 +72,8 @@ export default function useOnInitializeGameInfo(
                 isPlayersTurn: opponentInfo.isPlayersTurnToMove,
                 timeLeft: moment.duration(opponentInfo.timeLeft).asMilliseconds(),
                 playerIsWhite: opponentInfo.isColorWhite,
-                isOfferingADraw: false
+                isOfferingADraw: false,
+                resign: false
             }
         });
 

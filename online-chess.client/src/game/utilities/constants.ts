@@ -136,5 +136,6 @@ export const basePlayerInfo: IPlayerInfo = {
     isPlayersTurn: false,
     timeLeft: 0,
     playerIsWhite: false,
-    isOfferingADraw: false
+    isOfferingADraw: false,
+    resign: false
 }

@@ -1,11 +1,7 @@
-import { useEffect, useRef, useState } from "react"
-import { GameStatus } from "../game/utilities/constants";
-import { eventEmitter } from "../game/utilities/eventEmitter";
-import { IChat, IPieceMove } from "../game/utilities/types";
+import { useEffect, useRef } from "react"
 import SidebarRight from "../components/play/SidebarRight";
 import CaptureHistory from "../components/play/CaptureHistory";
 import { useParams } from "react-router";
-import useGameContext from "../hooks/useGameContext";
 import useSignalRContext from "../hooks/useSignalRContext";
 import OutcomeModal from "../components/play/OutcomeModal";
 import useOnInitializeGameInfo from "../game/signalRhandlers/useOnInitializeGameInfo";
@@ -14,14 +10,13 @@ import useOpponentDrawRequest from "../game/signalRhandlers/useOpponentDrawReque
 import useOnNotFound from "../game/signalRhandlers/useOnNotFound";
 import useOnReceiveMessages from "../game/signalRhandlers/useOnReceiveMessages";
 import useOnOpponentPieceMoved from "../game/signalRhandlers/useOnOpponentPieceMoved";
+import useOnGameOver from "../game/signalRhandlers/useOnGameOver";
 
 export default function Main(){
     const gameRef = useRef<Phaser.Game | null>();
     const signalRConnectionRef = useRef<boolean | null>(null);
-    const { setGameState } = useGameContext();
     const { startConnection, addHandler, invoke, removeHandler, stopConnection } = useSignalRContext();
     const url = useParams();
-    const [gameOutcome, setGameOutcome] = useState<GameStatus | null>(null);
     
     const onInitializeGameInfo = useOnInitializeGameInfo(gameRef);
     const onUpdateBoard = useOnUpdateBoard();
@@ -29,6 +24,7 @@ export default function Main(){
     const onNotFound = useOnNotFound();
     const onReceiveMessages = useOnReceiveMessages();
     const onOpponentPieceMoved = useOnOpponentPieceMoved();
+    const onGameOver = useOnGameOver();
 
     useEffect(() => {
         async function start() {
@@ -37,7 +33,7 @@ export default function Main(){
 
             await addHandler("onNotFound", onNotFound);
             await addHandler("onInitializeGameInfo", onInitializeGameInfo);
-            await addHandler("onGameOver", (outcome: GameStatus) => setGameOutcome(outcome));
+            await addHandler("onGameOver", onGameOver);
             await addHandler("onReceiveMessages", onReceiveMessages);
             await addHandler("onOpponentPieceMoved", onOpponentPieceMoved);
             await addHandler("onUpdateBoard", onUpdateBoard)
@@ -80,6 +76,6 @@ export default function Main(){
         <div className="col">
             <SidebarRight />
         </div>
-        <OutcomeModal outcome={gameOutcome} />
+        <OutcomeModal />
     </>
 }
