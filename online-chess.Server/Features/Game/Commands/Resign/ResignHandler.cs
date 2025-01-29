@@ -71,6 +71,14 @@ namespace online_chess.Server.Features.Game.Commands.Resign
                 request.IdentityUserName == room.CreatedByUserId ? room.JoinedByUserId : room.CreatedByUserId
             );
 
+            room.ChatMessages.Add(new Models.Play.Chat(){
+                CreateDate = DateTime.Now,
+                CreatedByUser = "server",
+                Message = $"{request.IdentityUserName} resigned."
+            });
+
+            await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync("onReceiveMessages", room.ChatMessages);
+                
             // lose
             await _hubContext.Clients.Client(request.UserConnectionId).SendAsync("onGameOver", 1);
             // win

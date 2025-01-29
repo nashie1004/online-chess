@@ -45,6 +45,14 @@ namespace online_chess.Server.Features.Game.Commands.RequestADraw
                 request.IdentityUserName == room.CreatedByUserId ? room.JoinedByUserId : room.CreatedByUserId
             );
 
+            room.ChatMessages.Add(new Models.Play.Chat(){
+                CreateDate = DateTime.Now,
+                CreatedByUser = "server",
+                Message = $"{request.IdentityUserName} offered a draw."
+            });
+
+            await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync("onReceiveMessages", room.ChatMessages);
+            
             await _hubContext.Clients.Client(opponentConnectionId).SendAsync("onOpponentDrawRequest", true);
 
             return Unit.Value;

@@ -45,6 +45,14 @@ namespace online_chess.Server.Features.Game.Commands.DrawAgree
             // other player decline draw
             if (!request.AgreeOnDraw)
             {
+                room.ChatMessages.Add(new Models.Play.Chat(){
+                    CreateDate = DateTime.Now,
+                    CreatedByUser = "server",
+                    Message = $"{request.IdentityUserName} declined the draw."
+                });
+
+                await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync("onReceiveMessages", room.ChatMessages);
+                
                 await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync("onDeclineDraw", true);
                 return Unit.Value;
             }
@@ -76,6 +84,14 @@ namespace online_chess.Server.Features.Game.Commands.DrawAgree
 
             await _mainContext.SaveChangesAsync(cancellationToken);
 
+            room.ChatMessages.Add(new Models.Play.Chat(){
+                CreateDate = DateTime.Now,
+                CreatedByUser = "server",
+                Message = $"Game ended in a draw."
+            });
+
+            await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync("onReceiveMessages", room.ChatMessages);
+                
             await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync("onGameOver", 2);
 
             return Unit.Value;
