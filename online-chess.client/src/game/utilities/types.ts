@@ -59,16 +59,6 @@ export interface ITimer{
     isWhitesTurn: boolean;
 }
 
-export interface IPhaserContextValues{
-    isColorWhite: boolean;
-    isWhitesOrientation: boolean;
-}
-
-export interface IPhaserContext extends IPhaserContextValues{
-    setIsColorWhite: (val: boolean) => void;
-    setIsWhitesOrientation: (val: boolean) => void;
-}
-
 export interface ISignalRContext {
     startConnection: (closeEventCallback: (arg: any) => void) => void;
     stopConnection: () => void;

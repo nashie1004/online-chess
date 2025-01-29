@@ -1,13 +1,12 @@
 import { GameObjects } from "phaser";
 import KingValidator from "../pieces/kingValidator";
 import { PieceNames } from "../utilities/constants";
-import { IPhaserContextValues, IBothKingsPosition, IPiecesCoordinates, IBaseCoordinates, IMoveHistory, IKingState } from "../utilities/types";
+import { IBothKingsPosition, IPiecesCoordinates, IBaseCoordinates, IMoveHistory, IKingState } from "../utilities/types";
 import GetInitialMoves from "./getInitialMoves";
 
 export default class IsCheckMate {
 
     private readonly board: (null | GameObjects.Sprite)[][]
-    private readonly reactState: IPhaserContextValues;
     private readonly bothKingsPosition: IBothKingsPosition;
     private readonly boardOrientationIsWhite: boolean;
     private readonly pieceCoordinates: IPiecesCoordinates;
@@ -16,7 +15,6 @@ export default class IsCheckMate {
 
     constructor(
         board: (null | GameObjects.Sprite)[][],
-        reactState: IPhaserContextValues,
         bothKingsPosition: IBothKingsPosition,
         boardOrientationIsWhite: boolean,
         pieceCoordinates: IPiecesCoordinates,
@@ -24,7 +22,6 @@ export default class IsCheckMate {
         kingsState: IKingState
     ) {
         this.board = board;
-        this.reactState = reactState;
         this.bothKingsPosition = bothKingsPosition;
         this.boardOrientationIsWhite = boardOrientationIsWhite;
         this.pieceCoordinates = pieceCoordinates;
@@ -55,7 +52,7 @@ export default class IsCheckMate {
             const friendPieceName = friendPiece.uniqueName.split("-")[0] as PieceNames;
 
             const friendPieceMoves = (new GetInitialMoves(
-                this.board, this.reactState
+                this.board
                 , this.bothKingsPosition, this.boardOrientationIsWhite
                 , this.moveHistory, this.kingsState
             )).getInitialMoves(
@@ -76,7 +73,7 @@ export default class IsCheckMate {
                     if (!attackerSprite) return null; // this is actually invalid
                     const attackerSpriteName = attackerSprite.name.split("-")[0] as PieceNames;
                     const attackerSquares = (new GetInitialMoves(
-                        this.board, this.reactState,
+                        this.board, 
                         this.bothKingsPosition, this.boardOrientationIsWhite,
                         this.moveHistory, this.kingsState
                     )).getInitialMoves(attackerSpriteName, attacker.x, attacker.y, attackerSprite.name, true);

@@ -1,18 +1,15 @@
 import { GameObjects } from "phaser";
 import { PieceNames } from "../utilities/constants";
-import { IPhaserContextValues, PromoteTo } from "../utilities/types";
+import { PromoteTo } from "../utilities/types";
 
 export default class PawnPromote {
     private readonly boardOrientationIsWhite: boolean;
-    private readonly reactState: IPhaserContextValues;
     private readonly promoteTo: PromoteTo;
 
     constructor(
         boardOrientationIsWhite: boolean,
-        reactState: IPhaserContextValues,
         promoteTo: PromoteTo
     ) {
-        this.reactState = reactState;
         this.boardOrientationIsWhite = boardOrientationIsWhite;
         this.promoteTo = promoteTo;
     }

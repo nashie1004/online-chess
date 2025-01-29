@@ -8,7 +8,6 @@ export default class PossibleMovesIfKingInCheck {
     
     private readonly board: (null | GameObjects.Sprite)[][]
     private readonly selectedPiece: IMoveInfo | null;
-    private readonly reactState: IPhaserContextValues;
     private readonly bothKingsPosition: IBothKingsPosition;
     private readonly boardOrientationIsWhite: boolean;
     private readonly moveHistory: IMoveHistory;
@@ -17,7 +16,6 @@ export default class PossibleMovesIfKingInCheck {
     constructor(
         board: (null | GameObjects.Sprite)[][],
         selectedPiece: IMoveInfo | null,
-        reactState: IPhaserContextValues,
         bothKingsPosition: IBothKingsPosition,
         boardOrientationIsWhite: boolean,
         moveHistory: IMoveHistory,
@@ -25,7 +23,6 @@ export default class PossibleMovesIfKingInCheck {
     ) {
         this.board = board;
         this.selectedPiece = selectedPiece;
-        this.reactState = reactState;
         this.bothKingsPosition = bothKingsPosition;
         this.boardOrientationIsWhite = boardOrientationIsWhite;
         this.moveHistory = moveHistory;
@@ -73,7 +70,7 @@ export default class PossibleMovesIfKingInCheck {
             // , filter out those attack squares with the king
             // and also include x ray (moves behind the king that is in check by attacker)
             const attackerSquares = (new GetInitialMoves(
-                this.board, this.reactState, 
+                this.board,  
                 this.bothKingsPosition, this.boardOrientationIsWhite,
                 this.moveHistory, this.kingsState
             )).getInitialMoves(attackerSpriteName, attacker.x, attacker.y, attackerSprite.name, true)
@@ -143,7 +140,7 @@ export default class PossibleMovesIfKingInCheck {
                                 (!isWhite && currTile.name[0] === "b")
                             ){
                                 const friendPieceMoves = (new GetInitialMoves(
-                                    this.board, this.reactState,
+                                    this.board,
                                     this.bothKingsPosition, this.boardOrientationIsWhite,
                                     this.moveHistory, this.kingsState
                                 )).getInitialMoves(spriteName, j, i, currTile.name);

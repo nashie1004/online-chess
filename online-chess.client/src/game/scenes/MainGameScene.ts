@@ -8,7 +8,7 @@ import capture from "../../assets/sounds/Capture.ogg"
 import select from "../../assets/sounds/Select.ogg"
 import check from "../../assets/sounds/Check.mp3"
 import pieces, { Options as gameOptions, PieceNames, pieceImages, baseKingState } from "../utilities/constants";
-import { IBothKingsPosition, IKingState, IMoveHistory, IMoveInfo, IPhaserContextValues, IPiece, IPieceMove, IPiecesCoordinates, PromoteTo } from "../utilities/types";
+import { IBothKingsPosition, IKingState, IMoveHistory, IMoveInfo, IPiece, IPieceMove, IPiecesCoordinates, PromoteTo } from "../utilities/types";
 import { eventEmitter } from "../utilities/eventEmitter";
 import KingCastled from "../logic/kingCastled";
 import PawnPromote from "../logic/pawnPromote";
@@ -32,10 +32,10 @@ export class MainGameScene extends Scene{
     private isPlayersTurnToMove: boolean;
     private bothKingsPosition: IBothKingsPosition;
     private promotePreference: PromoteTo;
-    
+    private readonly playerColorIsWhite: boolean;
+
     // server state
     private moveHistory: IMoveHistory;
-    private reactState: IPhaserContextValues;
     private kingsState: IKingState;
 
     constructor(key: string, isColorWhite: boolean) {
@@ -43,16 +43,13 @@ export class MainGameScene extends Scene{
 
         // server state
         this.moveHistory = { white: [], black: [] };
-        this.reactState = {
-            isColorWhite, // player's color of choice
-            isWhitesOrientation: isColorWhite,
-        }
         this.kingsState = baseKingState;
 
         // internal state
+        this.playerColorIsWhite = isColorWhite;
         this.isPlayersTurnToMove = isColorWhite;
-        this.selectedPiece = null;
         this.boardOrientationIsWhite = isColorWhite;
+        this.selectedPiece = null;
         this.bothKingsPosition = {
             // if black orientation switch queen and king coords
             white: { x: this.boardOrientationIsWhite ? 4 : 3, y: this.boardOrientationIsWhite ? 7 : 0 }
@@ -178,7 +175,7 @@ export class MainGameScene extends Scene{
                     this.selectedPiece = (new ShowPossibleMoves(
                         this.board, this.previewBoard
                         ,this.boardOrientationIsWhite, this.pieceCoordinates
-                        ,this.selectedPiece, this.reactState
+                        ,this.selectedPiece
                         ,this.bothKingsPosition, this.moveHistory
                         ,this.kingsState
                     )).showPossibleMoves(pieceName, pieceX, pieceY);
@@ -194,7 +191,7 @@ export class MainGameScene extends Scene{
                 return;
             }
 
-            // if there is a selected piece and the clicked area has no sprite
+            // if there is a sFelected piece and the clicked area has no sprite
             if (this.selectedPiece && clickedSprite.length < 1){
                 this.resetMoves();
             }
@@ -251,7 +248,7 @@ export class MainGameScene extends Scene{
         // capture
         const pieceCapture = new PieceCapture(
             this.board, this.boardOrientationIsWhite, this.pieceCoordinates
-            ,this.reactState, this.bothKingsPosition
+            , this.bothKingsPosition
             ,this.moveHistory
         );
 
@@ -272,11 +269,11 @@ export class MainGameScene extends Scene{
 
         // some special logic
         (new PawnPromote(
-            this.boardOrientationIsWhite, this.reactState, this.promotePreference // TODO dynamic promote
+            this.boardOrientationIsWhite, this.promotePreference // TODO dynamic promote
         )).pawnPromote(uniquePieceName, newX, newY, isWhite, sprite);
 
         const kingCastled = (new KingCastled(
-            this.board, this.reactState
+            this.board
             , this.bothKingsPosition, this.boardOrientationIsWhite
             , this.moveHistory
         )).kingCastled(uniquePieceName, this.selectedPiece, isWhite, newX, newY);
@@ -321,7 +318,7 @@ export class MainGameScene extends Scene{
         // check for check or checkmate
         const kingSafety = (new ValidateCheckOrCheckMateOrStalemate(
             this.board, this.boardOrientationIsWhite
-            , this.pieceCoordinates, this.reactState
+            , this.pieceCoordinates
             , this.bothKingsPosition, this.moveHistory
             , this.kingsState
         )).validate(isWhite);

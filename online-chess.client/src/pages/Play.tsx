@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react"
 import { GameStatus } from "../game/utilities/constants";
 import { eventEmitter } from "../game/utilities/eventEmitter";
-import usePhaserContext from "../hooks/usePhaserContext";
 import { IChat, IPieceMove } from "../game/utilities/types";
 import SidebarRight from "../components/play/SidebarRight";
 import CaptureHistory from "../components/play/CaptureHistory";
@@ -14,7 +13,6 @@ import useUpdateBoard from "../game/signalRhandlers/useUpdateBoard";
 
 export default function Main(){
     const gameRef = useRef<Phaser.Game | null>();
-    const { } = usePhaserContext();
     const { setGameState } = useGameContext();
     const navigate = useNavigate();
     const { startConnection, addHandler, invoke, removeHandler, stopConnection } = useSignalRContext();

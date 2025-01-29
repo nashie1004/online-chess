@@ -6,7 +6,6 @@ export default class IsStalemate {
     private readonly pieceCoordinates: IPiecesCoordinates;
     private readonly board: (null | GameObjects.Sprite)[][]
     private readonly boardOrientationIsWhite: boolean;
-    private readonly reactState: IPhaserContextValues;
     private readonly bothKingsPosition: IBothKingsPosition;
     private readonly moveHistory: IMoveHistory;
     private readonly kingsState: IKingState;
@@ -15,7 +14,6 @@ export default class IsStalemate {
         board: (null | GameObjects.Sprite)[][],
         boardOrientationIsWhite: boolean,
         pieceCoordinates: IPiecesCoordinates,
-        reactState: IPhaserContextValues,
         bothKingsPosition: IBothKingsPosition,
         moveHistory: IMoveHistory,
         kingsState: IKingState
@@ -23,7 +21,6 @@ export default class IsStalemate {
         this.board = board;
         this.boardOrientationIsWhite = boardOrientationIsWhite;
         this.pieceCoordinates = pieceCoordinates;
-        this.reactState = reactState;
         this.bothKingsPosition = bothKingsPosition;
         this.moveHistory = moveHistory;
         this.kingsState = kingsState;
@@ -41,7 +38,7 @@ export default class IsStalemate {
             const {x, y, name, uniqueName} = friendPiece;
 
             const pieceMoves = (new GetInitialMoves(
-                this.board, this.reactState
+                this.board
                 , this.bothKingsPosition, this.boardOrientationIsWhite
                 , this.moveHistory, this.kingsState
             )).getInitialMoves(name, x, y, uniqueName ?? `${name}-${x}-${y}`, false);
