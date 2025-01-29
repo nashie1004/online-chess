@@ -136,13 +136,14 @@ namespace online_chess.Server.Hubs
             });
         }
 
-        public async Task DrawAgree(string gameRoomKey)
+        public async Task DrawAgree(string gameRoomKey, bool agreeOnDraw)
         {
             await _mediator.Send(new DrawAgreeRequest()
             {
                 UserConnectionId = Context.ConnectionId,
                 IdentityUserName = Context.User?.Identity?.Name,
                 GameRoomKeyString = gameRoomKey,
+                AgreeOnDraw = agreeOnDraw
             });
         }
 

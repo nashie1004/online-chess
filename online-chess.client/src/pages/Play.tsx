@@ -14,6 +14,7 @@ import useOnGameOver from "../game/signalRhandlers/useOnGameOver";
 import useGameContext from "../hooks/useGameContext";
 import GameLoading from "../components/play/GameLoading";
 import DrawRequestModal from "../components/play/DrawRequestModal";
+import useOnDeclineDraw from "../game/signalRhandlers/useOnDeclineDraw";
 
 export default function Main(){
     const gameRef = useRef<Phaser.Game | null>();
@@ -29,6 +30,7 @@ export default function Main(){
     const onReceiveMessages = useOnReceiveMessages();
     const onOpponentPieceMoved = useOnOpponentPieceMoved();
     const onGameOver = useOnGameOver();
+    const onDeclineDraw = useOnDeclineDraw();
 
     useEffect(() => {
         setGameState({ type: "SET_CLEARGAMESTATE" });
@@ -45,6 +47,7 @@ export default function Main(){
             await addHandler("onOpponentPieceMoved", onOpponentPieceMoved);
             await addHandler("onUpdateBoard", onUpdateBoard)
             await addHandler("onOpponentDrawRequest", onOpponentDrawRequest)
+            await addHandler("onDeclineDraw", onDeclineDraw)
 
             await invoke("GameStart", url.gameRoomId);
         }

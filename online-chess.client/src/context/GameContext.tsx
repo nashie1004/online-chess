@@ -53,6 +53,11 @@ function reducerFn(state: IGameContextReducerState, action: IGameContextReducerA
             return {  ...state, myInfo: action.payload }
         case "SET_OPPONENTINFO":
             return {  ...state, opponentInfo: action.payload }
+        case "SET_OPPONENTINFO_REQUESTDRAW":
+            return {  ...state, opponentInfo: {
+                    ...state.opponentInfo, isOfferingADraw: action.payload
+                } 
+            }
         case "SET_GAMESTATUS":
             return {  ...state, gameStatus: action.payload }
         case "SET_CLEARGAMESTATE":

@@ -1,12 +1,15 @@
 import { useCallback } from "react";
 import useGameContext from "../../hooks/useGameContext";
 
-export default function useOpponentDrawRequest(){
+export default function useOnDeclineDraw(){
     const { setGameState } = useGameContext();
 
-    const onOpponentDrawRequest = useCallback(() => {
+    const onDeclineDraw = useCallback(() => {
+        alert("todo decline draw")
+        setGameState({ type: "SET_GAMESTATUS", payload: "ONGOING" });
         setGameState({ type: "SET_OPPONENTINFO_REQUESTDRAW", payload: true });
+
     }, []);
 
-    return onOpponentDrawRequest;
+    return onDeclineDraw;
 }

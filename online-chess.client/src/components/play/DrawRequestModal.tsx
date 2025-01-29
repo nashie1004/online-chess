@@ -7,30 +7,36 @@ export default function DrawRequestModal(){
     const { gameState, setGameState } = useGameContext();
     const [modalShow, setModalShow] = useState(false);
     const { invoke } = useSignalRContext();
+    const [confirmValue, setConfirmValue] = useState<0 | 1>(0); // 0 = decline, 1 = accept
 
     async function formSubmit(e: React.FormEvent<HTMLFormElement>){
-        e.preventDefault();
-        setGameState({ type: "SET_GAMESTATUS", payload: "LOADING" });
-        invoke("DrawAgree", gameState.gameRoomKey);
-        setModalShow(false);
+      e.preventDefault();
+      setModalShow(false);
+      setGameState({ type: "SET_GAMESTATUS", payload: "LOADING" });
+      invoke("DrawAgree", gameState.gameRoomKey, confirmValue === 1);
     }
-
-    console.log("draw request modal: ", gameState)
 
     return <>
       <Modal
         aria-labelledby="contained-modal-title-vcenter"
         centered
         show={modalShow || gameState.opponentInfo.isOfferingADraw}
-        onHide={() => setModalShow(false)}
       >
         <Modal.Body>
           <form className="m-body" onSubmit={formSubmit}>
           <h5>{gameState.opponentInfo.userName} is requesting a draw.</h5>
-            <div className="d-flex justify-content-end">
+            <div className="">
               <button 
                 type='submit'
-                className="btn btn-1 w-100 mt-5 "
+                onClick={() => setConfirmValue(0)}
+                className="btn btn-2 w-100 mt-5 mb-3"
+                >
+                Decline
+              </button>
+              <button 
+                type='submit'
+                onClick={() => setConfirmValue(1)}
+                className="btn btn-1 w-100 "
                 >
                 Accept Draw?
               </button>

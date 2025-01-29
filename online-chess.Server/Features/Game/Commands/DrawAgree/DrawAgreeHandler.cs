@@ -42,6 +42,13 @@ namespace online_chess.Server.Features.Game.Commands.DrawAgree
                 return Unit.Value;
             }
 
+            // other player decline draw
+            if (!request.AgreeOnDraw)
+            {
+                await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync("onDeclineDraw", true);
+                return Unit.Value;
+            }
+
             // retrieve ids
             var creator = await _userManager.FindByNameAsync(room.CreatedByUserId);
             var joiner = await _userManager.FindByNameAsync(room.JoinedByUserId);

@@ -236,6 +236,7 @@ export type IGameContextReducerActions =
 | { type: "SET_OPPONENTINFO"; payload: IPlayerInfo }
 | { type: "SET_GAMESTATUS"; payload: gameStat }
 | { type: "SET_CLEARGAMESTATE"; }
+| { type: "SET_OPPONENTINFO_REQUESTDRAW"; payload: boolean }
 
 export interface IGameContext{
     gameState: IGameContextReducerState;
