@@ -11,12 +11,7 @@ export default function useUpdateBoard(){
     
     const updateBoard = useCallback((data: any) => {
         
-        // console.log(data)
-
-        setGameState({
-            type: "SET_MOVEHISTORY",
-            payload: data
-        });
+        setGameState({ type: "SET_MOVEHISTORY", payload: data });
 
     }, [])
     

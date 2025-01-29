@@ -21,19 +21,23 @@ function reducerFn(state: IGameContextReducerState, action: IGameContextReducerA
             const moveIsWhite = action.payload.moveIsWhite as boolean;
 
             if (moveIsWhite){
-                return {  
+                const newState = {  
                     ...state, moveHistory: { 
-                        ...state.moveHistory.black
+                        black: state.moveHistory.black
                         , white: [ ...state.moveHistory.white, moveInfo ] 
                     }  
                 }
+                
+                return newState;
             } 
-            return {  
+            const newState = {  
                 ...state, moveHistory: { 
-                    ...state.moveHistory.white
+                    white: state.moveHistory.white
                     , black: [ ...state.moveHistory.black, moveInfo ] 
                 }  
             }
+
+            return newState
 
         case "SET_GAMEHISTORY":
             return {  ...state, gameHistory: action.payload }
