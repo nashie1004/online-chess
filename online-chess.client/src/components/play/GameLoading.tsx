@@ -10,10 +10,9 @@ export default function GameLoading(){
             id="modal-loading"
             show={gameState.gameStatus === "LOADING"}
             centered
-            style={{ backgroundColor: "rgba(0,0,0,0) !important" }}
         >
             <div>
-                <Spinner animation="border" variant="info"  />
+                <Spinner animation="border" variant="light"  />
             </div>
         </Modal>
 

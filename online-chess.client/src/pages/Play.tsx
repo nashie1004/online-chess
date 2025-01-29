@@ -13,13 +13,14 @@ import useOnOpponentPieceMoved from "../game/signalRhandlers/useOnOpponentPieceM
 import useOnGameOver from "../game/signalRhandlers/useOnGameOver";
 import useGameContext from "../hooks/useGameContext";
 import GameLoading from "../components/play/GameLoading";
+import DrawRequestModal from "../components/play/DrawRequestModal";
 
 export default function Main(){
     const gameRef = useRef<Phaser.Game | null>();
     const signalRConnectionRef = useRef<boolean | null>(null);
     const { startConnection, addHandler, invoke, removeHandler, stopConnection } = useSignalRContext();
     const url = useParams();
-    const { setGameState, gameState } = useGameContext();
+    const { setGameState } = useGameContext();
     
     const onInitializeGameInfo = useOnInitializeGameInfo(gameRef);
     const onUpdateBoard = useOnUpdateBoard();
@@ -86,5 +87,6 @@ export default function Main(){
         </div>
         <OutcomeModal />
         <GameLoading />
+        <DrawRequestModal />
     </>
 }
