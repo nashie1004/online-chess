@@ -26,7 +26,7 @@ import bKnight from "../../assets/pieces/cburnett/bN.svg?raw"
 import bBishop from "../../assets/pieces/cburnett/bB.svg?raw"
 import bQueen from "../../assets/pieces/cburnett/bQ.svg?raw"
 import bKing from "../../assets/pieces/cburnett/bK.svg?raw"
-import { IKingState, IPiece, IPlayerInfo } from "./types"
+import { IGameContextReducerState, IKingState, IPiece, IPlayerInfo } from "./types"
 
 export enum PieceNames{
     wPawn = "wPawn",
@@ -139,3 +139,13 @@ export const basePlayerInfo: IPlayerInfo = {
     isOfferingADraw: false,
     resign: false
 }
+
+export const baseGameState: IGameContextReducerState = {
+    messages: []
+    ,gameRoomKey: null
+    ,moveHistory: { white: [], black: [] }
+    ,captureHistory: { white: [], black: [] }
+    ,myInfo: basePlayerInfo
+    ,opponentInfo: basePlayerInfo
+    ,gameStatus: "LOADING"
+};

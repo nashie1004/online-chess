@@ -11,12 +11,15 @@ import useOnNotFound from "../game/signalRhandlers/useOnNotFound";
 import useOnReceiveMessages from "../game/signalRhandlers/useOnReceiveMessages";
 import useOnOpponentPieceMoved from "../game/signalRhandlers/useOnOpponentPieceMoved";
 import useOnGameOver from "../game/signalRhandlers/useOnGameOver";
+import useGameContext from "../hooks/useGameContext";
+import GameLoading from "../components/play/GameLoading";
 
 export default function Main(){
     const gameRef = useRef<Phaser.Game | null>();
     const signalRConnectionRef = useRef<boolean | null>(null);
     const { startConnection, addHandler, invoke, removeHandler, stopConnection } = useSignalRContext();
     const url = useParams();
+    const { setGameState, gameState } = useGameContext();
     
     const onInitializeGameInfo = useOnInitializeGameInfo(gameRef);
     const onUpdateBoard = useOnUpdateBoard();
@@ -27,6 +30,9 @@ export default function Main(){
     const onGameOver = useOnGameOver();
 
     useEffect(() => {
+        setGameState({ type: "SET_CLEARGAMESTATE" });
+        setGameState({ type: "SET_GAMESTATUS", payload: "LOADING" });
+
         async function start() {
             await startConnection(_ => {});
             signalRConnectionRef.current = true;
@@ -48,6 +54,8 @@ export default function Main(){
         }
 
         return () => {
+            setGameState({ type: "SET_CLEARGAMESTATE" });
+
             // cleanup phaser
             if (gameRef.current){
                 gameRef.current.destroy(true);
@@ -64,7 +72,7 @@ export default function Main(){
         };
     }, [])
 
-    //console.log("render")
+    //console.log("game state:", gameState)
  
     return <> 
         <div className="col-auto pt-2">
@@ -77,5 +85,6 @@ export default function Main(){
             <SidebarRight />
         </div>
         <OutcomeModal />
+        <GameLoading />
     </>
 }

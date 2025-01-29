@@ -7,9 +7,10 @@ export default function GameOutcome() {
     const [modalShow, setModalShow] = React.useState(false);
     const [outcome, setOutcome] = useState<0 | 1>(0); // 0 = resign, 1 = draw
     const { invoke } = useSignalRContext();
-    const { gameState } = useGameContext();
-  
+    const { gameState, setGameState } = useGameContext();
+
     async function formSubmit(e: React.FormEvent<HTMLFormElement>){
+      setGameState({ type: "SET_GAMESTATUS", payload: "LOADING" });
       e.preventDefault();
       invoke(outcome === 0 ? "Resign" : "Draw", gameState.gameRoomKey);
       setModalShow(false);

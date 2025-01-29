@@ -314,3 +314,12 @@ div.modal-content
   border-radius:  0 0 1rem 1rem;
   padding: 1rem;
 }
+
+#modal-loading .modal-content{
+  background-color: rgba(0,0,0,0);
+  border: none;
+}
+#modal-loading .modal-content div{
+  display: flex;
+  justify-content: center;
+}

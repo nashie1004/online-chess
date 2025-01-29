@@ -107,8 +107,9 @@ export default function useOnInitializeGameInfo(
         
         eventEmitter.on("setMovePiece", (move: any) => {
             signalRContext.invoke("MovePiece", initGameInfo.gameRoomKey, move.oldMove, move.newMove);
-            // console.log("You moved a piece")
         });
+
+        setGameState({ type: "SET_GAMESTATUS", payload: "ONGOING" });
     }, []);
 
     return onInitializeGameInfo;

@@ -1,6 +1,6 @@
 import { createContext, ReactNode, useReducer } from 'react'
 import { IGameContext, IGameContextReducerActions, IGameContextReducerState, IMove } from '../game/utilities/types';
-import { basePlayerInfo } from '../game/utilities/constants';
+import { baseGameState } from '../game/utilities/constants';
 
 interface GameContextProps{
     children: ReactNode
@@ -55,6 +55,8 @@ function reducerFn(state: IGameContextReducerState, action: IGameContextReducerA
             return {  ...state, opponentInfo: action.payload }
         case "SET_GAMESTATUS":
             return {  ...state, gameStatus: action.payload }
+        case "SET_CLEARGAMESTATE":
+            return baseGameState;
         default:
             return state;
     }
@@ -63,15 +65,7 @@ function reducerFn(state: IGameContextReducerState, action: IGameContextReducerA
 export default function GameContext(
     {children}: GameContextProps
 ) {
-    const [gameState, setGameState] = useReducer<React.Reducer<IGameContextReducerState, IGameContextReducerActions>>(reducerFn, {
-        messages: []
-        ,gameRoomKey: null
-        ,moveHistory: { white: [], black: [] }
-        ,captureHistory: { white: [], black: [] }
-        ,myInfo: basePlayerInfo
-        ,opponentInfo: basePlayerInfo
-        ,gameStatus: "LOADING"
-    });
+    const [gameState, setGameState] = useReducer<React.Reducer<IGameContextReducerState, IGameContextReducerActions>>(reducerFn, baseGameState);
 
   return (
     <gameContext.Provider value={{ gameState, setGameState }}>
