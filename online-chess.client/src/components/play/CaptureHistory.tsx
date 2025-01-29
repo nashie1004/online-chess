@@ -1,17 +1,15 @@
-import usePhaserContext from '../../hooks/usePhaserContext';
 import { pieceImages, PieceNames } from '../../game/utilities/constants';
+import useGameContext from '../../hooks/useGameContext';
 
 export default function CaptureHistory() {
-  
-      const {
-          captureHistory,
-      } = usePhaserContext();
+    
+    const { gameState } = useGameContext();
   
     return (
     <>
         
         <div className='hstack'>
-            {captureHistory.white.map((capture, idx) => {
+            {gameState.captureHistory.white.map((capture, idx) => {
                 const name = capture.pieceName.split("-")[0] as PieceNames
                 const svgUrl = `data:image/svg+xml;base64,${btoa(pieceImages[name])}`;
                 return <div key={idx}>
@@ -24,7 +22,7 @@ export default function CaptureHistory() {
             })}
         </div>
         <div className='hstack'>
-            {captureHistory.black.map((capture, idx) => {
+            {gameState.captureHistory.black.map((capture, idx) => {
                 const name = capture.pieceName.split("-")[0] as PieceNames
                 const svgUrl = `data:image/svg+xml;base64,${btoa(pieceImages[name])}`;
                 return <div key={idx}>

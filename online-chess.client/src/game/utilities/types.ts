@@ -56,38 +56,19 @@ export interface IKingState{
 export interface ITimer{
     white: number;
     black: number;
+    isWhitesTurn: boolean;
 }
 
 export interface IPhaserContextValues{
-    isWhitesTurn: boolean;
-    moveHistory: IMoveHistory;
-    captureHistory: ICaptureHistory;
     promoteTo: PromoteTo;
     isColorWhite: boolean;
     isWhitesOrientation: boolean;
-    kingsState: IKingState;
 }
 
 export interface IPhaserContext extends IPhaserContextValues{
-    setIsWhitesTurn: (val: boolean) => void;
-    setMoveHistory: React.Dispatch<React.SetStateAction<IMoveHistory>>;
-    setCaptureHistory: React.Dispatch<React.SetStateAction<ICaptureHistory>>;
     setPromoteTo: (val: PromoteTo) => void;
     setIsColorWhite: (val: boolean) => void;
     setIsWhitesOrientation: (val: boolean) => void;
-    setKingsState: (val: IKingState) => void;
-}
-
-export interface IGameContextValues{
-    timer: ITimer;
-    messages: IChat[];
-    gameRoomKey: string;
-}
-
-export interface IGameContext extends IGameContextValues{
-    setTimer: React.Dispatch<React.SetStateAction<ITimer>>;
-    setMessages: React.Dispatch<React.SetStateAction<IChat[]>>;
-    setGameRoomKey: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export interface ISignalRContext {
@@ -187,7 +168,7 @@ export interface IGameHistory{
     isColorWhite: boolean;
     gameType: GameType;
     opponentName: string;
-    createDate: Date;
+    gameDate: Date;
 }
 
 export interface IGameHistoryList{
@@ -198,7 +179,7 @@ export interface IGameHistoryList{
 interface IPlayerInfo{
     userName: string;
     isPlayersTurnToMove: boolean;
-    timeLeft: any; // DATE TIME
+    timeLeft: string; 
     isColorWhite: boolean;
     kingInCheck: boolean;
     kingInCheckMate: boolean;
@@ -217,4 +198,26 @@ export interface IInitialGameInfo{
 export interface IPiecesCoordinates{
     white: IPiece[];
     black: IPiece[];
+}
+
+export interface IGameContextReducerState{
+    timer: ITimer;
+    messages: IChat[];
+    gameRoomKey: string | null;
+    moveHistory: IMoveHistory;
+    captureHistory: ICaptureHistory;
+    kingsState: IKingState;
+}
+
+export type IGameContextReducerActions = 
+{ type: "SET_TIMER"; payload: ITimer }
+| { type: "SET_MESSAGES"; payload: IChat[] }
+| { type: "SET_GAMEROOMKEY"; payload: string }
+| { type: "SET_MOVEHISTORY"; payload: any }
+| { type: "SET_CAPTUREHISTORY"; payload: ICaptureHistory }
+| { type: "SET_KINGSTATE"; payload: IKingState }
+
+export interface IGameContext{
+    gameState: IGameContextReducerState;
+    setGameState: React.Dispatch<IGameContextReducerActions>;
 }

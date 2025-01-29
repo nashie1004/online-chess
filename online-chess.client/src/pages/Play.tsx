@@ -1,92 +1,46 @@
-import { useCallback, useEffect, useRef, useState } from "react"
-import { Options as gameOptions, GameStatus } from "../game/utilities/constants";
+import { useEffect, useRef, useState } from "react"
+import { GameStatus } from "../game/utilities/constants";
 import { eventEmitter } from "../game/utilities/eventEmitter";
 import usePhaserContext from "../hooks/usePhaserContext";
-import { IKingState, IInitialGameInfo, IChat, IPiece, IMove, IPieceMove } from "../game/utilities/types";
+import { IChat, IPieceMove } from "../game/utilities/types";
 import SidebarRight from "../components/play/SidebarRight";
-import { MainGameScene } from "../game/scenes/MainGameScene";
 import CaptureHistory from "../components/play/CaptureHistory";
 import { useNavigate, useParams } from "react-router";
 import useGameContext from "../hooks/useGameContext";
 import useSignalRContext from "../hooks/useSignalRContext";
-import useAuthContext from "../hooks/useAuthContext";
 import OutcomeModal from "../components/play/OutcomeModal";
+import useInitializePhaser from "../game/signalRhandlers/useInitializePhaser";
+import useUpdateBoard from "../game/signalRhandlers/useUpdateBoard";
 
 export default function Main(){
     const gameRef = useRef<Phaser.Game | null>();
-    const {
-        setIsWhitesTurn, setMoveHistory, setCaptureHistory
-        , setKingsState, moveHistory
-    } = usePhaserContext();
-    const { setMessages, setGameRoomKey } = useGameContext();
+    const { } = usePhaserContext();
+    const { setGameState } = useGameContext();
     const navigate = useNavigate();
-    const signalRContext = useSignalRContext();
+    const { startConnection, addHandler, invoke, removeHandler, stopConnection } = useSignalRContext();
     const url = useParams();
-    const { user } = useAuthContext();
     const signalRConnectionRef = useRef<boolean | null>(null);
     const [gameOutcome, setGameOutcome] = useState<GameStatus | null>(null);
-
-    const initPhaser = useCallback((initGameInfo: IInitialGameInfo) => {
-        setGameRoomKey(initGameInfo.gameRoomKey);
-        const playerIsWhite = (initGameInfo.createdByUserInfo.userName === user?.userName) 
-            ? initGameInfo.createdByUserInfo.isColorWhite
-            : initGameInfo.joinedByUserInfo.isColorWhite;
-
-        // init phaser
-        if (!gameRef.current){
-            gameRef.current = new Phaser.Game({
-                type: Phaser.AUTO,
-                width: gameOptions.width,
-                height: gameOptions.height,
-                parent: 'game-container',
-                backgroundColor: '#028af8',
-                scale: {
-                    // mode: Phaser.Scale.RESIZE
-                },
-                scene: [
-                    new MainGameScene("mainChessboard", playerIsWhite)
-                ],
-            });
-        }
-
-        // connect react and phaser
-        //eventEmitter.on("setIsWhitesTurn", (data: boolean) => setIsWhitesTurn(data));
-        // eventEmitter.on("setMoveHistory", (data: IMoveHistory) => setMoveHistory(data));
-        // eventEmitter.on("setCaptureHistory", (data: ICaptureHistory) => setCaptureHistory(data));
-        eventEmitter.on("setKingsState", (data: IKingState) => setKingsState(data));
-
-        eventEmitter.on("setMovePiece", (move: any) => {
-            signalRContext.invoke("MovePiece", initGameInfo.gameRoomKey, move.oldMove, move.newMove);
-        });
-    }, []);
+    const initPhaser = useInitializePhaser(gameRef);
+    const updateBoard = useUpdateBoard();
 
     useEffect(() => {
         async function start() {
-            await signalRContext.startConnection(_ => {});
+            await startConnection(_ => {});
             signalRConnectionRef.current = true;
 
-            await signalRContext.addHandler("NotFound", _ => navigate("/notFound"));
-            await signalRContext.addHandler("InitializeGameInfo", initPhaser);
-            await signalRContext.addHandler("GameOver", (outcome: GameStatus) => setGameOutcome(outcome));
-            await signalRContext.addHandler("ReceiveMessages", (messages: IChat[]) => setMessages(messages));
-            await signalRContext.addHandler("OpponentPieceMoved", (data) => eventEmitter.emit("setEnemyMove", data.moveInfo as IPieceMove));
-            await signalRContext.addHandler("UpdateMoveHistory", (data) => {
-                const moveInfo = data.moveInfo as IPieceMove;
-                const moveIsWhite = data.moveIsWhite as boolean;
+            await addHandler("onNotFound", _ => navigate("/notFound"));
+            await addHandler("onInitializeGameInfo", initPhaser);
+            await addHandler("onGameOver", (outcome: GameStatus) => setGameOutcome(outcome));
+            await addHandler("onReceiveMessages", (messages: IChat[]) => setGameState({ type: "SET_MESSAGES", payload: messages }));
+            await addHandler("onOpponentPieceMoved", (data) => eventEmitter.emit("setEnemyMove", data.moveInfo as IPieceMove));
+            await addHandler("onUpdateBoard", updateBoard)
 
-                setMoveHistory(prev => {
-                    if (moveIsWhite){
-                        return ({ ...prev, white: [...prev.white, moveInfo] })
-                    }
-                    return ({ ...prev, black: [...prev.black, moveInfo] })
-                });
-            })
-
-            await signalRContext.invoke("GameStart", url.gameRoomId);
+            await invoke("GameStart", url.gameRoomId);
         }
 
         if (!signalRConnectionRef.current){
-            console.log("start")
+            console.info("Game Start")
             start();
         }
 
@@ -97,13 +51,13 @@ export default function Main(){
                 gameRef.current = null;
             }
             
-            signalRContext.removeHandler("NotFound");
-            signalRContext.removeHandler("InitializeGameInfo");
-            signalRContext.removeHandler("GameOver");
-            signalRContext.removeHandler("ReceiveMessages");
-            signalRContext.removeHandler("OpponentPieceMoved");
-            signalRContext.removeHandler("UpdateMoveHistory");
-            signalRContext.stopConnection();
+            removeHandler("onNotFound");
+            removeHandler("onInitializeGameInfo");
+            removeHandler("onGameOver");
+            removeHandler("onReceiveMessages");
+            removeHandler("onOpponentPieceMoved");
+            removeHandler("onUpdateMoveHistory");
+            stopConnection();
         };
     }, [])
 

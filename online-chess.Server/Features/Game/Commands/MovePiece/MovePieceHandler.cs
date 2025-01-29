@@ -25,7 +25,7 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
 
             if (room == null)
             {
-                //await _hubContext.Clients.Client(request.UserConnectionId).SendAsync("NotFound", true);
+                //await _hubContext.Clients.Client(request.UserConnectionId).SendAsync("onNotFound", true);
                 return Unit.Value;
             }
 
@@ -74,10 +74,10 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
             string opponentConnectionId = _authenticatedUserService.GetConnectionId(
                 request.IdentityUserName == room.CreatedByUserId ? room.JoinedByUserId : room.CreatedByUserId
             );
-            await _hubContext.Clients.Client(opponentConnectionId).SendAsync("OpponentPieceMoved", retVal);
+            await _hubContext.Clients.Client(opponentConnectionId).SendAsync("onOpponentPieceMoved", retVal);
 
             // send updated move history to both players
-            await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync("UpdateMoveHistory", retVal);
+            await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync("onUpdateBoard", retVal);
 
             return Unit.Value;
          }

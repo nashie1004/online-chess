@@ -27,7 +27,7 @@ public class ConnectHandler : IRequestHandler<ConnectRequest, Unit>
         if (string.IsNullOrEmpty(existing))
         {
             _authenticatedUserService.Add(req.UserConnectionId, req.IdentityUserName);
-            await _hubContext.Clients.Client(req.UserConnectionId).SendAsync("GetUserConnectionId", req.UserConnectionId);
+            await _hubContext.Clients.Client(req.UserConnectionId).SendAsync("onGetUserConnectionId", req.UserConnectionId);
         }
 
         return Unit.Value;

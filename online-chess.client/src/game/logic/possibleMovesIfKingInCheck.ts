@@ -1,7 +1,7 @@
 import { GameObjects } from "phaser";
 import KingValidator from "../pieces/kingValidator";
 import { PieceNames } from "../utilities/constants";
-import { IMoveInfo, IPhaserContextValues, IBothKingsPosition, IValidMove, IBaseCoordinates } from "../utilities/types";
+import { IMoveInfo, IPhaserContextValues, IBothKingsPosition, IValidMove, IBaseCoordinates, IMoveHistory, IKingState } from "../utilities/types";
 import GetInitialMoves from "./getInitialMoves";
 
 export default class PossibleMovesIfKingInCheck {
@@ -11,26 +11,32 @@ export default class PossibleMovesIfKingInCheck {
     private readonly reactState: IPhaserContextValues;
     private readonly bothKingsPosition: IBothKingsPosition;
     private readonly boardOrientationIsWhite: boolean;
+    private readonly moveHistory: IMoveHistory;
+    private readonly kingsState: IKingState;
     
     constructor(
         board: (null | GameObjects.Sprite)[][],
         selectedPiece: IMoveInfo | null,
         reactState: IPhaserContextValues,
         bothKingsPosition: IBothKingsPosition,
-        boardOrientationIsWhite: boolean
+        boardOrientationIsWhite: boolean,
+        moveHistory: IMoveHistory,
+        kingsState: IKingState
     ) {
         this.board = board;
         this.selectedPiece = selectedPiece;
         this.reactState = reactState;
         this.bothKingsPosition = bothKingsPosition;
         this.boardOrientationIsWhite = boardOrientationIsWhite;
+        this.moveHistory = moveHistory;
+        this.kingsState = kingsState;
     }
 
     
     possibleMovesIfKingInCheck(name: PieceNames, initialValidMoves: IValidMove[]){
 
         // both kings are not in check
-        if (!this.reactState.kingsState.black.isInCheck && !this.reactState.kingsState.white.isInCheck){
+        if (!this.kingsState.black.isInCheck && !this.kingsState.white.isInCheck){
             return null;
         }
 
@@ -38,7 +44,7 @@ export default class PossibleMovesIfKingInCheck {
         const isWhite = name[0] === "w";
 
         // get attacker(s) information
-        const attackersCoords = isWhite ? this.reactState.kingsState.white.checkedBy : this.reactState.kingsState.black.checkedBy;
+        const attackersCoords = isWhite ? this.kingsState.white.checkedBy : this.kingsState.black.checkedBy;
         if (attackersCoords.length <= 0) return null; // no check
 
         attackersCoords.forEach(attacker => {
@@ -68,7 +74,8 @@ export default class PossibleMovesIfKingInCheck {
             // and also include x ray (moves behind the king that is in check by attacker)
             const attackerSquares = (new GetInitialMoves(
                 this.board, this.reactState, 
-                this.bothKingsPosition, this.boardOrientationIsWhite
+                this.bothKingsPosition, this.boardOrientationIsWhite,
+                this.moveHistory, this.kingsState
             )).getInitialMoves(attackerSpriteName, attacker.x, attacker.y, attackerSprite.name, true)
             
             if (name === PieceNames.wKing || name === PieceNames.bKing)
@@ -91,7 +98,7 @@ export default class PossibleMovesIfKingInCheck {
             const kingInCheckCoords = isWhite ? this.bothKingsPosition.white : this.bothKingsPosition.black;
             const kingTracer = new KingValidator({
                 x: kingInCheckCoords.x, y: kingInCheckCoords.y, name: isWhite ? PieceNames.wKing : PieceNames.bKing
-            }, this.board, this.reactState.moveHistory, false, this.bothKingsPosition, this.boardOrientationIsWhite);
+            }, this.board, this.moveHistory, false, this.bothKingsPosition, this.boardOrientationIsWhite);
             let attackersLineOfPath: IBaseCoordinates[] = [];
 
             switch(attackerSpriteName){
@@ -137,7 +144,8 @@ export default class PossibleMovesIfKingInCheck {
                             ){
                                 const friendPieceMoves = (new GetInitialMoves(
                                     this.board, this.reactState,
-                                    this.bothKingsPosition, this.boardOrientationIsWhite
+                                    this.bothKingsPosition, this.boardOrientationIsWhite,
+                                    this.moveHistory, this.kingsState
                                 )).getInitialMoves(spriteName, j, i, currTile.name);
                                 // if one of our friend move can block an enemey attack sqaure
                                 attackersLineOfPath.forEach(attackSquare => {

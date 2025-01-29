@@ -21,11 +21,11 @@ export default function Lobby() {
             await startConnection(() => {});
             signalRConnectionRef.current = true;
     
-            await addHandler("RefreshRoomList", (roomList) => setGameRoomList({ isLoading: false, list: roomList }));
-            await addHandler("InvalidRoomKey", (msg) => toast(msg, { type: "error" }));
-            await addHandler("GetUserConnectionId", (connectionId) => setUserConnectionId(connectionId));
-            await addHandler("GetRoomKey", (roomKey) => setRoomKey(roomKey));
-            await addHandler("MatchFound", (roomKey) => navigate(`/play/${roomKey}`));
+            await addHandler("onRefreshRoomList", (roomList) => setGameRoomList({ isLoading: false, list: roomList }));
+            await addHandler("onInvalidRoomKey", (msg) => toast(msg, { type: "error" }));
+            await addHandler("onGetUserConnectionId", (connectionId) => setUserConnectionId(connectionId));
+            await addHandler("onGetRoomKey", (roomKey) => setRoomKey(roomKey));
+            await addHandler("onMatchFound", (roomKey) => navigate(`/play/${roomKey}`));
 
             await invoke("GetRoomList", 1);
             await invoke("GetCreatedRoomKey");
@@ -37,11 +37,11 @@ export default function Lobby() {
         }
         
         return () => {
-            removeHandler("RefreshRoomList");
-            removeHandler("InvalidRoomKey");
-            removeHandler("GetUserConnectionId");
-            removeHandler("GetRoomKey");
-            removeHandler("MatchFound");
+            removeHandler("onRefreshRoomList");
+            removeHandler("onInvalidRoomKey");
+            removeHandler("onGetUserConnectionId");
+            removeHandler("onGetRoomKey");
+            removeHandler("onMatchFound");
             stopConnection();
             setUserConnectionId(null);
         }

@@ -1,3 +1,4 @@
+import moment from "moment";
 import { ColorOptions, GameStatus, GameType } from "../game/utilities/constants";
 
 export function gameTypeDisplay(gameType: GameType){
@@ -13,6 +14,23 @@ export function gameTypeDisplay(gameType: GameType){
         case GameType.Rapid25Mins:
             return "Rapid - 25 minutes per player"
     }
+}
+
+export function msToMinuteDisplay(milliseconds: number){
+    let duration = moment.duration(milliseconds, 'milliseconds');
+    let hours = duration.hours();
+    let minutes = duration.minutes();
+    let seconds = duration.seconds();
+    let ms = duration.milliseconds();  // Extract the milliseconds
+
+    let formattedHours = String(hours).padStart(2, '0');
+    let formattedMinutes = String(minutes).padStart(2, '0');
+    let formattedSeconds = String(seconds).padStart(2, '0');
+    // let formattedMilliseconds = String(ms).padStart(1, '0'); // Ensure 3 digits for milliseconds
+
+    // const retVal = `${formattedHours}:${formattedMinutes}:${formattedSeconds}.${formattedMilliseconds}`; // Include milliseconds
+    const retVal = `${formattedHours}:${formattedMinutes}:${formattedSeconds}`; // Include milliseconds
+    return retVal;
 }
 
 export function gameStatusDisplay(status: GameStatus){

@@ -1,34 +1,32 @@
-import { useEffect } from 'react'
-import useReactContext from '../../hooks/useGameContext';
-import usePhaserContext from '../../hooks/usePhaserContext';
-import { Alert, Badge } from 'react-bootstrap';
+import { useEffect, useState } from 'react'
+import useGameContext from '../../hooks/useGameContext';
+import { msToMinuteDisplay } from '../../utils/helper';
 
 export default function PlayerInfo() {
-    const {timer, setTimer} = useReactContext();
-  const {
-        isWhitesTurn, kingsState
-  } = usePhaserContext();
-    
-    
+    const { gameState } = useGameContext();
+    const [actualTime, setActualTime] = useState(gameState.timer);
+    const kingsState = gameState.kingsState;
+
     useEffect(() => {
-        /*
+        
+        setActualTime(gameState.timer);
         let intervalId: number;
 
-        if (isWhitesTurn){
+        if (gameState.timer.isWhitesTurn){
             intervalId = setInterval(() => {
-                setTimer(prev => ({ ...prev, white: prev.white + 1 }));
-            }, 1000)
+                setActualTime(prev => ({ ...prev, white: prev.white - 100 }));
+            }, 100)
         } else {
             intervalId = setInterval(() => {
-                setTimer(prev => ({ ...prev, black: prev.black + 1 }));
-            }, 1000)
+                setActualTime(prev => ({ ...prev, black: prev.black - 100 }));
+            }, 100)
         }
 
         return () => {
             clearInterval(intervalId);
         }
-        */
-    }, [isWhitesTurn])
+        
+    }, [gameState.timer])
 
   return (
     <>
@@ -36,18 +34,18 @@ export default function PlayerInfo() {
             <div className='timer-info w-100'>
                 <h6 className='text-secondary'>Lorem, ipsum.</h6>
                 <h2>
-                    <i className="bi bi-clock"></i> <span>{timer.white}.00s</span>
+                    <i className="bi bi-clock"></i> <span>{msToMinuteDisplay(actualTime.white)}s</span>
                 </h2>
             </div>
             <div className='timer-info w-100'>
                 <h6  className='text-secondary'>Lorem, ipsum.</h6>
                 <h2>
-                    <i className="bi bi-clock"></i> <span>{timer.black}.00s</span>
+                    <i className="bi bi-clock"></i> <span>{msToMinuteDisplay(actualTime.black)}s</span>
                 </h2>
             </div>
         </div>
         <div className='game-alert'>
-            {isWhitesTurn ? <>White's</> : <>Black's</>} turn to move.
+            {actualTime.isWhitesTurn ? <>White's</> : <>Black's</>} turn to move.
             {
                 kingsState.white.isInCheck || kingsState.black.isInCheck ? <>
                     {kingsState.white.isInCheck ? " White is in check." : ""}

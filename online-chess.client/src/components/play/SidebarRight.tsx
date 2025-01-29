@@ -1,11 +1,9 @@
-import usePhaserContext from '../../hooks/usePhaserContext';
 import PlayerInfo from './PlayerInfo';
 import Chatbar from './Chatbar';
 import MoveHistory from './MoveHistory';
 import GameOutcome from './GameOutcome';
 
 export default function SidebarRight() {
-    const { isColorWhite, promoteTo, setPromoteTo } = usePhaserContext();
 
   return (
     <div className='sidebar vstack'>

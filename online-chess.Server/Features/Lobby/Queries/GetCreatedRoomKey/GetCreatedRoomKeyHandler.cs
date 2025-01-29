@@ -23,7 +23,7 @@ public class GetCreatedRoomKeyHandler : IRequestHandler<GetCreatedRoomKeyRequest
         {
             if (item.Value.CreatedByUserId == req.IdentityUserName)
             {
-                await _hubContext.Clients.Client(req.UserConnectionId).SendAsync("GetRoomKey", item.Key);
+                await _hubContext.Clients.Client(req.UserConnectionId).SendAsync("onGetRoomKey", item.Key);
                 return Unit.Value;
             }
         }

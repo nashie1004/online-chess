@@ -1,7 +1,7 @@
 import { GameObjects } from "phaser";
 import PawnValidator from "../pieces/pawnValidator";
 import { PieceNames } from "../utilities/constants";
-import { IPiecesCoordinates, IPhaserContextValues, IBothKingsPosition, IMoveInfo } from "../utilities/types";
+import { IPiecesCoordinates, IPhaserContextValues, IBothKingsPosition, IMoveInfo, IMoveHistory } from "../utilities/types";
 
 export default class PieceCapture {
     private readonly board: (null | GameObjects.Sprite)[][]
@@ -9,19 +9,22 @@ export default class PieceCapture {
     private readonly pieceCoordinates: IPiecesCoordinates;
     private readonly reactState: IPhaserContextValues;
     private readonly bothKingsPosition: IBothKingsPosition;
+    private readonly moveHistory: IMoveHistory;
 
     constructor(
         board: (null | GameObjects.Sprite)[][],
         boardOrientationIsWhite: boolean,
         pieceCoordinates: IPiecesCoordinates,
         reactState: IPhaserContextValues,
-        bothKingsPosition: IBothKingsPosition
+        bothKingsPosition: IBothKingsPosition,
+        moveHistory: IMoveHistory
     ) {
         this.board = board;
         this.boardOrientationIsWhite = boardOrientationIsWhite;
         this.pieceCoordinates = pieceCoordinates;
         this.reactState = reactState;
         this.bothKingsPosition = bothKingsPosition;
+        this.moveHistory = moveHistory;
     }
     
     normalCapture(newX: number, newY: number, isWhite: boolean){
@@ -30,11 +33,12 @@ export default class PieceCapture {
 
         if (opponentPiece){
 
+            // TODO as of 1/28/2025 - Reimplement capture history logic
             // save to capture history
             if (isWhite){
-                this.reactState.captureHistory.white.push({ x: newX, y: newY, pieceName: opponentPiece.name })
+                //this.reactState.captureHistory.white.push({ x: newX, y: newY, pieceName: opponentPiece.name })
             } else {
-                this.reactState.captureHistory.black.push({ x: newX, y: newY, pieceName: opponentPiece.name })
+                //this.reactState.captureHistory.black.push({ x: newX, y: newY, pieceName: opponentPiece.name })
             }
 
             this.pieceCoordinates[isWhite ? "black" : "white"] = 
@@ -55,7 +59,7 @@ export default class PieceCapture {
             // get the previous pawn' square before moving diagonally
             const pawnValidator = new PawnValidator(
                 { x: selectedPiece.x, y: selectedPiece.y, name: isWhite ? PieceNames.wPawn : PieceNames.bPawn, uniqueName: pieceName }
-                , this.board, this.reactState.moveHistory, false, this.bothKingsPosition, this.boardOrientationIsWhite);
+                , this.board, this.moveHistory, false, this.bothKingsPosition, this.boardOrientationIsWhite);
 
             const validCapture = pawnValidator.validEnPassantCapture();
 

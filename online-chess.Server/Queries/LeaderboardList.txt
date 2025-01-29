@@ -21,7 +21,10 @@ WITH MainQuery AS (
             AND G.IsDraw = 1
         ) AS Draws,
         U.CreateDate AS SinceDate,
-        '1970-01-01' AS LastGameDate
+        (
+            SELECT GameEndDate FROM GameHistories G 
+            WHERE G.PlayerOneId = U.Id OR G.PlayerTwoId = U.Id
+        ) AS LastGameDate
     FROM AspNetUsers U
 )
 
@@ -33,6 +36,6 @@ SELECT
       Loses,
       Draws,
       SinceDate,
-      LastGameDate
+      IFNULL(LastGameDate, '1970-01-01') AS LastGameDate
 FROM MainQuery ORDER BY Wins DESC
     LIMIT @PageSize OFFSET @PaginationOffset

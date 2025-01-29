@@ -26,13 +26,13 @@ public class DeleteRoomHandler : IRequestHandler<DeleteRoomRequest, Unit>
             await _hubContext
                 .Clients
                 .Client(req.UserConnectionId)
-                .SendAsync("InvalidRoomKey", $"Room key {req.GameRoomKeyString} is invalid");
+                .SendAsync("onInvalidRoomKey", $"Room key {req.GameRoomKeyString} is invalid");
 
             return Unit.Value;
         }
 
         _gameRoomService.Remove(gameRoomKey);
-        await _hubContext.Clients.All.SendAsync("RefreshRoomList",
+        await _hubContext.Clients.All.SendAsync("onRefreshRoomList",
             _gameRoomService.GetPaginatedDictionary(1).ToArray()
         );
 
