@@ -60,13 +60,11 @@ export interface ITimer{
 }
 
 export interface IPhaserContextValues{
-    promoteTo: PromoteTo;
     isColorWhite: boolean;
     isWhitesOrientation: boolean;
 }
 
 export interface IPhaserContext extends IPhaserContextValues{
-    setPromoteTo: (val: PromoteTo) => void;
     setIsColorWhite: (val: boolean) => void;
     setIsWhitesOrientation: (val: boolean) => void;
 }

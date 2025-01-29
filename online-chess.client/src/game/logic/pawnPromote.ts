@@ -1,17 +1,20 @@
 import { GameObjects } from "phaser";
 import { PieceNames } from "../utilities/constants";
-import { IPhaserContextValues } from "../utilities/types";
+import { IPhaserContextValues, PromoteTo } from "../utilities/types";
 
 export default class PawnPromote {
     private readonly boardOrientationIsWhite: boolean;
     private readonly reactState: IPhaserContextValues;
+    private readonly promoteTo: PromoteTo;
 
     constructor(
         boardOrientationIsWhite: boolean,
-        reactState: IPhaserContextValues
+        reactState: IPhaserContextValues,
+        promoteTo: PromoteTo
     ) {
         this.reactState = reactState;
         this.boardOrientationIsWhite = boardOrientationIsWhite;
+        this.promoteTo = promoteTo;
     }
 
     pawnPromote(pieceName: string, newX: number, newY: number, isWhite: boolean, sprite: GameObjects.Sprite | null){
@@ -29,7 +32,7 @@ export default class PawnPromote {
             && sprite
         ){
             // change sprite name and image/texture from pawn to queen
-            switch(this.reactState.promoteTo){
+            switch(this.promoteTo){
                 case "rook":
                     sprite.setName((isWhite ? PieceNames.wRook : PieceNames.bRook) + `-${newX}-${newY}`);
                     sprite.setTexture(isWhite ? PieceNames.wRook : PieceNames.bRook);

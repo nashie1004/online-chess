@@ -31,6 +31,7 @@ export class MainGameScene extends Scene{
     private selectedPiece: IMoveInfo | null;
     private isPlayersTurnToMove: boolean;
     private bothKingsPosition: IBothKingsPosition;
+    private promotePreference: PromoteTo;
     
     // server state
     private moveHistory: IMoveHistory;
@@ -43,7 +44,6 @@ export class MainGameScene extends Scene{
         // server state
         this.moveHistory = { white: [], black: [] };
         this.reactState = {
-            promoteTo: "queen",
             isColorWhite, // player's color of choice
             isWhitesOrientation: isColorWhite,
         }
@@ -61,7 +61,8 @@ export class MainGameScene extends Scene{
         this.tileSize = gameOptions.tileSize; // 100
         this.board = Array.from({ length: 8}).map(_ => new Array(8).fill(null)); // creates 8x8 grid
         this.previewBoard = Array.from({ length: 8 }).map(_ => new Array(8));
-        this.pieceCoordinates = { white: [], black: [],};
+        this.pieceCoordinates = { white: [], black: [] };
+        this.promotePreference = "queen";
     }
 
     preload(){
@@ -200,7 +201,7 @@ export class MainGameScene extends Scene{
         })
 
         // sync / listen to upcoming react state changes
-        eventEmitter.on("setPromoteTo", (data: PromoteTo) => this.reactState.promoteTo = data);
+        eventEmitter.on("setPromoteTo", (data: PromoteTo) => this.promotePreference = data); // TODO
         eventEmitter.on("setKingsState", (data: IKingState) => this.kingsState = data);
         eventEmitter.on("setEnemyMove", (data: IPieceMove) => {
             this.selectedPiece = {
@@ -271,7 +272,7 @@ export class MainGameScene extends Scene{
 
         // some special logic
         (new PawnPromote(
-            this.boardOrientationIsWhite, this.reactState
+            this.boardOrientationIsWhite, this.reactState, this.promotePreference // TODO dynamic promote
         )).pawnPromote(uniquePieceName, newX, newY, isWhite, sprite);
 
         const kingCastled = (new KingCastled(
