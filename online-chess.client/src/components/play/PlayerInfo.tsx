@@ -4,15 +4,23 @@ import { msToMinuteDisplay } from '../../utils/helper';
 
 export default function PlayerInfo() {
     const { gameState } = useGameContext();
-    const [actualTime, setActualTime] = useState(gameState.timer);
-    const kingsState = gameState.kingsState;
+    const [actualTime, setActualTime] = useState({ white: 0, black: 0, whitesTurn: false });
+
+    const white = gameState.myInfo.playerIsWhite ? gameState.myInfo : gameState.opponentInfo;
+    const black = !gameState.myInfo.playerIsWhite ? gameState.myInfo : gameState.opponentInfo;
+
 
     useEffect(() => {
         
-        setActualTime(gameState.timer);
+        setActualTime({
+            white: white.timeLeft
+            , black: black.timeLeft
+            , whitesTurn: gameState.myInfo.playerIsWhite ? gameState.myInfo.isPlayersTurn : gameState.opponentInfo.isPlayersTurn
+        });
+
         let intervalId: number;
 
-        if (gameState.timer.isWhitesTurn){
+        if (actualTime.whitesTurn){
             intervalId = setInterval(() => {
                 setActualTime(prev => ({ ...prev, white: prev.white - 100 }));
             }, 100)
@@ -26,7 +34,7 @@ export default function PlayerInfo() {
             clearInterval(intervalId);
         }
         
-    }, [gameState.timer])
+    }, [gameState.myInfo.isPlayersTurn, gameState.opponentInfo.isPlayersTurn])
 
   return (
     <>
@@ -45,21 +53,21 @@ export default function PlayerInfo() {
             </div>
         </div>
         <div className='game-alert'>
-            {actualTime.isWhitesTurn ? <>White's</> : <>Black's</>} turn to move.
+            {actualTime.whitesTurn ? <>White's</> : <>Black's</>} turn to move.
             {
-                kingsState.white.isInCheck || kingsState.black.isInCheck ? <>
-                    {kingsState.white.isInCheck ? " White is in check." : ""}
-                    {kingsState.black.isInCheck ? " Black is in check." : ""}
+                white.kingsState.isInCheck || black.kingsState.isInCheck ? <>
+                    {white.kingsState.isInCheck ? " White is in check." : ""}
+                    {black.kingsState.isInCheck ? " Black is in check." : ""}
                 </> : <></> 
             }
             {
-                kingsState.white.isCheckMate || kingsState.black.isCheckMate ? <>
-                    {kingsState.white.isCheckMate ? " White is checkmated." : ""}
-                    {kingsState.black.isCheckMate ? " Black is checkmated." : ""}
+                white.kingsState.isCheckMate || black.kingsState.isCheckMate ? <>
+                    {white.kingsState.isCheckMate ? " White is checkmated." : ""}
+                    {black.kingsState.isCheckMate ? " Black is checkmated." : ""}
                 </> : <></> 
             }
             {
-                kingsState.white.isInStalemate || kingsState.black.isInStalemate ? <>
+                white.kingsState.isInStalemate || black.kingsState.isInStalemate ? <>
                 Stalemate.
                 </> : <></> 
             }

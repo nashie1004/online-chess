@@ -26,7 +26,7 @@ import bKnight from "../../assets/pieces/cburnett/bN.svg?raw"
 import bBishop from "../../assets/pieces/cburnett/bB.svg?raw"
 import bQueen from "../../assets/pieces/cburnett/bQ.svg?raw"
 import bKing from "../../assets/pieces/cburnett/bK.svg?raw"
-import { IKingState, IPiece } from "./types"
+import { IKingState, IPiece, IPlayerInfo } from "./types"
 
 export enum PieceNames{
     wPawn = "wPawn",
@@ -128,4 +128,13 @@ export enum ColorOptions{
     White = 1,
     Black = 2,
     Random = 3,
+}
+
+export const basePlayerInfo: IPlayerInfo = {
+    userName: "",
+    kingsState: { isCheckMate: false, isInCheck: false, checkedBy: [], isInStalemate: false },
+    isPlayersTurn: false,
+    timeLeft: 0,
+    playerIsWhite: false,
+    isOfferingADraw: false
 }

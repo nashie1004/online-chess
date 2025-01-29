@@ -11,28 +11,14 @@ import useAuthContext from "../../hooks/useAuthContext";
 export default function useInitializePhaser(
     gameRef: React.MutableRefObject<Phaser.Game | null | undefined>
 ){
-    const { setGameState } = useGameContext();
+    const { setGameState, gameState } = useGameContext();
     const signalRContext = useSignalRContext();
     const { user } = useAuthContext();
 
     const initPhaser = useCallback((initGameInfo: IInitialGameInfo) => {
-        const createdByUserTime = moment.duration(initGameInfo.createdByUserInfo.timeLeft).asMilliseconds();
-        const joinedByUserTime = moment.duration(initGameInfo.joinedByUserInfo.timeLeft).asMilliseconds();
-
         const playerIsWhite = (initGameInfo.createdByUserInfo.userName === user?.userName)
             ? initGameInfo.createdByUserInfo.isColorWhite
             : initGameInfo.joinedByUserInfo.isColorWhite;
-
-        setGameState({
-            type: "SET_TIMER",
-            payload: {
-                white: playerIsWhite && initGameInfo.createdByUserInfo.userName === user?.userName ? createdByUserTime : joinedByUserTime,
-                black: !playerIsWhite && initGameInfo.createdByUserInfo.userName !== user?.userName ? joinedByUserTime : createdByUserTime,
-                isWhitesTurn: true
-            }
-        })
-
-        setGameState({ type: "SET_GAMEROOMKEY", payload: initGameInfo.gameRoomKey });
 
         // init phaser
         if (!gameRef.current){
@@ -51,9 +37,72 @@ export default function useInitializePhaser(
             });
         }
 
+        const myInfo = (initGameInfo.createdByUserInfo.userName === user?.userName) 
+            ? initGameInfo.createdByUserInfo 
+            : initGameInfo.joinedByUserInfo;
+
+        const opponentInfo = (initGameInfo.createdByUserInfo.userName === user?.userName) 
+            ? initGameInfo.joinedByUserInfo 
+            : initGameInfo.createdByUserInfo;
+
+        setGameState({
+            type: "SET_MYINFO",
+            payload: {
+                userName: myInfo.userName,
+                kingsState: {
+                    isInCheck: false, checkedBy: [],
+                    isInStalemate: false, isCheckMate: false,
+                },
+                isPlayersTurn: myInfo.isPlayersTurnToMove,
+                timeLeft: moment.duration(myInfo.timeLeft).asMilliseconds(),
+                playerIsWhite: myInfo.isColorWhite,
+                isOfferingADraw: false
+            }
+        });
+        
+        setGameState({
+            type: "SET_OPPONENTINFO",
+            payload: {
+                userName: opponentInfo.userName,
+                kingsState: {
+                    isInCheck: false, checkedBy: [],
+                    isInStalemate: false, isCheckMate: false,
+                },
+                isPlayersTurn: opponentInfo.isPlayersTurnToMove,
+                timeLeft: moment.duration(opponentInfo.timeLeft).asMilliseconds(),
+                playerIsWhite: opponentInfo.isColorWhite,
+                isOfferingADraw: false
+            }
+        });
+
+        setGameState({ type: "SET_GAMEROOMKEY", payload: initGameInfo.gameRoomKey });
+
         // connect react and phaser
-        //eventEmitter.on("setIsWhitesTurn", (data: boolean) => setIsWhitesTurn(data));
-        eventEmitter.on("setKingsState", (data: IKingState) => setGameState({ type: "SET_KINGSTATE", payload: data }));
+        eventEmitter.on("setKingsState", (data: IKingState) => {
+            
+            if (data.white.isInCheck || data.white.isCheckMate || data.white.isInStalemate)
+            {
+                setGameState({ 
+                    type: gameState.myInfo.playerIsWhite ? "SET_MYINFO" : "SET_OPPONENTINFO",
+                    payload: {
+                        ...gameState[gameState.myInfo.playerIsWhite ? "myInfo" : "opponentInfo"],
+                        kingsState: data.white
+                    }
+                });
+            } 
+            else if (data.black.isInCheck || data.black.isCheckMate || data.black.isInStalemate) 
+            {
+                setGameState({ 
+                    type: !gameState.myInfo.playerIsWhite ? "SET_MYINFO" : "SET_OPPONENTINFO",
+                    payload: {
+                        ...gameState[!gameState.myInfo.playerIsWhite ? "myInfo" : "opponentInfo"],
+                        kingsState: data.black
+                    }
+                });
+            }
+
+        });
+        
         eventEmitter.on("setMovePiece", (move: any) => {
             signalRContext.invoke("MovePiece", initGameInfo.gameRoomKey, move.oldMove, move.newMove);
             // console.log("You moved a piece")

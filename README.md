@@ -35,6 +35,7 @@ after that, the web application should now be running.
 
 ## TODO (Game)
 1. timer
+2. fix state handling for all 3: react, phaser, signalr
 3. request a draw
 4. fix bugs on piece moves
 5. promotion bug and promotion picker
@@ -44,6 +45,7 @@ after that, the web application should now be running.
 1. fifty move rule
 2. show proper chess move notation
 3. 3 fold repetition
+4. user piece and board ui preference
 
 ### SQLite
 ```

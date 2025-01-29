@@ -68,6 +68,7 @@ export default class ValidateCheckOrCheckMateOrStalemate {
                 this.board, this.boardOrientationIsWhite
                 ,this.pieceCoordinates, this.reactState
                 ,this.bothKingsPosition, this.moveHistory
+                ,this.kingsState
             )).isStalemate(!isWhite);
 
             if (isStalemate){

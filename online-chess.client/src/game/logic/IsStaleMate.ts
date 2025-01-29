@@ -1,5 +1,5 @@
 import { GameObjects } from "phaser";
-import { IBothKingsPosition, IMoveHistory, IPhaserContextValues, IPiecesCoordinates } from "../utilities/types";
+import { IBothKingsPosition, IKingState, IMoveHistory, IPhaserContextValues, IPiecesCoordinates } from "../utilities/types";
 import GetInitialMoves from "./getInitialMoves";
 
 export default class IsStalemate {
@@ -9,6 +9,7 @@ export default class IsStalemate {
     private readonly reactState: IPhaserContextValues;
     private readonly bothKingsPosition: IBothKingsPosition;
     private readonly moveHistory: IMoveHistory;
+    private readonly kingsState: IKingState;
     
     constructor(
         board: (null | GameObjects.Sprite)[][],
@@ -16,7 +17,8 @@ export default class IsStalemate {
         pieceCoordinates: IPiecesCoordinates,
         reactState: IPhaserContextValues,
         bothKingsPosition: IBothKingsPosition,
-        moveHistory: IMoveHistory
+        moveHistory: IMoveHistory,
+        kingsState: IKingState
     ) {
         this.board = board;
         this.boardOrientationIsWhite = boardOrientationIsWhite;
@@ -24,6 +26,7 @@ export default class IsStalemate {
         this.reactState = reactState;
         this.bothKingsPosition = bothKingsPosition;
         this.moveHistory = moveHistory;
+        this.kingsState = kingsState;
     }
 
     /**
@@ -40,7 +43,7 @@ export default class IsStalemate {
             const pieceMoves = (new GetInitialMoves(
                 this.board, this.reactState
                 , this.bothKingsPosition, this.boardOrientationIsWhite
-                , this.moveHistory
+                , this.moveHistory, this.kingsState
             )).getInitialMoves(name, x, y, uniqueName ?? `${name}-${x}-${y}`, false);
 
             if (pieceMoves.length > 0){

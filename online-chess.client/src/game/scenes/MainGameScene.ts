@@ -24,31 +24,32 @@ export class MainGameScene extends Scene{
 
     // internal state
     private readonly tileSize: number;
-    private readonly previewBoard: (GameObjects.Sprite)[][] // has a visible property
+    private readonly previewBoard: (GameObjects.Sprite)[][]; // has a visible property
     private readonly boardOrientationIsWhite: boolean;
+    private readonly board: (null | GameObjects.Sprite)[][];
+    private readonly pieceCoordinates: IPiecesCoordinates;
     private selectedPiece: IMoveInfo | null;
     private isPlayersTurnToMove: boolean;
     private bothKingsPosition: IBothKingsPosition;
     
     // server state
-    private readonly board: (null | GameObjects.Sprite)[][]
-    private readonly pieceCoordinates: IPiecesCoordinates;
     private moveHistory: IMoveHistory;
     private reactState: IPhaserContextValues;
-
     private kingsState: IKingState;
 
     constructor(key: string, isColorWhite: boolean) {
         super({ key });
 
-        // sync react and phaser state
+        // server state
+        this.moveHistory = { white: [], black: [] };
         this.reactState = {
             promoteTo: "queen",
             isColorWhite, // player's color of choice
             isWhitesOrientation: isColorWhite,
         }
+        this.kingsState = baseKingState;
 
-        // game internal state
+        // internal state
         this.isPlayersTurnToMove = isColorWhite;
         this.selectedPiece = null;
         this.boardOrientationIsWhite = isColorWhite;
@@ -57,17 +58,10 @@ export class MainGameScene extends Scene{
             white: { x: this.boardOrientationIsWhite ? 4 : 3, y: this.boardOrientationIsWhite ? 7 : 0 }
             , black: { x: this.boardOrientationIsWhite ? 4 : 3, y: this.boardOrientationIsWhite ? 0 : 7 }
         };
-
         this.tileSize = gameOptions.tileSize; // 100
-
-        // creates 8x8 grid
-        this.board = Array.from({ length: 8}).map(_ => new Array(8).fill(null));
+        this.board = Array.from({ length: 8}).map(_ => new Array(8).fill(null)); // creates 8x8 grid
         this.previewBoard = Array.from({ length: 8 }).map(_ => new Array(8));
-
         this.pieceCoordinates = { white: [], black: [],};
-        this.moveHistory = { white: [], black: [] };
-
-        this.kingsState = baseKingState;
     }
 
     preload(){
@@ -82,7 +76,7 @@ export class MainGameScene extends Scene{
             const blob = new Blob([imagePath], { type: 'image/svg+xml' });
             const url = URL.createObjectURL(blob);
             this.load.svg(pieceName, url, { width: this.tileSize, height: this.tileSize })
-        })
+        });
     }
 
     create(){
@@ -207,7 +201,7 @@ export class MainGameScene extends Scene{
 
         // sync / listen to upcoming react state changes
         eventEmitter.on("setPromoteTo", (data: PromoteTo) => this.reactState.promoteTo = data);
-        //eventEmitter.on("setKingsState", (data: IKingState) => this.kingsState = data);
+        eventEmitter.on("setKingsState", (data: IKingState) => this.kingsState = data);
         eventEmitter.on("setEnemyMove", (data: IPieceMove) => {
             this.selectedPiece = {
                 x: data.old.x,
