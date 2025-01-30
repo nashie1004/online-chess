@@ -113,7 +113,7 @@ export default function useOnInitializeGameInfo(
         });
         
         eventEmitter.on("setMovePiece", (move: any) => {
-            signalRContext.invoke("MovePiece", initGameInfo.gameRoomKey, move.oldMove, move.newMove, gameStateRef.current.myInfo.timeLeft);
+            signalRContext.invoke("MovePiece", initGameInfo.gameRoomKey, move.oldMove, move.newMove);
         });
 
         setGameState({ type: "SET_GAMESTATUS", payload: "ONGOING" });

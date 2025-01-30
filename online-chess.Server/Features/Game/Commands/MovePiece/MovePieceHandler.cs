@@ -65,17 +65,27 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
             }
 
             // update timer
-            TimeSpan playerTimeLeft = TimeSpan.FromMilliseconds(request.TimeLeft);
+            var timeNow = (DateTime.Now).TimeOfDay;
 
             if (isRoomCreator){
-                room.CreatedByUserInfo.TimeLeft -= playerTimeLeft;
-            } else {
-                room.JoinByUserInfo.TimeLeft -= playerTimeLeft;
+                var elapsedTime = timeNow - (room.CreatedByUserInfo.LastMoveDate).TimeOfDay;
+
+                room.CreatedByUserInfo.TimeLeft -= elapsedTime;
+                room.CreatedByUserInfo.LastMoveDate = DateTime.Now;
+            } 
+            else {
+                var elapsedTime = timeNow - (room.CreatedByUserInfo.LastMoveDate).TimeOfDay;
+
+                room.JoinByUserInfo.TimeLeft -= elapsedTime;
+                room.JoinByUserInfo.LastMoveDate = DateTime.Now;
             }
 
             var retVal = new{
                 moveInfo
                 , moveIsWhite = pieceMoveIsWhite
+                , creatorTimeLeft = room.CreatedByUserInfo.TimeLeft.TotalMilliseconds
+                , joinerTimeLeft = room.JoinByUserInfo.TimeLeft.TotalMilliseconds
+                , creatorColorIsWhite = room.CreatedByUserColor == Enums.Color.White
             };
 
             // send move to opponent player

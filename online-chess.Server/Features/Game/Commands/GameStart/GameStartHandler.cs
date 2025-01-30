@@ -91,6 +91,7 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
                 UserName = gameRoom.CreatedByUserId
                 , IsPlayersTurnToMove = gameRoom.CreatedByUserColor == Color.White
                 , TimeLeft = initialCreatorTime
+                , LastMoveDate = DateTime.Now
                 , IsColorWhite = gameRoom.CreatedByUserColor == Color.White
                 , KingInCheck = false
                 , KingInCheckMate = false
@@ -100,6 +101,7 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
                 UserName = gameRoom.JoinedByUserId
                 , IsPlayersTurnToMove = gameRoom.CreatedByUserColor != Color.White
                 , TimeLeft = initialJoinerTime
+                , LastMoveDate = DateTime.Now
                 , IsColorWhite = gameRoom.CreatedByUserColor != Color.White
                 , KingInCheck = false
                 , KingInCheckMate = false
