@@ -104,7 +104,7 @@ namespace online_chess.Server.Hubs
             });
         }
 
-        public async Task MovePiece(string gameRoomKey, BaseMoveInfo oldMove, BaseMoveInfo newMove)
+        public async Task MovePiece(string gameRoomKey, BaseMoveInfo oldMove, BaseMoveInfo newMove, double timeLeft)
         {
             await _mediator.Send(new MovePieceRequest()
             {
@@ -112,7 +112,8 @@ namespace online_chess.Server.Hubs
                 IdentityUserName = Context.User?.Identity?.Name,
                 GameRoomKeyString = gameRoomKey,
                 OldMove = oldMove,
-                NewMove = newMove
+                NewMove = newMove,
+                TimeLeft = timeLeft
             });
         }
         

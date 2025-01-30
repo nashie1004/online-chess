@@ -64,11 +64,19 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
                 room.MoveHistory.Black.Add(moveInfo);
             }
 
+            // update timer
+            TimeSpan playerTimeLeft = TimeSpan.FromMilliseconds(request.TimeLeft);
+
+            if (isRoomCreator){
+                room.CreatedByUserInfo.TimeLeft -= playerTimeLeft;
+            } else {
+                room.JoinByUserInfo.TimeLeft -= playerTimeLeft;
+            }
+
             var retVal = new{
                 moveInfo
                 , moveIsWhite = pieceMoveIsWhite
             };
-
 
             // send move to opponent player
             string opponentConnectionId = _authenticatedUserService.GetConnectionId(

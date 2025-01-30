@@ -35,9 +35,9 @@ after that, the web application should now be running.
 
 ## TODO (Game)
 1. timer
-3. request a draw
-4. fix bugs on piece moves
-5. promotion bug and promotion picker
+~~3. request a draw~~
+4. fix bugs on piece moves (i.e castling, pawn promotion)
+5. promotion picker
 6. disconnect or leave logic
 
 ## Others
@@ -45,7 +45,10 @@ after that, the web application should now be running.
 2. show proper chess move notation
 3. 3 fold repetition
 4. user piece and board ui preference
-5. responsive
+5. responsive ui
+6. toaster
+7. table reload/refresh
+8. some framer motion?
 
 ### SQLite
 ```

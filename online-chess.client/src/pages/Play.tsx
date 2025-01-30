@@ -15,6 +15,7 @@ import useGameContext from "../hooks/useGameContext";
 import GameLoading from "../components/play/GameLoading";
 import DrawRequestModal from "../components/play/DrawRequestModal";
 import useOnDeclineDraw from "../game/signalRhandlers/useOnDeclineDraw";
+import PromotionPicker from "../components/play/PromotionPickerModal";
 
 export default function Main(){
     const gameRef = useRef<Phaser.Game | null>();
@@ -91,5 +92,6 @@ export default function Main(){
         <OutcomeModal />
         <GameLoading />
         <DrawRequestModal />
+        <PromotionPicker />
     </>
 }
