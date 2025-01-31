@@ -1,5 +1,5 @@
 import moment from "moment";
-import { useCallback } from "react";
+import { useCallback, useRef } from "react";
 import { MainGameScene } from "../scenes/MainGameScene";
 import { eventEmitter } from "../utilities/eventEmitter";
 import { IInitialGameInfo, IKingState } from "../utilities/types";
@@ -14,6 +14,11 @@ export default function useOnInitializeGameInfo(
     const { setGameState, gameState } = useGameContext();
     const signalRContext = useSignalRContext();
     const { user } = useAuthContext();
+    const gameStateRef = useRef(gameState);
+    // https://stackoverflow.com/questions/57847594/accessing-up-to-date-state-from-within-a-callback
+    // this contains the up to date version of our gamestate, 
+    // since the old value is captured inside the callback fns
+    gameStateRef.current = gameState; 
 
     const onInitializeGameInfo = useCallback((initGameInfo: IInitialGameInfo) => {
         const playerIsWhite = (initGameInfo.createdByUserInfo.userName === user?.userName)

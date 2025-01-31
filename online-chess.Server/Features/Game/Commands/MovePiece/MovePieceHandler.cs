@@ -38,6 +38,8 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
              * - send to both players
              */
 
+            // TODO - when a piece moves, update gamelogic service piece coords
+
             // 1. set color
             bool isRoomCreator = room.CreatedByUserId == request.IdentityUserName;
 
@@ -64,11 +66,29 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
                 room.MoveHistory.Black.Add(moveInfo);
             }
 
+            // update timer
+            var timeNow = (DateTime.Now).TimeOfDay;
+
+            if (isRoomCreator){
+                var elapsedTime = timeNow - (room.CreatedByUserInfo.LastMoveDate).TimeOfDay;
+
+                room.CreatedByUserInfo.TimeLeft -= elapsedTime;
+                room.CreatedByUserInfo.LastMoveDate = DateTime.Now;
+            } 
+            else {
+                var elapsedTime = timeNow - (room.CreatedByUserInfo.LastMoveDate).TimeOfDay;
+
+                room.JoinByUserInfo.TimeLeft -= elapsedTime;
+                room.JoinByUserInfo.LastMoveDate = DateTime.Now;
+            }
+
             var retVal = new{
                 moveInfo
                 , moveIsWhite = pieceMoveIsWhite
+                , creatorTimeLeft = room.CreatedByUserInfo.TimeLeft.TotalMilliseconds
+                , joinerTimeLeft = room.JoinByUserInfo.TimeLeft.TotalMilliseconds
+                , creatorColorIsWhite = room.CreatedByUserColor == Enums.Color.White
             };
-
 
             // send move to opponent player
             string opponentConnectionId = _authenticatedUserService.GetConnectionId(

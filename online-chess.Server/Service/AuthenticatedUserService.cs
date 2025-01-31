@@ -16,7 +16,7 @@ public class AuthenticatedUserService
         _authenticatedUsers.TryAdd(userConnectionId, identityUserName);
     }
 
-    public string? RemoveOne(string userConnectionId){
+    public string? RemoveOneWithConnectionId(string userConnectionId){
         _authenticatedUsers.Remove(userConnectionId, out string? identityUserName);
         return identityUserName;
     }

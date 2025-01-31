@@ -4,6 +4,7 @@ using online_chess.Server;
 using online_chess.Server.Hubs;
 using online_chess.Server.Models;
 using online_chess.Server.Models.Entities;
+using online_chess.Server.Models.Play;
 using online_chess.Server.Persistence;
 using online_chess.Server.Service;
 
@@ -37,6 +38,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<GameQueueService>();
 builder.Services.AddSingleton<GameRoomService>();
 builder.Services.AddSingleton<AuthenticatedUserService>();
+builder.Services.AddSingleton<GameLogicService>();
 
 var app = builder.Build();
 

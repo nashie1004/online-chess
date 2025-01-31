@@ -112,7 +112,7 @@ namespace online_chess.Server.Hubs
                 IdentityUserName = Context.User?.Identity?.Name,
                 GameRoomKeyString = gameRoomKey,
                 OldMove = oldMove,
-                NewMove = newMove
+                NewMove = newMove,
             });
         }
         

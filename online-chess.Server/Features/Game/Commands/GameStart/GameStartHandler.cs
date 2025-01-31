@@ -34,13 +34,13 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
 
             // TODO: if user disconnects re apply new connectid as 
             // it may cause null here _authenticatedUserService
-            await _hubContext.Groups.AddToGroupAsync(
-                _authenticatedUserService.GetConnectionId(gameRoom.CreatedByUserId)
-                , request.GameRoomKeyString);
+            var player1 = _authenticatedUserService.GetConnectionId(gameRoom.CreatedByUserId);
+            var player2 = _authenticatedUserService.GetConnectionId(gameRoom.JoinedByUserId);
 
-            await _hubContext.Groups.AddToGroupAsync(
-                _authenticatedUserService.GetConnectionId(gameRoom.JoinedByUserId)
-                , request.GameRoomKeyString);
+            var test = _authenticatedUserService.GetAll();
+
+            await _hubContext.Groups.AddToGroupAsync(player1, request.GameRoomKeyString);
+            await _hubContext.Groups.AddToGroupAsync(player2, request.GameRoomKeyString);
 
             /*
             Start The Game
@@ -91,6 +91,7 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
                 UserName = gameRoom.CreatedByUserId
                 , IsPlayersTurnToMove = gameRoom.CreatedByUserColor == Color.White
                 , TimeLeft = initialCreatorTime
+                , LastMoveDate = DateTime.Now
                 , IsColorWhite = gameRoom.CreatedByUserColor == Color.White
                 , KingInCheck = false
                 , KingInCheckMate = false
@@ -100,6 +101,7 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
                 UserName = gameRoom.JoinedByUserId
                 , IsPlayersTurnToMove = gameRoom.CreatedByUserColor != Color.White
                 , TimeLeft = initialJoinerTime
+                , LastMoveDate = DateTime.Now
                 , IsColorWhite = gameRoom.CreatedByUserColor != Color.White
                 , KingInCheck = false
                 , KingInCheckMate = false

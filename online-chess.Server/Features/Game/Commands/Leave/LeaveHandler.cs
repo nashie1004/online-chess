@@ -27,7 +27,7 @@ namespace online_chess.Server.Features.Game.Commands.LeaveRoom
 
         public async Task<Unit> Handle(LeaveRequest request, CancellationToken cancellationToken)
         {
-            _authenticatedUserService.RemoveOne(request.UserConnectionId);
+            _authenticatedUserService.RemoveOneWithConnectionId(request.UserConnectionId);
 
             var gameRooms = _gameQueueService.GetAll();
             
