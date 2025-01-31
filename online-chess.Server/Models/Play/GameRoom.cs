@@ -9,7 +9,6 @@ namespace online_chess.Server.Models
      */
     public class GameRoom : GameQueue
     {
-        public string?[][] Board { get; set; } // TODO
         public DateTime GameStartedAt { get; set; }
         public PlayerInfo CreatedByUserInfo { get; set; }
         public PlayerInfo JoinByUserInfo { get; set; }

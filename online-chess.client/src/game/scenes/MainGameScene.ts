@@ -27,7 +27,6 @@ export class MainGameScene extends Scene{
     private readonly previewBoard: (GameObjects.Sprite)[][]; // has a visible property
     private readonly boardOrientationIsWhite: boolean;
     private readonly board: (null | GameObjects.Sprite)[][];
-    private readonly pieceCoordinates: IPiecesCoordinates;
     private selectedPiece: IMoveInfo | null;
     private isPlayersTurnToMove: boolean;
     private bothKingsPosition: IBothKingsPosition;
@@ -36,6 +35,7 @@ export class MainGameScene extends Scene{
     // server state
     private moveHistory: IMoveHistory;
     private kingsState: IKingState;
+    private readonly pieceCoordinates: IPiecesCoordinates;
 
     constructor(key: string, isColorWhite: boolean) {
         super({ key });
@@ -211,6 +211,8 @@ export class MainGameScene extends Scene{
         eventEmitter.on("setMoveHistory", (data: IMoveHistory) => {
             this.moveHistory = data;
         });
+
+        console.log("test: ", this.board)
     }
 
     resetMoves(){

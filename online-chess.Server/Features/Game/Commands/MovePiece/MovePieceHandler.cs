@@ -38,6 +38,8 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
              * - send to both players
              */
 
+            // TODO - when a piece moves, update gamelogic service piece coords
+
             // 1. set color
             bool isRoomCreator = room.CreatedByUserId == request.IdentityUserName;
 
