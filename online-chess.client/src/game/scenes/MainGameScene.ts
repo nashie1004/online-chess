@@ -211,8 +211,6 @@ export class MainGameScene extends Scene{
         eventEmitter.on("setMoveHistory", (data: IMoveHistory) => {
             this.moveHistory = data;
         });
-
-        console.log("test: ", this.board)
     }
 
     resetMoves(){

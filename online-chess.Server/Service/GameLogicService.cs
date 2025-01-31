@@ -9,7 +9,7 @@ namespace online_chess.Server.Service
         private static ConcurrentDictionary<Guid, List<BaseMoveInfo>> _piecesCoords = new();
         private static ConcurrentDictionary<Guid, (BaseMoveInfo, BaseMoveInfo)> _bothKingCoords = new();
         private static ConcurrentDictionary<Guid, MoveHistory> _moveHistories = new();
-        private static ConcurrentDictionary<Guid, List<CaptureHistory>> _captureHistories = new();
+        private static ConcurrentDictionary<Guid, List<BaseMoveInfo>> _captureHistories = new();
 
         public GameLogicService()
         {
@@ -44,16 +44,35 @@ namespace online_chess.Server.Service
             ));
 
             _moveHistories.TryAdd(gameRoomKey, new MoveHistory());
-            _captureHistories.TryAdd(gameRoomKey, new List<CaptureHistory>());
+            _captureHistories.TryAdd(gameRoomKey, new List<BaseMoveInfo>());
         }
 
+        public void KingMoved(Guid gameRoomKey, BaseMoveInfo kingPiece)
+        {
+            //if (kingPiece.Name[0] == "w")
+            //{
+
+            //}
+        }
+
+        public void PieceMoved(Guid gameRoomKey, BaseMoveInfo piece)
+        {
+            //_piecesCoords.TryAdd()
+        }
+
+        public void PieceCapture(Guid gameRoomKey, BaseMoveInfo capturedPiece)
+        {
+            _captureHistories.TryGetValue(gameRoomKey, out List<BaseMoveInfo> captureHistories);
+            captureHistories.Add(capturedPiece);
+            _captureHistories.TryAdd(gameRoomKey, captureHistories);
+        }
 
         public void RemoveAllRoomInfo(Guid gameRoomKey)
         {
             _piecesCoords.TryRemove(gameRoomKey, out List<BaseMoveInfo> piecesCoords);
             _bothKingCoords.TryRemove(gameRoomKey, out (BaseMoveInfo, BaseMoveInfo) bothKingCoords);
             _moveHistories.TryRemove(gameRoomKey, out MoveHistory moveHistory);
-            _captureHistories.TryRemove(gameRoomKey, out List<CaptureHistory> captureHistories);
+            _captureHistories.TryRemove(gameRoomKey, out List<BaseMoveInfo> captureHistories);
         }
     }
 }

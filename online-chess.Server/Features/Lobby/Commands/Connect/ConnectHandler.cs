@@ -19,8 +19,9 @@ public class ConnectHandler : IRequestHandler<ConnectRequest, Unit>
 
     public async Task<Unit> Handle(ConnectRequest req, CancellationToken ct)
     {
-
         if (string.IsNullOrEmpty(req.IdentityUserName)) return Unit.Value;
+
+        _authenticatedUserService.RemoveOneWithConnectionId(req.UserConnectionId);
 
         var existing = _authenticatedUserService.GetIdentityName(req.UserConnectionId);
 
