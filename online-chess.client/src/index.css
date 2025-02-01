@@ -188,6 +188,8 @@ input, select {
   margin-bottom: 12px;
   transition: all 0.3s ease;
   padding: .6rem 1rem !important;
+  /*
+  */
 }
 
 input:focus, select:focus {
@@ -322,4 +324,10 @@ div.modal-content
 #modal-loading .modal-content div{
   display: flex;
   justify-content: center;
+}
+
+.ui-selector{
+  background-color: var(--bg-2);
+  padding: 1rem;
+  border-radius: .5rem;
 }

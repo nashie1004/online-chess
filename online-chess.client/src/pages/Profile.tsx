@@ -1,5 +1,6 @@
 import ProfileTable from "../components/profile/ProfileTable";
 import ProfileForm from "../components/profile/ProfileForm";
+import UIChanger from "../components/profile/UIChanger";
 
 export default function Profile() {
   return (
@@ -8,6 +9,7 @@ export default function Profile() {
         <ProfileForm />
       </div>
       <ProfileTable />
+      <UIChanger />
     </div>
   );
 }
