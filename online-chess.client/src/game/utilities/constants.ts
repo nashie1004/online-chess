@@ -137,7 +137,8 @@ export const basePlayerInfo: IPlayerInfo = {
     timeLeft: 0,
     playerIsWhite: false,
     isOfferingADraw: false,
-    resign: false
+    resign: false,
+    promotePawnTo: "queen"
 }
 
 export const baseGameState: IGameContextReducerState = {
@@ -150,3 +151,39 @@ export const baseGameState: IGameContextReducerState = {
     ,gameStatus: "LOADING"
     ,gameType: GameType.Classical
 };
+
+
+export const lobbyPageHandlers = {
+    onRefreshRoomList: "onRefreshRoomList"
+    ,onInvalidRoomKey: "onInvalidRoomKey"
+    ,onGetUserConnectionId: "onGetUserConnectionId"
+    ,onGetRoomKey: "onGetRoomKey"
+    ,onMatchFound: "onMatchFound"
+}
+
+export const lobbyPageInvokers = {
+    getRoomList: "GetRoomList"
+    ,getCreatedRoomKey: "GetCreatedRoomKey"
+    ,deleteRoom: "DeleteRoom"
+    ,addToQueue: "AddToQueue"
+    ,joinRoom: "JoinRoom"
+}
+
+export const playPageHandlers = {
+    onNotFound: "onNotFound"
+    ,onInitializeGameInfo: "onInitializeGameInfo"
+    ,onGameOver: "onGameOver"
+    ,onReceiveMessages: "onReceiveMessages"
+    ,onOpponentPieceMoved: "onOpponentPieceMoved"
+    ,onUpdateBoard: "onUpdateBoard"
+    ,onOpponentDrawRequest: "onOpponentDrawRequest"
+    ,onDeclineDraw: "onDeclineDraw"
+}
+
+export const playPageInvokers = {
+    gameStart: "GameStart"
+    ,addMessageToRoom: "AddMessageToRoom"
+    ,drawAgree: "DrawAgree"
+    ,resign: "Resign"
+    ,requestADraw: "RequestADraw"
+}

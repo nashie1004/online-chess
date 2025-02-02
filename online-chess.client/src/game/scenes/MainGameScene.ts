@@ -326,8 +326,8 @@ export class MainGameScene extends Scene{
         if (kingSafety !== 0) this.sound.play("check");
 
         // For testing only
-        // console.table(this.pieceCoordinates);
-        // this.debugHelper();
+        console.table(this.pieceCoordinates);
+        this.debugHelper();
     }
 
     update(){
@@ -360,7 +360,7 @@ export class MainGameScene extends Scene{
             });
         })
         
-        console.table(nonEmptyWhiteTiles);
+        console.table([...nonEmptyWhiteTiles, ...nonEmptyBlackTiles]);
         //console.table(nonEmptyBlackTiles);
     }
 }

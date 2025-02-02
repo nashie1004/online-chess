@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Alert, Spinner } from "react-bootstrap"
+import { Spinner } from "react-bootstrap"
 import { IGameRoomList } from "../game/utilities/types";
 import LobbyTable from "../components/lobby/LobbyTable";
 import { toast } from "react-toastify";
@@ -7,6 +7,7 @@ import useSignalRContext from "../hooks/useSignalRContext";
 import useAuthContext from "../hooks/useAuthContext";
 import LobbyForm from "../components/lobby/LobbyForm";
 import { useNavigate } from "react-router";
+import { lobbyPageHandlers, lobbyPageInvokers } from "../game/utilities/constants";
 
 export default function Lobby() {
     const [gameRoomList, setGameRoomList] = useState<IGameRoomList>({ list: [], isLoading: true });
@@ -21,14 +22,14 @@ export default function Lobby() {
             await startConnection(() => {});
             signalRConnectionRef.current = true;
     
-            await addHandler("onRefreshRoomList", (roomList) => setGameRoomList({ isLoading: false, list: roomList }));
-            await addHandler("onInvalidRoomKey", (msg) => toast(msg, { type: "error" }));
-            await addHandler("onGetUserConnectionId", (connectionId) => setUserConnectionId(connectionId));
-            await addHandler("onGetRoomKey", (roomKey) => setRoomKey(roomKey));
-            await addHandler("onMatchFound", (roomKey) => navigate(`/play/${roomKey}`));
+            await addHandler(lobbyPageHandlers.onRefreshRoomList, (roomList) => setGameRoomList({ isLoading: false, list: roomList }));
+            await addHandler(lobbyPageHandlers.onInvalidRoomKey, (msg) => toast(msg, { type: "error" }));
+            await addHandler(lobbyPageHandlers.onGetUserConnectionId, (connectionId) => setUserConnectionId(connectionId));
+            await addHandler(lobbyPageHandlers.onGetRoomKey, (roomKey) => setRoomKey(roomKey));
+            await addHandler(lobbyPageHandlers.onMatchFound, (roomKey) => navigate(`/play/${roomKey}`));
 
-            await invoke("GetRoomList", 1);
-            await invoke("GetCreatedRoomKey");
+            await invoke(lobbyPageInvokers.getRoomList, 1);
+            await invoke(lobbyPageInvokers.getCreatedRoomKey);
         }
 
         if (!signalRConnectionRef.current){
@@ -37,11 +38,11 @@ export default function Lobby() {
         }
         
         return () => {
-            removeHandler("onRefreshRoomList");
-            removeHandler("onInvalidRoomKey");
-            removeHandler("onGetUserConnectionId");
-            removeHandler("onGetRoomKey");
-            removeHandler("onMatchFound");
+            removeHandler(lobbyPageHandlers.onRefreshRoomList);
+            removeHandler(lobbyPageHandlers.onInvalidRoomKey);
+            removeHandler(lobbyPageHandlers.onGetUserConnectionId);
+            removeHandler(lobbyPageHandlers.onGetRoomKey);
+            removeHandler(lobbyPageHandlers.onMatchFound);
             stopConnection();
             setUserConnectionId(null);
         }
@@ -57,7 +58,7 @@ export default function Lobby() {
                 <Spinner size="sm" animation="border" variant="info" className="mt-3" /> 
                 <span className="ps-2">
                     You have a game queuing... <a href="#" className="alert-link" onClick={() => {
-                        invoke("DeleteRoom", roomKey)
+                        invoke(lobbyPageInvokers.deleteRoom, roomKey)
                         setRoomKey(null);
                     }}>Stop queuing?</a>
                 </span>

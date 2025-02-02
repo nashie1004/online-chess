@@ -1,10 +1,11 @@
 import moment from "moment"
-import { Table, Pagination, Modal, Button, Spinner } from "react-bootstrap"
+import { Table, Modal, Spinner } from "react-bootstrap"
 import { IGameRoom, IGameRoomList } from "../../game/utilities/types"
 import { useEffect, useState } from "react";
 import useSignalRContext from "../../hooks/useSignalRContext";
 import { colorOptionsDisplay, gameTypeDisplay } from "../../utils/helper";
 import useAuthContext from "../../hooks/useAuthContext";
+import { lobbyPageInvokers } from "../../game/utilities/constants";
 
 interface ILobbyTable{
     setGameRoomList: React.Dispatch<React.SetStateAction<IGameRoomList>>;
@@ -21,7 +22,7 @@ export default function LobbyTable({
     const { user } = useAuthContext();
 
     useEffect(() => {
-        invoke("GetRoomList", pageNo);
+        invoke(lobbyPageInvokers.getRoomList, pageNo);
     }, [pageNo])
 
     return <>
@@ -132,7 +133,7 @@ export default function LobbyTable({
                         className="btn btn-1 w-25"
                         onClick={() => {
                             setModal(false);
-                            invoke("JoinRoom", selectedRoom?.key);
+                            invoke(lobbyPageInvokers.joinRoom, selectedRoom?.key);
                         }}>Play</button>
                 </div>
             </Modal.Body>

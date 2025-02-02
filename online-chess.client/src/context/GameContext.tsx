@@ -56,11 +56,21 @@ function reducerFn(state: IGameContextReducerState, action: IGameContextReducerA
                     ...state.myInfo, timeLeft: action.payload
                 } 
             }
+        case "SET_MYINFO_PROMOTEPAWNTO":
+            return {  ...state, myInfo: {
+                    ...state.myInfo, promotePawnTo: action.payload
+                } 
+            }
         case "SET_OPPONENTINFO":
             return {  ...state, opponentInfo: action.payload }
         case "SET_OPPONENTINFO_TIMELEFT":
             return {  ...state, opponentInfo: {
                     ...state.opponentInfo, timeLeft: action.payload
+                } 
+            }
+        case "SET_OPPONENTINFO_PROMOTEPAWNTO":
+            return {  ...state, myInfo: {
+                    ...state.myInfo, promotePawnTo: action.payload
                 } 
             }
         case "SET_OPPONENTINFO_REQUESTDRAW":

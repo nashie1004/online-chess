@@ -16,6 +16,7 @@ import GameLoading from "../components/play/GameLoading";
 import DrawRequestModal from "../components/play/DrawRequestModal";
 import useOnDeclineDraw from "../game/signalRhandlers/useOnDeclineDraw";
 import PromotionPicker from "../components/play/PromotionPickerModal";
+import { playPageHandlers, playPageInvokers } from "../game/utilities/constants";
 
 export default function Main(){
     const gameRef = useRef<Phaser.Game | null>();
@@ -41,16 +42,16 @@ export default function Main(){
             await startConnection(_ => {});
             signalRConnectionRef.current = true;
 
-            await addHandler("onNotFound", onNotFound);
-            await addHandler("onInitializeGameInfo", onInitializeGameInfo);
-            await addHandler("onGameOver", onGameOver);
-            await addHandler("onReceiveMessages", onReceiveMessages);
-            await addHandler("onOpponentPieceMoved", onOpponentPieceMoved);
-            await addHandler("onUpdateBoard", onUpdateBoard)
-            await addHandler("onOpponentDrawRequest", onOpponentDrawRequest)
-            await addHandler("onDeclineDraw", onDeclineDraw)
+            await addHandler(playPageHandlers.onNotFound, onNotFound);
+            await addHandler(playPageHandlers.onInitializeGameInfo, onInitializeGameInfo);
+            await addHandler(playPageHandlers.onGameOver, onGameOver);
+            await addHandler(playPageHandlers.onReceiveMessages, onReceiveMessages);
+            await addHandler(playPageHandlers.onOpponentPieceMoved, onOpponentPieceMoved);
+            await addHandler(playPageHandlers.onUpdateBoard, onUpdateBoard)
+            await addHandler(playPageHandlers.onOpponentDrawRequest, onOpponentDrawRequest)
+            await addHandler(playPageHandlers.onDeclineDraw, onDeclineDraw)
 
-            await invoke("GameStart", url.gameRoomId);
+            await invoke(playPageInvokers.gameStart, url.gameRoomId);
         }
 
         if (!signalRConnectionRef.current){
@@ -67,12 +68,14 @@ export default function Main(){
                 gameRef.current = null;
             }
             
-            removeHandler("onNotFound");
-            removeHandler("onInitializeGameInfo");
-            removeHandler("onGameOver");
-            removeHandler("onReceiveMessages");
-            removeHandler("onOpponentPieceMoved");
-            removeHandler("onUpdateMoveHistory");
+            removeHandler(playPageHandlers.onNotFound);
+            removeHandler(playPageHandlers.onInitializeGameInfo);
+            removeHandler(playPageHandlers.onGameOver);
+            removeHandler(playPageHandlers.onReceiveMessages);
+            removeHandler(playPageHandlers.onOpponentPieceMoved);
+            removeHandler(playPageHandlers.onUpdateBoard);
+            removeHandler(playPageHandlers.onOpponentDrawRequest);
+            removeHandler(playPageHandlers.onDeclineDraw);
             stopConnection();
         };
     }, [])

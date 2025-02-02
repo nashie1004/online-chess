@@ -216,6 +216,7 @@ export interface IPlayerInfo{
     playerIsWhite: boolean;
     isOfferingADraw: boolean;
     resign: boolean;
+    promotePawnTo: PromoteTo;
 }
 
 export interface IGameContextReducerState{
@@ -225,8 +226,8 @@ export interface IGameContextReducerState{
     captureHistory: ICaptureHistory;
     myInfo: IPlayerInfo;
     opponentInfo: IPlayerInfo;
-    gameStatus: gameStat
-    gameType: GameType 
+    gameStatus: gameStat;
+    gameType: GameType;
 }
 
 export type IGameContextReducerActions = 
@@ -234,14 +235,18 @@ export type IGameContextReducerActions =
 | { type: "SET_GAMEROOMKEY"; payload: string }
 | { type: "SET_MOVEHISTORY"; payload: any } // IMoveHistory
 | { type: "SET_CAPTUREHISTORY"; payload: ICaptureHistory }
+
 | { type: "SET_MYINFO"; payload: IPlayerInfo }
 | { type: "SET_MYINFO_TIMELEFT"; payload: number }
+| { type: "SET_MYINFO_PROMOTEPAWNTO"; payload: PromoteTo } //todo
 | { type: "SET_OPPONENTINFO"; payload: IPlayerInfo }
 | { type: "SET_OPPONENTINFO_TIMELEFT"; payload: number }
+| { type: "SET_OPPONENTINFO_PROMOTEPAWNTO"; payload: PromoteTo } //todo
+
 | { type: "SET_GAMESTATUS"; payload: gameStat }
 | { type: "SET_CLEARGAMESTATE"; }
 | { type: "SET_OPPONENTINFO_REQUESTDRAW"; payload: boolean }
-| { type: "SET_GAMETYPE"; payload: GameType }
+| { type: "SET_GAMETYPE"; payload: GameType };
 
 export interface IGameContext{
     gameState: IGameContextReducerState;

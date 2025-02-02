@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Modal } from 'react-bootstrap';
 import useSignalRContext from '../../hooks/useSignalRContext';
 import useGameContext from '../../hooks/useGameContext';
+import { playPageInvokers } from '../../game/utilities/constants';
 
 export default function GameOutcome() {
     const [modalShow, setModalShow] = React.useState(false);
@@ -12,7 +13,7 @@ export default function GameOutcome() {
     async function formSubmit(e: React.FormEvent<HTMLFormElement>){
       e.preventDefault();
       setGameState({ type: "SET_GAMESTATUS", payload: "LOADING" });
-      invoke(outcome === 0 ? "Resign" : "RequestADraw", gameState.gameRoomKey);
+      invoke(outcome === 0 ? playPageInvokers.resign : playPageInvokers.requestADraw, gameState.gameRoomKey);
       setModalShow(false);
     }
 

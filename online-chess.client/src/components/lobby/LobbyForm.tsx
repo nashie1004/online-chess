@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { ColorOptions, GameType } from '../../game/utilities/constants';
+import { ColorOptions, GameType, lobbyPageInvokers } from '../../game/utilities/constants';
 import { colorOptionsDisplay, gameTypeDisplay } from '../../utils/helper';
 import { Form } from 'react-bootstrap';
 import useSignalRContext from '../../hooks/useSignalRContext';
@@ -27,7 +27,7 @@ export default function LobbyForm(
                 onSubmit={(e) => {
                     e.preventDefault();
                     setGameRoomList(prev => ({ ...prev, isLoading: true }));
-                    invoke("AddToQueue", gameType, colorOption)
+                    invoke(lobbyPageInvokers.addToQueue, gameType, colorOption)
                 }}
                 className='match-form'
             >
