@@ -145,7 +145,7 @@ export const baseGameState: IGameContextReducerState = {
     messages: []
     ,gameRoomKey: null
     ,moveHistory: { white: [], black: [] }
-    ,captureHistory: { white: [], black: [] }
+    ,captureHistory: []
     ,myInfo: basePlayerInfo
     ,opponentInfo: basePlayerInfo
     ,gameStatus: "LOADING"

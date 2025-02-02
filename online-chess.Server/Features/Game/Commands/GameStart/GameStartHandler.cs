@@ -114,7 +114,6 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
                 , KingInCheckMate = false
                 , KingInStaleMate = false
             };
-            gameRoom.MoveHistory = new MoveHistory();
             gameRoom.ChatMessages = new List<Models.Play.Chat>()
             {
                 new Models.Play.Chat()

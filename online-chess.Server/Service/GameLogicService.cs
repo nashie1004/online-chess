@@ -55,18 +55,38 @@ namespace online_chess.Server.Service
             //}
         }
 
-        public bool PieceMoved(Guid gameRoomKey, BaseMoveInfo piece)
+        public MoveHistory? GetMoveHistory(Guid gameRoomKey){
+            _moveHistories.TryGetValue(gameRoomKey, out MoveHistory? moveHistory);
+            return moveHistory;
+        }
+
+        public BaseMoveInfo? UpdatePieceCoords(Guid gameRoomKey, Move moveInfo, bool hasCapture)
         {
-            var ok = false;
-            // _piecesCoords.TryGetValue(gameRoomKey, out List<BaseMoveInfo>? piecesCoords);
-            // if (piecesCoords != null){
-            //     piecesCoords.Add(piece);
-            //     ok = true;
-            // }
+            BaseMoveInfo? capture = null;
 
-            
+            _piecesCoords.TryGetValue(gameRoomKey, out List<BaseMoveInfo>? piecesCoords);
+            if (piecesCoords == null) return capture;
 
-            return ok;
+            var piece = piecesCoords.Find(i => i.X == moveInfo.Old.X && i.Y == moveInfo.Old.Y);
+            if (piece == null) return capture;
+
+            // check if tile is capturable
+            var capturePiece = piecesCoords.Find(i => i.X == moveInfo.New.X && i.Y == moveInfo.New.Y);
+            if (hasCapture && capturePiece != null)
+            {
+                capture = capturePiece;
+                
+                _captureHistories.TryGetValue(gameRoomKey, out List<BaseMoveInfo>? captureHistory);
+                captureHistory?.Add(capturePiece);
+                
+                piecesCoords.RemoveAll(i => i.X == capturePiece.X && i.Y == capturePiece.Y);
+            }
+
+            // update coords
+            piece.X = moveInfo.New.X;
+            piece.Y = moveInfo.New.Y;
+
+            return capture;
         }
 
         public bool PieceCapture(Guid gameRoomKey, BaseMoveInfo capturedPiece)

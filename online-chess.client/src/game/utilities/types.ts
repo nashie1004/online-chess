@@ -223,7 +223,7 @@ export interface IGameContextReducerState{
     messages: IChat[];
     gameRoomKey: string | null;
     moveHistory: IMoveHistory;
-    captureHistory: ICaptureHistory;
+    captureHistory: IPiece[];
     myInfo: IPlayerInfo;
     opponentInfo: IPlayerInfo;
     gameStatus: gameStat;
@@ -234,7 +234,7 @@ export type IGameContextReducerActions =
 | { type: "SET_MESSAGES"; payload: IChat[] }
 | { type: "SET_GAMEROOMKEY"; payload: string }
 | { type: "SET_MOVEHISTORY"; payload: any } // IMoveHistory
-| { type: "SET_CAPTUREHISTORY"; payload: ICaptureHistory }
+| { type: "SET_CAPTUREHISTORY"; payload: IPiece }
 
 | { type: "SET_MYINFO"; payload: IPlayerInfo }
 | { type: "SET_MYINFO_TIMELEFT"; payload: number }

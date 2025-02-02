@@ -9,7 +9,7 @@ import { PromoteOptions, PromoteTo } from "../../game/utilities/types";
 
 export default function PromotionPickerModal() {
   const { setGameState } = useGameContext();
-  const [modal, setModal] = useState<boolean>(true);
+  const [modal, setModal] = useState<boolean>(false);
   const [selectedOption, setSelectedOption] = useState<PromoteTo>("queen");
 
   const pieces: PromoteOptions[] = [ 

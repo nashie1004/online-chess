@@ -1,7 +1,7 @@
 import { useCallback, useRef } from "react";
 import useGameContext from "../../hooks/useGameContext";
 import { eventEmitter } from "../utilities/eventEmitter";
-import { IMoveInfo } from "../utilities/types";
+import { IMoveInfo, IPiece } from "../utilities/types";
 import { eventEmit } from "../utilities/constants";
 /**
  * This updates:
@@ -20,6 +20,7 @@ export default function useOnUpdateBoard(){
         const creatorTimeLeft = data.creatorTimeLeft as number;
         const joinerTimeLeft = data.joinerTimeLeft as number;
         const creatorColorIsWhite = data.creatorColorIsWhite as boolean;
+        const capturedPiece = data.capturedPiece as (IPiece | null);
 
         const myCurrentTime = (gameStateRef.current.myInfo.playerIsWhite && creatorColorIsWhite)
             ? creatorTimeLeft : joinerTimeLeft;
@@ -30,6 +31,10 @@ export default function useOnUpdateBoard(){
         setGameState({ type: "SET_MOVEHISTORY", payload: { moveInfo, moveIsWhite } });
         setGameState({ type: "SET_MYINFO_TIMELEFT", payload: myCurrentTime });
         setGameState({ type: "SET_OPPONENTINFO_TIMELEFT", payload: opponentCurrentTime });
+
+        if (capturedPiece){
+            setGameState({ type: "SET_CAPTUREHISTORY", payload: capturedPiece });
+        }
 
         eventEmitter.emit(eventEmit.setMoveHistory, gameState.moveHistory);
     }, [])

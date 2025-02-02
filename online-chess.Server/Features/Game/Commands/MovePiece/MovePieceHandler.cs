@@ -43,12 +43,9 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
              * - save to capture history (if any)
              * - update king state (check, checkmate, stalemate)
              * - update timer
-             * - send to both players
              */
 
-            // TODO - when a piece moves, update gamelogic service piece coords
-
-            // 1. set color
+            // set color
             bool isRoomCreator = room.CreatedByUserId == request.IdentityUserName;
 
             // Assign pieceMoveIsWhite based on the room creator's color
@@ -56,28 +53,27 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
                 ? room.CreatedByUserColor == Enums.Color.White 
                 : room.CreatedByUserColor == Enums.Color.Black;
 
-            // 1.1 invert orientation
+            // invert orientation
             request.OldMove.Y = 7 - request.OldMove.Y;
             request.NewMove.Y = 7 - request.NewMove.Y;
             request.OldMove.X = 7 - request.OldMove.X;
             request.NewMove.X = 7 - request.NewMove.X;
 
-            // 2. add to move history
+            // add to move history
             Move moveInfo = new Move(){
                 Old = request.OldMove,
                 New = request.NewMove
             };
 
+            var moveHistory = _gameLogicService.GetMoveHistory(room.GameKey);
             if (pieceMoveIsWhite){
-                room.MoveHistory.White.Add(moveInfo);
+                moveHistory?.White.Add(moveInfo);
             } else {
-                room.MoveHistory.Black.Add(moveInfo);
+                moveHistory?.Black.Add(moveInfo);
             }
 
-            // TODO update capture history if any
-            if (request.HasCapture){
-                //_gameLogicService.PieceCapture(room.GameKey);
-            }
+            // update piece coordinates and capture history
+            var hasCapture = _gameLogicService.UpdatePieceCoords(room.GameKey, moveInfo, request.HasCapture);
 
             // update timer
             var timeNow = (DateTime.Now).TimeOfDay;
@@ -101,6 +97,7 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
                 , creatorTimeLeft = room.CreatedByUserInfo.TimeLeft.TotalMilliseconds
                 , joinerTimeLeft = room.JoinByUserInfo.TimeLeft.TotalMilliseconds
                 , creatorColorIsWhite = room.CreatedByUserColor == Enums.Color.White
+                , capturedPiece = hasCapture == null ? null : hasCapture
             };
 
             // send move to opponent player
@@ -108,11 +105,7 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
                 request.IdentityUserName == room.CreatedByUserId ? room.JoinedByUserId : room.CreatedByUserId
             );
             
-            // TODO
             await _hubContext.Clients.Client(opponentConnectionId).SendAsync(RoomMethods.onOpponentPieceMoved, retVal);
-            //await _hubContext.Clients.Client(opponentConnectionId).SendAsync(RoomMethods.onPieceCapture, retVal);
-
-            // send updated move history to both players
             await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync(RoomMethods.onUpdateBoard, retVal);
 
             return Unit.Value;
