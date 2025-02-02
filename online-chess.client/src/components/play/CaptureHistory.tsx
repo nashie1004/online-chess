@@ -5,6 +5,8 @@ export default function CaptureHistory() {
     
     const { gameState } = useGameContext();
   
+    console.log("capture history: ", gameState.captureHistory)
+
     return (
     <>
         

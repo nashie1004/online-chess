@@ -9,7 +9,6 @@ import useOnUpdateBoard from "../game/signalRhandlers/useOnUpdateBoard";
 import useOpponentDrawRequest from "../game/signalRhandlers/useOpponentDrawRequest";
 import useOnNotFound from "../game/signalRhandlers/useOnNotFound";
 import useOnReceiveMessages from "../game/signalRhandlers/useOnReceiveMessages";
-import useOnOpponentPieceMoved from "../game/signalRhandlers/useOnOpponentPieceMoved";
 import useOnGameOver from "../game/signalRhandlers/useOnGameOver";
 import useGameContext from "../hooks/useGameContext";
 import GameLoading from "../components/play/GameLoading";
@@ -30,7 +29,6 @@ export default function Main(){
     const onOpponentDrawRequest = useOpponentDrawRequest();
     const onNotFound = useOnNotFound();
     const onReceiveMessages = useOnReceiveMessages();
-    const onOpponentPieceMoved = useOnOpponentPieceMoved();
     const onGameOver = useOnGameOver();
     const onDeclineDraw = useOnDeclineDraw();
 
@@ -46,7 +44,6 @@ export default function Main(){
             await addHandler(playPageHandlers.onInitializeGameInfo, onInitializeGameInfo);
             await addHandler(playPageHandlers.onGameOver, onGameOver);
             await addHandler(playPageHandlers.onReceiveMessages, onReceiveMessages);
-            await addHandler(playPageHandlers.onOpponentPieceMoved, onOpponentPieceMoved);
             await addHandler(playPageHandlers.onUpdateBoard, onUpdateBoard)
             await addHandler(playPageHandlers.onOpponentDrawRequest, onOpponentDrawRequest)
             await addHandler(playPageHandlers.onDeclineDraw, onDeclineDraw)
@@ -72,7 +69,6 @@ export default function Main(){
             removeHandler(playPageHandlers.onInitializeGameInfo);
             removeHandler(playPageHandlers.onGameOver);
             removeHandler(playPageHandlers.onReceiveMessages);
-            removeHandler(playPageHandlers.onOpponentPieceMoved);
             removeHandler(playPageHandlers.onUpdateBoard);
             removeHandler(playPageHandlers.onOpponentDrawRequest);
             removeHandler(playPageHandlers.onDeclineDraw);

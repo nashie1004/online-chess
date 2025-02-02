@@ -34,12 +34,12 @@ after that, the web application should now be running.
 - https://www.piskelapp.com/
 
 ## TODO Essential (Game)
-1. timer
-2. promotion picker
+1. timer - DOING
+2. promotion picker - DOING
 3. disconnect or leave logic
 4. en passant bug
 5. display move turn, check, checkmate, stalemate
-6. capture history
+6. capture history - DOING
 
 ## Others
 1. fifty move rule

@@ -71,6 +71,7 @@ namespace online_chess.Server.Service
             if (piece == null) return capture;
 
             // check if tile is capturable
+            // TODO PIECE CAPTURE
             var capturePiece = piecesCoords.Find(i => i.X == moveInfo.New.X && i.Y == moveInfo.New.Y);
             if (hasCapture && capturePiece != null)
             {

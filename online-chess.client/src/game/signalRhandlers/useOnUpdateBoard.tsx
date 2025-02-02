@@ -1,7 +1,7 @@
 import { useCallback, useRef } from "react";
 import useGameContext from "../../hooks/useGameContext";
 import { eventEmitter } from "../utilities/eventEmitter";
-import { IMoveInfo, IPiece } from "../utilities/types";
+import { IMoveInfo, IPiece, IPieceMove } from "../utilities/types";
 import { eventEmit } from "../utilities/constants";
 /**
  * This updates:
@@ -27,6 +27,15 @@ export default function useOnUpdateBoard(){
 
         const opponentCurrentTime = (gameStateRef.current.opponentInfo.playerIsWhite && creatorColorIsWhite)
             ? creatorTimeLeft : joinerTimeLeft;
+
+        // opponent piece move
+        if (
+            (moveIsWhite && !gameStateRef.current.myInfo.playerIsWhite) ||
+            (!moveIsWhite && gameStateRef.current.myInfo.playerIsWhite)
+        )
+        {
+            eventEmitter.emit(eventEmit.setEnemyMove, data.moveInfo as IPieceMove);
+        } 
 
         setGameState({ type: "SET_MOVEHISTORY", payload: { moveInfo, moveIsWhite } });
         setGameState({ type: "SET_MYINFO_TIMELEFT", payload: myCurrentTime });

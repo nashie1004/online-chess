@@ -100,12 +100,6 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
                 , capturedPiece = hasCapture == null ? null : hasCapture
             };
 
-            // send move to opponent player
-            string opponentConnectionId = _authenticatedUserService.GetConnectionId(
-                request.IdentityUserName == room.CreatedByUserId ? room.JoinedByUserId : room.CreatedByUserId
-            );
-            
-            await _hubContext.Clients.Client(opponentConnectionId).SendAsync(RoomMethods.onOpponentPieceMoved, retVal);
             await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync(RoomMethods.onUpdateBoard, retVal);
 
             return Unit.Value;

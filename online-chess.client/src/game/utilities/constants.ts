@@ -177,7 +177,6 @@ export const playPageHandlers = {
     ,onInitializeGameInfo: "onInitializeGameInfo"
     ,onGameOver: "onGameOver"
     ,onReceiveMessages: "onReceiveMessages"
-    ,onOpponentPieceMoved: "onOpponentPieceMoved"
     ,onUpdateBoard: "onUpdateBoard"
     ,onOpponentDrawRequest: "onOpponentDrawRequest"
     ,onDeclineDraw: "onDeclineDraw"
