@@ -192,21 +192,19 @@ export default class KingValidator extends BasePieceValidator{
 
     // used by this class and MainGameScene.ts > this.move()
     validKingSideCastling(x: number, y: number): IValidMove | null {
-        // 1. if the king has already moved yet, invalid castling
         const isWhite = this.piece.name[0] === "w";
-        const history = isWhite ? this.moveHistory.white : this.moveHistory.black;
-        let kingHasMoved = false;
-
-        history.forEach(move => {
-            if (move.new.pieceName.toLowerCase().indexOf("king") >= 0){
-                kingHasMoved = true;
-            }
-        });
-    
-        if (kingHasMoved) return null;
+        const kingOrigX = (this.boardOrientationIsWhite ? 4 : 3);
+        const kingOrigY = (this.boardOrientationIsWhite ? 0 : 7)
+        
+        // 1. if the king has already moved yet, invalid castling
+        // const king = this.pieceCoordinates[isWhite ? "white" : "black"].find(i => i.name.toLowerCase().indexOf("king") >= 0);
+        // if (!king) return null;
+        
+        if (x !== kingOrigX && y !== kingOrigY){
+            return null;
+        }
         
         // 2. if the king side rook hasnt moved yet
-        const kingOrigX = (this.boardOrientationIsWhite ? 4 : 3);
         const rookX = kingOrigX + (this.boardOrientationIsWhite ? 3 : -3); 
         const rookY = y;       
 
@@ -298,21 +296,19 @@ export default class KingValidator extends BasePieceValidator{
     }
     
     validQueenSideCastling(x: number, y: number): IValidMove | null {
-        // 1. if the king has already moved yet, invalid castling
         const isWhite = this.piece.name[0] === "w";
-        const history = isWhite ? this.moveHistory.white : this.moveHistory.black;
-        let kingHasMoved = false;
-
-        history.forEach(move => {
-            if (move.new.pieceName.toLowerCase().indexOf("king") >= 0){
-                kingHasMoved = true;
-            }
-        });
-     
-        if (kingHasMoved) return null;
+        const kingOrigX = (this.boardOrientationIsWhite ? 4 : 3);
+        const kingOrigY = (this.boardOrientationIsWhite ? 0 : 7)
+        
+        // 1. if the king has already moved yet, invalid castling
+        // const king = this.pieceCoordinates[isWhite ? "white" : "black"].find(i => i.name.toLowerCase().indexOf("king") >= 0);
+        // if (!king) return null;
+        
+        if (x !== kingOrigX && y !== kingOrigY){
+            return null;
+        }
 
         // 2. if the king side rook hasnt moved yet
-        const kingOrigX = (this.boardOrientationIsWhite ? 4 : 3);
         const rookX = kingOrigX + (this.boardOrientationIsWhite ? -4 : 4); 
         const rookY = y;       
 
