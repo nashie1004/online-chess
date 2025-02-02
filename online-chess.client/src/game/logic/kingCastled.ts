@@ -1,7 +1,7 @@
 import { GameObjects } from "phaser";
 import KingValidator from "../pieces/kingValidator";
 import { PieceNames } from "../utilities/constants";
-import { IBothKingsPosition, IMoveInfo, IMoveHistory } from "../utilities/types";
+import { IBothKingsPosition, IMoveInfo, IMoveHistory, IPiecesCoordinates } from "../utilities/types";
 
 export default class KingCastled {
     
@@ -9,17 +9,20 @@ export default class KingCastled {
     private readonly bothKingsPosition: IBothKingsPosition;
     private readonly boardOrientationIsWhite: boolean;
     private readonly moveHistory: IMoveHistory;
+    private readonly pieceCoordinates: IPiecesCoordinates;
 
     constructor(
         board: (null | GameObjects.Sprite)[][],
         bothKingsPosition: IBothKingsPosition,
         boardOrientationIsWhite: boolean,
-        moveHistory: IMoveHistory
+        moveHistory: IMoveHistory,
+        pieceCoordinates: IPiecesCoordinates
     ) {
         this.board = board;
         this.bothKingsPosition = bothKingsPosition;
         this.boardOrientationIsWhite = boardOrientationIsWhite;
         this.moveHistory = moveHistory;
+        this.pieceCoordinates = pieceCoordinates;
     }
 
     
@@ -71,9 +74,19 @@ export default class KingCastled {
 
                 const rookSprite = this.board[rook.oldX][rook.y];
 
-                // change coords
+                // change rook coords
+
+                // 1.
                 this.board[rook.oldX][rook.y] = null;
                 this.board[rook.newX][rook.y] = rookSprite;
+
+                // 2.
+                const rookCoordinate = this.pieceCoordinates[isWhite ? "white" : "black"]
+                    .find(i => i.x === rook.oldX && i.y === rook.y);
+                
+                if (rookCoordinate){
+                    rookCoordinate.x = rook.newX;
+                }
 
                 return {
                     rookSprite, rook

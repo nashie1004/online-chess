@@ -16,42 +16,43 @@ export default function UIChanger() {
             </h5>
         </div>
 
-        <Form className='ui-selector mb-5'>
-                <Image src={testBg} width={480} fluid />
-                <Image src={testing} width={60} fluid />
-      <Form.Group as={Row} className="mb-3">
-        <Form.Label column sm={2}>
-          Board
-        </Form.Label>
-        <Col sm={10}>
-            <Form.Select aria-label="Default select example">
+        <div className='ui-selector mb-5'>
+          <Col>
+          <Form className=''>
+          <Form.Group className="mb-3 d-flex">
+            <Form.Label column sm={2}>
+              Board
+            </Form.Label>
+            <Form.Select 
+              onChange={(e) => {
+                setBoard("");
+              }}
+              aria-label="Default select example" className='w-50'>
                 <option>Open this select menu</option>
                 <option value="1">One</option>
                 <option value="2">Two</option>
                 <option value="3">Three</option>
             </Form.Select>
-        </Col>
-      </Form.Group>
-      <Form.Group as={Row} className="mb-3">
-        <Form.Label column>
-          Piece
-        </Form.Label>
-        <Col sm={10}>
-            <Form.Select aria-label="Default select example">
+          </Form.Group>
+          <Form.Group className="mb-3 d-flex">
+            <Form.Label column sm={2}>
+              Piece
+            </Form.Label>
+            <Form.Select aria-label="Default select example" className='w-50'>
                 <option>Open this select menu</option>
                 <option value="1">One</option>
                 <option value="2">Two</option>
                 <option value="3">Three</option>
             </Form.Select>
-        </Col>
-      </Form.Group>
+          </Form.Group>
+        </Form>
+          </Col>
+          <Col className='ui-display d-flex justify-content-center'>
+              <Image src={testBg} width={480} fluid />
+              {/* <Image src={testing} width={60} fluid /> */}
+          </Col>
+        </div>
 
-      <Form.Group as={Row} className="">
-        <Col sm={{  }}>
-          <Button type="submit">Save Changes</Button>
-        </Col>
-      </Form.Group>
-    </Form>
     </>
   )
 }

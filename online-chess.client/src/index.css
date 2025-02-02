@@ -328,6 +328,9 @@ div.modal-content
 
 .ui-selector{
   background-color: var(--bg-2);
-  padding: 1rem;
+  padding: 1.8rem 1rem;
   border-radius: .5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: .8rem;
 }

@@ -273,18 +273,18 @@ export class MainGameScene extends Scene{
         const kingCastled = (new KingCastled(
             this.board
             , this.bothKingsPosition, this.boardOrientationIsWhite
-            , this.moveHistory
+            , this.moveHistory, this.pieceCoordinates
         )).kingCastled(uniquePieceName, this.selectedPiece, isWhite, newX, newY);
 
         if (kingCastled){
-            // display rook move to the user
+            // display rook move to the user 
             this.tweens.add({
                 targets: [kingCastled.rookSprite],
                 x: kingCastled.rook.newX * this.tileSize,
                 y: kingCastled.rook.y * this.tileSize,
                 ease: "Expo.easeInOuts",
                 duration: 100,
-            })
+            });
         }
 
         // if the move is a king, update private king pos state - this is used by the this.validateCheckOrCheckMateOrStalemate() function
@@ -309,7 +309,7 @@ export class MainGameScene extends Scene{
             y: newY * this.tileSize,
             ease: "Expo.easeInOuts",
             duration: 100,
-        })
+        });
 
         this.resetMoves();
 
@@ -324,9 +324,46 @@ export class MainGameScene extends Scene{
         // play sound
         hasCapture ? this.sound.play("capture") : this.sound.play("move");
         if (kingSafety !== 0) this.sound.play("check");
+
+        // test
+        //console.table(this.board);
+        //console.table(this.pieceCoordinates);
+        // console.table(this.pieceCoordinates.white.filter(i => i.name.toLowerCase().indexOf("rook") >= 0))
+        // console.table(this.pieceCoordinates.white.filter(i => i.name.toLowerCase().indexOf("king") >= 0))
+        this.debugHelper();
     }
 
     update(){
         // may not need this
+    }
+
+    debugHelper(){
+        const nonEmptyWhiteTiles: (any)[] = []
+        const nonEmptyBlackTiles: (any)[] = []
+
+        this.board.forEach((row, rowIdx) => {
+            row.forEach((col, colIdx) => {
+                if (!col) return;
+
+                if (col.name[0] === "w"){
+                    nonEmptyWhiteTiles.push({
+                        uniqueName: col.name,
+                        x: colIdx,
+                        y: rowIdx
+                    });
+
+                    return;
+                }
+
+                nonEmptyBlackTiles.push({
+                    uniqueName: col.name,
+                    x: colIdx,
+                    y: rowIdx
+                });
+            });
+        })
+        
+        console.table(nonEmptyWhiteTiles);
+        //console.table(nonEmptyBlackTiles);
     }
 }
