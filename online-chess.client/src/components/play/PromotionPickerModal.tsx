@@ -8,8 +8,8 @@ import bR from "../../assets/pieces/cburnett/bR.svg"
 import { PromoteOptions, PromoteTo } from "../../game/utilities/types";
 
 export default function PromotionPickerModal() {
-  const {} = useGameContext();
-  const [modal, setModal] = useState<boolean>(false);
+  const { setGameState } = useGameContext();
+  const [modal, setModal] = useState<boolean>(true);
   const [selectedOption, setSelectedOption] = useState<PromoteTo>("queen");
 
   const pieces: PromoteOptions[] = [ 
@@ -54,7 +54,8 @@ export default function PromotionPickerModal() {
             <button 
                 className="btn btn-1 w-25"
                 onClick={() => {
-                    alert("TODO")
+                  setGameState({ type: "SET_MYINFO_PROMOTEPAWNTO", payload: selectedOption });
+                  setModal(false);
                 }}>Promote</button>
           </div>
       </Modal.Body>

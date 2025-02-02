@@ -74,7 +74,6 @@ export default class PawnPromote {
 
             newlyPromotedPawn.uniqueName = newUniqueName;
             newlyPromotedPawn.name = pieceName;
-            //console.log("pawn promote: ", sprite)+
         }
 
         return pawnPromoted;

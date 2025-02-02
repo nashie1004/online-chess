@@ -114,7 +114,7 @@ export default function useOnInitializeGameInfo(
         });
         
         eventEmitter.on(eventOn.setMovePiece, (move: any) => {
-            signalRContext.invoke(playPageInvokers.movePiece, initGameInfo.gameRoomKey, move.oldMove, move.newMove);
+            signalRContext.invoke(playPageInvokers.movePiece, initGameInfo.gameRoomKey, move.oldMove, move.newMove, move.hasCapture);
         });
 
         setGameState({ type: "SET_GAMESTATUS", payload: "ONGOING" });

@@ -299,7 +299,7 @@ export class MainGameScene extends Scene{
             const newMove: IPiece = { x: newX, y: newY, uniqueName: uniquePieceName, name: pieceName };
             
             this.isPlayersTurnToMove = false;
-            eventEmitter.emit(eventEmit.setMovePiece, { oldMove, newMove });
+            eventEmitter.emit(eventEmit.setMovePiece, { oldMove, newMove, hasCapture });
         }
 
         // display move to the user

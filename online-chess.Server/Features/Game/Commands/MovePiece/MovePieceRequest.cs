@@ -8,6 +8,6 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
     {
         public BaseMoveInfo OldMove { get; set; }
         public BaseMoveInfo NewMove { get; set; }
-        public double TimeLeft { get; set; }
+        public bool HasCapture { get; set; }
     }
 }
