@@ -334,3 +334,18 @@ div.modal-content
   flex-wrap: wrap;
   gap: .8rem;
 }
+#promotion-picker-modal .m-body{
+}
+#promotion-picker-modal .m-body img{
+  min-height: 80px;
+  width: 100%;
+  max-width: 80px;
+}
+#promotion-picker-modal .m-body img:hover{
+  opacity: .85;
+  cursor: pointer;
+}
+
+#promotion-picker-modal .m-body .selected-promote-option{
+  border: 2px solid var(--text-1); /* Green outline for contrast */
+}

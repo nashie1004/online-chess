@@ -248,3 +248,7 @@ export interface IGameContext{
     setGameState: React.Dispatch<IGameContextReducerActions>;
 }
 
+export interface PromoteOptions{
+    name: PromoteTo;
+    assetURL: string;
+}

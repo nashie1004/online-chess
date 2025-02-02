@@ -33,12 +33,13 @@ after that, the web application should now be running.
 - https://github.com/lichess-org/lila/blob/master/public/images/board/wood4.jpg
 - https://www.piskelapp.com/
 
-## TODO (Game)
+## TODO Essential (Game)
 1. timer
-~~3. request a draw~~
-4. fix bugs on piece moves (i.e castling, pawn promotion)
-5. promotion picker
-6. disconnect or leave logic
+2. promotion bug and picker
+3. disconnect or leave logic
+4. en passant bug
+5. display move turn, check, checkmate, stalemate
+6. capture history
 
 ## Others
 1. fifty move rule

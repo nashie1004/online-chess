@@ -325,12 +325,9 @@ export class MainGameScene extends Scene{
         hasCapture ? this.sound.play("capture") : this.sound.play("move");
         if (kingSafety !== 0) this.sound.play("check");
 
-        // test
-        //console.table(this.board);
-        //console.table(this.pieceCoordinates);
-        // console.table(this.pieceCoordinates.white.filter(i => i.name.toLowerCase().indexOf("rook") >= 0))
-        // console.table(this.pieceCoordinates.white.filter(i => i.name.toLowerCase().indexOf("king") >= 0))
-        this.debugHelper();
+        // For testing only
+        // console.table(this.pieceCoordinates);
+        // this.debugHelper();
     }
 
     update(){

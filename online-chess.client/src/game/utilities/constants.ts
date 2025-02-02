@@ -148,4 +148,5 @@ export const baseGameState: IGameContextReducerState = {
     ,myInfo: basePlayerInfo
     ,opponentInfo: basePlayerInfo
     ,gameStatus: "LOADING"
+    ,gameType: GameType.Classical
 };
