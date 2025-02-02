@@ -7,7 +7,7 @@ import move from "../../assets/sounds/Move.ogg"
 import capture from "../../assets/sounds/Capture.ogg"
 import select from "../../assets/sounds/Select.ogg"
 import check from "../../assets/sounds/Check.mp3"
-import pieces, { Options as gameOptions, PieceNames, pieceImages, baseKingState } from "../utilities/constants";
+import pieces, { Options as gameOptions, PieceNames, pieceImages, baseKingState, eventEmitters, eventEmit, eventOn } from "../utilities/constants";
 import { IBothKingsPosition, IKingState, IMoveHistory, IMoveInfo, IPiece, IPieceMove, IPiecesCoordinates, PromoteTo } from "../utilities/types";
 import { eventEmitter } from "../utilities/eventEmitter";
 import KingCastled from "../logic/kingCastled";
@@ -196,9 +196,9 @@ export class MainGameScene extends Scene{
         })
 
         // sync / listen to upcoming react state changes
-        eventEmitter.on("setPromoteTo", (data: PromoteTo) => this.promotePreference = data); // TODO
-        eventEmitter.on("setKingsState", (data: IKingState) => this.kingsState = data);
-        eventEmitter.on("setEnemyMove", (data: IPieceMove) => {
+        eventEmitter.on(eventOn.setPromoteTo, (data: PromoteTo) => this.promotePreference = data); // TODO
+        eventEmitter.on(eventOn.setKingsState, (data: IKingState) => this.kingsState = data);
+        eventEmitter.on(eventOn.setEnemyMove, (data: IPieceMove) => {
             this.selectedPiece = {
                 x: data.old.x,
                 y: data.old.y,
@@ -208,7 +208,7 @@ export class MainGameScene extends Scene{
             this.move(data.new.x, data.new.y);
             this.isPlayersTurnToMove = true;
         });
-        eventEmitter.on("setMoveHistory", (data: IMoveHistory) => {
+        eventEmitter.on(eventOn.setMoveHistory, (data: IMoveHistory) => {
             this.moveHistory = data;
         });
     }
@@ -294,12 +294,12 @@ export class MainGameScene extends Scene{
         }
 
         // transfer data from phaser to react
-        const oldMove: IPiece = { x: this.selectedPiece.x, y: this.selectedPiece.y, uniqueName: uniquePieceName, name: pieceName };
-        const newMove: IPiece = { x: newX, y: newY, uniqueName: uniquePieceName, name: pieceName };
-
         if (this.isPlayersTurnToMove){
+            const oldMove: IPiece = { x: this.selectedPiece.x, y: this.selectedPiece.y, uniqueName: uniquePieceName, name: pieceName };
+            const newMove: IPiece = { x: newX, y: newY, uniqueName: uniquePieceName, name: pieceName };
+            
             this.isPlayersTurnToMove = false;
-            eventEmitter.emit("setMovePiece", { oldMove, newMove });
+            eventEmitter.emit(eventEmit.setMovePiece, { oldMove, newMove });
         }
 
         // display move to the user

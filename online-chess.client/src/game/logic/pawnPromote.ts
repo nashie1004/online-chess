@@ -46,7 +46,9 @@ export default class PawnPromote {
                     sprite.setName((isWhite ? PieceNames.wQueen : PieceNames.bQueen) + `-${newX}-${newY}`);
                     sprite.setTexture(isWhite ? PieceNames.wQueen : PieceNames.bQueen);
                     break;
-                }
+            }
+
+            console.log("pawn promote: ", sprite)
         }
     }
 }

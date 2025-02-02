@@ -2,6 +2,7 @@ import { useCallback, useRef } from "react";
 import useGameContext from "../../hooks/useGameContext";
 import { eventEmitter } from "../utilities/eventEmitter";
 import { IMoveInfo } from "../utilities/types";
+import { eventEmit } from "../utilities/constants";
 /**
  * This updates:
  * - move history
@@ -30,7 +31,7 @@ export default function useOnUpdateBoard(){
         setGameState({ type: "SET_MYINFO_TIMELEFT", payload: myCurrentTime });
         setGameState({ type: "SET_OPPONENTINFO_TIMELEFT", payload: opponentCurrentTime });
 
-        eventEmitter.emit("setMoveHistory", gameState.moveHistory);
+        eventEmitter.emit(eventEmit.setMoveHistory, gameState.moveHistory);
     }, [])
     
     return onUpdateBoard; 

@@ -152,7 +152,10 @@ export const baseGameState: IGameContextReducerState = {
     ,gameType: GameType.Classical
 };
 
-
+/**
+ * React to SignalR
+ * SignalR to React
+ */
 export const lobbyPageHandlers = {
     onRefreshRoomList: "onRefreshRoomList"
     ,onInvalidRoomKey: "onInvalidRoomKey"
@@ -186,4 +189,24 @@ export const playPageInvokers = {
     ,drawAgree: "DrawAgree"
     ,resign: "Resign"
     ,requestADraw: "RequestADraw"
+    ,movePiece: "MovePiece"
+}
+
+/**
+ * React to Phaser
+ * Phaser to React
+ */
+export const eventEmit = {
+    setKingsState: "setKingsState"
+    ,setMovePiece: "setMovePiece"
+    ,setEnemyMove: "setEnemyMove"
+    ,setMoveHistory: "setMoveHistory"
+}
+
+export const eventOn = {
+    setPromoteTo: "setPromoteTo"
+    ,setKingsState: "setKingsState"
+    ,setEnemyMove: "setEnemyMove"
+    ,setMoveHistory: "setMoveHistory"
+    ,setMovePiece: "setMovePiece"
 }
