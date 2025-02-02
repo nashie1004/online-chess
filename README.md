@@ -35,7 +35,7 @@ after that, the web application should now be running.
 
 ## TODO Essential (Game)
 1. timer
-2. promotion bug and picker
+2. promotion picker
 3. disconnect or leave logic
 4. en passant bug
 5. display move turn, check, checkmate, stalemate

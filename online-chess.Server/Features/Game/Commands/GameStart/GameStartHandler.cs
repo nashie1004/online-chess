@@ -13,12 +13,19 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
         private readonly IHubContext<GameHub> _hubContext;
         private readonly GameRoomService _gameRoomService;
         private readonly AuthenticatedUserService _authenticatedUserService;
+        private readonly GameLogicService _gameLogicService;
 
-        public GameStartHandler(IHubContext<GameHub> hubContext, GameRoomService gameRoomService, AuthenticatedUserService authenticatedUserService)
+        public GameStartHandler(
+            IHubContext<GameHub> hubContext
+            , GameRoomService gameRoomService
+            , AuthenticatedUserService authenticatedUserService
+            , GameLogicService gameLogicService
+            )
         {
             _hubContext = hubContext;
             _gameRoomService = gameRoomService;
             _authenticatedUserService = authenticatedUserService;
+            _gameLogicService = gameLogicService;
         }
 
         public async Task<Unit> Handle(GameStartRequest request, CancellationToken cancellationToken)
@@ -37,8 +44,6 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
             var player1 = _authenticatedUserService.GetConnectionId(gameRoom.CreatedByUserId);
             var player2 = _authenticatedUserService.GetConnectionId(gameRoom.JoinedByUserId);
 
-            var test = _authenticatedUserService.GetAll();
-
             await _hubContext.Groups.AddToGroupAsync(player1, request.GameRoomKeyString);
             await _hubContext.Groups.AddToGroupAsync(player2, request.GameRoomKeyString);
 
@@ -46,6 +51,8 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
             Start The Game
             - passed to Play.tsx > MainGameScene constructor
             */
+            _gameLogicService.InitializeGameLogic(gameRoom.GameKey);
+
             TimeSpan initialCreatorTime; 
             TimeSpan initialJoinerTime; 
 
@@ -108,7 +115,6 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
                 , KingInStaleMate = false
             };
             gameRoom.MoveHistory = new MoveHistory();
-            gameRoom.CaptureHistory = new List<CaptureHistory>();
             gameRoom.ChatMessages = new List<Models.Play.Chat>()
             {
                 new Models.Play.Chat()

@@ -12,12 +12,19 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
         private readonly GameRoomService _gameRoomService;
         private readonly AuthenticatedUserService _authenticatedUserService;
         private readonly IHubContext<GameHub> _hubContext;
+        private readonly GameLogicService _gameLogicService;
 
-        public MovePieceHandler(GameRoomService gameRoomService, AuthenticatedUserService authenticatedUserService, IHubContext<GameHub> hubContext)
+        public MovePieceHandler(
+            GameRoomService gameRoomService
+            , AuthenticatedUserService authenticatedUserService
+            , IHubContext<GameHub> hubContext
+            , GameLogicService gameLogicService
+            )
         {
             _gameRoomService = gameRoomService;
             _authenticatedUserService = authenticatedUserService;
             _hubContext = hubContext;
+            _gameLogicService = gameLogicService;
         }
 
         public async Task<Unit> Handle(MovePieceRequest request, CancellationToken cancellationToken)

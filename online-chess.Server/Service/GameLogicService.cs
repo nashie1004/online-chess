@@ -55,24 +55,39 @@ namespace online_chess.Server.Service
             //}
         }
 
-        public void PieceMoved(Guid gameRoomKey, BaseMoveInfo piece)
+        public bool PieceMoved(Guid gameRoomKey, BaseMoveInfo piece)
         {
-            //_piecesCoords.TryAdd()
+            var ok = false;
+            _piecesCoords.TryGetValue(gameRoomKey, out List<BaseMoveInfo>? piecesCoords);
+            if (piecesCoords != null){
+                piecesCoords.Add(piece);
+                ok = true;
+            }
+            return ok;
         }
 
-        public void PieceCapture(Guid gameRoomKey, BaseMoveInfo capturedPiece)
+        public bool PieceCapture(Guid gameRoomKey, BaseMoveInfo capturedPiece)
         {
-            _captureHistories.TryGetValue(gameRoomKey, out List<BaseMoveInfo> captureHistories);
-            captureHistories.Add(capturedPiece);
-            _captureHistories.TryAdd(gameRoomKey, captureHistories);
+            var ok = false;
+            _captureHistories.TryGetValue(gameRoomKey, out List<BaseMoveInfo>? captureHistories);
+            if (captureHistories != null){
+                captureHistories.Add(capturedPiece);
+                ok = true;
+            }
+            return ok;
         }
 
-        public void RemoveAllRoomInfo(Guid gameRoomKey)
+        public List<BaseMoveInfo>? GetCaptureHistory(Guid gameRoomKey){
+            _captureHistories.TryGetValue(gameRoomKey, out List<BaseMoveInfo>? captureHistories);
+            return captureHistories;
+        }
+
+        public void RemoveRoomInfo(Guid gameRoomKey)
         {
-            _piecesCoords.TryRemove(gameRoomKey, out List<BaseMoveInfo> piecesCoords);
+            _piecesCoords.TryRemove(gameRoomKey, out List<BaseMoveInfo>? piecesCoords);
             _bothKingCoords.TryRemove(gameRoomKey, out (BaseMoveInfo, BaseMoveInfo) bothKingCoords);
-            _moveHistories.TryRemove(gameRoomKey, out MoveHistory moveHistory);
-            _captureHistories.TryRemove(gameRoomKey, out List<BaseMoveInfo> captureHistories);
+            _moveHistories.TryRemove(gameRoomKey, out MoveHistory? moveHistory);
+            _captureHistories.TryRemove(gameRoomKey, out List<BaseMoveInfo>? captureHistories);
         }
     }
 }
