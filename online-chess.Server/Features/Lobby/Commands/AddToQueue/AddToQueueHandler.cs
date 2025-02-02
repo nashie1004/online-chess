@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.SignalR;
+using online_chess.Server.Enums;
 using online_chess.Server.Hubs;
 using online_chess.Server.Models.Lobby;
 using online_chess.Server.Service;
@@ -33,9 +34,9 @@ namespace online_chess.Server.Features.Lobby.Commands.AddToQueue
                 JoinedByUserId = string.Empty
             });
 
-            await _hubContext.Clients.Client(request.UserConnectionId).SendAsync("onGetRoomKey", roomKey);
+            await _hubContext.Clients.Client(request.UserConnectionId).SendAsync(RoomMethods.onGetRoomKey, roomKey);
 
-            await _hubContext.Clients.All.SendAsync("onRefreshRoomList",
+            await _hubContext.Clients.All.SendAsync(RoomMethods.onRefreshRoomList,
                 _gameRoomService.GetPaginatedDictionary(1).ToArray()
                 );
 

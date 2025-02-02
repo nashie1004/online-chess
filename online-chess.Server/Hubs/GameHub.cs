@@ -31,7 +31,7 @@ namespace online_chess.Server.Hubs
             _mediator = mediator;
         }
 
-        /* 1. Lobby Page */
+        #region LobbyPage
         public async Task AddToQueue(short gameType, short colorOption)
         {
             await _mediator.Send(new AddToQueueRequest()
@@ -81,8 +81,9 @@ namespace online_chess.Server.Hubs
                 IdentityUserName = Context.User?.Identity?.Name
             });
         }
+        #endregion
 
-        /* 2. Play Page */
+        #region PlayPage
         public async Task GameStart(string gameRoomKey)
         {
             await _mediator.Send(new GameStartRequest()
@@ -147,7 +148,9 @@ namespace online_chess.Server.Hubs
             });
         }
 
-
+        #endregion
+        
+        #region Connection
         public override async Task OnConnectedAsync()
         {
             await base.OnConnectedAsync();
@@ -169,5 +172,6 @@ namespace online_chess.Server.Hubs
 
             await base.OnDisconnectedAsync(ex);
         }
+        #endregion
     }
 }

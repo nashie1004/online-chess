@@ -29,14 +29,14 @@ namespace online_chess.Server.Features.Lobby.Commands.JoinRoom
 
             if (room == null)
             {
-                await _hubContext.Clients.Client(request.UserConnectionId).SendAsync("onNotFound", true);
+                await _hubContext.Clients.Client(request.UserConnectionId).SendAsync(RoomMethods.onNotFound, true);
                 return Unit.Value;
             }
 
             // 2. if room is not found, redirect to 404 not found
             if (room == null)
             {
-                await _hubContext.Clients.Client(request.UserConnectionId).SendAsync("onNotFound", true);
+                await _hubContext.Clients.Client(request.UserConnectionId).SendAsync(RoomMethods.onNotFound, true);
                 return Unit.Value;
             }
 
@@ -63,11 +63,11 @@ namespace online_chess.Server.Features.Lobby.Commands.JoinRoom
             // redirect both users
             await _hubContext.Clients.Client(
                 _authenticatedUserService.GetConnectionId(room.CreatedByUserId)
-            ).SendAsync("onMatchFound", room.GameKey.ToString());
+            ).SendAsync(RoomMethods.onMatchFound, room.GameKey.ToString());
             
             await _hubContext.Clients.Client(
                 _authenticatedUserService.GetConnectionId(room.JoinedByUserId)
-            ).SendAsync("onMatchFound", room.GameKey.ToString());
+            ).SendAsync(RoomMethods.onMatchFound, room.GameKey.ToString());
 
             return Unit.Value;
         }

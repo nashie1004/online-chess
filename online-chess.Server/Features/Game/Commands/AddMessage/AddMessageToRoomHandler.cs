@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.SignalR;
+using online_chess.Server.Enums;
 using online_chess.Server.Hubs;
 using online_chess.Server.Service;
 
@@ -27,7 +28,7 @@ namespace online_chess.Server.Features.Game.Commands.AddMessageToRoom
                 Message = request.Message
             });
 
-            await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync("onReceiveMessages", room?.ChatMessages);
+            await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync(RoomMethods.onReceiveMessages, room?.ChatMessages);
 
             return Unit.Value;
         }

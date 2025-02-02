@@ -1,6 +1,7 @@
 using System;
 using MediatR;
 using Microsoft.AspNetCore.SignalR;
+using online_chess.Server.Enums;
 using online_chess.Server.Hubs;
 using online_chess.Server.Service;
 
@@ -23,7 +24,7 @@ public class GetCreatedRoomKeyHandler : IRequestHandler<GetCreatedRoomKeyRequest
         {
             if (item.Value.CreatedByUserId == req.IdentityUserName)
             {
-                await _hubContext.Clients.Client(req.UserConnectionId).SendAsync("onGetRoomKey", item.Key);
+                await _hubContext.Clients.Client(req.UserConnectionId).SendAsync(RoomMethods.onGetRoomKey, item.Key);
                 return Unit.Value;
             }
         }

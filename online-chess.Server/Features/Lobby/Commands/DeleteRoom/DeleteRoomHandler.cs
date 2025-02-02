@@ -1,6 +1,7 @@
 using System;
 using MediatR;
 using Microsoft.AspNetCore.SignalR;
+using online_chess.Server.Enums;
 using online_chess.Server.Hubs;
 using online_chess.Server.Service;
 
@@ -19,20 +20,19 @@ public class DeleteRoomHandler : IRequestHandler<DeleteRoomRequest, Unit>
 
     public async Task<Unit> Handle(DeleteRoomRequest req, CancellationToken ct)
     {
-
         // if not a valid guid, redirect to 404 notfound
         if (!Guid.TryParse(req.GameRoomKeyString, out Guid gameRoomKey))
         {
             await _hubContext
                 .Clients
                 .Client(req.UserConnectionId)
-                .SendAsync("onInvalidRoomKey", $"Room key {req.GameRoomKeyString} is invalid");
+                .SendAsync(RoomMethods.onInvalidRoomKey, $"Room key {req.GameRoomKeyString} is invalid");
 
             return Unit.Value;
         }
 
         _gameRoomService.Remove(gameRoomKey);
-        await _hubContext.Clients.All.SendAsync("onRefreshRoomList",
+        await _hubContext.Clients.All.SendAsync(RoomMethods.onRefreshRoomList,
             _gameRoomService.GetPaginatedDictionary(1).ToArray()
         );
 

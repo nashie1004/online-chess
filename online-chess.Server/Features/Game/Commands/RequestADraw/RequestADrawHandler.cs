@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
+using online_chess.Server.Enums;
 using online_chess.Server.Hubs;
 using online_chess.Server.Models.Entities;
 using online_chess.Server.Persistence;
@@ -37,7 +38,7 @@ namespace online_chess.Server.Features.Game.Commands.RequestADraw
 
             if (room == null)
             {
-                await _hubContext.Clients.Client(request.UserConnectionId).SendAsync("onNotFound", true);
+                await _hubContext.Clients.Client(request.UserConnectionId).SendAsync(RoomMethods.onNotFound, true);
                 return Unit.Value;
             }
 
@@ -51,9 +52,9 @@ namespace online_chess.Server.Features.Game.Commands.RequestADraw
                 Message = $"{request.IdentityUserName} offered a draw."
             });
 
-            await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync("onReceiveMessages", room.ChatMessages);
+            await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync(RoomMethods.onReceiveMessages, room.ChatMessages);
             
-            await _hubContext.Clients.Client(opponentConnectionId).SendAsync("onOpponentDrawRequest", true);
+            await _hubContext.Clients.Client(opponentConnectionId).SendAsync(RoomMethods.onOpponentDrawRequest, true);
 
             return Unit.Value;
         }

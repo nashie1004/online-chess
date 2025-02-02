@@ -38,7 +38,7 @@ namespace online_chess.Server.Features.Game.Commands.DrawAgree
 
             if (room == null)
             {
-                await _hubContext.Clients.Client(request.UserConnectionId).SendAsync("onNotFound", true);
+                await _hubContext.Clients.Client(request.UserConnectionId).SendAsync(RoomMethods.onNotFound, true);
                 return Unit.Value;
             }
 
@@ -51,9 +51,9 @@ namespace online_chess.Server.Features.Game.Commands.DrawAgree
                     Message = $"{request.IdentityUserName} declined the draw."
                 });
 
-                await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync("onReceiveMessages", room.ChatMessages);
+                await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync(RoomMethods.onReceiveMessages, room.ChatMessages);
                 
-                await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync("onDeclineDraw", true);
+                await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync(RoomMethods.onDeclineDraw, true);
                 return Unit.Value;
             }
 
@@ -63,7 +63,7 @@ namespace online_chess.Server.Features.Game.Commands.DrawAgree
 
             if (creator == null || joiner == null)
             {
-                await _hubContext.Clients.Client(request.UserConnectionId).SendAsync("onNotFound", true);
+                await _hubContext.Clients.Client(request.UserConnectionId).SendAsync(RoomMethods.onNotFound, true);
                 return Unit.Value;
             }
 
@@ -90,9 +90,9 @@ namespace online_chess.Server.Features.Game.Commands.DrawAgree
                 Message = $"Game ended in a draw."
             });
 
-            await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync("onReceiveMessages", room.ChatMessages);
+            await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync(RoomMethods.onReceiveMessages, room.ChatMessages);
                 
-            await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync("onGameOver", 2);
+            await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync(RoomMethods.onGameOver, 2);
 
             return Unit.Value;
         }

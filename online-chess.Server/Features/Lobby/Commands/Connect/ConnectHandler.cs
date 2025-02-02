@@ -1,6 +1,7 @@
 using System;
 using MediatR;
 using Microsoft.AspNetCore.SignalR;
+using online_chess.Server.Enums;
 using online_chess.Server.Hubs;
 using online_chess.Server.Service;
 
@@ -28,7 +29,7 @@ public class ConnectHandler : IRequestHandler<ConnectRequest, Unit>
         if (string.IsNullOrEmpty(existing))
         {
             _authenticatedUserService.Add(req.UserConnectionId, req.IdentityUserName);
-            await _hubContext.Clients.Client(req.UserConnectionId).SendAsync("onGetUserConnectionId", req.UserConnectionId);
+            await _hubContext.Clients.Client(req.UserConnectionId).SendAsync(RoomMethods.onGetUserConnectionId, req.UserConnectionId);
         }
 
         return Unit.Value;

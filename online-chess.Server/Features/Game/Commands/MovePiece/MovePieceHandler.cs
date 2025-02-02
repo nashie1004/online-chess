@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.SignalR;
+using online_chess.Server.Enums;
 using online_chess.Server.Hubs;
 using online_chess.Server.Models.Play;
 using online_chess.Server.Service;
@@ -76,7 +77,7 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
                 room.CreatedByUserInfo.LastMoveDate = DateTime.Now;
             } 
             else {
-                var elapsedTime = timeNow - (room.CreatedByUserInfo.LastMoveDate).TimeOfDay;
+                var elapsedTime = timeNow - (room.JoinByUserInfo.LastMoveDate).TimeOfDay;
 
                 room.JoinByUserInfo.TimeLeft -= elapsedTime;
                 room.JoinByUserInfo.LastMoveDate = DateTime.Now;
@@ -94,10 +95,10 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
             string opponentConnectionId = _authenticatedUserService.GetConnectionId(
                 request.IdentityUserName == room.CreatedByUserId ? room.JoinedByUserId : room.CreatedByUserId
             );
-            await _hubContext.Clients.Client(opponentConnectionId).SendAsync("onOpponentPieceMoved", retVal);
+            await _hubContext.Clients.Client(opponentConnectionId).SendAsync(RoomMethods.onOpponentPieceMoved, retVal);
 
             // send updated move history to both players
-            await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync("onUpdateBoard", retVal);
+            await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync(RoomMethods.onUpdateBoard, retVal);
 
             return Unit.Value;
          }

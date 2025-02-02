@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.SignalR;
+using online_chess.Server.Enums;
 using online_chess.Server.Hubs;
 using online_chess.Server.Service;
 
@@ -50,7 +51,7 @@ namespace online_chess.Server.Features.Game.Commands.LeaveRoom
                     // remove user from group
                     await _hubContext.Groups.RemoveFromGroupAsync(request.UserConnectionId, item.Key.ToString());
                     // broadcast user has left the group
-                    await _hubContext.Clients.Group(item.Key.ToString()).SendAsync("LeaveRoom", $"{request.IdentityUserName} has left the room");
+                    await _hubContext.Clients.Group(item.Key.ToString()).SendAsync(RoomMethods.onLeaveRoom, $"{request.IdentityUserName} has left the room");
                 }
             }
 

@@ -37,7 +37,7 @@ namespace online_chess.Server.Features.Game.Commands.Resign
         
             if (room == null)
             {
-                await _hubContext.Clients.Client(request.UserConnectionId).SendAsync("onNotFound", true);
+                await _hubContext.Clients.Client(request.UserConnectionId).SendAsync(RoomMethods.onNotFound, true);
                 return Unit.Value;
             }
 
@@ -47,7 +47,7 @@ namespace online_chess.Server.Features.Game.Commands.Resign
 
             if (creator == null || joiner == null)
             {
-                await _hubContext.Clients.Client(request.UserConnectionId).SendAsync("onNotFound", true);
+                await _hubContext.Clients.Client(request.UserConnectionId).SendAsync(RoomMethods.onNotFound, true);
                 return Unit.Value;
             }
 
@@ -77,12 +77,12 @@ namespace online_chess.Server.Features.Game.Commands.Resign
                 Message = $"{request.IdentityUserName} resigned."
             });
 
-            await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync("onReceiveMessages", room.ChatMessages);
+            await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync(RoomMethods.onReceiveMessages, room.ChatMessages);
                 
             // lose
-            await _hubContext.Clients.Client(request.UserConnectionId).SendAsync("onGameOver", 1);
+            await _hubContext.Clients.Client(request.UserConnectionId).SendAsync(RoomMethods.onGameOver, 1);
             // win
-            await _hubContext.Clients.Client(opponentConnectionId).SendAsync("onGameOver", 0);
+            await _hubContext.Clients.Client(opponentConnectionId).SendAsync(RoomMethods.onGameOver, 0);
 
             return Unit.Value;
         }
