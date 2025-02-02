@@ -1,7 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router";
 import Play from "./pages/Play";
 import NotFound from "./pages/NotFound";
-import ReactContext from "./context/GameContext";
+import GameContext from "./context/GameContext";
 import './index.css'
 import Layout from "./components/Layout";
 import Home from "./pages/Home";
@@ -18,7 +18,7 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 
 export default function App(){
     return <>
-        <ReactContext>
+        <GameContext>
             <AuthContext>
                 <SignalRContext>
                     <BrowserRouter>
@@ -37,6 +37,6 @@ export default function App(){
                     </BrowserRouter>
                 </SignalRContext>
             </AuthContext>
-        </ReactContext>
+        </GameContext>
     </>
 }

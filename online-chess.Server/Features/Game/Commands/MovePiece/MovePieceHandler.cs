@@ -74,6 +74,11 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
                 room.MoveHistory.Black.Add(moveInfo);
             }
 
+            // TODO update capture history if any
+            if (request.HasCapture){
+                //_gameLogicService.PieceCapture(room.GameKey);
+            }
+
             // update timer
             var timeNow = (DateTime.Now).TimeOfDay;
 
@@ -102,7 +107,10 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
             string opponentConnectionId = _authenticatedUserService.GetConnectionId(
                 request.IdentityUserName == room.CreatedByUserId ? room.JoinedByUserId : room.CreatedByUserId
             );
+            
+            // TODO
             await _hubContext.Clients.Client(opponentConnectionId).SendAsync(RoomMethods.onOpponentPieceMoved, retVal);
+            //await _hubContext.Clients.Client(opponentConnectionId).SendAsync(RoomMethods.onPieceCapture, retVal);
 
             // send updated move history to both players
             await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync(RoomMethods.onUpdateBoard, retVal);

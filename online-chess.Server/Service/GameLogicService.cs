@@ -58,11 +58,14 @@ namespace online_chess.Server.Service
         public bool PieceMoved(Guid gameRoomKey, BaseMoveInfo piece)
         {
             var ok = false;
-            _piecesCoords.TryGetValue(gameRoomKey, out List<BaseMoveInfo>? piecesCoords);
-            if (piecesCoords != null){
-                piecesCoords.Add(piece);
-                ok = true;
-            }
+            // _piecesCoords.TryGetValue(gameRoomKey, out List<BaseMoveInfo>? piecesCoords);
+            // if (piecesCoords != null){
+            //     piecesCoords.Add(piece);
+            //     ok = true;
+            // }
+
+            
+
             return ok;
         }
 

@@ -1,11 +1,12 @@
-import React, { useState } from 'react'
 import { Tabs, Tab, Button, Col, Form, Row, Image } from 'react-bootstrap'
 import testBg from "../../assets/boards/blue.png"
 import testing from "../../assets/pieces/cburnett/bB.svg"
+import useLocalStorage from '../../hooks/useLocalStorage';
+import { boardUI, pieceUI } from '../../game/utilities/constants';
 
 export default function UIChanger() {
-    const [board, setBoard] = useState("");
-    const [piece, setPiece] = useState("");
+  const { setValue: setBoard, data: board } = useLocalStorage("board", boardUI.green);
+  const { setValue: setPiece, data: piece } = useLocalStorage("piece", pieceUI.cburnett);
 
   return (
     <>
@@ -25,7 +26,7 @@ export default function UIChanger() {
             </Form.Label>
             <Form.Select 
               onChange={(e) => {
-                setBoard("");
+                //setBoard("");
               }}
               aria-label="Default select example" className='w-50'>
                 <option>Open this select menu</option>
