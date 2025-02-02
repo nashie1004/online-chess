@@ -7,7 +7,7 @@ import move from "../../assets/sounds/Move.ogg"
 import capture from "../../assets/sounds/Capture.ogg"
 import select from "../../assets/sounds/Select.ogg"
 import check from "../../assets/sounds/Check.mp3"
-import pieces, { Options as gameOptions, PieceNames, pieceImages, baseKingState, eventEmitters, eventEmit, eventOn } from "../utilities/constants";
+import pieces, { Options as gameOptions, PieceNames, pieceImages, baseKingState, eventEmit, eventOn } from "../utilities/constants";
 import { IBothKingsPosition, IKingState, IMoveHistory, IMoveInfo, IPiece, IPieceMove, IPiecesCoordinates, PromoteTo } from "../utilities/types";
 import { eventEmitter } from "../utilities/eventEmitter";
 import KingCastled from "../logic/kingCastled";
@@ -266,8 +266,8 @@ export class MainGameScene extends Scene{
         }
 
         // some special logic
-        (new PawnPromote(
-            this.boardOrientationIsWhite, this.promotePreference // TODO dynamic promote
+        const pawnPromoted = (new PawnPromote(
+            this.boardOrientationIsWhite, this.promotePreference, this.pieceCoordinates // TODO dynamic promote
         )).pawnPromote(uniquePieceName, newX, newY, isWhite, sprite);
 
         const kingCastled = (new KingCastled(
@@ -326,8 +326,8 @@ export class MainGameScene extends Scene{
         if (kingSafety !== 0) this.sound.play("check");
 
         // For testing only
-        console.table(this.pieceCoordinates);
-        this.debugHelper();
+        // console.table(this.pieceCoordinates);
+        // this.debugHelper();
     }
 
     update(){
@@ -360,7 +360,8 @@ export class MainGameScene extends Scene{
             });
         })
         
-        console.table([...nonEmptyWhiteTiles, ...nonEmptyBlackTiles]);
-        //console.table(nonEmptyBlackTiles);
+        //console.log(nonEmptyWhiteTiles)
+        // console.table([...nonEmptyWhiteTiles, ...nonEmptyBlackTiles]);
+        // console.table(nonEmptyWhiteTiles.filter(i => i.uniqueName.toLowerCase().indexOf("pawn") >= 0));
     }
 }

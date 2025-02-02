@@ -1,20 +1,24 @@
 import { GameObjects } from "phaser";
 import { PieceNames } from "../utilities/constants";
-import { PromoteTo } from "../utilities/types";
+import { IPiecesCoordinates, PromoteTo } from "../utilities/types";
 
 export default class PawnPromote {
     private readonly boardOrientationIsWhite: boolean;
     private readonly promoteTo: PromoteTo;
+    private readonly pieceCoordinates: IPiecesCoordinates;
 
     constructor(
         boardOrientationIsWhite: boolean,
-        promoteTo: PromoteTo
+        promoteTo: PromoteTo,
+        pieceCoordinates: IPiecesCoordinates
     ) {
         this.boardOrientationIsWhite = boardOrientationIsWhite;
         this.promoteTo = promoteTo;
+        this.pieceCoordinates = pieceCoordinates;
     }
 
     pawnPromote(pieceName: string, newX: number, newY: number, isWhite: boolean, sprite: GameObjects.Sprite | null){
+        let pawnPromoted = false;
 
         // check if pawn and promotable
         if (
@@ -29,26 +33,50 @@ export default class PawnPromote {
             && sprite
         ){
             // change sprite name and image/texture from pawn to queen
+            let newUniqueName = "";
+            let pieceName: PieceNames = PieceNames.wQueen;
+
             switch(this.promoteTo){
                 case "rook":
-                    sprite.setName((isWhite ? PieceNames.wRook : PieceNames.bRook) + `-${newX}-${newY}`);
-                    sprite.setTexture(isWhite ? PieceNames.wRook : PieceNames.bRook);
+                    newUniqueName = (isWhite ? PieceNames.wRook : PieceNames.bRook) + `-${newX}-${newY}`; 
+                    pieceName = isWhite ? PieceNames.wRook : PieceNames.bRook;
+
+                    sprite.setName(newUniqueName);
+                    sprite.setTexture(pieceName);
                     break;
                 case "knight":
-                    sprite.setName((isWhite ? PieceNames.wKnight : PieceNames.bKnight) + `-${newX}-${newY}`);
-                    sprite.setTexture(isWhite ? PieceNames.wKnight : PieceNames.bKnight);
+                    newUniqueName = (isWhite ? PieceNames.wKnight : PieceNames.bKnight) + `-${newX}-${newY}`;
+                    pieceName = isWhite ? PieceNames.wKnight : PieceNames.bKnight;
+
+                    sprite.setName(newUniqueName);
+                    sprite.setTexture(pieceName);
                     break;
                 case "bishop":
-                    sprite.setName((isWhite ? PieceNames.wBishop : PieceNames.bBishop) + `-${newX}-${newY}`);
-                    sprite.setTexture(isWhite ? PieceNames.wBishop : PieceNames.bBishop);
+                    newUniqueName = (isWhite ? PieceNames.wBishop : PieceNames.bBishop) + `-${newX}-${newY}`;
+                    pieceName = isWhite ? PieceNames.wBishop : PieceNames.bBishop;
+                    
+                    sprite.setName(newUniqueName);
+                    sprite.setTexture(pieceName);
                     break;
                 case "queen":
-                    sprite.setName((isWhite ? PieceNames.wQueen : PieceNames.bQueen) + `-${newX}-${newY}`);
-                    sprite.setTexture(isWhite ? PieceNames.wQueen : PieceNames.bQueen);
+                    newUniqueName = (isWhite ? PieceNames.wQueen : PieceNames.bQueen) + `-${newX}-${newY}`;
+                    pieceName = isWhite ? PieceNames.wQueen : PieceNames.bQueen;
+
+                    sprite.setName(newUniqueName);
+                    sprite.setTexture(pieceName);
                     break;
             }
+                
+            pawnPromoted = true;
+            
+            const newlyPromotedPawn = this.pieceCoordinates[isWhite ? "white" : "black"].find(i => i.x === newX && i.y === newY);
+            if (!newlyPromotedPawn) return pawnPromoted;
 
-            console.log("pawn promote: ", sprite)
+            newlyPromotedPawn.uniqueName = newUniqueName;
+            newlyPromotedPawn.name = pieceName;
+            //console.log("pawn promote: ", sprite)+
         }
+
+        return pawnPromoted;
     }
 }
