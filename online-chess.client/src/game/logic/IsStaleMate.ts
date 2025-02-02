@@ -1,5 +1,5 @@
 import { GameObjects } from "phaser";
-import { IBothKingsPosition, IKingState, IMoveHistory, IPhaserContextValues, IPiecesCoordinates } from "../utilities/types";
+import { IBothKingsPosition, IKingState, IMoveHistory, IPiecesCoordinates } from "../utilities/types";
 import GetInitialMoves from "./getInitialMoves";
 
 export default class IsStalemate {
@@ -16,7 +16,7 @@ export default class IsStalemate {
         pieceCoordinates: IPiecesCoordinates,
         bothKingsPosition: IBothKingsPosition,
         moveHistory: IMoveHistory,
-        kingsState: IKingState
+        kingsState: IKingState,
     ) {
         this.board = board;
         this.boardOrientationIsWhite = boardOrientationIsWhite;
@@ -40,7 +40,7 @@ export default class IsStalemate {
             const pieceMoves = (new GetInitialMoves(
                 this.board
                 , this.bothKingsPosition, this.boardOrientationIsWhite
-                , this.moveHistory, this.kingsState
+                , this.moveHistory, this.kingsState, this.pieceCoordinates
             )).getInitialMoves(name, x, y, uniqueName ?? `${name}-${x}-${y}`, false);
 
             if (pieceMoves.length > 0){

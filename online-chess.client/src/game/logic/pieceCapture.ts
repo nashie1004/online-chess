@@ -1,7 +1,7 @@
 import { GameObjects } from "phaser";
 import PawnValidator from "../pieces/pawnValidator";
 import { PieceNames } from "../utilities/constants";
-import { IPiecesCoordinates, IPhaserContextValues, IBothKingsPosition, IMoveInfo, IMoveHistory } from "../utilities/types";
+import { IPiecesCoordinates, IBothKingsPosition, IMoveInfo, IMoveHistory } from "../utilities/types";
 
 export default class PieceCapture {
     private readonly board: (null | GameObjects.Sprite)[][]

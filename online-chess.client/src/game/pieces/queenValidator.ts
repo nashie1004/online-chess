@@ -1,5 +1,5 @@
 import { GameObjects } from "phaser";
-import { IBothKingsPosition, IMoveHistory, IPiece, IValidMove } from "../../utilities/types";
+import { IBothKingsPosition, IMoveHistory, IPiece, IValidMove } from "../utilities/types";
 import BasePieceValidator from "./basePieceValidator";
 import RookValidator from "./rookValidator";
 import BishopValidator from "./bishopValidator";

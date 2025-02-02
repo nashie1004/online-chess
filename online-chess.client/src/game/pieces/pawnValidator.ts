@@ -1,5 +1,5 @@
 import { GameObjects } from "phaser";
-import { IBothKingsPosition, IMoveHistory, IMoveInfo, IPiece, IValidMove } from "../../utilities/types";
+import { IBothKingsPosition, IMoveHistory, IMoveInfo, IPiece, IValidMove } from "../utilities/types";
 import BasePieceValidator from "./basePieceValidator";
 
 export default class PawnValidator extends BasePieceValidator{

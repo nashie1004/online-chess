@@ -1,6 +1,6 @@
 import { GameObjects } from "phaser";
 import { PieceNames } from "../utilities/constants";
-import { IPiecesCoordinates, IMoveInfo, IPhaserContextValues, IBothKingsPosition, IValidMove, IMoveHistory, IKingState } from "../utilities/types";
+import { IPiecesCoordinates, IMoveInfo, IBothKingsPosition, IValidMove, IMoveHistory, IKingState } from "../utilities/types";
 import GetInitialMoves from "./getInitialMoves";
 import PossibleMovesIfKingInCheck from "./possibleMovesIfKingInCheck";
 
@@ -57,7 +57,7 @@ export default class ShowPossibleMoves {
         let initialValidMoves: IValidMove[] = (new GetInitialMoves(
             this.board,
             this.bothKingsPosition, this.boardOrientationIsWhite,
-            this.moveHistory, this.kingsState
+            this.moveHistory, this.kingsState, this.pieceCoordinates
         )).getInitialMoves(name, x, y, uniqueName);
 
         // set selected piece
@@ -69,6 +69,7 @@ export default class ShowPossibleMoves {
             , this.bothKingsPosition
             ,this.boardOrientationIsWhite
             ,this.moveHistory, this.kingsState
+            ,this.pieceCoordinates
         )).possibleMovesIfKingInCheck(name, initialValidMoves);
 
         if (actualValidMoves){

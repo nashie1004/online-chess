@@ -1,6 +1,6 @@
 import { GameObjects } from "phaser";
 import { eventEmitter } from "../utilities/eventEmitter";
-import { IPiecesCoordinates, IPhaserContextValues, IBothKingsPosition, IMoveHistory, IKingState } from "../utilities/types";
+import { IPiecesCoordinates, IBothKingsPosition, IMoveHistory, IKingState } from "../utilities/types";
 import IsCheck from "./isCheck";
 import IsCheckMate from "./isCheckMate";
 import IsStalemate from "./IsStaleMate";

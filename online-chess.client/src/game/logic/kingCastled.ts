@@ -38,6 +38,7 @@ export default class KingCastled {
                     , this.board, this.moveHistory, false
                     , this.bothKingsPosition
                     , this.boardOrientationIsWhite
+                    , this.pieceCoordinates
             );
 
             const validKingSide = kingValidator.validKingSideCastling(selectedPiece.x, selectedPiece.y);

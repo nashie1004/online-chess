@@ -1,6 +1,6 @@
 import { GameObjects } from "phaser";
-import { IBothKingsPosition, IMoveHistory, IPiece, IValidMove } from "../../utilities/types";
 import BasePieceValidator from "./basePieceValidator";
+import { IPiece, IMoveHistory, IBothKingsPosition, IValidMove } from "../utilities/types";
 
 export default class BishopValidator extends BasePieceValidator{
     /**

@@ -1,5 +1,5 @@
 import { GameObjects } from "phaser";
-import { IBaseCoordinates, IBothKingsPosition, IMoveHistory, IPiece, IValidMove } from "../utilities/types";
+import { IBaseCoordinates, IBothKingsPosition, IMoveHistory, IPiece, IPiecesCoordinates, IValidMove } from "../utilities/types";
 import BasePieceValidator from "./basePieceValidator";
 import QueenValidator from "./queenValidator";
 import KnightValidator from "./knightValidator";
@@ -14,12 +14,14 @@ export default class KingValidator extends BasePieceValidator{
      */
     private readonly isInCheck: boolean;
     private readonly boardOrientationIsWhite: boolean;
+    private readonly pieceCoordinates: IPiecesCoordinates;
 
-    constructor(piece: IPiece, board: (GameObjects.Sprite | null)[][], moveHistory: IMoveHistory, isInCheck: boolean, bothKingsPosition: IBothKingsPosition, boardOrientationIsWhite: boolean) {
+    constructor(piece: IPiece, board: (GameObjects.Sprite | null)[][], moveHistory: IMoveHistory, isInCheck: boolean, bothKingsPosition: IBothKingsPosition, boardOrientationIsWhite: boolean, pieceCoordinates: IPiecesCoordinates) {
 
         super(piece, board, moveHistory, bothKingsPosition);
         this.isInCheck = isInCheck;
         this.boardOrientationIsWhite = boardOrientationIsWhite;
+        this.pieceCoordinates = pieceCoordinates;
     }
     
     public override validMoves(): IValidMove[]{
