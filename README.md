@@ -39,7 +39,7 @@ after that, the web application should now be running.
 3. disconnect or leave logic
 4. en passant bug
 5. display move turn, check, checkmate, stalemate
-6. capture history - DOING
+6. bug on if king in check
 
 ## Others
 1. fifty move rule

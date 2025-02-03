@@ -326,7 +326,9 @@ export class MainGameScene extends Scene{
         if (kingSafety !== 0) this.sound.play("check");
 
         // For testing only
-        // console.table(this.pieceCoordinates);
+        // console.info(" === TEST === ");
+        // console.table(this.pieceCoordinates.white);
+        // console.table(this.pieceCoordinates.black);
         // this.debugHelper();
     }
 

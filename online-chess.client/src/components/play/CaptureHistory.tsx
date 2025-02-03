@@ -2,11 +2,8 @@ import { pieceImages, PieceNames } from '../../game/utilities/constants';
 import useGameContext from '../../hooks/useGameContext';
 
 export default function CaptureHistory() {
-    
     const { gameState } = useGameContext();
   
-    console.log("capture history: ", gameState.captureHistory)
-
     return (
     <>
         

@@ -60,7 +60,12 @@ function reducerFn(state: IGameContextReducerState, action: IGameContextReducerA
             return {  ...state, myInfo: {
                     ...state.myInfo, promotePawnTo: action.payload
                 } 
-            }
+            } 
+        case "SET_MYINFO_ISPLAYERSTURN":
+            return {  ...state, myInfo: {
+                    ...state.myInfo, isPlayersTurn: action.payload
+                } 
+            } 
         case "SET_OPPONENTINFO":
             return {  ...state, opponentInfo: action.payload }
         case "SET_OPPONENTINFO_TIMELEFT":
@@ -73,6 +78,11 @@ function reducerFn(state: IGameContextReducerState, action: IGameContextReducerA
                     ...state.myInfo, promotePawnTo: action.payload
                 } 
             }
+        case "SET_OPPONENTINFO_ISPLAYERSTURN":
+            return {  ...state, myInfo: {
+                    ...state.myInfo, isPlayersTurn: action.payload
+                } 
+            } 
         case "SET_OPPONENTINFO_REQUESTDRAW":
             return {  ...state, opponentInfo: {
                     ...state.opponentInfo, isOfferingADraw: action.payload

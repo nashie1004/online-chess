@@ -28,18 +28,22 @@ export default function useOnUpdateBoard(){
         const opponentCurrentTime = (gameStateRef.current.opponentInfo.playerIsWhite && creatorColorIsWhite)
             ? creatorTimeLeft : joinerTimeLeft;
 
-        // opponent piece move
-        if (
-            (!moveIsWhite && !gameStateRef.current.opponentInfo.playerIsWhite) ||
-            (moveIsWhite && gameStateRef.current.opponentInfo.playerIsWhite)
-        )
+        const opponentsTurn = (!moveIsWhite && !gameStateRef.current.opponentInfo.playerIsWhite) ||
+            (moveIsWhite && gameStateRef.current.opponentInfo.playerIsWhite);
+
+        if (opponentsTurn)
         {
             eventEmitter.emit(eventEmit.setEnemyMove, data.moveInfo as IPieceMove);
         } 
+        
+        setGameState({ type: "SET_OPPONENTINFO_ISPLAYERSTURN", payload: opponentsTurn });
+        setGameState({ type: "SET_MYINFO_ISPLAYERSTURN", payload: !opponentsTurn });
 
         setGameState({ type: "SET_MOVEHISTORY", payload: { moveInfo, moveIsWhite } });
         setGameState({ type: "SET_MYINFO_TIMELEFT", payload: myCurrentTime });
         setGameState({ type: "SET_OPPONENTINFO_TIMELEFT", payload: opponentCurrentTime });
+
+        //console.log(`Time left - me: ${myCurrentTime}, opponent: ${opponentCurrentTime}`)
 
         if (capturedPiece){
             setGameState({ type: "SET_CAPTUREHISTORY", payload: capturedPiece });

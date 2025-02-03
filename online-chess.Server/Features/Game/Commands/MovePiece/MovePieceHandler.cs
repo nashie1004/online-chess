@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using System.Text.Json;
+using MediatR;
 using Microsoft.AspNetCore.SignalR;
 using online_chess.Server.Enums;
 using online_chess.Server.Hubs;
@@ -85,8 +86,7 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
             }
 
             var hasCapture = room.UpdatePieceCoords(whitesOrientationMoveInfo, request.HasCapture, pieceMoveIsWhite);
-            //_logger.LogInformation("hi test only");
-
+            
             // update timer
             var timeNow = (DateTime.Now).TimeOfDay;
 
@@ -102,6 +102,13 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
                 room.JoinByUserInfo.TimeLeft -= elapsedTime;
                 room.JoinByUserInfo.LastMoveDate = DateTime.Now;
             }
+
+            //var json = JsonSerializer.Serialize(whitesOrientationMoveInfo);
+            //_logger.LogInformation("\nDateTime: {0}, Move: {1}", DateTime.Now, json);
+            _logger.LogInformation("\nTime Left - (Creator): {0}, (Joiner): {1}"
+                , room.CreatedByUserInfo.TimeLeft
+                , room.JoinByUserInfo.TimeLeft
+                );
 
             var retVal = new{
                 moveInfo = invertedMoveInfo

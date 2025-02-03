@@ -9,8 +9,9 @@ export default function PlayerInfo() {
     const white = gameState.myInfo.playerIsWhite ? gameState.myInfo : gameState.opponentInfo;
     const black = !gameState.myInfo.playerIsWhite ? gameState.myInfo : gameState.opponentInfo;
 
-
     useEffect(() => {
+
+        console.log(`white time left: ${white.timeLeft}, black time left: ${black.timeLeft}`)
         
         setActualTime({
             white: white.timeLeft
@@ -33,7 +34,6 @@ export default function PlayerInfo() {
         return () => {
             clearInterval(intervalId);
         }
-        
     }, [gameState.myInfo.isPlayersTurn, gameState.opponentInfo.isPlayersTurn])
 
   return (
