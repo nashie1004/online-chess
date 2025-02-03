@@ -13,19 +13,16 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
         private readonly IHubContext<GameHub> _hubContext;
         private readonly GameRoomService _gameRoomService;
         private readonly AuthenticatedUserService _authenticatedUserService;
-        private readonly GameLogicService _gameLogicService;
 
         public GameStartHandler(
             IHubContext<GameHub> hubContext
             , GameRoomService gameRoomService
             , AuthenticatedUserService authenticatedUserService
-            , GameLogicService gameLogicService
             )
         {
             _hubContext = hubContext;
             _gameRoomService = gameRoomService;
             _authenticatedUserService = authenticatedUserService;
-            _gameLogicService = gameLogicService;
         }
 
         public async Task<Unit> Handle(GameStartRequest request, CancellationToken cancellationToken)
@@ -51,7 +48,7 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
             Start The Game
             - passed to Play.tsx > MainGameScene constructor
             */
-            _gameLogicService.InitializeGameLogic(gameRoom.GameKey);
+            gameRoom.InitializeGameLogic();
 
             TimeSpan initialCreatorTime; 
             TimeSpan initialJoinerTime; 

@@ -38,7 +38,6 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<GameQueueService>();
 builder.Services.AddSingleton<GameRoomService>();
 builder.Services.AddSingleton<AuthenticatedUserService>();
-builder.Services.AddSingleton<GameLogicService>();
 
 var app = builder.Build();
 

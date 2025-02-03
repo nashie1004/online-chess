@@ -12,19 +12,16 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
         private readonly GameRoomService _gameRoomService;
         private readonly AuthenticatedUserService _authenticatedUserService;
         private readonly IHubContext<GameHub> _hubContext;
-        private readonly GameLogicService _gameLogicService;
 
         public MovePieceHandler(
             GameRoomService gameRoomService
             , AuthenticatedUserService authenticatedUserService
             , IHubContext<GameHub> hubContext
-            , GameLogicService gameLogicService
             )
         {
             _gameRoomService = gameRoomService;
             _authenticatedUserService = authenticatedUserService;
             _hubContext = hubContext;
-            _gameLogicService = gameLogicService;
         }
 
         public async Task<Unit> Handle(MovePieceRequest request, CancellationToken cancellationToken)
@@ -65,7 +62,7 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
                 New = request.NewMove
             };
 
-            var moveHistory = _gameLogicService.GetMoveHistory(room.GameKey);
+            var moveHistory = room.MoveHistory;
             if (pieceMoveIsWhite){
                 moveHistory?.White.Add(moveInfo);
             } else {
@@ -73,7 +70,7 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
             }
 
             // update piece coordinates and capture history
-            var hasCapture = _gameLogicService.UpdatePieceCoords(room.GameKey, moveInfo, request.HasCapture);
+            var hasCapture = room.UpdatePieceCoords(moveInfo, request.HasCapture);
 
             // update timer
             var timeNow = (DateTime.Now).TimeOfDay;

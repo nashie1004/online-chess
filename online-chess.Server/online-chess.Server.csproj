@@ -36,6 +36,7 @@
   <ItemGroup>
     <Folder Include="Features\Game\Queries\" />
     <Folder Include="Migrations\" />
+    <Folder Include="Models\Home\" />
     <Folder Include="Queries\" />
     <Folder Include="SQLiteDB\" />
   </ItemGroup>
