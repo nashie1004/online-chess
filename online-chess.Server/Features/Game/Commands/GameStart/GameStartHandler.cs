@@ -53,7 +53,7 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
             Start The Game
             - passed to Play.tsx > MainGameScene constructor
             */
-            gameRoom.InitializeGameLogic();
+            //gameRoom.InitializeGameLogic();
 
             TimeSpan initialCreatorTime; 
             TimeSpan initialJoinerTime; 

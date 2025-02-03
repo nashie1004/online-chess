@@ -19,9 +19,9 @@ namespace online_chess.Server.Models
         public (BaseMoveInfo, BaseMoveInfo) BothKingCoords { get; set; }
         public MoveHistory MoveHistory { get; set; }
         public List<BaseMoveInfo> CaptureHistory { get; set; }
+       
 
-        
-        public void InitializeGameLogic()
+        public GameRoom()
         {
             PiecesCoords = new List<BaseMoveInfo>()
             {
@@ -50,17 +50,17 @@ namespace online_chess.Server.Models
         }
 
         
-        public BaseMoveInfo? UpdatePieceCoords(Move moveInfo, bool hasCapture)
+        public BaseMoveInfo? UpdatePieceCoords(Move whitesOrientationMoveInfo, bool hasCapture, bool pieceMovedIsWhite)
         {
             BaseMoveInfo? capture = null;
 
-            var piece = PiecesCoords.Find(i => i.X == moveInfo.Old.X && i.Y == moveInfo.Old.Y);
+            var piece = PiecesCoords.Find(i => i.X == whitesOrientationMoveInfo.Old.X && i.Y == whitesOrientationMoveInfo.Old.Y);
             if (piece == null) return capture;
 
             // check if tile is capturable
             // TODO PIECE CAPTURE
             // the coords saved on PiecesCoords is on white's orientation
-            var capturePiece = PiecesCoords.Find(i => i.X == moveInfo.New.X && i.Y == moveInfo.New.Y);
+            var capturePiece = PiecesCoords.Find(i => i.X == whitesOrientationMoveInfo.New.X && i.Y == whitesOrientationMoveInfo.New.Y);
             if (hasCapture && capturePiece != null)
             {
                 capture = capturePiece;
@@ -71,8 +71,8 @@ namespace online_chess.Server.Models
             }
 
             // update coords
-            piece.X = moveInfo.New.X;
-            piece.Y = moveInfo.New.Y;
+            piece.X = whitesOrientationMoveInfo.New.X;
+            piece.Y = whitesOrientationMoveInfo.New.Y;
 
             return capture;
         }

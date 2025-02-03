@@ -30,8 +30,8 @@ export default function useOnUpdateBoard(){
 
         // opponent piece move
         if (
-            (moveIsWhite && !gameStateRef.current.myInfo.playerIsWhite) ||
-            (!moveIsWhite && gameStateRef.current.myInfo.playerIsWhite)
+            (!moveIsWhite && !gameStateRef.current.opponentInfo.playerIsWhite) ||
+            (moveIsWhite && gameStateRef.current.opponentInfo.playerIsWhite)
         )
         {
             eventEmitter.emit(eventEmit.setEnemyMove, data.moveInfo as IPieceMove);

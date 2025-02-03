@@ -12,16 +12,19 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
         private readonly GameRoomService _gameRoomService;
         private readonly AuthenticatedUserService _authenticatedUserService;
         private readonly IHubContext<GameHub> _hubContext;
+        private readonly ILogger<MovePieceHandler> _logger;
 
         public MovePieceHandler(
             GameRoomService gameRoomService
             , AuthenticatedUserService authenticatedUserService
             , IHubContext<GameHub> hubContext
+            , ILogger<MovePieceHandler> logger
             )
         {
             _gameRoomService = gameRoomService;
             _authenticatedUserService = authenticatedUserService;
             _hubContext = hubContext;
+            _logger = logger;
         }
 
         public async Task<Unit> Handle(MovePieceRequest request, CancellationToken cancellationToken)
@@ -42,37 +45,47 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
              * - update timer
              */
 
-            // set color
+            // set the color of the piece moved
             bool isRoomCreator = room.CreatedByUserId == request.IdentityUserName;
 
-            // Assign pieceMoveIsWhite based on the room creator's color
             bool pieceMoveIsWhite = isRoomCreator 
                 ? room.CreatedByUserColor == Enums.Color.White 
                 : room.CreatedByUserColor == Enums.Color.Black;
 
-            // invert orientation
-            request.OldMove.Y = 7 - request.OldMove.Y;
-            request.OldMove.X = 7 - request.OldMove.X;
-
-            request.NewMove.Y = 7 - request.NewMove.Y;
-            request.NewMove.X = 7 - request.NewMove.X;
-
-            // add to move history
-            Move moveInfo = new Move(){
-                Old = request.OldMove,
-                New = request.NewMove
+            // invert orientation (for phaser)
+            Move invertedMoveInfo = new Move(){
+                Old = new BaseMoveInfo(){
+                    X = 7 - request.OldMove.X,
+                    Y = 7 - request.OldMove.Y,
+                },
+                New = new BaseMoveInfo(){
+                    X = 7 - request.NewMove.X,
+                    Y = 7 - request.NewMove.Y,
+                }
             };
 
+            // move info on whites orientation
+            Move whitesOrientationMoveInfo = new Move(){
+                Old = new BaseMoveInfo(){
+                    X = (pieceMoveIsWhite ? request.OldMove.X : 7 - request.OldMove.X),
+                    Y = (pieceMoveIsWhite ? request.OldMove.Y : 7 - request.OldMove.Y),
+                },
+                New = new BaseMoveInfo(){
+                    X = (pieceMoveIsWhite ? request.NewMove.X : 7 - request.NewMove.X),
+                    Y = (pieceMoveIsWhite ? request.NewMove.Y : 7 - request.NewMove.Y),
+                }
+            };
+
+            // add to move history
             var moveHistory = room.MoveHistory;
             if (pieceMoveIsWhite){
-                moveHistory?.White.Add(moveInfo);
+                moveHistory?.White.Add(whitesOrientationMoveInfo);
             } else {
-                moveHistory?.Black.Add(moveInfo);
+                moveHistory?.Black.Add(whitesOrientationMoveInfo);
             }
 
-            // TODO: the coords saved on PiecesCoords is on white's orientation
-            // update piece coordinates and capture history
-            var hasCapture = room.UpdatePieceCoords(moveInfo, request.HasCapture);
+            var hasCapture = room.UpdatePieceCoords(whitesOrientationMoveInfo, request.HasCapture, pieceMoveIsWhite);
+            //_logger.LogInformation("hi test only");
 
             // update timer
             var timeNow = (DateTime.Now).TimeOfDay;
@@ -91,7 +104,7 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
             }
 
             var retVal = new{
-                moveInfo
+                moveInfo = invertedMoveInfo
                 , moveIsWhite = pieceMoveIsWhite
                 , creatorTimeLeft = room.CreatedByUserInfo.TimeLeft.TotalMilliseconds
                 , joinerTimeLeft = room.JoinByUserInfo.TimeLeft.TotalMilliseconds
