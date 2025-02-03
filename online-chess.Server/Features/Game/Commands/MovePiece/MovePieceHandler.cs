@@ -52,8 +52,9 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
 
             // invert orientation
             request.OldMove.Y = 7 - request.OldMove.Y;
-            request.NewMove.Y = 7 - request.NewMove.Y;
             request.OldMove.X = 7 - request.OldMove.X;
+
+            request.NewMove.Y = 7 - request.NewMove.Y;
             request.NewMove.X = 7 - request.NewMove.X;
 
             // add to move history
@@ -69,6 +70,7 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
                 moveHistory?.Black.Add(moveInfo);
             }
 
+            // TODO: the coords saved on PiecesCoords is on white's orientation
             // update piece coordinates and capture history
             var hasCapture = room.UpdatePieceCoords(moveInfo, request.HasCapture);
 

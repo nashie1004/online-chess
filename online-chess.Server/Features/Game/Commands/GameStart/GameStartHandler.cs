@@ -41,6 +41,11 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
             var player1 = _authenticatedUserService.GetConnectionId(gameRoom.CreatedByUserId);
             var player2 = _authenticatedUserService.GetConnectionId(gameRoom.JoinedByUserId);
 
+            if (string.IsNullOrEmpty(player1) || string.IsNullOrEmpty(player1))
+            {
+                return Unit.Value;
+            }
+
             await _hubContext.Groups.AddToGroupAsync(player1, request.GameRoomKeyString);
             await _hubContext.Groups.AddToGroupAsync(player2, request.GameRoomKeyString);
 
