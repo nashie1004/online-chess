@@ -14,6 +14,7 @@ namespace online_chess.Server.Models
         public PlayerInfo CreatedByUserInfo { get; set; }
         public PlayerInfo JoinByUserInfo { get; set; }
         public List<Play.Chat> ChatMessages { get; set; }
+        public CancellationTokenSource TimerDetector { get; set; }
 
         public List<BaseMoveInfo> PiecesCoords { get; set; }
         public (BaseMoveInfo, BaseMoveInfo) BothKingCoords { get; set; }
@@ -23,6 +24,8 @@ namespace online_chess.Server.Models
 
         public GameRoom()
         {
+            TimerDetector = new CancellationTokenSource();
+
             PiecesCoords = new List<BaseMoveInfo>()
             {
                 PiecesInitialPositionBlack.bRook1, PiecesInitialPositionBlack.bKnight1

@@ -140,10 +140,15 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
         
         private async void UpdateTimer(GameRoom room, double creatorSecondsLeft, double joinerSecondsLeft, bool creatorsTurn)
         {
+            // cancel previous timer and start a new timer
+            room.TimerDetector.Cancel();
+            room.TimerDetector = new CancellationTokenSource();
+            var token = room.TimerDetector.Token;
+
             var roomStatus = room.GamePlayStatus;
             var playerSecondsLeft = creatorsTurn ? creatorSecondsLeft : joinerSecondsLeft;
 
-            while (playerSecondsLeft > 0 && roomStatus != GamePlayStatus.Finished)
+            while (playerSecondsLeft > 0 && roomStatus != GamePlayStatus.Finished && !token.IsCancellationRequested)
             {
                 _logger.LogInformation(
                     "Timer running - room: {0}, Creator time left: {1}, Joiner time left: {2}", 

@@ -33,6 +33,23 @@ export function msToMinuteDisplay(milliseconds: number){
     return retVal;
 }
 
+export function secondsToMinuteDisplay(seconds: number) {
+    let duration = moment.duration(seconds, "seconds");
+    
+    // Get the minutes and seconds (ignoring hours and milliseconds)
+    let minutes = duration.minutes();
+    let secondsFormatted = duration.seconds();  // Extract seconds
+
+    // Pad the minutes and seconds to always show two digits
+    let formattedMinutes = String(minutes).padStart(2, '0');
+    let formattedSeconds = String(secondsFormatted).padStart(2, '0');
+    
+    // Return formatted value as MM:SS
+    const retVal = `${formattedMinutes}:${formattedSeconds}`;
+    return retVal;
+}
+
+
 export function gameStatusDisplay(status: GameStatus){
     switch(status){
         case GameStatus.Won:

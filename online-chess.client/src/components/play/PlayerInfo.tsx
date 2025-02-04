@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import useGameContext from '../../hooks/useGameContext';
-import { msToMinuteDisplay } from '../../utils/helper';
+import { secondsToMinuteDisplay } from '../../utils/helper';
 import useSignalRContext from '../../hooks/useSignalRContext';
 import { playPageHandlers } from '../../game/utilities/constants';
 
@@ -42,13 +42,13 @@ export default function PlayerInfo() {
             <div className='timer-info w-100'>
                 <h6 className='text-secondary'>Lorem, ipsum.</h6>
                 <h2>
-                    <i className="bi bi-clock"></i> <span>{msToMinuteDisplay(actualTime.white)}s</span>
+                    <i className="bi bi-clock"></i> <span>{secondsToMinuteDisplay(actualTime.white)}s</span>
                 </h2>
             </div>
             <div className='timer-info w-100'>
                 <h6  className='text-secondary'>Lorem, ipsum.</h6>
                 <h2>
-                    <i className="bi bi-clock"></i> <span>{msToMinuteDisplay(actualTime.black)}s</span>
+                    <i className="bi bi-clock"></i> <span>{secondsToMinuteDisplay(actualTime.black)}s</span>
                 </h2>
             </div>
         </div>
