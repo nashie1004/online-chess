@@ -21,6 +21,7 @@ public class RoomMethods
     public const string onGameOver = "onGameOver";
     public const string onOpponentDrawRequest = "onOpponentDrawRequest";
     public const string onDeclineDraw = "onDeclineDraw";
+    public const string onUpdateTimer = "onUpdateTimer";
     #endregion
 
     #region Connection

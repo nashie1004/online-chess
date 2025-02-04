@@ -17,16 +17,16 @@ export default function useOnUpdateBoard(){
     const onUpdateBoard = useCallback((data: any) => {
         const moveInfo = data.moveInfo as IMoveInfo;
         const moveIsWhite = data.moveIsWhite as boolean;
-        const creatorTimeLeft = data.creatorTimeLeft as number;
-        const joinerTimeLeft = data.joinerTimeLeft as number;
-        const creatorColorIsWhite = data.creatorColorIsWhite as boolean;
+        //const creatorTimeLeft = data.creatorTimeLeft as number;
+        //const joinerTimeLeft = data.joinerTimeLeft as number;
+        //const creatorColorIsWhite = data.creatorColorIsWhite as boolean;
         const capturedPiece = data.capturedPiece as (IPiece | null);
 
-        const myCurrentTime = (gameStateRef.current.myInfo.playerIsWhite && creatorColorIsWhite)
-            ? creatorTimeLeft : joinerTimeLeft;
+        //const myCurrentTime = (gameStateRef.current.myInfo.playerIsWhite && creatorColorIsWhite)
+            //? creatorTimeLeft : joinerTimeLeft;
 
-        const opponentCurrentTime = (gameStateRef.current.opponentInfo.playerIsWhite && creatorColorIsWhite)
-            ? creatorTimeLeft : joinerTimeLeft;
+        //const opponentCurrentTime = (gameStateRef.current.opponentInfo.playerIsWhite && creatorColorIsWhite)
+            //? creatorTimeLeft : joinerTimeLeft;
 
         const opponentsTurn = (!moveIsWhite && !gameStateRef.current.opponentInfo.playerIsWhite) ||
             (moveIsWhite && gameStateRef.current.opponentInfo.playerIsWhite);
@@ -40,8 +40,8 @@ export default function useOnUpdateBoard(){
         setGameState({ type: "SET_MYINFO_ISPLAYERSTURN", payload: !opponentsTurn });
 
         setGameState({ type: "SET_MOVEHISTORY", payload: { moveInfo, moveIsWhite } });
-        setGameState({ type: "SET_MYINFO_TIMELEFT", payload: myCurrentTime });
-        setGameState({ type: "SET_OPPONENTINFO_TIMELEFT", payload: opponentCurrentTime });
+        // setGameState({ type: "SET_MYINFO_TIMELEFT", payload: myCurrentTime });
+        // setGameState({ type: "SET_OPPONENTINFO_TIMELEFT", payload: opponentCurrentTime });
 
         //console.log(`Time left - me: ${myCurrentTime}, opponent: ${opponentCurrentTime}`)
 

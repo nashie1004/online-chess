@@ -1,40 +1,40 @@
 import { useEffect, useState } from 'react'
 import useGameContext from '../../hooks/useGameContext';
 import { msToMinuteDisplay } from '../../utils/helper';
+import useSignalRContext from '../../hooks/useSignalRContext';
+import { playPageHandlers } from '../../game/utilities/constants';
 
 export default function PlayerInfo() {
     const { gameState } = useGameContext();
     const [actualTime, setActualTime] = useState({ white: 0, black: 0, whitesTurn: false });
+    const { addHandler, removeHandler } = useSignalRContext();
 
     const white = gameState.myInfo.playerIsWhite ? gameState.myInfo : gameState.opponentInfo;
     const black = !gameState.myInfo.playerIsWhite ? gameState.myInfo : gameState.opponentInfo;
 
     useEffect(() => {
 
-        console.log(`white time left: ${white.timeLeft}, black time left: ${black.timeLeft}`)
-        
-        setActualTime({
-            white: white.timeLeft
-            , black: black.timeLeft
-            , whitesTurn: gameState.myInfo.playerIsWhite ? gameState.myInfo.isPlayersTurn : gameState.opponentInfo.isPlayersTurn
-        });
+        async function startTimer(){
+            await addHandler(playPageHandlers.onUpdateTimer, (data: any) => {
+                const white = data.white as number;
+                const black = data.black as number;
+                const whitesTurn = data.whitesTurn as boolean;
 
-        let intervalId: number;
+                console.log(data);
 
-        if (actualTime.whitesTurn){
-            intervalId = setInterval(() => {
-                setActualTime(prev => ({ ...prev, white: prev.white - 100 }));
-            }, 100)
-        } else {
-            intervalId = setInterval(() => {
-                setActualTime(prev => ({ ...prev, black: prev.black - 100 }));
-            }, 100)
+                setActualTime({ white, black, whitesTurn });
+            });            
+        }
+
+        if (gameState.gameStatus === "ONGOING"){
+            startTimer();
         }
 
         return () => {
-            clearInterval(intervalId);
-        }
-    }, [gameState.myInfo.isPlayersTurn, gameState.opponentInfo.isPlayersTurn])
+            removeHandler(playPageHandlers.onUpdateTimer);
+        };
+
+    }, [gameState.gameStatus])
 
   return (
     <>

@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.SignalR;
 using online_chess.Server.Enums;
 using online_chess.Server.Hubs;
+using online_chess.Server.Models;
 using online_chess.Server.Models.Play;
 using online_chess.Server.Service;
 
@@ -88,20 +89,34 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
             var hasCapture = room.UpdatePieceCoords(whitesOrientationMoveInfo, request.HasCapture, pieceMoveIsWhite);
             
             // update timer
-            var timeNow = (DateTime.Now).TimeOfDay;
+            var timeNow = (DateTime.Now);
 
-            if (isRoomCreator){
-                var elapsedTime = timeNow - (room.CreatedByUserInfo.LastMoveDate).TimeOfDay;
+            if (isRoomCreator)
+            {
+                var elapsedTime = timeNow - room.CreatedByUserInfo.LastMoveDate;
 
-                room.CreatedByUserInfo.TimeLeft -= elapsedTime;
+                room.CreatedByUserInfo.TimeLeft = room.CreatedByUserInfo.TimeLeft > elapsedTime
+                    ? room.CreatedByUserInfo.TimeLeft - elapsedTime
+                    : TimeSpan.Zero;
+
                 room.CreatedByUserInfo.LastMoveDate = DateTime.Now;
             } 
-            else {
-                var elapsedTime = timeNow - (room.JoinByUserInfo.LastMoveDate).TimeOfDay;
+            else
+            {
+                var elapsedTime = timeNow - room.JoinByUserInfo.LastMoveDate;
 
-                room.JoinByUserInfo.TimeLeft -= elapsedTime;
+                room.JoinByUserInfo.TimeLeft = room.JoinByUserInfo.TimeLeft > elapsedTime
+                    ? room.JoinByUserInfo.TimeLeft - elapsedTime
+                    : TimeSpan.Zero;
+
                 room.JoinByUserInfo.LastMoveDate = DateTime.Now;
             }
+
+            this.UpdateTimer(room
+                , room.CreatedByUserInfo.TimeLeft.TotalSeconds
+                , room.JoinByUserInfo.TimeLeft.TotalSeconds
+                , isRoomCreator
+            );
 
             //var json = JsonSerializer.Serialize(whitesOrientationMoveInfo);
             //_logger.LogInformation("\nDateTime: {0}, Move: {1}", DateTime.Now, json);
@@ -113,8 +128,6 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
             var retVal = new{
                 moveInfo = invertedMoveInfo
                 , moveIsWhite = pieceMoveIsWhite
-                , creatorTimeLeft = room.CreatedByUserInfo.TimeLeft.TotalMilliseconds
-                , joinerTimeLeft = room.JoinByUserInfo.TimeLeft.TotalMilliseconds
                 , creatorColorIsWhite = room.CreatedByUserColor == Enums.Color.White
                 , capturedPiece = hasCapture == null ? null : hasCapture
             };
@@ -123,5 +136,66 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
 
             return Unit.Value;
          }
+
+        
+        private async void UpdateTimer(GameRoom room, double creatorSecondsLeft, double joinerSecondsLeft, bool creatorsTurn)
+        {
+            var roomStatus = room.GamePlayStatus;
+            var playerSecondsLeft = creatorsTurn ? creatorSecondsLeft : joinerSecondsLeft;
+
+            while (playerSecondsLeft > 0 && roomStatus != GamePlayStatus.Finished)
+            {
+                _logger.LogInformation(
+                    "Timer running - room: {0}, Creator time left: {1}, Joiner time left: {2}", 
+                    room.GameKey, creatorSecondsLeft, joinerSecondsLeft);
+
+                var retVal = new {
+                    white = (room.CreatedByUserInfo.IsColorWhite ? creatorSecondsLeft : joinerSecondsLeft),
+                    black = (!room.CreatedByUserInfo.IsColorWhite ? creatorSecondsLeft : joinerSecondsLeft),
+                    whitesTurn = (room.CreatedByUserInfo.IsColorWhite && creatorsTurn)
+                };
+                await _hubContext.Clients.Group(room.GameKey.ToString()).SendAsync(RoomMethods.onUpdateTimer, retVal);
+
+                await Task.Delay(1000);
+
+                if (creatorsTurn){
+                    creatorSecondsLeft--;
+                } else {
+                    joinerSecondsLeft--;
+                }
+
+                playerSecondsLeft--;
+
+                // for every 30 seconds check if the game is finished
+                bool gameFinished = false;
+                if (playerSecondsLeft % 30 == 0){
+                    var gameRoom = _gameRoomService.GetOne(room.GameKey);
+
+                    if (gameRoom == null){
+                        gameFinished = true;
+                    }
+
+                    if (gameRoom != null && gameRoom.GamePlayStatus == GamePlayStatus.Finished){
+                        gameFinished = true;
+                    }
+
+                    if (gameRoom != null)
+                    {
+                        roomStatus = gameRoom.GamePlayStatus;
+                    }
+                }
+
+                if (roomStatus == GamePlayStatus.Finished){
+                    gameFinished = true;
+                }
+
+                if (gameFinished)
+                {
+                    _logger.LogInformation("Game done: {0}, Date ended: {1}", room.GameKey, DateTime.Now);
+                    break;
+                }
+            }
+        } 
+        
     }
 }
