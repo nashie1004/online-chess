@@ -4,7 +4,7 @@
     {
         public string UserName { get; set; }
         public bool IsPlayersTurnToMove { get; set; }
-        public TimeSpan TimeLeft { get; set; }
+        public double TimeLeft { get; set; }
         public DateTime LastMoveDate { get; set; }
         public bool IsColorWhite { get; set; }
         public bool KingInCheck { get; set; }

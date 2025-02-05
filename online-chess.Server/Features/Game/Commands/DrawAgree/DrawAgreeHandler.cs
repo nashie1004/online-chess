@@ -16,12 +16,15 @@ namespace online_chess.Server.Features.Game.Commands.DrawAgree
         private readonly MainDbContext _mainContext;
         private readonly AuthenticatedUserService _authenticatedUserService;
         private readonly UserManager<User> _userManager;
+        private readonly TimerService _timerService;
+
         public DrawAgreeHandler(
             GameRoomService gameRoomService
             , IHubContext<GameHub> hubContext
             , MainDbContext mainDbContext
             , AuthenticatedUserService authenticatedUserService
             , UserManager<User> userManager
+            , TimerService timerService
             )
         {
             _gameRoomService = gameRoomService;
@@ -29,6 +32,7 @@ namespace online_chess.Server.Features.Game.Commands.DrawAgree
             _mainContext = mainDbContext;
             _authenticatedUserService = authenticatedUserService;
             _userManager = userManager;
+            _timerService = timerService;
         }
 
 
@@ -89,6 +93,8 @@ namespace online_chess.Server.Features.Game.Commands.DrawAgree
                 CreatedByUser = "server",
                 Message = $"Game ended in a draw."
             });
+
+            _timerService.RemoveTimer(room.GameKey);
 
             await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync(RoomMethods.onReceiveMessages, room.ChatMessages);
                 

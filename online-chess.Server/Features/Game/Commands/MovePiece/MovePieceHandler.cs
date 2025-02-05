@@ -15,18 +15,22 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
         private readonly AuthenticatedUserService _authenticatedUserService;
         private readonly IHubContext<GameHub> _hubContext;
         private readonly ILogger<MovePieceHandler> _logger;
+        private readonly TimerService _timerService;
+
 
         public MovePieceHandler(
             GameRoomService gameRoomService
             , AuthenticatedUserService authenticatedUserService
             , IHubContext<GameHub> hubContext
             , ILogger<MovePieceHandler> logger
+            , TimerService timerService
             )
         {
             _gameRoomService = gameRoomService;
             _authenticatedUserService = authenticatedUserService;
             _hubContext = hubContext;
             _logger = logger;
+            _timerService = timerService;
         }
 
         public async Task<Unit> Handle(MovePieceRequest request, CancellationToken cancellationToken)
@@ -87,43 +91,8 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
             }
 
             var hasCapture = room.UpdatePieceCoords(whitesOrientationMoveInfo, request.HasCapture, pieceMoveIsWhite);
-            
-            // update timer
-            var timeNow = (DateTime.Now);
 
-            if (isRoomCreator)
-            {
-                var elapsedTime = timeNow - room.CreatedByUserInfo.LastMoveDate;
-
-                room.CreatedByUserInfo.TimeLeft = room.CreatedByUserInfo.TimeLeft > elapsedTime
-                    ? room.CreatedByUserInfo.TimeLeft - elapsedTime
-                    : TimeSpan.Zero;
-
-                room.CreatedByUserInfo.LastMoveDate = DateTime.Now;
-            } 
-            else
-            {
-                var elapsedTime = timeNow - room.JoinByUserInfo.LastMoveDate;
-
-                room.JoinByUserInfo.TimeLeft = room.JoinByUserInfo.TimeLeft > elapsedTime
-                    ? room.JoinByUserInfo.TimeLeft - elapsedTime
-                    : TimeSpan.Zero;
-
-                room.JoinByUserInfo.LastMoveDate = DateTime.Now;
-            }
-
-            this.UpdateTimer(room
-                , room.CreatedByUserInfo.TimeLeft.TotalSeconds
-                , room.JoinByUserInfo.TimeLeft.TotalSeconds
-                , isRoomCreator
-            );
-
-            //var json = JsonSerializer.Serialize(whitesOrientationMoveInfo);
-            //_logger.LogInformation("\nDateTime: {0}, Move: {1}", DateTime.Now, json);
-            _logger.LogInformation("\nTime Left - (Creator): {0}, (Joiner): {1}"
-                , room.CreatedByUserInfo.TimeLeft
-                , room.JoinByUserInfo.TimeLeft
-                );
+            UpdateTimer(room, isRoomCreator);
 
             var retVal = new{
                 moveInfo = invertedMoveInfo
@@ -138,21 +107,46 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
          }
 
         
-        private async void UpdateTimer(GameRoom room, double creatorSecondsLeft, double joinerSecondsLeft, bool creatorsTurn)
+        private async void UpdateTimer(GameRoom room, bool creatorsTurn)
         {
+            double creatorSecondsLeft = room.CreatedByUserInfo.TimeLeft;
+            double joinerSecondsLeft = room.JoinByUserInfo.TimeLeft;
+
             // cancel previous timer and start a new timer
             room.TimerDetector.Cancel();
             room.TimerDetector = new CancellationTokenSource();
-            var token = room.TimerDetector.Token;
 
             var roomStatus = room.GamePlayStatus;
-            var playerSecondsLeft = creatorsTurn ? creatorSecondsLeft : joinerSecondsLeft;
 
-            while (playerSecondsLeft > 0 && roomStatus != GamePlayStatus.Finished && !token.IsCancellationRequested)
+            while (creatorSecondsLeft > 0 && joinerSecondsLeft > 0 && roomStatus != GamePlayStatus.Finished)
             {
+                /*
+                TODO 2/5/2025 - may need to use a separate singleton to properly
+                reflect time
+                - use TimerService here
+                */
+                if (room.TimerDetector.Token.IsCancellationRequested){
+                    _logger.LogInformation("TOKEN CANCELLED");
+
+                    //if (creatorsTurn){
+                        room.CreatedByUserInfo.LastMoveDate = DateTime.Now;
+                        room.CreatedByUserInfo.TimeLeft = creatorSecondsLeft;
+
+                    //} else {
+                        room.JoinByUserInfo.LastMoveDate = DateTime.Now;
+                        room.JoinByUserInfo.TimeLeft = joinerSecondsLeft;
+                    //}
+
+                    _logger.LogInformation(
+                        "Token cancelled - Creator: {1}, Joiner: {2}", 
+                        room.CreatedByUserInfo.TimeLeft, room.JoinByUserInfo.TimeLeft);
+
+                    break;
+                }
+
                 _logger.LogInformation(
-                    "Timer running - room: {0}, Creator time left: {1}, Joiner time left: {2}", 
-                    room.GameKey, creatorSecondsLeft, joinerSecondsLeft);
+                    "Running - Creator: {0}, Joiner: {1}", 
+                    creatorSecondsLeft, joinerSecondsLeft);
 
                 var retVal = new {
                     white = (room.CreatedByUserInfo.IsColorWhite ? creatorSecondsLeft : joinerSecondsLeft),
@@ -169,19 +163,18 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
                     joinerSecondsLeft--;
                 }
 
-                playerSecondsLeft--;
-
                 // for every 30 seconds check if the game is finished
-                bool gameFinished = false;
-                if (playerSecondsLeft % 30 == 0){
+                if (creatorSecondsLeft % 30 == 0 || joinerSecondsLeft % 30 == 0){
                     var gameRoom = _gameRoomService.GetOne(room.GameKey);
 
                     if (gameRoom == null){
-                        gameFinished = true;
+                        _logger.LogInformation("1. Game done: {0}, Date ended: {1}", room.GameKey, DateTime.Now);
+                        break;
                     }
 
                     if (gameRoom != null && gameRoom.GamePlayStatus == GamePlayStatus.Finished){
-                        gameFinished = true;
+                        _logger.LogInformation("2. Game done: {0}, Date ended: {1}", room.GameKey, DateTime.Now);
+                        break;
                     }
 
                     if (gameRoom != null)
@@ -191,14 +184,10 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
                 }
 
                 if (roomStatus == GamePlayStatus.Finished){
-                    gameFinished = true;
-                }
-
-                if (gameFinished)
-                {
-                    _logger.LogInformation("Game done: {0}, Date ended: {1}", room.GameKey, DateTime.Now);
+                    _logger.LogInformation("3. Game done: {0}, Date ended: {1}", room.GameKey, DateTime.Now);
                     break;
                 }
+
             }
         } 
         

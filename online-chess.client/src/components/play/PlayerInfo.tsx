@@ -40,15 +40,15 @@ export default function PlayerInfo() {
     <>
         <div className="hstack my-3">
             <div className='timer-info w-100'>
-                <h6 className='text-secondary'>Lorem, ipsum.</h6>
+                <h6 className='text-secondary'>{gameState.myInfo.userName}</h6>
                 <h2>
-                    <i className="bi bi-clock"></i> <span>{secondsToMinuteDisplay(actualTime.white)}s</span>
+                    <i className="bi bi-clock" style={{ fontSize: "1.4rem" }}></i> <span>{secondsToMinuteDisplay(actualTime.white)}s</span>
                 </h2>
             </div>
             <div className='timer-info w-100'>
-                <h6  className='text-secondary'>Lorem, ipsum.</h6>
+                <h6  className='text-secondary'>{gameState.opponentInfo.userName}</h6>
                 <h2>
-                    <i className="bi bi-clock"></i> <span>{secondsToMinuteDisplay(actualTime.black)}s</span>
+                    <i className="bi bi-clock" style={{ fontSize: "1.4rem" }}></i> <span>{secondsToMinuteDisplay(actualTime.black)}s</span>
                 </h2>
             </div>
         </div>
