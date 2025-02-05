@@ -17,6 +17,11 @@ public class TimerService
     }
     
     public void RemoveTimer(Guid gameRoomKey){
-        _timer.Remove(gameRoomKey, out (double, double) playersTimer);
+        _timer.Remove(gameRoomKey, out (double, double) _);
     }
+
+    public (double, double) GetTimer(Guid gameRoomKey){
+        _timer.TryGetValue(gameRoomKey, out (double, double) timer);
+        return timer;
+    } 
 }
