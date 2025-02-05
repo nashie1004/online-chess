@@ -129,7 +129,7 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
                 var retVal = new {
                     white = (room.CreatedByUserInfo.IsColorWhite ? creatorSecondsLeft : joinerSecondsLeft),
                     black = (!room.CreatedByUserInfo.IsColorWhite ? creatorSecondsLeft : joinerSecondsLeft),
-                    whitesTurn = (room.CreatedByUserInfo.IsColorWhite && creatorsTurn)
+                    whitesTurn = (room.CreatedByUserInfo.IsColorWhite && !creatorsTurn)
                 };
                 await _hubContext.Clients.Group(room.GameKey.ToString()).SendAsync(RoomMethods.onUpdateTimer, retVal);
 
@@ -171,6 +171,9 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
                 if (gameFinished)
                 {
                     _logger.LogInformation("Game done: {0}, Date ended: {1}", room.GameKey, DateTime.Now);
+
+                    // await _hubContext.Clients.Group(room.GameKey.ToString()).SendAsync("", "");
+
                     break;
                 }
             }

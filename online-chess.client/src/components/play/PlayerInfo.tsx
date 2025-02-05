@@ -1,16 +1,25 @@
 import { useEffect, useState } from 'react'
 import useGameContext from '../../hooks/useGameContext';
-import { secondsToMinuteDisplay } from '../../utils/helper';
+import { gameTypeToSeconds, secondsToMinuteDisplay2 } from '../../utils/helper';
 import useSignalRContext from '../../hooks/useSignalRContext';
 import { playPageHandlers } from '../../game/utilities/constants';
 
 export default function PlayerInfo() {
     const { gameState } = useGameContext();
-    const [actualTime, setActualTime] = useState({ white: 0, black: 0, whitesTurn: false });
+
+    const [actualTime, setActualTime] = useState({ white: 0, black: 0, whitesTurn: true });
     const { addHandler, removeHandler } = useSignalRContext();
 
     const white = gameState.myInfo.playerIsWhite ? gameState.myInfo : gameState.opponentInfo;
     const black = !gameState.myInfo.playerIsWhite ? gameState.myInfo : gameState.opponentInfo;
+
+    useEffect(() => {
+        setActualTime({ 
+            white: gameTypeToSeconds(gameState.gameType), 
+            black: gameTypeToSeconds(gameState.gameType), 
+            whitesTurn: false 
+        });
+    }, [gameState.gameType]);
 
     useEffect(() => {
 
@@ -19,8 +28,6 @@ export default function PlayerInfo() {
                 const white = data.white as number;
                 const black = data.black as number;
                 const whitesTurn = data.whitesTurn as boolean;
-
-                console.log(data);
 
                 setActualTime({ white, black, whitesTurn });
             });            
@@ -34,21 +41,21 @@ export default function PlayerInfo() {
             removeHandler(playPageHandlers.onUpdateTimer);
         };
 
-    }, [gameState.gameStatus])
+    }, [gameState.gameStatus]);
 
   return (
     <>
         <div className="hstack my-3">
             <div className='timer-info w-100'>
-                <h6 className='text-secondary'>{gameState.myInfo.userName}</h6>
+                <h6 className='text-secondary'>{gameState.myInfo.playerIsWhite ? "You" : gameState.opponentInfo.userName} (white)</h6>
                 <h2>
-                    <i className="bi bi-clock" style={{ fontSize: "1.4rem" }}></i> <span>{secondsToMinuteDisplay(actualTime.white)}s</span>
+                    <i className="bi bi-clock" style={{ fontSize: "1.4rem" }}></i> <span>{secondsToMinuteDisplay2(actualTime.white)}s</span>
                 </h2>
             </div>
             <div className='timer-info w-100'>
-                <h6  className='text-secondary'>{gameState.opponentInfo.userName}</h6>
+                <h6  className='text-secondary'>{!gameState.myInfo.playerIsWhite ? "You" : gameState.opponentInfo.userName} (black)</h6>
                 <h2>
-                    <i className="bi bi-clock" style={{ fontSize: "1.4rem" }}></i> <span>{secondsToMinuteDisplay(actualTime.black)}s</span>
+                    <i className="bi bi-clock" style={{ fontSize: "1.4rem" }}></i> <span>{secondsToMinuteDisplay2(actualTime.black)}s</span>
                 </h2>
             </div>
         </div>
