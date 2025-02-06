@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.SignalR;
 using online_chess.Server.Enums;
 using online_chess.Server.Hubs;
 using online_chess.Server.Models.Entities;
-using online_chess.Server.Models.Play;
 using online_chess.Server.Persistence;
 using online_chess.Server.Service;
 
@@ -47,15 +46,13 @@ namespace online_chess.Server.Features.Game.Commands.RequestADraw
                 request.IdentityUserName == room.CreatedByUserId ? room.JoinedByUserId : room.CreatedByUserId
             );
 
-            var msgList = new List<Chat>(){
-                new Models.Play.Chat(){
+            room.ChatMessages.Add(new Models.Play.Chat(){
                 CreateDate = DateTime.Now,
                 CreatedByUser = "server",
                 Message = $"{request.IdentityUserName} offered a draw."
-            }
-            };
+            });
 
-            await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync(RoomMethods.onReceiveMessages, msgList);
+            await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync(RoomMethods.onReceiveMessages, room.ChatMessages);
             
             await _hubContext.Clients.Client(opponentConnectionId).SendAsync(RoomMethods.onOpponentDrawRequest, true);
 

@@ -125,7 +125,7 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
                 , KingInCheckMate = false
                 , KingInStaleMate = false
             };
-            var msgList = new List<Models.Play.Chat>()
+            gameRoom.ChatMessages = new List<Models.Play.Chat>()
             {
                 new Models.Play.Chat()
                 {
@@ -153,7 +153,7 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
             };
 
             await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync(RoomMethods.onInitializeGameInfo, baseGameInfo);
-            await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync(RoomMethods.onReceiveMessages, msgList);
+            await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync(RoomMethods.onReceiveMessages, gameRoom.ChatMessages);
 
             return Unit.Value;
         }
