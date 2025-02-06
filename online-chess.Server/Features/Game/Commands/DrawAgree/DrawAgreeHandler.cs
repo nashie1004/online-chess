@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.SignalR;
 using online_chess.Server.Enums;
 using online_chess.Server.Hubs;
 using online_chess.Server.Models.Entities;
+using online_chess.Server.Models.Play;
 using online_chess.Server.Persistence;
 using online_chess.Server.Service;
 
@@ -49,13 +50,15 @@ namespace online_chess.Server.Features.Game.Commands.DrawAgree
             // other player decline draw
             if (!request.AgreeOnDraw)
             {
-                room.ChatMessages.Add(new Models.Play.Chat(){
+                var msgList = new List<Chat>(){
+                    new Models.Play.Chat(){
                     CreateDate = DateTime.Now,
                     CreatedByUser = "server",
                     Message = $"{request.IdentityUserName} declined the draw."
-                });
+                }
+                };
 
-                await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync(RoomMethods.onReceiveMessages, room.ChatMessages);
+                await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync(RoomMethods.onReceiveMessages, msgList);
                 
                 await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync(RoomMethods.onDeclineDraw, true);
                 return Unit.Value;
@@ -88,15 +91,17 @@ namespace online_chess.Server.Features.Game.Commands.DrawAgree
 
             await _mainContext.SaveChangesAsync(cancellationToken);
 
-            room.ChatMessages.Add(new Models.Play.Chat(){
+            var msgLists = new List<Chat>(){
+                new Models.Play.Chat(){
                 CreateDate = DateTime.Now,
                 CreatedByUser = "server",
                 Message = $"Game ended in a draw."
-            });
+            }
+            };
 
             _timerService.RemoveTimer(room.GameKey);
 
-            await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync(RoomMethods.onReceiveMessages, room.ChatMessages);
+            await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync(RoomMethods.onReceiveMessages, msgLists);
                 
             await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync(RoomMethods.onGameOver, 2);
 

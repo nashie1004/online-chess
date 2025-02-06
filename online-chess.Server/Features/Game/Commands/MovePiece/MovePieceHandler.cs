@@ -154,6 +154,7 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
 
                     playerSecondsLeft--;
 
+                    // check this
                     _timerService.UpdateTimer(room.GameKey, (creatorSecondsLeft, joinerSecondsLeft));
 
                     // for every 30 seconds check if the game is finished
@@ -198,7 +199,6 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
                         _logger.LogInformation("0 seconds left Game Ended: {0}", playerSecondsLeft);
                         TimeIsUp(room, creatorsTurn, scope);
                         break;
-
                     }
                 }
             }

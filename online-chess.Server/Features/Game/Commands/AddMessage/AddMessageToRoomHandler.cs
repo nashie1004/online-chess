@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.SignalR;
 using online_chess.Server.Enums;
 using online_chess.Server.Hubs;
+using online_chess.Server.Models.Play;
 using online_chess.Server.Service;
 
 namespace online_chess.Server.Features.Game.Commands.AddMessageToRoom
@@ -19,16 +20,15 @@ namespace online_chess.Server.Features.Game.Commands.AddMessageToRoom
 
         public async Task<Unit> Handle(AddMessageToRoomRequest request, CancellationToken cancellationToken)
         {
-            // not a valid guid
-            var room = _gameRoomService.GetOne(request.GameRoomKeyString);
-            
-            room?.ChatMessages.Add(new Models.Play.Chat(){
+            var msgList = new List<Chat>(){
+                new Models.Play.Chat(){
                 CreateDate = DateTime.Now,
                 CreatedByUser = request.IdentityUserName,
                 Message = request.Message
-            });
+            }
+            };
 
-            await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync(RoomMethods.onReceiveMessages, room?.ChatMessages);
+            await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync(RoomMethods.onReceiveMessages, msgList);
 
             return Unit.Value;
         }
