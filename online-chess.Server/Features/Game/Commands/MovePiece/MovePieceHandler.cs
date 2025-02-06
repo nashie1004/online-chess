@@ -38,7 +38,6 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
 
             if (room == null)
             {
-                //await _hubContext.Clients.Client(request.UserConnectionId).SendAsync("onNotFound", true);
                 return Unit.Value;
             }
 
@@ -91,7 +90,7 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
 
             var hasCapture = room.UpdatePieceCoords(whitesOrientationMoveInfo, request.HasCapture, pieceMoveIsWhite);
 
-            UpdateTimer(room, isRoomCreator);
+            UpdateTimer(room, !isRoomCreator);
 
             var retVal = new{
                 moveInfo = invertedMoveInfo
@@ -123,13 +122,13 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
             while (playerSecondsLeft > 0 && roomStatus != GamePlayStatus.Finished && !token.IsCancellationRequested)
             {
                 _logger.LogInformation(
-                    "Timer running - room: {0}, Creator time left: {1}, Joiner time left: {2}", 
-                    room.GameKey, creatorSecondsLeft, joinerSecondsLeft);
+                    "Timer running, Creator time left: {0}, Joiner time left: {1}"
+                    , creatorSecondsLeft, joinerSecondsLeft);
 
                 var retVal = new {
                     white = (room.CreatedByUserInfo.IsColorWhite ? creatorSecondsLeft : joinerSecondsLeft),
                     black = (!room.CreatedByUserInfo.IsColorWhite ? creatorSecondsLeft : joinerSecondsLeft),
-                    whitesTurn = (room.CreatedByUserInfo.IsColorWhite && !creatorsTurn)
+                    whitesTurn = (room.CreatedByUserInfo.IsColorWhite ? creatorsTurn : !creatorsTurn)
                 };
                 await _hubContext.Clients.Group(room.GameKey.ToString()).SendAsync(RoomMethods.onUpdateTimer, retVal);
 
@@ -149,6 +148,9 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
                 bool gameFinished = false;
                 if (playerSecondsLeft % 30 == 0){
                     var gameRoom = _gameRoomService.GetOne(room.GameKey);
+
+                    _logger.LogInformation("Check room status: {0}", JsonSerializer.Serialize(gameRoom));
+
 
                     if (gameRoom == null){
                         gameFinished = true;
@@ -171,7 +173,6 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
                 if (gameFinished)
                 {
                     _logger.LogInformation("Game done: {0}, Date ended: {1}", room.GameKey, DateTime.Now);
-
                     // await _hubContext.Clients.Group(room.GameKey.ToString()).SendAsync("", "");
 
                     break;
