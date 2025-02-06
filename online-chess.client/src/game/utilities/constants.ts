@@ -180,6 +180,7 @@ export const playPageHandlers = {
     ,onUpdateBoard: "onUpdateBoard"
     ,onOpponentDrawRequest: "onOpponentDrawRequest"
     ,onDeclineDraw: "onDeclineDraw"
+    ,onUpdateTimer: "onUpdateTimer"
 }
 
 export const playPageInvokers = {

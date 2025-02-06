@@ -38,6 +38,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<GameQueueService>();
 builder.Services.AddSingleton<GameRoomService>();
 builder.Services.AddSingleton<AuthenticatedUserService>();
+builder.Services.AddSingleton<TimerService>();
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 builder.Logging.AddDebug();

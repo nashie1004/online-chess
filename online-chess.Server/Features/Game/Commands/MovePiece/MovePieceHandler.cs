@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.SignalR;
 using online_chess.Server.Enums;
 using online_chess.Server.Hubs;
+using online_chess.Server.Models;
 using online_chess.Server.Models.Play;
 using online_chess.Server.Service;
 
@@ -14,18 +15,21 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
         private readonly AuthenticatedUserService _authenticatedUserService;
         private readonly IHubContext<GameHub> _hubContext;
         private readonly ILogger<MovePieceHandler> _logger;
+        private readonly TimerService _timerService;
 
         public MovePieceHandler(
             GameRoomService gameRoomService
             , AuthenticatedUserService authenticatedUserService
             , IHubContext<GameHub> hubContext
             , ILogger<MovePieceHandler> logger
+            , TimerService timerService
             )
         {
             _gameRoomService = gameRoomService;
             _authenticatedUserService = authenticatedUserService;
             _hubContext = hubContext;
             _logger = logger;
+            _timerService = timerService;
         }
 
         public async Task<Unit> Handle(MovePieceRequest request, CancellationToken cancellationToken)
@@ -34,7 +38,6 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
 
             if (room == null)
             {
-                //await _hubContext.Clients.Client(request.UserConnectionId).SendAsync("onNotFound", true);
                 return Unit.Value;
             }
 
@@ -86,35 +89,12 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
             }
 
             var hasCapture = room.UpdatePieceCoords(whitesOrientationMoveInfo, request.HasCapture, pieceMoveIsWhite);
-            
-            // update timer
-            var timeNow = (DateTime.Now).TimeOfDay;
 
-            if (isRoomCreator){
-                var elapsedTime = timeNow - (room.CreatedByUserInfo.LastMoveDate).TimeOfDay;
-
-                room.CreatedByUserInfo.TimeLeft -= elapsedTime;
-                room.CreatedByUserInfo.LastMoveDate = DateTime.Now;
-            } 
-            else {
-                var elapsedTime = timeNow - (room.JoinByUserInfo.LastMoveDate).TimeOfDay;
-
-                room.JoinByUserInfo.TimeLeft -= elapsedTime;
-                room.JoinByUserInfo.LastMoveDate = DateTime.Now;
-            }
-
-            //var json = JsonSerializer.Serialize(whitesOrientationMoveInfo);
-            //_logger.LogInformation("\nDateTime: {0}, Move: {1}", DateTime.Now, json);
-            _logger.LogInformation("\nTime Left - (Creator): {0}, (Joiner): {1}"
-                , room.CreatedByUserInfo.TimeLeft
-                , room.JoinByUserInfo.TimeLeft
-                );
+            UpdateTimer(room, !isRoomCreator);
 
             var retVal = new{
                 moveInfo = invertedMoveInfo
                 , moveIsWhite = pieceMoveIsWhite
-                , creatorTimeLeft = room.CreatedByUserInfo.TimeLeft.TotalMilliseconds
-                , joinerTimeLeft = room.JoinByUserInfo.TimeLeft.TotalMilliseconds
                 , creatorColorIsWhite = room.CreatedByUserColor == Enums.Color.White
                 , capturedPiece = hasCapture == null ? null : hasCapture
             };
@@ -123,5 +103,81 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
 
             return Unit.Value;
          }
+
+        
+        private async void UpdateTimer(GameRoom room, bool creatorsTurn)
+        {
+            // cancel previous timer and start a new timer
+            var timer = _timerService.GetTimer(room.GameKey);
+            double creatorSecondsLeft = timer.Item1;
+            double joinerSecondsLeft = timer.Item2;
+
+            room.TimerDetector.Cancel();
+            room.TimerDetector = new CancellationTokenSource();
+            var token = room.TimerDetector.Token;
+
+            var roomStatus = room.GamePlayStatus;
+            var playerSecondsLeft = creatorsTurn ? creatorSecondsLeft : joinerSecondsLeft;
+
+            while (playerSecondsLeft > 0 && roomStatus != GamePlayStatus.Finished && !token.IsCancellationRequested)
+            {
+                _logger.LogInformation(
+                    "Timer running, Creator time left: {0}, Joiner time left: {1}"
+                    , creatorSecondsLeft, joinerSecondsLeft);
+
+                var retVal = new {
+                    white = (room.CreatedByUserInfo.IsColorWhite ? creatorSecondsLeft : joinerSecondsLeft),
+                    black = (!room.CreatedByUserInfo.IsColorWhite ? creatorSecondsLeft : joinerSecondsLeft),
+                    whitesTurn = (room.CreatedByUserInfo.IsColorWhite ? creatorsTurn : !creatorsTurn)
+                };
+                await _hubContext.Clients.Group(room.GameKey.ToString()).SendAsync(RoomMethods.onUpdateTimer, retVal);
+
+                await Task.Delay(1000);
+
+                if (creatorsTurn){
+                    creatorSecondsLeft--;
+                } else {
+                    joinerSecondsLeft--;
+                }
+
+                playerSecondsLeft--;
+
+                _timerService.UpdateTimer(room.GameKey, (creatorSecondsLeft, joinerSecondsLeft));
+
+                // for every 30 seconds check if the game is finished
+                bool gameFinished = false;
+                if (playerSecondsLeft % 30 == 0){
+                    var gameRoom = _gameRoomService.GetOne(room.GameKey);
+
+                    _logger.LogInformation("Check room status: {0}", JsonSerializer.Serialize(gameRoom));
+
+
+                    if (gameRoom == null){
+                        gameFinished = true;
+                    }
+
+                    if (gameRoom != null && gameRoom.GamePlayStatus == GamePlayStatus.Finished){
+                        gameFinished = true;
+                    }
+
+                    if (gameRoom != null)
+                    {
+                        roomStatus = gameRoom.GamePlayStatus;
+                    }
+                }
+
+                if (roomStatus == GamePlayStatus.Finished){
+                    gameFinished = true;
+                }
+
+                if (gameFinished)
+                {
+                    _logger.LogInformation("Game done: {0}, Date ended: {1}", room.GameKey, DateTime.Now);
+                    // await _hubContext.Clients.Group(room.GameKey.ToString()).SendAsync("", "");
+
+                    break;
+                }
+            }
+        } 
     }
 }

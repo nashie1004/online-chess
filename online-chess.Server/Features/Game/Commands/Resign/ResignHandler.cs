@@ -16,6 +16,7 @@ namespace online_chess.Server.Features.Game.Commands.Resign
         private readonly MainDbContext _mainContext;
         private readonly AuthenticatedUserService _authenticatedUserService;
         private readonly UserManager<User> _userManager;
+        private readonly TimerService _timerService;
 
         public ResignHandler(
             GameRoomService gameRoomService
@@ -23,6 +24,7 @@ namespace online_chess.Server.Features.Game.Commands.Resign
             , MainDbContext mainDbContext
             , AuthenticatedUserService authenticatedUserService
             , UserManager<User> userManager
+            , TimerService timerService
             )
         {
             _gameRoomService = gameRoomService;
@@ -30,6 +32,7 @@ namespace online_chess.Server.Features.Game.Commands.Resign
             _mainContext = mainDbContext;
             _authenticatedUserService = authenticatedUserService;
             _userManager = userManager;
+            _timerService = timerService;
         }
         public async Task<Unit> Handle(ResignRequest request, CancellationToken cancellationToken)
         {
@@ -76,6 +79,8 @@ namespace online_chess.Server.Features.Game.Commands.Resign
                 CreatedByUser = "server",
                 Message = $"{request.IdentityUserName} resigned."
             });
+
+            _timerService.RemoveTimer(room.GameKey);
 
             await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync(RoomMethods.onReceiveMessages, room.ChatMessages);
                 

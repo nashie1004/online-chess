@@ -31,7 +31,7 @@ export default function Layout() {
             <Outlet />
           </div> 
           : 
-          <Spinner animation="border" variant="dark" className="mt-3" /> 
+          <Spinner animation="border" variant="light" className="mt-3" /> 
         }
       </main>
 

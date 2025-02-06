@@ -33,6 +33,36 @@ export function msToMinuteDisplay(milliseconds: number){
     return retVal;
 }
 
+export function secondsToMinuteDisplay(seconds: number) {
+    let duration = moment.duration(seconds, "seconds");
+    
+    // Get the minutes and seconds (ignoring hours and milliseconds)
+    let minutes = duration.minutes();
+    let secondsFormatted = duration.seconds();  // Extract seconds
+
+    // Pad the minutes and seconds to always show two digits
+    let formattedMinutes = String(minutes).padStart(2, '0');
+    let formattedSeconds = String(secondsFormatted).padStart(2, '0');
+    
+    // Return formatted value as MM:SS
+    const retVal = `${formattedMinutes}:${formattedSeconds}`;
+
+    return retVal;
+}
+
+export function secondsToMinuteDisplay2(seconds: number) {
+    const minutes = Math.floor(seconds / 60);  
+    const remainingSeconds = seconds % 60;     
+
+    const formattedMinutes = String(minutes).padStart(2, '0');
+    const formattedSeconds = String(remainingSeconds).padStart(2, '0');
+
+    const retVal = `${formattedMinutes}:${formattedSeconds}`;
+    
+    return retVal;
+}
+
+
 export function gameStatusDisplay(status: GameStatus){
     switch(status){
         case GameStatus.Won:
@@ -53,4 +83,26 @@ export function colorOptionsDisplay(option: ColorOptions){
         case ColorOptions.Random:
             return "Random";
     }
+}
+
+export function gameTypeToSeconds(gameType: GameType){
+    let seconds = 0;
+    switch(gameType){
+        case GameType.Classical:
+            seconds = 3600;
+            break;
+        case GameType.Blitz3Mins:
+            seconds = 180;
+            break;
+        case GameType.Blitz5Mins:
+            seconds = 300;
+            break;
+        case GameType.Rapid10Mins:
+            seconds = 600;
+            break;
+        case GameType.Rapid25Mins:
+            seconds = 1500;
+            break;
+    }
+    return seconds;
 }

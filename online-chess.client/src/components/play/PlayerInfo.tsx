@@ -1,54 +1,61 @@
 import { useEffect, useState } from 'react'
 import useGameContext from '../../hooks/useGameContext';
-import { msToMinuteDisplay } from '../../utils/helper';
+import { gameTypeToSeconds, secondsToMinuteDisplay2 } from '../../utils/helper';
+import useSignalRContext from '../../hooks/useSignalRContext';
+import { playPageHandlers } from '../../game/utilities/constants';
 
 export default function PlayerInfo() {
     const { gameState } = useGameContext();
-    const [actualTime, setActualTime] = useState({ white: 0, black: 0, whitesTurn: false });
+
+    const [actualTime, setActualTime] = useState({ white: 0, black: 0, whitesTurn: true });
+    const { addHandler, removeHandler } = useSignalRContext();
 
     const white = gameState.myInfo.playerIsWhite ? gameState.myInfo : gameState.opponentInfo;
     const black = !gameState.myInfo.playerIsWhite ? gameState.myInfo : gameState.opponentInfo;
 
     useEffect(() => {
-
-        console.log(`white time left: ${white.timeLeft}, black time left: ${black.timeLeft}`)
-        
-        setActualTime({
-            white: white.timeLeft
-            , black: black.timeLeft
-            , whitesTurn: gameState.myInfo.playerIsWhite ? gameState.myInfo.isPlayersTurn : gameState.opponentInfo.isPlayersTurn
+        setActualTime({ 
+            white: gameTypeToSeconds(gameState.gameType), 
+            black: gameTypeToSeconds(gameState.gameType), 
+            whitesTurn: false 
         });
+    }, [gameState.gameType]);
 
-        let intervalId: number;
+    useEffect(() => {
 
-        if (actualTime.whitesTurn){
-            intervalId = setInterval(() => {
-                setActualTime(prev => ({ ...prev, white: prev.white - 100 }));
-            }, 100)
-        } else {
-            intervalId = setInterval(() => {
-                setActualTime(prev => ({ ...prev, black: prev.black - 100 }));
-            }, 100)
+        async function startTimer(){
+            await addHandler(playPageHandlers.onUpdateTimer, (data: any) => {
+                const white = data.white as number;
+                const black = data.black as number;
+                const whitesTurn = data.whitesTurn as boolean;
+
+                setActualTime({ white, black, whitesTurn });
+            });            
+        }
+
+        if (gameState.gameStatus === "ONGOING"){
+            startTimer();
         }
 
         return () => {
-            clearInterval(intervalId);
-        }
-    }, [gameState.myInfo.isPlayersTurn, gameState.opponentInfo.isPlayersTurn])
+            removeHandler(playPageHandlers.onUpdateTimer);
+        };
+
+    }, [gameState.gameStatus]);
 
   return (
     <>
         <div className="hstack my-3">
             <div className='timer-info w-100'>
-                <h6 className='text-secondary'>Lorem, ipsum.</h6>
+                <h6 className='text-secondary'>{gameState.myInfo.playerIsWhite ? "You" : gameState.opponentInfo.userName} (white)</h6>
                 <h2>
-                    <i className="bi bi-clock"></i> <span>{msToMinuteDisplay(actualTime.white)}s</span>
+                    <i className="bi bi-clock" style={{ fontSize: "1.4rem" }}></i> <span>{secondsToMinuteDisplay2(actualTime.white)}s</span>
                 </h2>
             </div>
             <div className='timer-info w-100'>
-                <h6  className='text-secondary'>Lorem, ipsum.</h6>
+                <h6  className='text-secondary'>{!gameState.myInfo.playerIsWhite ? "You" : gameState.opponentInfo.userName} (black)</h6>
                 <h2>
-                    <i className="bi bi-clock"></i> <span>{msToMinuteDisplay(actualTime.black)}s</span>
+                    <i className="bi bi-clock" style={{ fontSize: "1.4rem" }}></i> <span>{secondsToMinuteDisplay2(actualTime.black)}s</span>
                 </h2>
             </div>
         </div>
