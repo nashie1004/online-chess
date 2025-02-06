@@ -4,7 +4,7 @@ using MediatR;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using online_chess.Server.Enums;
-using online_chess.Server.Models.DTOs;
+using online_chess.Server.Models.Profile;
 using online_chess.Server.Persistence;
 
 namespace online_chess.Server.Features.Auth.Queries.GetGameHistory;

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using online_chess.Server.Models.DTOs;
 using online_chess.Server.Models.Entities;
+using online_chess.Server.Models.Profile;
 
 namespace online_chess.Server.Persistence
 {

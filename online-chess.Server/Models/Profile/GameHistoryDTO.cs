@@ -1,7 +1,7 @@
 using System;
 using online_chess.Server.Enums;
 
-namespace online_chess.Server.Models.DTOs;
+namespace online_chess.Server.Models.Profile;
 
 public class GameHistoryDTO
 {

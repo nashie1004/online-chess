@@ -2,7 +2,7 @@
 using online_chess.Server.Constants;
 using online_chess.Server.Enums;
 
-namespace online_chess.Server.Models.DTOs
+namespace online_chess.Server.Models.Profile
 {
     [NotMapped]
     public class GameHistoryList
