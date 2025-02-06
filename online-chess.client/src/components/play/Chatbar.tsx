@@ -13,8 +13,8 @@ export default function Chatbar() {
 
   async function submitForm(e: React.FormEvent<HTMLFormElement>) {
     if (message === "") return;
-    e.preventDefault()
-    invoke(playPageInvokers.addMessageToRoom, gameState.gameRoomKey, message)
+    e.preventDefault();
+    invoke(playPageInvokers.addMessageToRoom, gameState.gameRoomKey, message);
     setMessage("");
   }
 

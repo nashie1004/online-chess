@@ -1,26 +1,25 @@
 import { chessBoardNotation } from '../../game/utilities/helpers';
 import { Table } from 'react-bootstrap';
 import useGameContext from '../../hooks/useGameContext';
+import { useEffect, useRef } from 'react';
 
 const board = chessBoardNotation();
 
 export default function MoveHistory() {
     const { gameState } = useGameContext();
     const moveHistory = gameState.moveHistory;
+    const containerRef = useRef<HTMLDivElement>(null);
 
-    // console.log("movehistory: ", moveHistory)
+    useEffect(() => {
+        if (containerRef.current){
+            containerRef.current.scrollTop = containerRef.current.scrollHeight;
+        }
+    }, [gameState.moveHistory]);
 
   return (
     <>
-        <div style={{ height: "170px", overflowY: "scroll" }} className='mb-3 mt-4'>
+        <div ref={containerRef} style={{ height: "170px", overflowY: "scroll", scrollBehavior: "smooth" }} className='mb-3 mt-4'>
             <Table striped size="sm">
-                {/* <thead>
-                    <tr>
-                        <th></th>
-                        <th>White</th>
-                        <th>Black</th>
-                    </tr>
-                </thead> */}
                 <tbody>
                     {Array.from({ length: Math.max(gameState.moveHistory.white.length, gameState.moveHistory.black.length) }).map((_, idx) => (
                         <tr key={idx}>

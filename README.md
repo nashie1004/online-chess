@@ -34,7 +34,6 @@ after that, the web application should now be running.
 - https://www.piskelapp.com/
 
 ## TODO Essential (Game)
-1. timer - DOING
 2. promotion picker - DOING
 3. disconnect or leave logic
 4. en passant bug
@@ -50,6 +49,7 @@ after that, the web application should now be running.
 6. toaster
 7. table reload/refresh
 8. some framer motion?
+9. more sounds and some phaser effects
 
 ### SQLite
 ```

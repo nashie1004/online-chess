@@ -1,10 +1,13 @@
 ﻿using System.Text.Json;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 using online_chess.Server.Enums;
 using online_chess.Server.Hubs;
 using online_chess.Server.Models;
+using online_chess.Server.Models.Entities;
 using online_chess.Server.Models.Play;
+using online_chess.Server.Persistence;
 using online_chess.Server.Service;
 
 namespace online_chess.Server.Features.Game.Commands.MovePiece
@@ -16,6 +19,9 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
         private readonly IHubContext<GameHub> _hubContext;
         private readonly ILogger<MovePieceHandler> _logger;
         private readonly TimerService _timerService;
+        private readonly MainDbContext _mainDbContext;
+        private readonly UserManager<User> _userManager;
+
 
         public MovePieceHandler(
             GameRoomService gameRoomService
@@ -23,6 +29,8 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
             , IHubContext<GameHub> hubContext
             , ILogger<MovePieceHandler> logger
             , TimerService timerService
+            , MainDbContext mainDbContext
+            , UserManager<User> userManager
             )
         {
             _gameRoomService = gameRoomService;
@@ -30,6 +38,8 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
             _hubContext = hubContext;
             _logger = logger;
             _timerService = timerService;
+            _mainDbContext = mainDbContext;
+            _userManager = userManager;
         }
 
         public async Task<Unit> Handle(MovePieceRequest request, CancellationToken cancellationToken)
@@ -119,7 +129,7 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
             var roomStatus = room.GamePlayStatus;
             var playerSecondsLeft = creatorsTurn ? creatorSecondsLeft : joinerSecondsLeft;
 
-            while (playerSecondsLeft > 0 && roomStatus != GamePlayStatus.Finished && !token.IsCancellationRequested)
+            while (playerSecondsLeft > -2 && roomStatus != GamePlayStatus.Finished && !token.IsCancellationRequested)
             {
                 _logger.LogInformation(
                     "Timer running, Creator time left: {0}, Joiner time left: {1}"
@@ -149,8 +159,7 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
                 if (playerSecondsLeft % 30 == 0){
                     var gameRoom = _gameRoomService.GetOne(room.GameKey);
 
-                    _logger.LogInformation("Check room status: {0}", JsonSerializer.Serialize(gameRoom));
-
+                    _logger.LogInformation("Check room status: {0}, {1}", gameRoom?.GameKey, gameRoom?.GamePlayStatus);
 
                     if (gameRoom == null){
                         gameFinished = true;
@@ -177,7 +186,47 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
 
                     break;
                 }
+
+                if (playerSecondsLeft == -1){
+                    _logger.LogInformation("0 seconds left Game Ended: {0}", playerSecondsLeft);
+                    TimeIsUp(room, creatorsTurn);
+                    break;
+
+                }
             }
         } 
+
+
+        // gets called when a player timer hits 0
+        private async void TimeIsUp(GameRoom room, bool creatorWon)
+        {
+            _timerService.RemoveTimer(room.GameKey);
+
+            var creator = await _userManager.FindByNameAsync(room.CreatedByUserId);
+            var joiner = await _userManager.FindByNameAsync(room.JoinedByUserId);
+
+            await _mainDbContext.GameHistories.AddAsync(new GameHistory(){
+                GameStartDate = room.GameStartedAt
+                , GameEndDate = DateTime.Now
+
+                , PlayerOneId = creator?.Id ?? 0
+                , PlayerOneColor = room.CreatedByUserColor
+                , PlayerTwoId = joiner?.Id ?? 0
+                , PlayerTwoColor = room.CreatedByUserColor == Color.White ? Color.Black : Color.White
+                
+                , WinnerPlayerId = creatorWon ? (creator?.Id ?? 0) : (joiner?.Id ?? 0) 
+                , IsDraw = false
+                , GameType = room.GameType
+            });
+
+            await _mainDbContext.SaveChangesAsync();
+
+            string creatorConnectionId = _authenticatedUserService.GetConnectionId(room.CreatedByUserId);
+            string joinerConnectionId = _authenticatedUserService.GetConnectionId(room.JoinedByUserId);
+
+            await _hubContext.Clients.Client(creatorConnectionId).SendAsync(RoomMethods.onGameOver, creatorWon ? 1 : 0);
+            await _hubContext.Clients.Client(joinerConnectionId).SendAsync(RoomMethods.onGameOver, !creatorWon ? 1 : 0);
+        }
+
     }
 }
