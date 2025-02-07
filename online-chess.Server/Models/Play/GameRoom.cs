@@ -23,7 +23,7 @@ namespace online_chess.Server.Models
         public (BaseMoveInfo, BaseMoveInfo) BothKingCoords { get; set; }
         public MoveHistory MoveHistory { get; set; }
         public List<BaseMoveInfo> CaptureHistory { get; set; }
-       
+        public string? TimerJobId { get; set; }
 
         public GameRoom()
         {

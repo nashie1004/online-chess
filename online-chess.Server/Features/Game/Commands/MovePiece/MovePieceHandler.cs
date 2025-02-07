@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using Hangfire;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
@@ -96,7 +97,23 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
 
             var hasCapture = room.UpdatePieceCoords(whitesOrientationMoveInfo, request.HasCapture, pieceMoveIsWhite);
 
-            await UpdateTimer(room, !isRoomCreator);
+            //Task.Run(async () =>
+            //{
+            //    try
+            //    {
+            //        await UpdateTimer(room, !isRoomCreator);
+            //    } catch (Exception err)
+            //    {
+            //        _logger.LogError(err, "UpdateTimer Error Here");
+            //    }
+            //});
+            //RecurringJob.AddOrUpdate(() => UpdateTimer(room, !isRoomCreator));
+            if (!string.IsNullOrEmpty(room.TimerJobId))
+            {
+                BackgroundJob.Delete(room.TimerJobId);
+            }
+            
+            room.TimerJobId = BackgroundJob.Enqueue(() => UpdateTimer(room, !isRoomCreator));
 
             var retVal = new{
                 moveInfo = invertedMoveInfo
@@ -106,12 +123,12 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
             };
 
             await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync(RoomMethods.onUpdateBoard, retVal);
-
+            
             return Unit.Value;
          }
 
         
-        private async Task UpdateTimer(GameRoom room, bool creatorsTurn)
+        public async Task UpdateTimer(GameRoom room, bool creatorsTurn)
         {
             // cancel previous timer and start a new timer
             var timer = _timerService.GetTimer(room.GameKey);
@@ -128,7 +145,7 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
             while (playerSecondsLeft > -2 && roomStatus != GamePlayStatus.Finished && !token.IsCancellationRequested)
             {
                 using (var scope = _serviceProvider.CreateScope())
-                {
+               {
                     _logger.LogInformation(
                     "Timer running, Creator time left: {0}, Joiner time left: {1}"
                     , creatorSecondsLeft, joinerSecondsLeft);
@@ -202,11 +219,11 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
                     }
                 }
             }
-        } 
+        }
 
 
         // gets called when a player timer hits 0
-        private async void TimeIsUp(GameRoom room, bool creatorWon, IServiceScope scope)
+        public async void TimeIsUp(GameRoom room, bool creatorWon, IServiceScope scope)
         {
             var identityDbContext = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
             var mainDbContext = scope.ServiceProvider.GetRequiredService<MainDbContext>();
