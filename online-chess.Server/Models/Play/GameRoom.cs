@@ -17,13 +17,13 @@ namespace online_chess.Server.Models
         public List<Play.Chat> ChatMessages { get; set; }
         [JsonIgnore]
         public CancellationTokenSource TimerDetector { get; set; }
+        public Timer TimerId { get; set; }
         
         // for handling disconnect state
         public List<BaseMoveInfo> PiecesCoords { get; set; }
         public (BaseMoveInfo, BaseMoveInfo) BothKingCoords { get; set; }
         public MoveHistory MoveHistory { get; set; }
         public List<BaseMoveInfo> CaptureHistory { get; set; }
-        public string? TimerJobId { get; set; }
 
         public GameRoom()
         {
