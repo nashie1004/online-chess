@@ -7,8 +7,6 @@ using online_chess.Server.Models.Entities;
 using online_chess.Server.Models.Play;
 using online_chess.Server.Persistence;
 using online_chess.Server.Service;
-using Hangfire;
-using Hangfire.MemoryStorage;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,8 +42,6 @@ builder.Services.AddSingleton<TimerService>();
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 builder.Logging.AddDebug();
-builder.Services.AddHangfire(i => i.UseMemoryStorage());
-builder.Services.AddHangfireServer();
 
 var app = builder.Build();
 
@@ -66,7 +62,6 @@ if (app.Environment.IsDevelopment())
         .AllowCredentials()); // allow credentials
 }
 
-app.UseHangfireDashboard("/hangfire");
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();

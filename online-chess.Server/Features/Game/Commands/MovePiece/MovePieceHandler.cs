@@ -1,5 +1,4 @@
 ﻿using System.Text.Json;
-using Hangfire;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
