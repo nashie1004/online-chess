@@ -1,10 +1,13 @@
 ﻿using System.Text.Json;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 using online_chess.Server.Enums;
 using online_chess.Server.Hubs;
 using online_chess.Server.Models;
+using online_chess.Server.Models.Entities;
 using online_chess.Server.Models.Play;
+using online_chess.Server.Persistence;
 using online_chess.Server.Service;
 
 namespace online_chess.Server.Features.Game.Commands.MovePiece
@@ -16,6 +19,7 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
         private readonly IHubContext<GameHub> _hubContext;
         private readonly ILogger<MovePieceHandler> _logger;
         private readonly TimerService _timerService;
+        private readonly IServiceProvider _serviceProvider;
 
         public MovePieceHandler(
             GameRoomService gameRoomService
@@ -23,6 +27,7 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
             , IHubContext<GameHub> hubContext
             , ILogger<MovePieceHandler> logger
             , TimerService timerService
+            , IServiceProvider serviceProvider
             )
         {
             _gameRoomService = gameRoomService;
@@ -30,6 +35,7 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
             _hubContext = hubContext;
             _logger = logger;
             _timerService = timerService;
+            _serviceProvider = serviceProvider;
         }
 
         public async Task<Unit> Handle(MovePieceRequest request, CancellationToken cancellationToken)
@@ -90,8 +96,28 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
 
             var hasCapture = room.UpdatePieceCoords(whitesOrientationMoveInfo, request.HasCapture, pieceMoveIsWhite);
 
-            UpdateTimer(room, !isRoomCreator);
+            //Task.Run(async () =>
+            //{
+            //    try
+            //    {
+            //        await UpdateTimer(room, !isRoomCreator);
+            //    } catch (Exception err)
+            //    {
+            //        _logger.LogError(err, "UpdateTimer Error Here");
+            //    }
+            //});
+            //RecurringJob.AddOrUpdate(() => UpdateTimer(room, !isRoomCreator));
+            if (room.TimerId != null)
+            {
+                room.TimerId.Dispose();
+            }
 
+            room.TimerId = new Timer(UpdateTimer, new TimerState(){
+                GameRoom = room,
+                CreatorsTurn = !isRoomCreator,
+                ServiceScope = _serviceProvider.CreateScope()
+            }, 0, 1000);
+            
             var retVal = new{
                 moveInfo = invertedMoveInfo
                 , moveIsWhite = pieceMoveIsWhite
@@ -100,84 +126,130 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
             };
 
             await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync(RoomMethods.onUpdateBoard, retVal);
-
+            
             return Unit.Value;
          }
 
         
-        private async void UpdateTimer(GameRoom room, bool creatorsTurn)
+        public async void UpdateTimer(object? state)
         {
+            var timerState = (TimerState)state;
+            var room = timerState.GameRoom;
+            var creatorsTurn = timerState.CreatorsTurn;
+            var timer = _timerService.GetTimer(room.GameKey); 
+            var scope = timerState.ServiceScope;
+
             // cancel previous timer and start a new timer
-            var timer = _timerService.GetTimer(room.GameKey);
             double creatorSecondsLeft = timer.Item1;
             double joinerSecondsLeft = timer.Item2;
-
-            room.TimerDetector.Cancel();
-            room.TimerDetector = new CancellationTokenSource();
-            var token = room.TimerDetector.Token;
 
             var roomStatus = room.GamePlayStatus;
             var playerSecondsLeft = creatorsTurn ? creatorSecondsLeft : joinerSecondsLeft;
 
-            while (playerSecondsLeft > 0 && roomStatus != GamePlayStatus.Finished && !token.IsCancellationRequested)
+            var retVal = new
             {
-                _logger.LogInformation(
-                    "Timer running, Creator time left: {0}, Joiner time left: {1}"
-                    , creatorSecondsLeft, joinerSecondsLeft);
+                white = (room.CreatedByUserInfo.IsColorWhite ? creatorSecondsLeft : joinerSecondsLeft),
+                black = (!room.CreatedByUserInfo.IsColorWhite ? creatorSecondsLeft : joinerSecondsLeft),
+                whitesTurn = (room.CreatedByUserInfo.IsColorWhite ? creatorsTurn : !creatorsTurn)
+            };
+            await _hubContext.Clients.Group(room.GameKey.ToString()).SendAsync(RoomMethods.onUpdateTimer, retVal);
 
-                var retVal = new {
-                    white = (room.CreatedByUserInfo.IsColorWhite ? creatorSecondsLeft : joinerSecondsLeft),
-                    black = (!room.CreatedByUserInfo.IsColorWhite ? creatorSecondsLeft : joinerSecondsLeft),
-                    whitesTurn = (room.CreatedByUserInfo.IsColorWhite ? creatorsTurn : !creatorsTurn)
-                };
-                await _hubContext.Clients.Group(room.GameKey.ToString()).SendAsync(RoomMethods.onUpdateTimer, retVal);
+            if (creatorsTurn)
+            {
+                creatorSecondsLeft--;
+            }
+            else
+            {
+                joinerSecondsLeft--;
+            }
 
-                await Task.Delay(1000);
+            playerSecondsLeft--;
 
-                if (creatorsTurn){
-                    creatorSecondsLeft--;
-                } else {
-                    joinerSecondsLeft--;
-                }
+            _timerService.UpdateTimer(room.GameKey, (creatorSecondsLeft, joinerSecondsLeft));
 
-                playerSecondsLeft--;
+            _logger.LogInformation(
+            "Running, Creator time: {0}, Joiner time: {1}, Curr Player: {0}"
+            , creatorSecondsLeft, joinerSecondsLeft, playerSecondsLeft);
 
-                _timerService.UpdateTimer(room.GameKey, (creatorSecondsLeft, joinerSecondsLeft));
+            // for every 30 seconds check if the game is finished
+            bool gameFinished = false;
+            if (playerSecondsLeft % 30 == 0)
+            {
+                var gameRoom = _gameRoomService.GetOne(room.GameKey);
 
-                // for every 30 seconds check if the game is finished
-                bool gameFinished = false;
-                if (playerSecondsLeft % 30 == 0){
-                    var gameRoom = _gameRoomService.GetOne(room.GameKey);
+                _logger.LogInformation("Check room status: {0}, {1}", gameRoom?.GameKey, gameRoom?.GamePlayStatus);
 
-                    _logger.LogInformation("Check room status: {0}", JsonSerializer.Serialize(gameRoom));
-
-
-                    if (gameRoom == null){
-                        gameFinished = true;
-                    }
-
-                    if (gameRoom != null && gameRoom.GamePlayStatus == GamePlayStatus.Finished){
-                        gameFinished = true;
-                    }
-
-                    if (gameRoom != null)
-                    {
-                        roomStatus = gameRoom.GamePlayStatus;
-                    }
-                }
-
-                if (roomStatus == GamePlayStatus.Finished){
+                if (gameRoom == null)
+                {
                     gameFinished = true;
                 }
 
-                if (gameFinished)
+                if (gameRoom != null && gameRoom.GamePlayStatus == GamePlayStatus.Finished)
                 {
-                    _logger.LogInformation("Game done: {0}, Date ended: {1}", room.GameKey, DateTime.Now);
-                    // await _hubContext.Clients.Group(room.GameKey.ToString()).SendAsync("", "");
+                    gameFinished = true;
+                }
 
-                    break;
+                if (gameRoom != null)
+                {
+                    roomStatus = gameRoom.GamePlayStatus;
                 }
             }
-        } 
+
+            if (roomStatus == GamePlayStatus.Finished)
+            {
+                gameFinished = true;
+            }
+
+            if (gameFinished)
+            {
+                _logger.LogInformation("Game done: {0}, Date ended: {1}", room.GameKey, DateTime.Now);
+                room.TimerId.Dispose();
+                // await _hubContext.Clients.Group(room.GameKey.ToString()).SendAsync("", "");
+            }
+
+            if (playerSecondsLeft == -1)
+            {
+                _logger.LogInformation("0 seconds left Game Ended: {0}", playerSecondsLeft);
+                await TimeIsUp(room, creatorsTurn, scope);
+                room.TimerId.Dispose();
+            }
+        }
+
+
+        // gets called when a player timer hits 0
+        public async Task TimeIsUp(GameRoom room, bool creatorWon, IServiceScope? scope)
+        {
+            var identityDbContext = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+            var mainDbContext = scope.ServiceProvider.GetRequiredService<MainDbContext>();
+            var hubContext = scope.ServiceProvider.GetRequiredService<IHubContext<GameHub>>();
+
+            var creator = await identityDbContext.FindByNameAsync(room.CreatedByUserId);
+            var joiner = await identityDbContext.FindByNameAsync(room.JoinedByUserId);
+
+            await mainDbContext.GameHistories.AddAsync(new GameHistory(){
+                GameStartDate = room.GameStartedAt
+                , GameEndDate = DateTime.Now
+
+                , PlayerOneId = creator?.Id ?? 0
+                , PlayerOneColor = room.CreatedByUserColor
+                , PlayerTwoId = joiner?.Id ?? 0
+                , PlayerTwoColor = room.CreatedByUserColor == Color.White ? Color.Black : Color.White
+                    
+                , WinnerPlayerId = creatorWon ? (creator?.Id ?? 0) : (joiner?.Id ?? 0) 
+                , IsDraw = false
+                , GameType = room.GameType
+            });
+
+            await mainDbContext.SaveChangesAsync();
+
+            string creatorConnectionId = _authenticatedUserService.GetConnectionId(room.CreatedByUserId);
+            string joinerConnectionId = _authenticatedUserService.GetConnectionId(room.JoinedByUserId);
+
+            await hubContext.Clients.Client(creatorConnectionId).SendAsync(RoomMethods.onGameOver, creatorWon ? 1 : 0);
+            await hubContext.Clients.Client(joinerConnectionId).SendAsync(RoomMethods.onGameOver, !creatorWon ? 1 : 0);
+
+            _timerService.RemoveTimer(room.GameKey);
+        }
+
     }
 }

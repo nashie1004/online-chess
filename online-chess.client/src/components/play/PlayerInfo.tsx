@@ -17,7 +17,7 @@ export default function PlayerInfo() {
         setActualTime({ 
             white: gameTypeToSeconds(gameState.gameType), 
             black: gameTypeToSeconds(gameState.gameType), 
-            whitesTurn: false 
+            whitesTurn: true 
         });
     }, [gameState.gameType]);
 

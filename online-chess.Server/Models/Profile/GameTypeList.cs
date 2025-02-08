@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace online_chess.Server.Models.DTOs
+namespace online_chess.Server.Models.Profile
 {
     [NotMapped]
     public class GameTypeList
