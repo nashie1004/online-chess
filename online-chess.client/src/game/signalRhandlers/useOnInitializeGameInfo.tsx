@@ -7,6 +7,7 @@ import { eventOn, Options as gameOptions, playPageInvokers } from "../utilities/
 import useGameContext from "../../hooks/useGameContext";
 import useSignalRContext from "../../hooks/useSignalRContext";
 import useAuthContext from "../../hooks/useAuthContext";
+import useLocalStorage from "../../hooks/useLocalStorage";
 
 export default function useOnInitializeGameInfo(
     gameRef: React.MutableRefObject<Phaser.Game | null | undefined>
@@ -15,6 +16,9 @@ export default function useOnInitializeGameInfo(
     const signalRContext = useSignalRContext();
     const { user } = useAuthContext();
     const gameStateRef = useRef(gameState);
+    const { data: board } = useLocalStorage("board", "green.png");
+    const { data: piece } = useLocalStorage("piece", "cburnett");
+
     // https://stackoverflow.com/questions/57847594/accessing-up-to-date-state-from-within-a-callback
     // this contains the up to date version of our gamestate, 
     // since the old value is captured inside the callback fns
@@ -37,7 +41,7 @@ export default function useOnInitializeGameInfo(
                     // mode: Phaser.Scale.RESIZE
                 },
                 scene: [
-                    new MainGameScene("mainChessboard", playerIsWhite)
+                    new MainGameScene("mainChessboard", playerIsWhite, board, piece)
                 ],
             });
         }

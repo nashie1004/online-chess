@@ -14,18 +14,21 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
         private readonly GameRoomService _gameRoomService;
         private readonly AuthenticatedUserService _authenticatedUserService;
         private readonly TimerService _timerService;
+        private readonly ILogger<GameStartHandler> _logger;
 
         public GameStartHandler(
             IHubContext<GameHub> hubContext
             , GameRoomService gameRoomService
             , AuthenticatedUserService authenticatedUserService
             , TimerService timerService
+            , ILogger<GameStartHandler> logger
             )
         {
             _hubContext = hubContext;
             _gameRoomService = gameRoomService;
             _authenticatedUserService = authenticatedUserService;
             _timerService = timerService;
+            _logger = logger;
         }
 
         public async Task<Unit> Handle(GameStartRequest request, CancellationToken cancellationToken)
@@ -46,6 +49,7 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
 
             if (string.IsNullOrEmpty(player1) || string.IsNullOrEmpty(player1))
             {
+                _logger.LogInformation("Game Start: {0} - {1}", player1, player2);
                 return Unit.Value;
             }
 
@@ -108,7 +112,7 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
             gameRoom.CreatedByUserInfo = new PlayerInfo(){
                 UserName = gameRoom.CreatedByUserId
                 , IsPlayersTurnToMove = gameRoom.CreatedByUserColor == Color.White
-                , TimeLeft = initialCreatorTime.TotalSeconds
+                //, TimeLeft = initialCreatorTime.TotalSeconds
                 , LastMoveDate = DateTime.Now
                 , IsColorWhite = gameRoom.CreatedByUserColor == Color.White
                 , KingInCheck = false
@@ -118,7 +122,7 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
             gameRoom.JoinByUserInfo = new PlayerInfo(){
                 UserName = gameRoom.JoinedByUserId
                 , IsPlayersTurnToMove = gameRoom.CreatedByUserColor != Color.White
-                , TimeLeft = initialJoinerTime.TotalSeconds
+               // , TimeLeft = initialJoinerTime.TotalSeconds
                 , LastMoveDate = DateTime.Now
                 , IsColorWhite = gameRoom.CreatedByUserColor != Color.White
                 , KingInCheck = false

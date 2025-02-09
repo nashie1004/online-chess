@@ -3,15 +3,11 @@ import useGameContext from "../../hooks/useGameContext";
 import { eventEmitter } from "../utilities/eventEmitter";
 import { IMoveInfo, IPiece, IPieceMove } from "../utilities/types";
 import { eventEmit } from "../utilities/constants";
-/**
- * This updates:
- * - move history
- * - TODO capture history
- * - TODO timer
- */
+
 export default function useOnUpdateBoard(){
     const { setGameState, gameState } = useGameContext();
     const gameStateRef = useRef(gameState);
+
     gameStateRef.current = gameState;
 
     const onUpdateBoard = useCallback((data: any) => {

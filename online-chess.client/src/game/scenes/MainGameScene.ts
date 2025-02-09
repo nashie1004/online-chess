@@ -1,13 +1,10 @@
 import { GameObjects, Scene } from "phaser";
-// import bg from "../../assets/wood4-800x800.jpg"
-import bg from "../../assets/boards/green800.png"
-//import bg from "../../assets/boards/brown.png"
 import previewMove from "../../assets/indicator.png"
 import move from "../../assets/sounds/Move.ogg"
 import capture from "../../assets/sounds/Capture.ogg"
 import select from "../../assets/sounds/Select.ogg"
 import check from "../../assets/sounds/Check.mp3"
-import pieces, { Options as gameOptions, PieceNames, pieceImages, baseKingState, eventEmit, eventOn } from "../utilities/constants";
+import pieces, { Options as gameOptions, PieceNames, baseKingState, eventEmit, eventOn, pieceNamesV2 } from "../utilities/constants";
 import { IBothKingsPosition, IKingState, IMoveHistory, IMoveInfo, IPiece, IPieceMove, IPiecesCoordinates, PromoteTo } from "../utilities/types";
 import { eventEmitter } from "../utilities/eventEmitter";
 import KingCastled from "../logic/kingCastled";
@@ -31,14 +28,19 @@ export class MainGameScene extends Scene{
     private isPlayersTurnToMove: boolean;
     private bothKingsPosition: IBothKingsPosition;
     private promotePreference: PromoteTo;
+    private readonly boardUI: string;
+    private readonly piecesUI: string;
 
     // server state
     private moveHistory: IMoveHistory;
     private kingsState: IKingState;
     private readonly pieceCoordinates: IPiecesCoordinates;
 
-    constructor(key: string, isColorWhite: boolean) {
+    constructor(key: string, isColorWhite: boolean, boardUI: string, piecesUI: string) {
         super({ key });
+
+        this.boardUI = boardUI;
+        this.piecesUI = piecesUI;
 
         // server state
         this.moveHistory = { white: [], black: [] };
@@ -61,23 +63,43 @@ export class MainGameScene extends Scene{
     }
 
     preload(){
-        this.load.image("bg", bg);
+        this.load.image("bg", `/src/assets/boards/${this.boardUI}`);
         this.load.image("previewMove", previewMove)
         this.load.audio("move", move);
         this.load.audio("capture", capture);
         this.load.audio("select", select);
         this.load.audio("check", check);
 
+        pieceNamesV2.forEach(piece => {
+            this.load.svg(
+                piece.fullName
+                , `/src/assets/pieces/${this.piecesUI}/${piece.shortName}.svg`
+                , { width: this.tileSize, height: this.tileSize }
+            );
+        });
+
+        /*
         Object.entries(pieceImages).forEach(([pieceName, imagePath]) => {
             const blob = new Blob([imagePath], { type: 'image/svg+xml' });
             const url = URL.createObjectURL(blob);
             this.load.svg(pieceName, url, { width: this.tileSize, height: this.tileSize })
         });
+        */
     }
 
     create(){
 
-        this.add.image(0, 0, "bg").setOrigin(0, 0) ;
+        const board = this.add
+            .image(this.scale.width / 2, this.scale.height / 2, "bg")
+            .setOrigin(0.5); // Center the image
+
+        this.scale.on("resize", () => {
+            const { width, height } = this.scale.gameSize; 
+            const minSize = Math.min(width, height); 
+            board.setDisplaySize(minSize, minSize);
+        }, this);
+
+       // this.add.image(0, 0, "bg").setOrigin(0, 0) ;
         const select = this.sound.add("select");
 
         // create pieces
@@ -95,7 +117,10 @@ export class MainGameScene extends Scene{
                     .setInteractive({ cursor: "pointer" })
                     .on("pointerover", () => { previewMove.setTint(0x98DEC7) })
                     .on("pointerout", () => { previewMove.clearTint() })
-                    .on("pointerdown", () => this.move(colIdx, rowIdx), this)
+                    .on("pointerdown", () => {
+                        // console.log("CALL MOVE FUNC 1", colIdx, rowIdx)
+                        this.move(colIdx, rowIdx)
+                    }, this)
                     .setAlpha(.5)
                     ;
 
@@ -199,12 +224,15 @@ export class MainGameScene extends Scene{
         eventEmitter.on(eventOn.setPromoteTo, (data: PromoteTo) => this.promotePreference = data); // TODO
         eventEmitter.on(eventOn.setKingsState, (data: IKingState) => this.kingsState = data);
         eventEmitter.on(eventOn.setEnemyMove, (data: IPieceMove) => {
+            // console.log("enemy event emit: ", data)
+
             this.selectedPiece = {
                 x: data.old.x,
                 y: data.old.y,
                 pieceName: data.old.uniqueName ?? ``
             }
 
+            // console.log("CALL MOVE FUNC 2", data.new.x, data.new.y)
             this.move(data.new.x, data.new.y);
             this.isPlayersTurnToMove = true;
         });
@@ -235,6 +263,8 @@ export class MainGameScene extends Scene{
         // current piece to move
         const sprite = this.board[this.selectedPiece.x][this.selectedPiece.y];
         if (!sprite) return false;
+
+        // console.log("main move: ", this.selectedPiece, { newX, newY })
 
         const isWhite = sprite.name[0] === "w"
         const uniquePieceName = sprite.name;
@@ -289,6 +319,7 @@ export class MainGameScene extends Scene{
 
         // if the move is a king, update private king pos state - this is used by the this.validateCheckOrCheckMateOrStalemate() function
         if (sprite.name.toLowerCase().indexOf("king") >= 0){
+            // console.log("king move", newX, newY, sprite.name, this.selectedPiece)
             this.bothKingsPosition[isWhite ? "white" : "black"].x = newX;
             this.bothKingsPosition[isWhite ? "white" : "black"].y = newY;
         }
@@ -299,10 +330,14 @@ export class MainGameScene extends Scene{
             const newMove: IPiece = { x: newX, y: newY, uniqueName: uniquePieceName, name: pieceName };
             
             this.isPlayersTurnToMove = false;
+            // console.log("move piece: ", oldMove, newMove)
+            console.log("sprite: ", sprite, this.selectedPiece, newX, newY)
+
             eventEmitter.emit(eventEmit.setMovePiece, { oldMove, newMove, hasCapture });
         }
 
         // display move to the user
+
         this.tweens.add({
             targets: [sprite],
             x: newX * this.tileSize,
@@ -314,6 +349,9 @@ export class MainGameScene extends Scene{
         this.resetMoves();
 
         // check for check or checkmate
+        this.board[this.bothKingsPosition.black.x][this.bothKingsPosition.black.y]?.resetPostPipeline();
+        this.board[this.bothKingsPosition.white.x][this.bothKingsPosition.white.y]?.resetPostPipeline();
+
         const kingSafety = (new ValidateCheckOrCheckMateOrStalemate(
             this.board, this.boardOrientationIsWhite
             , this.pieceCoordinates
@@ -323,11 +361,23 @@ export class MainGameScene extends Scene{
 
         // play sound
         hasCapture ? this.sound.play("capture") : this.sound.play("move");
-        if (kingSafety !== 0) this.sound.play("check");
+        if (kingSafety !== 0){
+            this.sound.play("check");
+            // check
+            const king = isWhite ? this.bothKingsPosition.black : this.bothKingsPosition.white;
+            const kingSprite = this.board[king.x][king.y];
+            kingSprite?.postFX?.addGlow(0xE44C6A, 10, 2);
+        }
 
         // For testing only
         // console.info(" === TEST === ");
-        // console.table(this.pieceCoordinates.white);
+        if (kingSafety !== 0){
+            // console.log(this.pieceCoordinates.white.filter(i => i.name.toLowerCase().indexOf("king") >= 0));
+            // console.log(this.pieceCoordinates.black.filter(i => i.name.toLowerCase().indexOf("queen") >= 0));
+            // console.log(this.bothKingsPosition)
+            // console.log(this.selectedPiece)
+            // console.log(pieceCoordinate)
+        }
         // console.table(this.pieceCoordinates.black);
         // this.debugHelper();
     }

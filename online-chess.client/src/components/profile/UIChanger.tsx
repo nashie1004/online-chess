@@ -1,12 +1,23 @@
-import { Tabs, Tab, Button, Col, Form, Row, Image } from 'react-bootstrap'
-import testBg from "../../assets/boards/blue.png"
-import testing from "../../assets/pieces/cburnett/bB.svg"
+import { Col, Form } from 'react-bootstrap'
 import useLocalStorage from '../../hooks/useLocalStorage';
-import { boardUI, pieceUI } from '../../game/utilities/constants';
+import { boardUIArray, pieceUIArray } from '../../game/utilities/constants';
+import { useMemo } from 'react';
 
 export default function UIChanger() {
-  const { setValue: setBoard, data: board } = useLocalStorage("board", boardUI.green);
-  const { setValue: setPiece, data: piece } = useLocalStorage("piece", pieceUI.cburnett);
+  const { setValue: setBoard, data: board } = useLocalStorage("board", "green.png");
+  const { setValue: setPiece, data: piece } = useLocalStorage("piece", "cburnett");
+
+  const boardPath = `/src/assets/boards/${board}`;
+  const piecePath = `/src/assets/pieces/${piece}/`;
+  
+  const pieces = useMemo(() => {
+    return [
+      { coords: "3-3", piece: "wK.svg" },
+      { coords: "4-3", piece: "wQ.svg" },
+      { coords: "3-4", piece: "bK.svg" },
+      { coords: "4-4", piece: "bQ.svg" },
+    ];
+  }, []);
 
   return (
     <>
@@ -25,32 +36,54 @@ export default function UIChanger() {
               Board
             </Form.Label>
             <Form.Select 
-              onChange={(e) => {
-                //setBoard("");
-              }}
-              aria-label="Default select example" className='w-50'>
-                <option>Open this select menu</option>
-                <option value="1">One</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
+              onChange={(e) => setBoard(e.target.value)}
+              className='w-50'>
+                {boardUIArray.map((item, idx) => {
+                  return <option key={idx} value={item.displayCode}>{item.displayName}</option>
+                })}
             </Form.Select>
           </Form.Group>
           <Form.Group className="mb-3 d-flex">
             <Form.Label column sm={2}>
               Piece
             </Form.Label>
-            <Form.Select aria-label="Default select example" className='w-50'>
-                <option>Open this select menu</option>
-                <option value="1">One</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
+            <Form.Select  
+              onChange={(e) => setPiece(e.target.value)}
+              className='w-50'>
+              {pieceUIArray.map((item, idx) => {
+                return <option key={idx} value={item.displayCode}>{item.displayName}</option>
+              })}
             </Form.Select>
           </Form.Group>
         </Form>
           </Col>
-          <Col className='ui-display d-flex justify-content-center'>
-              <Image src={testBg} width={480} fluid />
-              {/* <Image src={testing} width={60} fluid /> */}
+          <Col className='ui-display d-flex justify-content-center' id="ui-changer-container">
+              <div id="ui-board" className="chessboard" style={{ backgroundImage: `url(${boardPath})` }}>
+              {Array(8)
+                .fill(null)
+                .map((_, rowIdx) =>
+                  Array(8)
+                    .fill(null)
+                    .map((__, colIdx) => {
+                      const key = `${colIdx}-${rowIdx}`;
+                      const isCenter = (rowIdx === 3 || rowIdx === 4) && (colIdx === 3 || colIdx === 4);
+                      const src = pieces.find(i => i.coords === key)
+
+                      return (
+                        <div key={key} className="square">
+                          {/* Place Kings at center squares */}
+                          {isCenter && (
+                            <img
+                              src={piecePath + src?.piece}
+                              alt={rowIdx === 3 ? "White King" : "Black King"}
+                              className="piece"
+                            />
+                          )}
+                        </div>
+                      );
+                    })
+                )}
+            </div>
           </Col>
         </div>
 

@@ -1,18 +1,3 @@
-/*
-import wPawn from "../../assets/pieces/wP.svg?raw"
-import wRook from "../../assets/pieces/wR.svg?raw"
-import wKnight from "../../assets/pieces/wN.svg?raw"
-import wBishop from "../../assets/pieces/wB.svg?raw"
-import wQueen from "../../assets/pieces/wQ.svg?raw"
-import wKing from "../../assets/pieces/wK.svg?raw"
-
-import bPawn from "../../assets/pieces/bP.svg?raw"
-import bRook from "../../assets/pieces/bR.svg?raw"
-import bKnight from "../../assets/pieces/bN.svg?raw"
-import bBishop from "../../assets/pieces/bB.svg?raw"
-import bQueen from "../../assets/pieces/bQ.svg?raw"
-import bKing from "../../assets/pieces/bK.svg?raw"
-*/
 import wPawn from "../../assets/pieces/cburnett/wP.svg?raw"
 import wRook from "../../assets/pieces/cburnett/wR.svg?raw"
 import wKnight from "../../assets/pieces/cburnett/wN.svg?raw"
@@ -42,6 +27,23 @@ export enum PieceNames{
     bQueen = "bQueen",
     bKing = "bKing"
 }
+
+export const pieceNamesV2 = [
+    { shortName: "wP", fullName: "wPawn" },
+    { shortName: "wR", fullName: "wRook" },
+    { shortName: "wN", fullName: "wKnight" },
+    { shortName: "wB", fullName: "wBishop" },
+    { shortName: "wQ", fullName: "wQueen" },
+    { shortName: "wK", fullName: "wKing" },
+
+    { shortName: "bP", fullName: "bPawn" },
+    { shortName: "bR", fullName: "bRook" },
+    { shortName: "bN", fullName: "bKnight" },
+    { shortName: "bB", fullName: "bBishop" },
+    { shortName: "bQ", fullName: "bQueen" },
+    { shortName: "bK", fullName: "bKing" },
+];
+
 
 export const Options = {
     tileSize: 100,
@@ -211,69 +213,71 @@ export const eventOn = {
     ,setMovePiece: "setMovePiece"
 }
 
-export enum boardUI{
-    blueMarble = "blueMarble"
-    ,blue = "blue"
-    ,blue2 = "blue2"
-    ,blue3 = "blue3"
-    ,brown = "brown"
-    ,canvas2 = "canvas2"
-    ,greenPlastic = "greenPlastic"
-    ,green = "green"
-    ,grey = "grey"
-    ,horsey = "horsey"
-    ,ic = "ic"
-    ,leather = "leather"
-    ,maple = "maple"
-    ,maple2 = "maple2"
-    ,marble = "marble"
-    ,metal = "metal"
-    ,ncf = "ncf"
-    ,olive = "olive"
-    ,pinkPyramid = "pinkPyramid"
-    ,purpleDiag = "purpleDiag"
-    ,purple = "purple"
-    ,wood = "wood"
-    ,wood2 = "wood2"
-    ,wood3 = "wood3"
-    ,wood4 = "wood4"
-}
+export const boardUIArray = [
+    { displayName: "Blue Marble", displayCode: "blue-marble.jpg" },
+    { displayName: "Blue", displayCode: "blue.png" },
+    { displayName: "Blue 2", displayCode: "blue2.jpg" },
+    { displayName: "Blue 3", displayCode: "blue3.jpg" },
+    { displayName: "Brown", displayCode: "brown.png" },
+    { displayName: "Canvas 2", displayCode: "canvas2.jpg" },
+    { displayName: "Green Plastic", displayCode: "green-plastic.png" },
+    { displayName: "Green", displayCode: "green.png" },
+    { displayName: "Grey", displayCode: "grey.jpg" },
+    { displayName: "Horsey", displayCode: "horsey.jpg" },
+    { displayName: "Ic", displayCode: "ic.png" },
+    { displayName: "Leather", displayCode: "leather.jpg" },
+    { displayName: "Maple", displayCode: "maple.jpg" },
+    { displayName: "Maple 2", displayCode: "maple2.jpg" },
+    { displayName: "Marble", displayCode: "marble.jpg" },
+    { displayName: "Metal", displayCode: "metal.jpg" },
+    { displayName: "Ncf", displayCode: "ncf-board.png" },
+    { displayName: "Olive", displayCode: "olive.jpg" },
+    { displayName: "Pink Pyramid", displayCode: "pink-pyramid.png" },
+    { displayName: "Purple Diag", displayCode: "purple-diag.png" },
+    { displayName: "Purple", displayCode: "purple.png" },
+    { displayName: "Wood", displayCode: "wood.jpg" },
+    { displayName: "Wood 2", displayCode: "wood2.jpg" },
+    { displayName: "Wood 3", displayCode: "wood3.jpg" },
+    { displayName: "Wood 4", displayCode: "wood4.jpg" }
+];
+  
 
-export enum pieceUI{
-    alpha = "alpha"
-    ,anarcandy = "anarcandy"
-    ,caliente = "caliente"
-    ,california = "california"
-    ,cardinal = "cardinal"
-    ,cburnett = "cburnett"
-    ,celtic = "celtic"
-    ,chess7 = "chess7"
-    ,chessnut = "chessnut"
-    ,companion = "companion"
-    ,cooke = "cooke"
-    ,disguised = "disguised"
-    ,dubronovny = "dubronovny"
-    ,fantasy = "fantasy"
-    ,fresca = "fresca"
-    ,gioco = "gioco"
-    ,governor = "governor"
-    ,horsey = "horsey"
-    ,icpieces = "icpieces"
-    ,kiwenSuwi = "kiwenSuwi"
-    ,kosal = "kosal"
-    ,leipzig = "leipzig"
-    ,letter = "letter"
-    ,maestro = "maestro"
-    ,merida = "merida"
-    ,monarchy = "monarchy"
-    ,mono = "mono"
-    ,mpchess = "mpchess"
-    ,pirouetti = "pirouetti"
-    ,pixel = "pixel"
-    ,reillycraig = "reillycraig"
-    ,riohacha = "riohacha"
-    ,shapes = "shapes"
-    ,spatial = "spatial"
-    ,staunty = "staunty"
-    ,tatiana = "tatiana"
-}
+export const pieceUIArray = [
+    { displayName: "Alpha", displayCode: "alpha" },
+    { displayName: "Anarcandy", displayCode: "anarcandy" },
+    { displayName: "Caliente", displayCode: "caliente" },
+    { displayName: "California", displayCode: "california" },
+    { displayName: "Cardinal", displayCode: "cardinal" },
+    { displayName: "Cburnett", displayCode: "cburnett" },
+    { displayName: "Celtic", displayCode: "celtic" },
+    { displayName: "Chess 7", displayCode: "chess7" },
+    { displayName: "Chessnut", displayCode: "chessnut" },
+    { displayName: "Companion", displayCode: "companion" },
+    { displayName: "Cooke", displayCode: "cooke" },
+    // { displayName: "Disguised", displayCode: "disguised" },
+    // { displayName: "Dubronovny", displayCode: "dubronovny" },
+    { displayName: "Fantasy", displayCode: "fantasy" },
+    { displayName: "Fresca", displayCode: "fresca" },
+    { displayName: "Gioco", displayCode: "gioco" },
+    { displayName: "Governor", displayCode: "governor" },
+    { displayName: "Horsey", displayCode: "horsey" },
+    { displayName: "Ic Pieces", displayCode: "icpieces" },
+    // { displayName: "Kiwensuwi", displayCode: "kiwenSuwi" },
+    { displayName: "Kosal", displayCode: "kosal" },
+    { displayName: "Leipzig", displayCode: "leipzig" },
+    { displayName: "Letter", displayCode: "letter" },
+    { displayName: "Maestro", displayCode: "maestro" },
+    { displayName: "Merida", displayCode: "merida" },
+    { displayName: "Monarchy", displayCode: "monarchy" },
+    // { displayName: "Mono", displayCode: "mono" },
+    { displayName: "Mpchess", displayCode: "mpchess" },
+    { displayName: "Pirouetti", displayCode: "pirouetti" },
+    { displayName: "Pixel", displayCode: "pixel" },
+    { displayName: "Reillycraig", displayCode: "reillycraig" },
+    { displayName: "Riohacha", displayCode: "riohacha" },
+    { displayName: "Shapes", displayCode: "shapes" },
+    { displayName: "Spatial", displayCode: "spatial" },
+    { displayName: "Staunty", displayCode: "staunty" },
+    { displayName: "Tatiana", displayCode: "tatiana" }
+  ];
+  
