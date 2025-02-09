@@ -28,10 +28,8 @@ dotnet watch
 ```
 after that, the web application should now be running.
 
-## Assets 
-- https://github.com/lichess-org/lila/blob/master/public/piece/alpha/
-- https://github.com/lichess-org/lila/blob/master/public/images/board/wood4.jpg
-- https://www.piskelapp.com/
+## Credits
+All [board](https://github.com/lichess-org/lila/blob/master/public/images/board/), [pieces](https://github.com/lichess-org/lila/blob/master/public/piece/), and [sound](https://github.com/lichess-org/lila/blob/master/public/sound/) assets are sourced from [Lichess](https://github.com/lichess-org/lila) Github repo. Custom assets were created using [Piskel](https://www.piskelapp.com/).
 
 ## TODO Essential (Game)
 2. promotion picker - DOING
@@ -44,12 +42,10 @@ after that, the web application should now be running.
 1. fifty move rule
 2. show proper chess move notation
 3. 3 fold repetition
-4. user piece and board ui preference
 5. responsive ui
 6. toaster
 7. table reload/refresh
-8. some framer motion?
-9. more sounds and some phaser effects
+8. some framer motion?, more sounds and some phaser effects
 10. if both player exited and a timer is running, cancel timer?
 
 ### SQLite

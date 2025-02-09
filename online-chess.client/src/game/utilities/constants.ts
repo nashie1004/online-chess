@@ -1,18 +1,3 @@
-/*
-import wPawn from "../../assets/pieces/wP.svg?raw"
-import wRook from "../../assets/pieces/wR.svg?raw"
-import wKnight from "../../assets/pieces/wN.svg?raw"
-import wBishop from "../../assets/pieces/wB.svg?raw"
-import wQueen from "../../assets/pieces/wQ.svg?raw"
-import wKing from "../../assets/pieces/wK.svg?raw"
-
-import bPawn from "../../assets/pieces/bP.svg?raw"
-import bRook from "../../assets/pieces/bR.svg?raw"
-import bKnight from "../../assets/pieces/bN.svg?raw"
-import bBishop from "../../assets/pieces/bB.svg?raw"
-import bQueen from "../../assets/pieces/bQ.svg?raw"
-import bKing from "../../assets/pieces/bK.svg?raw"
-*/
 import wPawn from "../../assets/pieces/cburnett/wP.svg?raw"
 import wRook from "../../assets/pieces/cburnett/wR.svg?raw"
 import wKnight from "../../assets/pieces/cburnett/wN.svg?raw"
@@ -270,7 +255,7 @@ export const pieceUIArray = [
     { displayName: "Companion", displayCode: "companion" },
     { displayName: "Cooke", displayCode: "cooke" },
     // { displayName: "Disguised", displayCode: "disguised" },
-    { displayName: "Dubronovny", displayCode: "dubronovny" },
+    // { displayName: "Dubronovny", displayCode: "dubronovny" },
     { displayName: "Fantasy", displayCode: "fantasy" },
     { displayName: "Fresca", displayCode: "fresca" },
     { displayName: "Gioco", displayCode: "gioco" },
@@ -284,7 +269,7 @@ export const pieceUIArray = [
     { displayName: "Maestro", displayCode: "maestro" },
     { displayName: "Merida", displayCode: "merida" },
     { displayName: "Monarchy", displayCode: "monarchy" },
-    { displayName: "Mono", displayCode: "mono" },
+    // { displayName: "Mono", displayCode: "mono" },
     { displayName: "Mpchess", displayCode: "mpchess" },
     { displayName: "Pirouetti", displayCode: "pirouetti" },
     { displayName: "Pixel", displayCode: "pixel" },

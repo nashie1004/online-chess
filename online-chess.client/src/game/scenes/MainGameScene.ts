@@ -71,11 +71,9 @@ export class MainGameScene extends Scene{
         this.load.audio("check", check);
 
         pieceNamesV2.forEach(piece => {
-            const imagePath = `/src/assets/pieces/${this.piecesUI}/${piece.shortName}.svg`;
-
             this.load.svg(
                 piece.fullName
-                , imagePath
+                , `/src/assets/pieces/${this.piecesUI}/${piece.shortName}.svg`
                 , { width: this.tileSize, height: this.tileSize }
             );
         });
@@ -91,7 +89,17 @@ export class MainGameScene extends Scene{
 
     create(){
 
-        this.add.image(0, 0, "bg").setOrigin(0, 0) ;
+        const board = this.add
+            .image(this.scale.width / 2, this.scale.height / 2, "bg")
+            .setOrigin(0.5); // Center the image
+
+        this.scale.on("resize", () => {
+            const { width, height } = this.scale.gameSize; 
+            const minSize = Math.min(width, height); 
+            board.setDisplaySize(minSize, minSize);
+        }, this);
+
+       // this.add.image(0, 0, "bg").setOrigin(0, 0) ;
         const select = this.sound.add("select");
 
         // create pieces
