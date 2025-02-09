@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System;
+using System.Text.Json;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
@@ -67,10 +68,14 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
                 Old = new BaseMoveInfo(){
                     X = 7 - request.OldMove.X,
                     Y = 7 - request.OldMove.Y,
+                    Name = request.OldMove.Name,
+                    UniqueName = request.OldMove.UniqueName
                 },
                 New = new BaseMoveInfo(){
                     X = 7 - request.NewMove.X,
                     Y = 7 - request.NewMove.Y,
+                    Name = request.OldMove.Name,
+                    UniqueName = request.OldMove.UniqueName
                 }
             };
 
@@ -86,6 +91,20 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
                 }
             };
 
+            if (
+                request.OldMove.UniqueName.ToLower().Contains("king")
+                || 
+                request.OldMove.UniqueName.ToLower().Contains("queen")
+                )
+            {
+                string json1 = JsonSerializer.Serialize(request.OldMove, new JsonSerializerOptions { WriteIndented = true });
+                string json2 = JsonSerializer.Serialize(request.NewMove, new JsonSerializerOptions { WriteIndented = true });
+                //string json2 = JsonSerializer.Serialize(invertedMoveInfo, new JsonSerializerOptions { WriteIndented = true });
+                _logger.LogInformation("requestOldMove: {0}\n", json1);
+                _logger.LogInformation("requestNewMove: {0}\n", json2);
+                //_logger.LogInformation("SaveMoveInfo: {0}\n", json2);
+            }
+
             // add to move history
             var moveHistory = room.MoveHistory;
             if (pieceMoveIsWhite){
@@ -96,17 +115,6 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
 
             var hasCapture = room.UpdatePieceCoords(whitesOrientationMoveInfo, request.HasCapture, pieceMoveIsWhite);
 
-            //Task.Run(async () =>
-            //{
-            //    try
-            //    {
-            //        await UpdateTimer(room, !isRoomCreator);
-            //    } catch (Exception err)
-            //    {
-            //        _logger.LogError(err, "UpdateTimer Error Here");
-            //    }
-            //});
-            //RecurringJob.AddOrUpdate(() => UpdateTimer(room, !isRoomCreator));
             if (room.TimerId != null)
             {
                 room.TimerId.Dispose();
@@ -167,9 +175,9 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
 
             _timerService.UpdateTimer(room.GameKey, (creatorSecondsLeft, joinerSecondsLeft));
 
-            _logger.LogInformation(
-            "Running, Creator time: {0}, Joiner time: {1}, Curr Player: {0}"
-            , creatorSecondsLeft, joinerSecondsLeft, playerSecondsLeft);
+            // _logger.LogInformation(
+            // "Running, Creator time: {0}, Joiner time: {1}, Curr Player: {0}"
+            // , creatorSecondsLeft, joinerSecondsLeft, playerSecondsLeft);
 
             // for every 30 seconds check if the game is finished
             bool gameFinished = false;

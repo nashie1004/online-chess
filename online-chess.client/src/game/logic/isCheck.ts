@@ -4,7 +4,7 @@ import KnightValidator from "../pieces/knightValidator";
 import PawnValidator from "../pieces/pawnValidator";
 import RookValidator from "../pieces/rookValidator";
 import { PieceNames } from "../utilities/constants";
-import { IBothKingsPosition, IMoveHistory, IKingState } from "../utilities/types";
+import { IBothKingsPosition, IMoveHistory, IKingState, IBaseCoordinates } from "../utilities/types";
 
 export default class IsCheck {
     private readonly board: (null | GameObjects.Sprite)[][]
@@ -20,8 +20,10 @@ export default class IsCheck {
         moveHistory: IMoveHistory,
         kingsState: IKingState
     ) {
+        const bothKingsPositionDeepCopy = JSON.parse(JSON.stringify(bothKingsPosition)) as IBothKingsPosition;
+
         this.board = board;
-        this.bothKingsPosition = bothKingsPosition;
+        this.bothKingsPosition = bothKingsPositionDeepCopy;
         this.boardOrientationIsWhite = boardOrientationIsWhite;
         this.moveHistory = moveHistory;
         this.kingsState = kingsState;
@@ -34,10 +36,13 @@ export default class IsCheck {
      * @returns
      */
     validateCheck(isWhite: boolean){
-        const king = isWhite ? this.bothKingsPosition.black : this.bothKingsPosition.white;
+        let king = isWhite ? this.bothKingsPosition.black : this.bothKingsPosition.white;
+        //king = JSON.parse(JSON.stringify(king)) as IBaseCoordinates; W
         const kingPiece = isWhite ? PieceNames.bKing : PieceNames.wKing;
         const kingUpdate = (kingPiece === PieceNames.wKing) ? this.kingsState.white : this.kingsState.black;
         const _this = this;
+
+        console.log("start king pos: ", this.bothKingsPosition)
 
         /**
          * 1. handle normal checks - once an opponent piece moves and their move causes a direct check
@@ -143,6 +148,9 @@ export default class IsCheck {
             );
 
         }
+
+        console.log("end king pos: ", this.bothKingsPosition)
+
         return kingUpdate.checkedBy.length > 0;
     }
 }

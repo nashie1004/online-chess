@@ -40,9 +40,6 @@ export default class ValidateCheckOrCheckMateOrStalemate {
      * @returns 0 = no check or checkmate, 1 = check, 2 = checkmate, 3 = stalemate
      */
     validate(isWhite: boolean) : 0 | 1 | 2 {
-        this.board[this.bothKingsPosition.black.x][this.bothKingsPosition.black.y]?.resetPostPipeline();
-        this.board[this.bothKingsPosition.white.x][this.bothKingsPosition.white.y]?.resetPostPipeline();
-
         // reset all check or checkmate properties
         this.kingsState.black.checkedBy = [];
         this.kingsState.white.checkedBy = [];
@@ -53,14 +50,16 @@ export default class ValidateCheckOrCheckMateOrStalemate {
         this.kingsState.white.isInStalemate = false;
         this.kingsState.black.isInStalemate = false;
 
-        // check
+        //console.log("Start Validate Kings: ", JSON.stringify(this.bothKingsPosition))
+
+        // 1. check
         const isCheck = (new IsCheck(
             this.board 
             ,this.bothKingsPosition, this.boardOrientationIsWhite
             ,this.moveHistory, this.kingsState
         )).validateCheck(isWhite);
 
-        // 1. stalemate
+        // 2. stalemate
         if (!isCheck){
             let isStalemate = (new IsStalemate(
                 this.board, this.boardOrientationIsWhite
@@ -77,11 +76,6 @@ export default class ValidateCheckOrCheckMateOrStalemate {
             return 0;
         }
 
-        // 2. check
-        const king = isWhite ? this.bothKingsPosition.black : this.bothKingsPosition.white;
-        const kingSprite = this.board[king.x][king.y];
-        kingSprite?.postFX?.addGlow(0xE44C6A, 10, 2);
-
         // 3. checkmate 
         let isCheckMate = (new IsCheckMate(
             this.board
@@ -97,6 +91,8 @@ export default class ValidateCheckOrCheckMateOrStalemate {
                 this.kingsState.black.isCheckMate = true;
             }
         }
+
+        //console.log("End Validate Kings: ", JSON.stringify(this.bothKingsPosition))
 
         eventEmitter.emit(eventEmit.setKingsState, this.kingsState);
         return (isCheckMate ? 2 : 1);

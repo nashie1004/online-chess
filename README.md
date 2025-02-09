@@ -50,6 +50,7 @@ after that, the web application should now be running.
 7. table reload/refresh
 8. some framer motion?
 9. more sounds and some phaser effects
+10. if both player exited and a timer is running, cancel timer?
 
 ### SQLite
 ```
