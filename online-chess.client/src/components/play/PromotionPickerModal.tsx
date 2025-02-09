@@ -1,22 +1,27 @@
 import { Modal } from "react-bootstrap";
 import useGameContext from "../../hooks/useGameContext"
-import { useState } from "react";
-import bQ from "../../assets/pieces/cburnett/bQ.svg"
-import bB from "../../assets/pieces/cburnett/bB.svg"
-import bN from "../../assets/pieces/cburnett/bN.svg"
-import bR from "../../assets/pieces/cburnett/bR.svg"
+import { useCallback, useState } from "react";
 import { PromoteOptions, PromoteTo } from "../../game/utilities/types";
+import useLocalStorage from "../../hooks/useLocalStorage";
 
 export default function PromotionPickerModal() {
-  const { setGameState } = useGameContext();
-  const [modal, setModal] = useState<boolean>(false);
+  const { setGameState, gameState } = useGameContext();
+  const [modal, setModal] = useState<boolean>(true);
   const [selectedOption, setSelectedOption] = useState<PromoteTo>("queen");
+  const { data: piece } = useLocalStorage("piece", "cburnett");
+
+  const playerIsWhite = gameState.myInfo.playerIsWhite;
+  const piecePath = `/src/assets/pieces/${piece}/`;
+
+  const imgFn = useCallback((firstTwoChars: string) => {
+    return `${piecePath}${firstTwoChars}.svg`;
+  }, []);
 
   const pieces: PromoteOptions[] = [ 
-    { name: "queen", assetURL: bQ },
-    { name: "bishop", assetURL: bB },
-    { name: "knight", assetURL: bN },
-    { name: "rook", assetURL: bR },
+    { name: "queen", assetURL: imgFn(playerIsWhite ? "wQ" : "bQ") },
+    { name: "bishop", assetURL: imgFn(playerIsWhite ? "wB" : "bB") },
+    { name: "knight", assetURL: imgFn(playerIsWhite ? "wN" : "bN") },
+    { name: "rook", assetURL: imgFn(playerIsWhite ? "wR" : "bR") },
   ]
 
   return (

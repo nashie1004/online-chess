@@ -31,22 +31,23 @@ after that, the web application should now be running.
 ## Credits
 All [board](https://github.com/lichess-org/lila/blob/master/public/images/board/), [pieces](https://github.com/lichess-org/lila/blob/master/public/piece/), and [sound](https://github.com/lichess-org/lila/blob/master/public/sound/) assets are sourced from [Lichess](https://github.com/lichess-org/lila) Github repo. Custom assets were created using [Piskel](https://www.piskelapp.com/).
 
-## TODO Essential (Game)
-2. promotion picker - DOING
-3. disconnect or leave logic
+## TODO Essential (Game) In Order as of 2/9/2025 9:35PM
+1. promotion picker - DOING
+2. display move turn, check, checkmate, stalemate
+3. bug on if king in check
 4. en passant bug
-5. display move turn, check, checkmate, stalemate
-6. bug on if king in check
+5. disconnect or leave logic
 
 ## Others
 1. fifty move rule
 2. show proper chess move notation
 3. 3 fold repetition
 5. responsive ui
-6. toaster
-7. table reload/refresh
+6. bug - toaster
+7. bug - table reload/refresh
 8. some framer motion?, more sounds and some phaser effects
-10. if both player exited and a timer is running, cancel timer?
+10. bug - if both player exited and a timer is running, cancel timer?
+11. bug - timer not found on resignation and draw
 
 ### SQLite
 ```

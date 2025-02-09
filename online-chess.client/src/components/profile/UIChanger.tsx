@@ -37,6 +37,7 @@ export default function UIChanger() {
             </Form.Label>
             <Form.Select 
               onChange={(e) => setBoard(e.target.value)}
+              value={board}
               className='w-50'>
                 {boardUIArray.map((item, idx) => {
                   return <option key={idx} value={item.displayCode}>{item.displayName}</option>
@@ -49,6 +50,7 @@ export default function UIChanger() {
             </Form.Label>
             <Form.Select  
               onChange={(e) => setPiece(e.target.value)}
+              value={piece}
               className='w-50'>
               {pieceUIArray.map((item, idx) => {
                 return <option key={idx} value={item.displayCode}>{item.displayName}</option>
