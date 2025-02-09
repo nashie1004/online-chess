@@ -1,13 +1,10 @@
 import { GameObjects, Scene } from "phaser";
-// import bg from "../../assets/wood4-800x800.jpg"
-import bg from "../../assets/boards/green800.png"
-//import bg from "../../assets/boards/brown.png"
 import previewMove from "../../assets/indicator.png"
 import move from "../../assets/sounds/Move.ogg"
 import capture from "../../assets/sounds/Capture.ogg"
 import select from "../../assets/sounds/Select.ogg"
 import check from "../../assets/sounds/Check.mp3"
-import pieces, { Options as gameOptions, PieceNames, pieceImages, baseKingState, eventEmit, eventOn } from "../utilities/constants";
+import pieces, { Options as gameOptions, PieceNames, baseKingState, eventEmit, eventOn, pieceNamesV2 } from "../utilities/constants";
 import { IBothKingsPosition, IKingState, IMoveHistory, IMoveInfo, IPiece, IPieceMove, IPiecesCoordinates, PromoteTo } from "../utilities/types";
 import { eventEmitter } from "../utilities/eventEmitter";
 import KingCastled from "../logic/kingCastled";
@@ -31,14 +28,19 @@ export class MainGameScene extends Scene{
     private isPlayersTurnToMove: boolean;
     private bothKingsPosition: IBothKingsPosition;
     private promotePreference: PromoteTo;
+    private readonly boardUI: string;
+    private readonly piecesUI: string;
 
     // server state
     private moveHistory: IMoveHistory;
     private kingsState: IKingState;
     private readonly pieceCoordinates: IPiecesCoordinates;
 
-    constructor(key: string, isColorWhite: boolean) {
+    constructor(key: string, isColorWhite: boolean, boardUI: string, piecesUI: string) {
         super({ key });
+
+        this.boardUI = boardUI;
+        this.piecesUI = piecesUI;
 
         // server state
         this.moveHistory = { white: [], black: [] };
@@ -61,18 +63,30 @@ export class MainGameScene extends Scene{
     }
 
     preload(){
-        this.load.image("bg", bg);
+        this.load.image("bg", `/src/assets/boards/${this.boardUI}`);
         this.load.image("previewMove", previewMove)
         this.load.audio("move", move);
         this.load.audio("capture", capture);
         this.load.audio("select", select);
         this.load.audio("check", check);
 
+        pieceNamesV2.forEach(piece => {
+            const imagePath = `/src/assets/pieces/${this.piecesUI}/${piece.shortName}.svg`;
+
+            this.load.svg(
+                piece.fullName
+                , imagePath
+                , { width: this.tileSize, height: this.tileSize }
+            );
+        });
+
+        /*
         Object.entries(pieceImages).forEach(([pieceName, imagePath]) => {
             const blob = new Blob([imagePath], { type: 'image/svg+xml' });
             const url = URL.createObjectURL(blob);
             this.load.svg(pieceName, url, { width: this.tileSize, height: this.tileSize })
         });
+        */
     }
 
     create(){

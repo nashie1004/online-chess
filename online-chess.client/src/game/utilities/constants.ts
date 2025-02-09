@@ -43,6 +43,23 @@ export enum PieceNames{
     bKing = "bKing"
 }
 
+export const pieceNamesV2 = [
+    { shortName: "wP", fullName: "wPawn" },
+    { shortName: "wR", fullName: "wRook" },
+    { shortName: "wN", fullName: "wKnight" },
+    { shortName: "wB", fullName: "wBishop" },
+    { shortName: "wQ", fullName: "wQueen" },
+    { shortName: "wK", fullName: "wKing" },
+
+    { shortName: "bP", fullName: "bPawn" },
+    { shortName: "bR", fullName: "bRook" },
+    { shortName: "bN", fullName: "bKnight" },
+    { shortName: "bB", fullName: "bBishop" },
+    { shortName: "bQ", fullName: "bQueen" },
+    { shortName: "bK", fullName: "bKing" },
+];
+
+
 export const Options = {
     tileSize: 100,
     width: 800,
