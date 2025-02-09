@@ -1,12 +1,15 @@
 import { Tabs, Tab, Button, Col, Form, Row, Image } from 'react-bootstrap'
 import testBg from "../../assets/boards/blue.png"
-import testing from "../../assets/pieces/cburnett/bB.svg"
 import useLocalStorage from '../../hooks/useLocalStorage';
-import { boardUI, pieceUI } from '../../game/utilities/constants';
+import { boardUIArray, pieceUIArray } from '../../game/utilities/constants';
+import { array } from 'zod';
 
 export default function UIChanger() {
-  const { setValue: setBoard, data: board } = useLocalStorage("board", boardUI.green);
-  const { setValue: setPiece, data: piece } = useLocalStorage("piece", pieceUI.cburnett);
+  const { setValue: setBoard, data: board } = useLocalStorage("board", "green.png");
+  const { setValue: setPiece, data: piece } = useLocalStorage("piece", "cburnett");
+
+  const boardPath = `/src/assets/boards/${board}`;
+  console.log(boardPath)
 
   return (
     <>
@@ -26,31 +29,36 @@ export default function UIChanger() {
             </Form.Label>
             <Form.Select 
               onChange={(e) => {
-                //setBoard("");
+                setBoard(e.target.value);
               }}
               aria-label="Default select example" className='w-50'>
-                <option>Open this select menu</option>
-                <option value="1">One</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
+                {boardUIArray.map((item, idx) => {
+                  return <option key={idx} value={item.displayCode}>{item.displayName}</option>
+                })}
             </Form.Select>
           </Form.Group>
           <Form.Group className="mb-3 d-flex">
             <Form.Label column sm={2}>
               Piece
             </Form.Label>
-            <Form.Select aria-label="Default select example" className='w-50'>
-                <option>Open this select menu</option>
-                <option value="1">One</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
+            <Form.Select 
+              className='w-50'>
+              {pieceUIArray.map((item, idx) => {
+                return <option key={idx} value={item.displayName}>{item.displayName}</option>
+              })}
             </Form.Select>
           </Form.Group>
         </Form>
           </Col>
-          <Col className='ui-display d-flex justify-content-center'>
-              <Image src={testBg} width={480} fluid />
-              {/* <Image src={testing} width={60} fluid /> */}
+          <Col className='ui-display d-flex justify-content-center' id="ui-changer-container">
+              <div id="ui-board">
+                {/* {Array(8).fill(null).map((_, rowIdx) => {
+                  return Array(8).fill(null).map((__, colIdx) => {
+                    return <div ></div>
+                  })
+                })} */}
+                <img src={boardPath} alt="board" />
+              </div>
           </Col>
         </div>
 

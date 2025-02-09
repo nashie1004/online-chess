@@ -42,7 +42,7 @@ export default class IsCheck {
         const kingUpdate = (kingPiece === PieceNames.wKing) ? this.kingsState.white : this.kingsState.black;
         const _this = this;
 
-        console.log("start king pos: ", this.bothKingsPosition)
+        // console.log("start king pos: ", this.bothKingsPosition)
 
         /**
          * 1. handle normal checks - once an opponent piece moves and their move causes a direct check
@@ -149,7 +149,7 @@ export default class IsCheck {
 
         }
 
-        console.log("end king pos: ", this.bothKingsPosition)
+        // console.log("end king pos: ", this.bothKingsPosition)
 
         return kingUpdate.checkedBy.length > 0;
     }

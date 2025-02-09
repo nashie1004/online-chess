@@ -349,3 +349,19 @@ div.modal-content
 #promotion-picker-modal .m-body .selected-promote-option{
   border: 2px solid var(--text-1); /* Green outline for contrast */
 }
+
+#ui-changer-container{
+
+}
+
+#ui-changer-container #ui-board{
+  width: 100%;  /* Makes it responsive */
+  max-width: 800px; /* Prevents it from exceeding 800px */
+  aspect-ratio: 1 / 1; /* Ensures it remains a square */
+}
+
+#ui-changer-container #ui-board img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover; 
+}
