@@ -4,6 +4,7 @@ import MoveHistory from './MoveHistory';
 import GameOutcome from './GameOutcome';
 import useGameContext from '../../hooks/useGameContext';
 import { GameType } from '../../game/utilities/constants';
+import ChatHeaderAndPromotionBtn from './ChatHeaderAndPromotionBtn';
 
 export default function SidebarRight() {
   const { gameState } = useGameContext();
@@ -46,10 +47,7 @@ export default function SidebarRight() {
         <MoveHistory />
       </div>
       <div className="sidebar-footer">
-        <div className='hstack justify-content-left ps-2 sidebar-bar'>
-          <i className="bi bi-chat-fill ps-2" style={{color: "#A8A8A7", fontSize: "1.5rem"}}></i>
-          <span style={{ color: "#F5F5F5"}}>&nbsp; Chat</span>
-        </div>
+        <ChatHeaderAndPromotionBtn />
         <Chatbar />
       </div>
     </div>
