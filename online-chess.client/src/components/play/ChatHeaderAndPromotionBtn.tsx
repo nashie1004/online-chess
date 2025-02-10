@@ -1,6 +1,8 @@
-import React from 'react'
+import useGameContext from "../../hooks/useGameContext"
 
 export default function ChatHeaderAndPromotionBtn() {
+  const { setGameState } = useGameContext();
+
   return (
     <div className='hstack justify-content-between ps-2 sidebar-bar'>
       <div>
@@ -9,7 +11,11 @@ export default function ChatHeaderAndPromotionBtn() {
       </div>
       <div>
         <span className='text-white'>Promote to</span>
-        <button className='btn btn-2'>Pawn</button>
+        <button 
+          onClick={() => {
+            setGameState({ type: "SET_MYINFO_OPENPROMOTIONMODAL", payload: true });
+          }}
+          className='btn btn-2'>Pawn</button>
       </div>
     </div>
   )

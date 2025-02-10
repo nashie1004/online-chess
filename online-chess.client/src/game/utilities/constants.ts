@@ -133,14 +133,15 @@ export enum ColorOptions{
 }
 
 export const basePlayerInfo: IPlayerInfo = {
-    userName: "",
-    kingsState: { isCheckMate: false, isInCheck: false, checkedBy: [], isInStalemate: false },
-    isPlayersTurn: false,
-    timeLeft: 0,
-    playerIsWhite: false,
-    isOfferingADraw: false,
-    resign: false,
-    promotePawnTo: "queen"
+    userName: ""
+    ,kingsState: { isCheckMate: false, isInCheck: false, checkedBy: [], isInStalemate: false }
+    ,isPlayersTurn: false
+    ,timeLeft: 0
+    ,playerIsWhite: false
+    ,isOfferingADraw: false
+    ,resign: false
+    ,promotePawnTo: "queen"
+    ,openPromotionModal: false
 }
 
 export const baseGameState: IGameContextReducerState = {

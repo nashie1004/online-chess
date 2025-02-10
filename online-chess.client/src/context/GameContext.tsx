@@ -61,6 +61,11 @@ function reducerFn(state: IGameContextReducerState, action: IGameContextReducerA
                     ...state.myInfo, promotePawnTo: action.payload
                 } 
             } 
+        case "SET_MYINFO_OPENPROMOTIONMODAL":
+            return {  ...state, myInfo: {
+                    ...state.myInfo, openPromotionModal: action.payload
+                } 
+            } 
         case "SET_MYINFO_ISPLAYERSTURN":
             return {  ...state, myInfo: {
                     ...state.myInfo, isPlayersTurn: action.payload

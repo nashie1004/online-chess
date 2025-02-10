@@ -87,16 +87,21 @@ export class MainGameScene extends Scene{
         */
     }
 
+    getMinSize(){
+        const { width, height } = this.scale.gameSize; 
+        const minSize = Math.min(width, height); 
+        return minSize;
+    }
+
     create(){
 
         const board = this.add
             .image(this.scale.width / 2, this.scale.height / 2, "bg")
-            .setOrigin(0.5); // Center the image
+            .setOrigin(0.5) // Center the image
+            .setDisplaySize(this.getMinSize(), this.getMinSize())
 
         this.scale.on("resize", () => {
-            const { width, height } = this.scale.gameSize; 
-            const minSize = Math.min(width, height); 
-            board.setDisplaySize(minSize, minSize);
+            board.setDisplaySize(this.getMinSize(), this.getMinSize());
         }, this);
 
        // this.add.image(0, 0, "bg").setOrigin(0, 0) ;

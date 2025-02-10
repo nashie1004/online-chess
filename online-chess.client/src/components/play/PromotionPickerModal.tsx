@@ -1,12 +1,11 @@
 import { Modal } from "react-bootstrap";
 import useGameContext from "../../hooks/useGameContext"
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { PromoteOptions, PromoteTo } from "../../game/utilities/types";
 import useLocalStorage from "../../hooks/useLocalStorage";
 
 export default function PromotionPickerModal() {
   const { setGameState, gameState } = useGameContext();
-  const [modal, setModal] = useState<boolean>(true);
   const [selectedOption, setSelectedOption] = useState<PromoteTo>("queen");
   const { data: piece } = useLocalStorage("piece", "cburnett");
 
@@ -17,12 +16,14 @@ export default function PromotionPickerModal() {
     return `${piecePath}${firstTwoChars}.svg`;
   }, []);
 
-  const pieces: PromoteOptions[] = [ 
-    { name: "queen", assetURL: imgFn(playerIsWhite ? "wQ" : "bQ") },
-    { name: "bishop", assetURL: imgFn(playerIsWhite ? "wB" : "bB") },
-    { name: "knight", assetURL: imgFn(playerIsWhite ? "wN" : "bN") },
-    { name: "rook", assetURL: imgFn(playerIsWhite ? "wR" : "bR") },
-  ]
+  const pieces: PromoteOptions[] = useMemo(() => {
+    return [ 
+      { name: "queen", assetURL: imgFn(playerIsWhite ? "wQ" : "bQ") },
+      { name: "bishop", assetURL: imgFn(playerIsWhite ? "wB" : "bB") },
+      { name: "knight", assetURL: imgFn(playerIsWhite ? "wN" : "bN") },
+      { name: "rook", assetURL: imgFn(playerIsWhite ? "wR" : "bR") },
+    ]
+  }, []);
 
   return (
     <>
@@ -31,14 +32,11 @@ export default function PromotionPickerModal() {
       id="promotion-picker-modal"
       size="lg"
       centered
-      show={modal}
-      onHide={() => {
-          setModal(false);
-      }}
+      show={gameState.myInfo.openPromotionModal}
       >
       <Modal.Body>
           <div className="m-header">
-              <h5>Promotion Confirmation</h5>
+            <h5>Promotion Confirmation</h5>
           </div>
           <div className="m-body d-flex justify-content-center gap-2">
             {
@@ -60,7 +58,7 @@ export default function PromotionPickerModal() {
                 className="btn btn-1 w-25"
                 onClick={() => {
                   setGameState({ type: "SET_MYINFO_PROMOTEPAWNTO", payload: selectedOption });
-                  setModal(false);
+                  setGameState({ type: "SET_MYINFO_OPENPROMOTIONMODAL", payload: false });
                 }}>Promote</button>
           </div>
       </Modal.Body>

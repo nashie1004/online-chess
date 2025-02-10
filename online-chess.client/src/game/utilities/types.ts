@@ -217,6 +217,7 @@ export interface IPlayerInfo{
     isOfferingADraw: boolean;
     resign: boolean;
     promotePawnTo: PromoteTo;
+    openPromotionModal: boolean
 }
 
 export interface IGameContextReducerState{
@@ -233,17 +234,18 @@ export interface IGameContextReducerState{
 export type IGameContextReducerActions = 
 | { type: "SET_MESSAGES"; payload: IChat[] }
 | { type: "SET_GAMEROOMKEY"; payload: string }
-| { type: "SET_MOVEHISTORY"; payload: any } // IMoveHistory
+| { type: "SET_MOVEHISTORY"; payload: any } 
 | { type: "SET_CAPTUREHISTORY"; payload: IPiece }
 
 | { type: "SET_MYINFO"; payload: IPlayerInfo }
 | { type: "SET_MYINFO_TIMELEFT"; payload: number }
 | { type: "SET_MYINFO_PROMOTEPAWNTO"; payload: PromoteTo } //todo
-| { type: "SET_MYINFO_ISPLAYERSTURN"; payload: boolean } //todo
+| { type: "SET_MYINFO_ISPLAYERSTURN"; payload: boolean } 
+| { type: "SET_MYINFO_OPENPROMOTIONMODAL"; payload: boolean } 
 | { type: "SET_OPPONENTINFO"; payload: IPlayerInfo }
 | { type: "SET_OPPONENTINFO_TIMELEFT"; payload: number }
-| { type: "SET_OPPONENTINFO_PROMOTEPAWNTO"; payload: PromoteTo } //todo
-| { type: "SET_OPPONENTINFO_ISPLAYERSTURN"; payload: boolean } //todo
+| { type: "SET_OPPONENTINFO_PROMOTEPAWNTO"; payload: PromoteTo } 
+| { type: "SET_OPPONENTINFO_ISPLAYERSTURN"; payload: boolean } 
 
 | { type: "SET_GAMESTATUS"; payload: gameStat }
 | { type: "SET_CLEARGAMESTATE"; }

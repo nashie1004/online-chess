@@ -48,6 +48,8 @@ All [board](https://github.com/lichess-org/lila/blob/master/public/images/board/
 8. some framer motion?, more sounds and some phaser effects
 10. bug - if both player exited and a timer is running, cancel timer?
 11. bug - timer not found on resignation and draw
+12. use redis
+13. add board coordinates
 
 ### SQLite
 ```
