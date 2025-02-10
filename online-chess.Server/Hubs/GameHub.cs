@@ -18,6 +18,7 @@ using online_chess.Server.Models.Play;
 using online_chess.Server.Features.Game.Commands.Resign;
 using online_chess.Server.Features.Game.Commands.RequestADraw;
 using online_chess.Server.Features.Game.Commands.DrawAgree;
+using online_chess.Server.Features.Game.Commands.SetPromotionPreference;
 
 namespace online_chess.Server.Hubs
 {
@@ -149,8 +150,19 @@ namespace online_chess.Server.Hubs
             });
         }
 
+        public async Task SetPromotionPreference(string gameRoomKey, PawnPromotionPreference preference)
+        {
+            await _mediator.Send(new SetPromotionPreferenceRequest()
+            {
+                UserConnectionId = Context.ConnectionId,
+                IdentityUserName = Context.User?.Identity?.Name,
+                GameRoomKeyString = gameRoomKey,
+                UserPreference = preference
+            });
+        }
+
         #endregion
-        
+
         #region Connection
         public override async Task OnConnectedAsync()
         {

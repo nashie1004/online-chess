@@ -184,6 +184,7 @@ export const playPageHandlers = {
     ,onOpponentDrawRequest: "onOpponentDrawRequest"
     ,onDeclineDraw: "onDeclineDraw"
     ,onUpdateTimer: "onUpdateTimer"
+    ,onSetPromotionPreference: "onSetPromotionPreference"
 }
 
 export const playPageInvokers = {
@@ -193,6 +194,7 @@ export const playPageInvokers = {
     ,resign: "Resign"
     ,requestADraw: "RequestADraw"
     ,movePiece: "MovePiece"
+    ,setPromotionPreference: "SetPromotionPreference"
 }
 
 /**

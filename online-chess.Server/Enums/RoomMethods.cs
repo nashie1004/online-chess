@@ -22,6 +22,7 @@ public class RoomMethods
     public const string onOpponentDrawRequest = "onOpponentDrawRequest";
     public const string onDeclineDraw = "onDeclineDraw";
     public const string onUpdateTimer = "onUpdateTimer";
+    public const string onSetPromotionPreference = "onSetPromotionPreference";
     #endregion
 
     #region Connection

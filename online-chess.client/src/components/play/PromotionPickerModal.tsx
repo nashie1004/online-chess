@@ -3,11 +3,14 @@ import useGameContext from "../../hooks/useGameContext"
 import { useCallback, useMemo, useState } from "react";
 import { PromoteOptions, PromoteTo } from "../../game/utilities/types";
 import useLocalStorage from "../../hooks/useLocalStorage";
+import useSignalRContext from "../../hooks/useSignalRContext";
+import { playPageInvokers } from "../../game/utilities/constants";
 
 export default function PromotionPickerModal() {
   const { setGameState, gameState } = useGameContext();
   const [selectedOption, setSelectedOption] = useState<PromoteTo>("queen");
   const { data: piece } = useLocalStorage("piece", "cburnett");
+  const { invoke } = useSignalRContext();
 
   const playerIsWhite = gameState.myInfo.playerIsWhite;
   const piecePath = `/src/assets/pieces/${piece}/`;
@@ -25,6 +28,14 @@ export default function PromotionPickerModal() {
     ]
   }, []);
 
+  const submitPromotionPreference = () => {
+    // TODO
+    return;
+    invoke(playPageInvokers.setPromotionPreference, gameState.gameRoomKey, 0);
+    setGameState({ type: "SET_MYINFO_PROMOTEPAWNTO", payload: selectedOption });
+    setGameState({ type: "SET_MYINFO_OPENPROMOTIONMODAL", payload: false });
+  };
+
   return (
     <>
     
@@ -33,6 +44,9 @@ export default function PromotionPickerModal() {
       size="lg"
       centered
       show={gameState.myInfo.openPromotionModal}
+      onHide={() => {
+        setGameState({ type: "SET_MYINFO_OPENPROMOTIONMODAL", payload: false });
+      }}
       >
       <Modal.Body>
           <div className="m-header">
@@ -56,10 +70,7 @@ export default function PromotionPickerModal() {
           <div className="m-footer">
             <button 
                 className="btn btn-1 w-25"
-                onClick={() => {
-                  setGameState({ type: "SET_MYINFO_PROMOTEPAWNTO", payload: selectedOption });
-                  setGameState({ type: "SET_MYINFO_OPENPROMOTIONMODAL", payload: false });
-                }}>Promote</button>
+                onClick={() => submitPromotionPreference()}>Promote</button>
           </div>
       </Modal.Body>
       </Modal>

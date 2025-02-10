@@ -37,6 +37,7 @@ All [board](https://github.com/lichess-org/lila/blob/master/public/images/board/
 3. bug on if king in check
 4. en passant bug
 5. disconnect or leave logic
+6. long castling bug
 
 ## Others
 1. fifty move rule

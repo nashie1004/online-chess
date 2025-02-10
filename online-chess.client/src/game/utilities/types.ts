@@ -17,6 +17,13 @@ export interface IValidMove extends IBaseCoordinates{
 
 export type PromoteTo = "rook" | "knight" | "bishop" | "queen";
 
+export enum PromotionPrefence{
+    Queen,
+    Rook,
+    Knight,
+    Bishop
+}
+
 export interface IMoveInfo extends IBaseCoordinates{
     pieceName: string
 }

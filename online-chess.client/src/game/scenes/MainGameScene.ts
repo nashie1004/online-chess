@@ -27,7 +27,6 @@ export class MainGameScene extends Scene{
     private selectedPiece: IMoveInfo | null;
     private isPlayersTurnToMove: boolean;
     private bothKingsPosition: IBothKingsPosition;
-    private promotePreference: PromoteTo;
     private readonly boardUI: string;
     private readonly piecesUI: string;
 
@@ -35,6 +34,7 @@ export class MainGameScene extends Scene{
     private moveHistory: IMoveHistory;
     private kingsState: IKingState;
     private readonly pieceCoordinates: IPiecesCoordinates;
+    private promotePreference: PromoteTo; // TODO
 
     constructor(key: string, isColorWhite: boolean, boardUI: string, piecesUI: string) {
         super({ key });
@@ -45,6 +45,7 @@ export class MainGameScene extends Scene{
         // server state
         this.moveHistory = { white: [], black: [] };
         this.kingsState = baseKingState;
+        this.pieceCoordinates = { white: [], black: [] };
 
         // internal state
         this.isPlayersTurnToMove = isColorWhite;
@@ -58,7 +59,6 @@ export class MainGameScene extends Scene{
         this.tileSize = gameOptions.tileSize; // 100
         this.board = Array.from({ length: 8}).map(_ => new Array(8).fill(null)); // creates 8x8 grid
         this.previewBoard = Array.from({ length: 8 }).map(_ => new Array(8));
-        this.pieceCoordinates = { white: [], black: [] };
         this.promotePreference = "queen";
     }
 

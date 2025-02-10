@@ -16,6 +16,7 @@ import DrawRequestModal from "../components/play/DrawRequestModal";
 import useOnDeclineDraw from "../game/signalRhandlers/useOnDeclineDraw";
 import PromotionPicker from "../components/play/PromotionPickerModal";
 import { playPageHandlers, playPageInvokers } from "../game/utilities/constants";
+import useOnSetPromotionPreference from "../game/signalRhandlers/useOnSetPromotionPreference";
 
 export default function Main(){
     const gameRef = useRef<Phaser.Game | null>();
@@ -31,6 +32,7 @@ export default function Main(){
     const onReceiveMessages = useOnReceiveMessages();
     const onGameOver = useOnGameOver();
     const onDeclineDraw = useOnDeclineDraw();
+    const onSetPromotionPreference = useOnSetPromotionPreference();
 
     useEffect(() => {
         setGameState({ type: "SET_CLEARGAMESTATE" });
@@ -47,12 +49,13 @@ export default function Main(){
             await addHandler(playPageHandlers.onUpdateBoard, onUpdateBoard)
             await addHandler(playPageHandlers.onOpponentDrawRequest, onOpponentDrawRequest)
             await addHandler(playPageHandlers.onDeclineDraw, onDeclineDraw)
+            await addHandler(playPageHandlers.onSetPromotionPreference, onSetPromotionPreference)
 
             await invoke(playPageInvokers.gameStart, url.gameRoomId);
         }
 
         if (!signalRConnectionRef.current){
-            console.info("Game Start")
+            //console.info("Game Start")
             start();
         }
 
@@ -72,6 +75,8 @@ export default function Main(){
             removeHandler(playPageHandlers.onUpdateBoard);
             removeHandler(playPageHandlers.onOpponentDrawRequest);
             removeHandler(playPageHandlers.onDeclineDraw);
+            removeHandler(playPageHandlers.onSetPromotionPreference);
+            
             stopConnection();
         };
     }, [])
