@@ -5,7 +5,7 @@ import capture from "../../assets/sounds/Capture.ogg"
 import select from "../../assets/sounds/Select.ogg"
 import check from "../../assets/sounds/Check.mp3"
 import pieces, { Options as gameOptions, PieceNames, baseKingState, eventEmit, eventOn, pieceNamesV2 } from "../utilities/constants";
-import { IBothKingsPosition, IKingState, IMoveHistory, IMoveInfo, IPiece, IPieceMove, IPiecesCoordinates, PromoteTo } from "../utilities/types";
+import { IBothKingsPosition, IKingState, IMoveHistory, IMoveInfo, IPiece, IPieceMove, IPiecesCoordinates, PlayersPromotePreference, PromotionPrefence } from "../utilities/types";
 import { eventEmitter } from "../utilities/eventEmitter";
 import KingCastled from "../logic/kingCastled";
 import PawnPromote from "../logic/pawnPromote";
@@ -15,10 +15,8 @@ import ValidateCheckOrCheckMateOrStalemate from "../logic/validateCheckOrCheckma
 
 export class MainGameScene extends Scene{
     /**
-     * Board: 800 x 800, Square: 100
      * unique name = piecename + x + y, example: 'wPawn-0-6'
      */
-
     // internal state
     private readonly tileSize: number;
     private readonly previewBoard: (GameObjects.Sprite)[][]; // has a visible property
@@ -34,7 +32,7 @@ export class MainGameScene extends Scene{
     private moveHistory: IMoveHistory;
     private kingsState: IKingState;
     private readonly pieceCoordinates: IPiecesCoordinates;
-    private promotePreference: PromoteTo; // TODO
+    private promotePreference: PlayersPromotePreference; 
 
     constructor(key: string, isColorWhite: boolean, boardUI: string, piecesUI: string) {
         super({ key });
@@ -57,9 +55,11 @@ export class MainGameScene extends Scene{
             , black: { x: this.boardOrientationIsWhite ? 4 : 3, y: this.boardOrientationIsWhite ? 0 : 7 }
         };
         this.tileSize = gameOptions.tileSize; // 100
-        this.board = Array.from({ length: 8}).map(_ => new Array(8).fill(null)); // creates 8x8 grid
+        this.board = Array.from({ length: 8 }).map(_ => new Array(8).fill(null)); // creates 8x8 grid
         this.previewBoard = Array.from({ length: 8 }).map(_ => new Array(8));
-        this.promotePreference = "queen";
+        this.promotePreference = {
+            white: PromotionPrefence.Queen, black: PromotionPrefence.Queen
+        };
     }
 
     preload(){
@@ -226,7 +226,7 @@ export class MainGameScene extends Scene{
         })
 
         // sync / listen to upcoming react state changes
-        eventEmitter.on(eventOn.setPromoteTo, (data: PromoteTo) => this.promotePreference = data); // TODO
+        eventEmitter.on(eventOn.setPromoteTo, (data: PlayersPromotePreference) => this.promotePreference = data); // TODO
         eventEmitter.on(eventOn.setKingsState, (data: IKingState) => this.kingsState = data);
         eventEmitter.on(eventOn.setEnemyMove, (data: IPieceMove) => {
             // console.log("enemy event emit: ", data)

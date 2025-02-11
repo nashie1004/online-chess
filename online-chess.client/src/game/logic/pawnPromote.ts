@@ -1,15 +1,15 @@
 import { GameObjects } from "phaser";
 import { PieceNames } from "../utilities/constants";
-import { IPiecesCoordinates, PromoteTo } from "../utilities/types";
+import { IPiecesCoordinates, PlayersPromotePreference, PromotionPrefence } from "../utilities/types";
 
 export default class PawnPromote {
     private readonly boardOrientationIsWhite: boolean;
-    private readonly promoteTo: PromoteTo;
+    private readonly promoteTo: PlayersPromotePreference;
     private readonly pieceCoordinates: IPiecesCoordinates;
 
     constructor(
         boardOrientationIsWhite: boolean,
-        promoteTo: PromoteTo,
+        promoteTo: PlayersPromotePreference,
         pieceCoordinates: IPiecesCoordinates
     ) {
         this.boardOrientationIsWhite = boardOrientationIsWhite;
@@ -19,6 +19,7 @@ export default class PawnPromote {
 
     pawnPromote(pieceName: string, newX: number, newY: number, isWhite: boolean, sprite: GameObjects.Sprite | null){
         let pawnPromoted = false;
+        const playerPromotionChoice = this.promoteTo[this.boardOrientationIsWhite ? "white" : "black"]
 
         // check if pawn and promotable
         if (
@@ -36,29 +37,29 @@ export default class PawnPromote {
             let newUniqueName = "";
             let pieceName: PieceNames = PieceNames.wQueen;
 
-            switch(this.promoteTo){
-                case "rook":
+            switch(playerPromotionChoice){
+                case PromotionPrefence.Rook:
                     newUniqueName = (isWhite ? PieceNames.wRook : PieceNames.bRook) + `-${newX}-${newY}`; 
                     pieceName = isWhite ? PieceNames.wRook : PieceNames.bRook;
 
                     sprite.setName(newUniqueName);
                     sprite.setTexture(pieceName);
                     break;
-                case "knight":
+                case PromotionPrefence.Knight:
                     newUniqueName = (isWhite ? PieceNames.wKnight : PieceNames.bKnight) + `-${newX}-${newY}`;
                     pieceName = isWhite ? PieceNames.wKnight : PieceNames.bKnight;
 
                     sprite.setName(newUniqueName);
                     sprite.setTexture(pieceName);
                     break;
-                case "bishop":
+                case PromotionPrefence.Bishop:
                     newUniqueName = (isWhite ? PieceNames.wBishop : PieceNames.bBishop) + `-${newX}-${newY}`;
                     pieceName = isWhite ? PieceNames.wBishop : PieceNames.bBishop;
                     
                     sprite.setName(newUniqueName);
                     sprite.setTexture(pieceName);
                     break;
-                case "queen":
+                case PromotionPrefence.Queen:
                     newUniqueName = (isWhite ? PieceNames.wQueen : PieceNames.bQueen) + `-${newX}-${newY}`;
                     pieceName = isWhite ? PieceNames.wQueen : PieceNames.bQueen;
 

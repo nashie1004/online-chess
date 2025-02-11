@@ -38,6 +38,7 @@ All [board](https://github.com/lichess-org/lila/blob/master/public/images/board/
 4. en passant bug
 5. disconnect or leave logic
 6. long castling bug
+7. promotion pawn check if king pin
 
 ## Others
 1. fifty move rule

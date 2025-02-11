@@ -2,7 +2,7 @@ import moment from "moment";
 import { useCallback, useRef } from "react";
 import { MainGameScene } from "../scenes/MainGameScene";
 import { eventEmitter } from "../utilities/eventEmitter";
-import { IInitialGameInfo, IKingState } from "../utilities/types";
+import { IInitialGameInfo, IKingState, PromotionPrefence } from "../utilities/types";
 import { eventOn, Options as gameOptions, playPageInvokers } from "../utilities/constants";
 import useGameContext from "../../hooks/useGameContext";
 import useSignalRContext from "../../hooks/useSignalRContext";
@@ -67,7 +67,8 @@ export default function useOnInitializeGameInfo(
                 playerIsWhite: myInfo.isColorWhite,
                 isOfferingADraw: false,
                 resign: false,
-                promotePawnTo: "queen"
+                promotePawnTo: PromotionPrefence.Queen,
+                openPromotionModal: false
             }
         });
         
@@ -84,7 +85,8 @@ export default function useOnInitializeGameInfo(
                 playerIsWhite: opponentInfo.isColorWhite,
                 isOfferingADraw: false,
                 resign: false,
-                promotePawnTo: "queen"
+                promotePawnTo: PromotionPrefence.Queen,
+                openPromotionModal: false
             }
         });
 

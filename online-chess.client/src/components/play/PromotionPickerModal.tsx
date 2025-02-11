@@ -1,14 +1,14 @@
 import { Modal } from "react-bootstrap";
 import useGameContext from "../../hooks/useGameContext"
 import { useCallback, useMemo, useState } from "react";
-import { PromoteOptions, PromoteTo } from "../../game/utilities/types";
+import { PromoteOptions, PromotionPrefence } from "../../game/utilities/types";
 import useLocalStorage from "../../hooks/useLocalStorage";
 import useSignalRContext from "../../hooks/useSignalRContext";
 import { playPageInvokers } from "../../game/utilities/constants";
 
 export default function PromotionPickerModal() {
   const { setGameState, gameState } = useGameContext();
-  const [selectedOption, setSelectedOption] = useState<PromoteTo>("queen");
+  const [selectedOption, setSelectedOption] = useState<PromotionPrefence>(PromotionPrefence.Queen);
   const { data: piece } = useLocalStorage("piece", "cburnett");
   const { invoke } = useSignalRContext();
 
@@ -21,18 +21,15 @@ export default function PromotionPickerModal() {
 
   const pieces: PromoteOptions[] = useMemo(() => {
     return [ 
-      { name: "queen", assetURL: imgFn(playerIsWhite ? "wQ" : "bQ") },
-      { name: "bishop", assetURL: imgFn(playerIsWhite ? "wB" : "bB") },
-      { name: "knight", assetURL: imgFn(playerIsWhite ? "wN" : "bN") },
-      { name: "rook", assetURL: imgFn(playerIsWhite ? "wR" : "bR") },
+      { name: PromotionPrefence.Queen, assetURL: imgFn(playerIsWhite ? "wQ" : "bQ") },
+      { name: PromotionPrefence.Bishop, assetURL: imgFn(playerIsWhite ? "wB" : "bB") },
+      { name: PromotionPrefence.Knight, assetURL: imgFn(playerIsWhite ? "wN" : "bN") },
+      { name: PromotionPrefence.Rook, assetURL: imgFn(playerIsWhite ? "wR" : "bR") },
     ]
   }, []);
 
   const submitPromotionPreference = () => {
-    // TODO
-    return;
-    invoke(playPageInvokers.setPromotionPreference, gameState.gameRoomKey, 0);
-    setGameState({ type: "SET_MYINFO_PROMOTEPAWNTO", payload: selectedOption });
+    invoke(playPageInvokers.setPromotionPreference, gameState.gameRoomKey, selectedOption);
     setGameState({ type: "SET_MYINFO_OPENPROMOTIONMODAL", payload: false });
   };
 
@@ -57,7 +54,7 @@ export default function PromotionPickerModal() {
               pieces.map((item, idx) => {
                 return <img 
                   key={idx} 
-                  alt={item.name} 
+                  alt={item.name.toString()} 
                   src={item.assetURL}
                   className={item.name === selectedOption ? "selected-promote-option" : ""}
                   onClick={() => {

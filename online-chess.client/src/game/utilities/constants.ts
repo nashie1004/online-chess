@@ -11,7 +11,7 @@ import bKnight from "../../assets/pieces/cburnett/bN.svg?raw"
 import bBishop from "../../assets/pieces/cburnett/bB.svg?raw"
 import bQueen from "../../assets/pieces/cburnett/bQ.svg?raw"
 import bKing from "../../assets/pieces/cburnett/bK.svg?raw"
-import { IGameContextReducerState, IKingState, IPiece, IPlayerInfo } from "./types"
+import { IGameContextReducerState, IKingState, IPiece, IPlayerInfo, PromotionPrefence } from "./types"
 
 export enum PieceNames{
     wPawn = "wPawn",
@@ -140,7 +140,7 @@ export const basePlayerInfo: IPlayerInfo = {
     ,playerIsWhite: false
     ,isOfferingADraw: false
     ,resign: false
-    ,promotePawnTo: "queen"
+    ,promotePawnTo: PromotionPrefence.Queen
     ,openPromotionModal: false
 }
 
@@ -206,6 +206,7 @@ export const eventEmit = {
     ,setMovePiece: "setMovePiece"
     ,setEnemyMove: "setEnemyMove"
     ,setMoveHistory: "setMoveHistory"
+    ,setPromoteTo: "setPromoteTo"
 }
 
 export const eventOn = {
