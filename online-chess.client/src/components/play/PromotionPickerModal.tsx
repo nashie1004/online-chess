@@ -26,7 +26,7 @@ export default function PromotionPickerModal() {
       { name: PromotionPrefence.Knight, assetURL: imgFn(playerIsWhite ? "wN" : "bN") },
       { name: PromotionPrefence.Rook, assetURL: imgFn(playerIsWhite ? "wR" : "bR") },
     ]
-  }, []);
+  }, [gameState]);
 
   const submitPromotionPreference = () => {
     invoke(playPageInvokers.setPromotionPreference, gameState.gameRoomKey, selectedOption);

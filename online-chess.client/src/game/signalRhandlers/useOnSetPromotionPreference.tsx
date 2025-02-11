@@ -14,19 +14,23 @@ export default function useOnSetPromotionPreference(){
         const playerName = data.playerName as string;
         const preference = data.preference as PromotionPrefence;
 
-        if (playerName === gameState.myInfo.userName){
+        if (playerName === gameStateRef.current.myInfo.userName)
+        {
             setGameState({ type: "SET_MYINFO_PROMOTEPAWNTO", payload: preference });
-        } else {
+            eventEmitter.emit(eventEmit.setPromoteTo, {
+                isWhite: gameStateRef.current.myInfo.playerIsWhite,
+                preference
+            });
+        } 
+        else {
             setGameState({ type: "SET_OPPONENTINFO_PROMOTEPAWNTO", payload: preference });
+            eventEmitter.emit(eventEmit.setPromoteTo, {
+                isWhite: gameStateRef.current.opponentInfo.playerIsWhite,
+                preference
+            });
         }
 
-        const retVal: PlayersPromotePreference = {
-            white: gameStateRef.current.myInfo.playerIsWhite ? gameStateRef.current.myInfo.promotePawnTo : gameStateRef.current.opponentInfo.promotePawnTo,
-            black: !gameStateRef.current.myInfo.playerIsWhite ? gameStateRef.current.myInfo.promotePawnTo : gameStateRef.current.opponentInfo.promotePawnTo,
-        };
-
-        //console.log("prefernce",retVal, data)
-        eventEmitter.emit(eventEmit.setPromoteTo, retVal);
+        //console.log("prefernce",data)
     }, []);
 
     return onSetPromotionPreference;

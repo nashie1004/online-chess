@@ -19,7 +19,7 @@ export default class PawnPromote {
 
     pawnPromote(pieceName: string, newX: number, newY: number, isWhite: boolean, sprite: GameObjects.Sprite | null){
         let pawnPromoted = false;
-        const playerPromotionChoice = this.promoteTo[this.boardOrientationIsWhite ? "white" : "black"]
+        const playerPromotionChoice = this.promoteTo[isWhite ? "white" : "black"]
 
         // check if pawn and promotable
         if (

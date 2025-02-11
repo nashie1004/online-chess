@@ -226,7 +226,12 @@ export class MainGameScene extends Scene{
         })
 
         // sync / listen to upcoming react state changes
-        eventEmitter.on(eventOn.setPromoteTo, (data: PlayersPromotePreference) => this.promotePreference = data); // TODO
+        eventEmitter.on(eventOn.setPromoteTo, (data: any) => {
+            const isWhite = data.isWhite as boolean;
+            const preference = data.preference as PromotionPrefence;
+            
+            this.promotePreference[isWhite ? "white" : "black"] = preference;
+        }); // TODO
         eventEmitter.on(eventOn.setKingsState, (data: IKingState) => this.kingsState = data);
         eventEmitter.on(eventOn.setEnemyMove, (data: IPieceMove) => {
             // console.log("enemy event emit: ", data)
@@ -336,7 +341,7 @@ export class MainGameScene extends Scene{
             
             this.isPlayersTurnToMove = false;
             // console.log("move piece: ", oldMove, newMove)
-            console.log("sprite: ", sprite, this.selectedPiece, newX, newY)
+            //console.log("sprite: ", sprite, this.selectedPiece, newX, newY)
 
             eventEmitter.emit(eventEmit.setMovePiece, { oldMove, newMove, hasCapture });
         }
