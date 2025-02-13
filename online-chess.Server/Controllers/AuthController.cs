@@ -36,7 +36,6 @@ namespace online_chess.Server.Controllers
         {
             return Ok(await _mediator.Send(req));
         }
-        */
 
         [HttpGet("isSignedIn")]
         public async Task<IActionResult> IsSignedIn([FromQuery] GetPlayerInfoRequest req)
@@ -49,6 +48,7 @@ namespace online_chess.Server.Controllers
         {
             return Ok(await _mediator.Send(req));
         }
+        */
 
         [HttpPost("edit")]
         public async Task<IActionResult> EditAccount([FromBody] EditRequest req)

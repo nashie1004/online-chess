@@ -8,7 +8,7 @@ import { toast } from 'react-toastify';
 import useAuthContext from "../hooks/useAuthContext";
 import { useEffect } from "react";
 import useSignalRContext from "../hooks/useSignalRContext";
-import { registerPageInvokers, registerPageHandlers } from "../game/utilities/constants";
+import { authHandlers, authInvokers } from "../game/utilities/constants";
 
 const schema = z.object({
   userName: z.string().min(8, "Username must contain at least 8 character(s)"),
@@ -34,7 +34,7 @@ export default function Register() {
   })
 
   async function submitForm(data: FormFields){
-    await invoke(registerPageInvokers.register, data);
+    await invoke(authInvokers.register, data);
   }
 
   useEffect(() => {
@@ -44,7 +44,7 @@ export default function Register() {
 
     async function start(){
 
-      await addHandler(registerPageHandlers.onRegister, (res: GenericReturnMessage) => {
+      await addHandler(authHandlers.onRegister, (res: GenericReturnMessage) => {
         if (!res.isOk){
           toast(res.message, { type: "error" })
           return;
@@ -58,7 +58,7 @@ export default function Register() {
     start();
 
     return () => {
-      removeHandler(registerPageHandlers.onRegister);
+      removeHandler(authHandlers.onRegister);
     };
   }, [])
 

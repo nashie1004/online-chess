@@ -175,20 +175,18 @@ export const mainPageInvokers = {
     deleteRoom: "DeleteRoom"
 };
 
-export const registerPageHandlers = {
+export const authHandlers = {
     onRegister: "onRegister"
+    ,onLogin: "onLogin"
+    ,onIsSignedIn: "onIsSignedIn"
+    ,onLogout: "onLogout"
 };
 
-export const registerPageInvokers = {
+export const authInvokers = {
     register: "Register"
-};
-
-export const loginPageHandlers = {
-    onLogin: "onLogin"
-};
-
-export const loginPageInvokers = {
-    login: "Login"
+    , login: "Login"
+    , IsSignedIn: "IsSignedIn"
+    , Logout: "Logout"
 };
 
 export const lobbyPageHandlers = {
