@@ -48,7 +48,6 @@ namespace online_chess.Server.Controllers
         {
             return Ok(await _mediator.Send(req));
         }
-        */
 
         [HttpPost("edit")]
         public async Task<IActionResult> EditAccount([FromBody] EditRequest req)
@@ -61,5 +60,7 @@ namespace online_chess.Server.Controllers
         {
             return Ok(await _mediator.Send(req));
         }
+        */
+
     }
 }

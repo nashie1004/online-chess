@@ -83,16 +83,13 @@ namespace online_chess.Server.Hubs
             await Clients.Caller.SendAsync(RoomMethods.onEditAccount, response);
         }
         
-        // TODO convert this
-        public async Task GameHistory(int pageSize, int pageNumber, string? sortBy, string? filters)
+        public async Task GameHistory(int pageSize, int pageNo)
         {
             var response = await _mediator.Send(new GetGameHistoryRequest(){
                 PageSize = pageSize
-                , PageNumber = pageNumber
-                , SortBy = sortBy
-                , Filters = filters
+                , PageNumber = pageNo
             });
-            await Clients.Caller.SendAsync(RoomMethods.onGameHistory, response);
+            await Clients.Caller.SendAsync(RoomMethods.onGetGameHistory, response);
         }
 
         #endregion

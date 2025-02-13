@@ -191,6 +191,14 @@ export const authInvokers = {
     , EditAccount: "EditAccount"
 };
 
+export const otherPageHandlers = {
+    onGetGameHistory: "onGetGameHistory"
+};
+
+export const otherPageInvokers = {
+    gameHistory: "GameHistory"
+};
+
 export const lobbyPageHandlers = {
     onRefreshRoomList: "onRefreshRoomList"
     ,onInvalidRoomKey: "onInvalidRoomKey"

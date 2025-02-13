@@ -12,7 +12,7 @@ public class RoomMethods
     public const string onIsSignedIn = "onIsSignedIn";
     public const string onLogout = "onLogout";
     public const string onEditAccount = "onEditAccount";
-    public const string onGameHistory = "onGameHistory";
+    public const string onGetGameHistory = "onGetGameHistory";
     #endregion
 
     #region LobbyPage

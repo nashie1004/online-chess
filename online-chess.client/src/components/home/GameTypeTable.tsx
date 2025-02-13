@@ -2,11 +2,10 @@ import moment from "moment";
 import { useState, useEffect } from "react";
 import { Table, Spinner } from "react-bootstrap";
 import { toast } from "react-toastify";
-import { IGameTypeList, ILeaderboardList } from "../../game/utilities/types";
-import BaseApiService from "../../services/BaseApiService";
-import { GameType } from "../../game/utilities/constants";
-
-const baseApiService = new BaseApiService();
+import { IGameTypeList } from "../../game/utilities/types";
+import { GenericReturnMessage } from "../../services/BaseApiService";
+import { GameType, otherPageHandlers, otherPageInvokers } from "../../game/utilities/constants";
+import useSignalRContext from "../../hooks/useSignalRContext";
 
 interface IGameTypeTable{
   gameTypeLabel: string;
@@ -21,23 +20,31 @@ export default function GameTypeTable(
     const [list, setList] = useState<IGameTypeList>({
       isLoading: true, data: []
     });
-  
-    async function getData(){
-      setList({ isLoading: true, data: [] });
-  
-      const res = await baseApiService.baseGet(`/api/Home/gameTypeList?gameType=${gameType}&pageNumber=${pageNo}`);
-      
-      if (!res.isOk){
-        toast(res.message, { type: "error" })
-        return;
-      }
-  
-      setList({ isLoading: false, data: res.data.items });
-    }
+    const { addHandler, removeHandler, invoke } = useSignalRContext();
   
     useEffect(() => {
-      getData();
+      setList({ isLoading: true, data: [] });
+      invoke(otherPageInvokers.gameHistory, { pageSize: 10, pageNo, gameType });
     }, [pageNo])
+
+    useEffect(() => {
+      async function init(){
+        await addHandler(otherPageHandlers.onGetGameHistory, (res: GenericReturnMessage) => {
+          if (!res.isOk){
+            toast(res.message, { type: "error" })
+            return;
+          }
+      
+          setList({ isLoading: false, data: res.data.items });
+        });
+      }
+
+      init();
+
+      return () => {
+        removeHandler(otherPageHandlers.onGetGameHistory);
+      };
+    }, []);
 
     return <>
     
