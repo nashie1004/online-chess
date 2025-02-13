@@ -171,6 +171,10 @@ export const mainPageHandlers = {
     onGetUserConnectionId: "onGetUserConnectionId"
 };
 
+export const mainPageInvokers = {
+    deleteRoom: "DeleteRoom"
+};
+
 export const lobbyPageHandlers = {
     onRefreshRoomList: "onRefreshRoomList"
     ,onInvalidRoomKey: "onInvalidRoomKey"
@@ -181,7 +185,6 @@ export const lobbyPageHandlers = {
 export const lobbyPageInvokers = {
     getRoomList: "GetRoomList"
     ,getCreatedRoomKey: "GetCreatedRoomKey"
-    ,deleteRoom: "DeleteRoom"
     ,addToQueue: "AddToQueue"
     ,joinRoom: "JoinRoom"
 }

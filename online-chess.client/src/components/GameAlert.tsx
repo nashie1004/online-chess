@@ -1,11 +1,16 @@
 import { Spinner } from "react-bootstrap";
 import useNotificationContext from "../hooks/useNotificationContext"
+import useSignalRContext from "../hooks/useSignalRContext";
+import { mainPageInvokers } from "../game/utilities/constants";
+import useGameContext from "../hooks/useGameContext";
 
 export default function GameAlert(){
-    const { notificationState } = useNotificationContext();
+    const { notificationState, setNotificationState } = useNotificationContext();
+    const { invoke } = useSignalRContext();
+    const { gameState } = useGameContext();
 
     if (
-        !notificationState.hasAGameQueuing &&
+        !notificationState.gameQueuingRoomKey &&
         !notificationState.hasAGameOnGoing &&
         !notificationState.hasAGameDisconnected
     ){
@@ -13,11 +18,19 @@ export default function GameAlert(){
     }
 
     function gameNotif(){
-        if (notificationState.hasAGameQueuing){
+        if (notificationState.gameQueuingRoomKey){
             return <>
                 <Spinner size="sm" animation="border" variant="dark" /> 
                 <span className="ps-2">
-                    You have a game queuing... <a href="#" className="alert-link">an example link</a>. Give it a click if you like.
+                    You have a game queuing... 
+                    <a 
+                        href="#" 
+                        className="ps-1 alert-link"
+                        onClick={() => {
+                            invoke(mainPageInvokers.deleteRoom, notificationState.gameQueuingRoomKey);
+                            setNotificationState({ type: "SET_GAMEQUEUINGROOMKEY", payload: null });
+                        }}
+                        >Stop queuing?</a> 
                 </span>
             </>
         }

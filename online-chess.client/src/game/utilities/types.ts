@@ -279,7 +279,7 @@ export interface INotificationContext{
 }
 
 export interface INotificationContextReducerState{
-    hasAGameQueuing: boolean;
+    gameQueuingRoomKey: string | null;
     hasAGameDisconnected: boolean;
     hasAGameOnGoing: boolean;
     roomKey: string | null;
@@ -287,7 +287,7 @@ export interface INotificationContextReducerState{
 }
 
 export type INotificationContextReducerActions = 
-{ type: "SET_HASAGAMEQUEUING", payload: boolean }
+{ type: "SET_GAMEQUEUINGROOMKEY", payload: string | null }
 | { type: "SET_HASAGAMEDISCONNECTED", payload: boolean }
 | { type: "SET_HASAGAMEONGOING", payload: boolean }
 | { type: "SET_ROOMKEY", payload: string }
