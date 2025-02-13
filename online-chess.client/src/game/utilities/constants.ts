@@ -179,8 +179,16 @@ export const registerPageHandlers = {
     onRegister: "onRegister"
 };
 
-export const registerInvokersHandlers = {
+export const registerPageInvokers = {
     register: "Register"
+};
+
+export const loginPageHandlers = {
+    onLogin: "onLogin"
+};
+
+export const loginPageInvokers = {
+    login: "Login"
 };
 
 export const lobbyPageHandlers = {

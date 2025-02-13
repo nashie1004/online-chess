@@ -20,6 +20,7 @@ using online_chess.Server.Features.Game.Commands.RequestADraw;
 using online_chess.Server.Features.Game.Commands.DrawAgree;
 using online_chess.Server.Features.Game.Commands.SetPromotionPreference;
 using online_chess.Server.Features.Auth.Commands.Register;
+using online_chess.Server.Features.Auth.Commands.LogIn;
 
 namespace online_chess.Server.Hubs
 {
@@ -44,6 +45,17 @@ namespace online_chess.Server.Hubs
             });
 
             await Clients.Caller.SendAsync(RoomMethods.onRegister, response);
+        }
+
+        [AllowAnonymous]
+        public async Task Login(string userName, string password)
+        {
+            var response = await _mediator.Send(new LoginRequest(){
+                Username = userName
+                , Password = password
+            });
+
+            await Clients.Caller.SendAsync(RoomMethods.onLogin, response);
         }
 
         #endregion

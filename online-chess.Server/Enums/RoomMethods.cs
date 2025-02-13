@@ -8,6 +8,7 @@ public class RoomMethods
 
     #region Auth
     public const string onRegister = "onRegister";
+    public const string onLogin = "onLogin";
     #endregion
 
     #region LobbyPage
