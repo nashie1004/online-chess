@@ -34,7 +34,7 @@ export default function Login() {
   })
 
   async function submitForm(data: FormFields){
-    await invoke(authInvokers.login, data);
+    await invoke(authInvokers.login, data.userName, data.password);
   }
 
   useEffect(() => {

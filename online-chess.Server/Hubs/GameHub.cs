@@ -1,5 +1,4 @@
-﻿
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using online_chess.Server.Constants;
@@ -25,6 +24,8 @@ using online_chess.Server.Features.Auth.Queries.GetPlayerInfo;
 using online_chess.Server.Features.Auth.Commands.LogOut;
 using online_chess.Server.Features.Auth.Commands.Edit;
 using online_chess.Server.Features.Auth.Queries.GetGameHistory;
+using online_chess.Server.Features.Leaderboard.Queries.GetDefaultLeaderboard;
+using online_chess.Server.Features.Leaderboard.Queries.GetGameTypeList;
 
 namespace online_chess.Server.Hubs
 {
@@ -82,7 +83,10 @@ namespace online_chess.Server.Hubs
             });
             await Clients.Caller.SendAsync(RoomMethods.onEditAccount, response);
         }
+        #endregion
         
+        #region Lists
+
         public async Task GameHistory(int pageSize, int pageNo)
         {
             var response = await _mediator.Send(new GetGameHistoryRequest(){
@@ -90,6 +94,25 @@ namespace online_chess.Server.Hubs
                 , PageNumber = pageNo
             });
             await Clients.Caller.SendAsync(RoomMethods.onGetGameHistory, response);
+        }
+
+        public async Task Leaderboard(int pageSize, int pageNo)
+        {
+            var response = await _mediator.Send(new GetDefaultLeaderboardRequest(){
+                PageSize = pageSize
+                , PageNumber = pageNo
+            });
+            await Clients.Caller.SendAsync(RoomMethods.onGetLeaderboard, response);
+        }
+
+        public async Task GameTypeList(int pageSize, int pageNo, GameType gameType)
+        {
+            var response = await _mediator.Send(new GetGameTypeListRequest(){
+                PageSize = pageSize
+                , PageNumber = pageNo
+                , GameType = gameType
+            });
+            await Clients.Caller.SendAsync(RoomMethods.onGetGameTypeList, response);
         }
 
         #endregion

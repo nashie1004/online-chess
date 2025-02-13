@@ -34,7 +34,7 @@ export default function Register() {
   })
 
   async function submitForm(data: FormFields){
-    await invoke(authInvokers.register, data);
+    await invoke(authInvokers.register, data.userName, data.password);
   }
 
   useEffect(() => {

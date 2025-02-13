@@ -191,12 +191,16 @@ export const authInvokers = {
     , EditAccount: "EditAccount"
 };
 
-export const otherPageHandlers = {
+export const listHandlers = {
     onGetGameHistory: "onGetGameHistory"
+    ,onGetLeaderboard: "onGetLeaderboard"
+    ,onGetGameTypeList: "onGetGameTypeList"
 };
 
-export const otherPageInvokers = {
+export const listInvokers = {
     gameHistory: "GameHistory"
+    ,leaderboard: "Leaderboard"
+    ,gameTypeList: "GameTypeList"
 };
 
 export const lobbyPageHandlers = {

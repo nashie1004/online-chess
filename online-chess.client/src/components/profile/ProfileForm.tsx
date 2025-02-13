@@ -44,9 +44,13 @@ export default function ProfileForm(){
     });
   
     async function submitForm(data: FormFields){
-      invoke(authInvokers.EditAccount, {
-        oldUserName: user?.userName, ...data 
-      });
+      // invoke(authInvokers.EditAccount, {
+      //   oldUserName: user?.userName, ...data 
+      // });
+      invoke(authInvokers.EditAccount
+        , user?.userName, data.newUsername
+        , data.oldPassword, data.newPassword
+      );
     }
 
     useEffect(() => {

@@ -3,38 +3,40 @@ import { useState, useEffect } from "react";
 import { Table, Spinner } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { ILeaderboardList } from "../../game/utilities/types";
-import BaseApiService from "../../services/BaseApiService";
-
-const baseApiService = new BaseApiService();
+import { GenericReturnMessage } from "../../services/BaseApiService";
+import useSignalRContext from "../../hooks/useSignalRContext";
+import { listHandlers, listInvokers } from "../../game/utilities/constants";
 
 export default function MainLeaderboardTable(){
     const [pageNo, setPageNo] = useState<number>(1);
     const [list, setList] = useState<ILeaderboardList>({
       isLoading: true, data: []
     });
-  
-    async function getData(){
-      setList({ isLoading: true, data: [] });
-  
-      const res = await baseApiService.baseGetList("/api/Home/Leaderboard", {
-        pageSize: 10,
-        pageNumber: pageNo,
-        sortBy: "",
-        filters: ""
-      });
-  
-      if (!res.isOk){
-        toast(res.message, { type: "error" })
-        return;
-      }
-  
-      setList({ isLoading: false, data: res.data.items });
-    }
+    const { addHandler, removeHandler, invoke } = useSignalRContext();
   
     useEffect(() => {
-      getData();
+      setList({ isLoading: true, data: [] });
+      invoke(listInvokers.leaderboard, 10, pageNo);
     }, [pageNo])
   
+    useEffect(() => {
+      async function init(){
+        await addHandler(listHandlers.onGetLeaderboard, (res: GenericReturnMessage) => {
+          if (!res.isOk){
+            toast(res.message, { type: "error" })
+            return;
+          }
+      
+          setList({ isLoading: false, data: res.data.items });
+        });
+      }
+
+      init();
+      
+      return () => {
+        removeHandler(listHandlers.onGetLeaderboard);
+      };
+    }, []);
 
     return <>
     

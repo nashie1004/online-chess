@@ -4,7 +4,7 @@ import { Table, Spinner } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { IGameTypeList } from "../../game/utilities/types";
 import { GenericReturnMessage } from "../../services/BaseApiService";
-import { GameType, otherPageHandlers, otherPageInvokers } from "../../game/utilities/constants";
+import { GameType, listHandlers, listInvokers,  } from "../../game/utilities/constants";
 import useSignalRContext from "../../hooks/useSignalRContext";
 
 interface IGameTypeTable{
@@ -24,12 +24,12 @@ export default function GameTypeTable(
   
     useEffect(() => {
       setList({ isLoading: true, data: [] });
-      invoke(otherPageInvokers.gameHistory, { pageSize: 10, pageNo, gameType });
+      invoke(listInvokers.gameHistory, 10, pageNo, gameType);
     }, [pageNo])
 
     useEffect(() => {
       async function init(){
-        await addHandler(otherPageHandlers.onGetGameHistory, (res: GenericReturnMessage) => {
+        await addHandler(listHandlers.onGetGameTypeList, (res: GenericReturnMessage) => {
           if (!res.isOk){
             toast(res.message, { type: "error" })
             return;
@@ -42,7 +42,7 @@ export default function GameTypeTable(
       init();
 
       return () => {
-        removeHandler(otherPageHandlers.onGetGameHistory);
+        removeHandler(listHandlers.onGetGameTypeList);
       };
     }, []);
 
