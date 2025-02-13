@@ -38,7 +38,7 @@ export default function AuthContext(
     }
 
     async function logout() {
-        setIsAuthenticating(true)
+        setIsAuthenticating(true);
         const res = await authService.basePost("/api/Auth/logout", {});
         if (res.isOk) {
             setUser(null);

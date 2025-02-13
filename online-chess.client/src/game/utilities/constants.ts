@@ -156,7 +156,7 @@ export const baseGameState: IGameContextReducerState = {
 };
 
 export const baseNotificationState: INotificationContextReducerState = {
-    hasAGameQueuing: false
+    hasAGameQueuing: true
     ,hasAGameDisconnected: false
     ,hasAGameOnGoing: false
     ,roomKey: null

@@ -7,20 +7,20 @@ import { ToastContainer } from "react-toastify";
 import GameAlert from "./GameAlert";
 
 export default function Layout() {
-    const navigate = useNavigate();
-    const url = useLocation();
-    const {user, isAuthenticating} = useAuthContext();
-      // if not signed in, allowed urls are these
-    const unAuthenticatedAllowedPaths = ["/", "/about", "/register", "/login"];
+  const navigate = useNavigate();
+  const url = useLocation();
+  const {user, isAuthenticating} = useAuthContext();
+    // if not signed in, allowed urls are these
+  const unAuthenticatedAllowedPaths = ["/", "/about", "/register", "/login"];
 
-    useEffect(() => {
-      if (user) return;
+  useEffect(() => {
+    if (user) return;
 
-      if (!unAuthenticatedAllowedPaths.includes(url.pathname)) {
-        navigate('/login');
-      }
+    if (!unAuthenticatedAllowedPaths.includes(url.pathname)) {
+      navigate('/login');
+    }
 
-    }, [user, url.pathname])
+  }, [user, url.pathname])
 
   return (
     <>

@@ -20,8 +20,7 @@ import useOnSetPromotionPreference from "../game/signalRhandlers/useOnSetPromoti
 
 export default function Main(){
     const gameRef = useRef<Phaser.Game | null>();
-    const signalRConnectionRef = useRef<boolean | null>(null);
-    const { startConnection, addHandler, invoke, removeHandler, stopConnection } = useSignalRContext();
+    const { isConnected, addHandler, invoke, removeHandler } = useSignalRContext();
     const url = useParams();
     const { setGameState } = useGameContext();
     
@@ -39,9 +38,6 @@ export default function Main(){
         setGameState({ type: "SET_GAMESTATUS", payload: "LOADING" });
 
         async function start() {
-            await startConnection(_ => {});
-            signalRConnectionRef.current = true;
-
             await addHandler(playPageHandlers.onNotFound, onNotFound);
             await addHandler(playPageHandlers.onInitializeGameInfo, onInitializeGameInfo);
             await addHandler(playPageHandlers.onGameOver, onGameOver);
@@ -54,7 +50,7 @@ export default function Main(){
             await invoke(playPageInvokers.gameStart, url.gameRoomId);
         }
 
-        if (!signalRConnectionRef.current){
+        if (isConnected){
             //console.info("Game Start")
             start();
         }
@@ -76,8 +72,6 @@ export default function Main(){
             removeHandler(playPageHandlers.onOpponentDrawRequest);
             removeHandler(playPageHandlers.onDeclineDraw);
             removeHandler(playPageHandlers.onSetPromotionPreference);
-            
-            stopConnection();
         };
     }, [])
 

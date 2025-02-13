@@ -19,10 +19,10 @@ import NotificationContext from "./context/NotificationContext";
 
 export default function App(){
     return <>
-        <AuthContext>
-            <NotificationContext>
-                <GameContext>
-                    <SignalRContext>
+        <SignalRContext>
+            <AuthContext>
+                <NotificationContext>
+                    <GameContext>
                         <BrowserRouter>
                             <Routes>
                                 <Route path="/" element={<Layout />}>
@@ -37,9 +37,9 @@ export default function App(){
                                 </Route>
                             </Routes>
                         </BrowserRouter>
-                    </SignalRContext>
-                </GameContext>
-            </NotificationContext>
-        </AuthContext>
+                    </GameContext>
+                </NotificationContext>
+            </AuthContext>
+        </SignalRContext>
     </>
 }

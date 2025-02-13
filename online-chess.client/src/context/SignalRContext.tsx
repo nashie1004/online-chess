@@ -12,7 +12,9 @@ let hubConnection: HubConnection;
 export default function SignalRContext(
     {children}: ISignalRContextProps
 ) {
-    async function startConnection(closeEventCallback: (arg: any) => void){
+    const [isConnected, setIsConnected] = useState(false);
+
+    async function startConnection(){
         hubConnection = new HubConnectionBuilder()
             .configureLogging(LogLevel.Information) 
             .withUrl("https://localhost:44332/hub", {
@@ -23,10 +25,11 @@ export default function SignalRContext(
         
         try {
             await hubConnection.start();
-            hubConnection.onclose(closeEventCallback);
+            //hubConnection.onclose(closeEventCallback);
             hubConnection.onreconnected((e) => console.info(`Reconnected: ${e}`))
             hubConnection.onreconnecting((e) => console.info(`Reconnecting: ${e}`))
             console.log("Connection started");
+            setIsConnected(true);
         } catch (error) {
             console.error(error);
         }
@@ -36,6 +39,7 @@ export default function SignalRContext(
         if (!hubConnection) return;
 
         try{
+            setIsConnected(false);
             await hubConnection.stop();
         } catch(err){
             console.log(`Stop connection error ${err}`)
@@ -66,12 +70,18 @@ export default function SignalRContext(
     }
 
     useEffect(() => {
+        if (!isConnected){
+            startConnection();
+        }
 
+        return () => {
+            stopConnection();
+        }
     }, [])
 
   return (
     <signalRContext.Provider value={{
-        startConnection, stopConnection, addHandler, invoke, removeHandler
+        addHandler, invoke, removeHandler, isConnected
     }}>
         {children}
     </signalRContext.Provider>

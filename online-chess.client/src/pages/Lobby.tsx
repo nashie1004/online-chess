@@ -11,17 +11,13 @@ import { lobbyPageHandlers, lobbyPageInvokers } from "../game/utilities/constant
 
 export default function Lobby() {
     const [gameRoomList, setGameRoomList] = useState<IGameRoomList>({ list: [], isLoading: true });
-    const { startConnection, stopConnection, addHandler, removeHandler, invoke } = useSignalRContext();
+    const { isConnected, addHandler, removeHandler, invoke } = useSignalRContext();
     const { setUserConnectionId } = useAuthContext(); 
     const [roomKey, setRoomKey] = useState<string | null>(null);
     const navigate = useNavigate();
-    const signalRConnectionRef = useRef<boolean | null>(null);
 
     useEffect(() => {
         async function start(){
-            await startConnection(() => {});
-            signalRConnectionRef.current = true;
-    
             await addHandler(lobbyPageHandlers.onRefreshRoomList, (roomList) => setGameRoomList({ isLoading: false, list: roomList }));
             await addHandler(lobbyPageHandlers.onInvalidRoomKey, (msg) => toast(msg, { type: "error" }));
             await addHandler(lobbyPageHandlers.onGetUserConnectionId, (connectionId) => setUserConnectionId(connectionId));
@@ -32,7 +28,7 @@ export default function Lobby() {
             await invoke(lobbyPageInvokers.getCreatedRoomKey);
         }
 
-        if (!signalRConnectionRef.current){
+        if (isConnected){
             console.log("start")
             start();
         }
@@ -43,7 +39,6 @@ export default function Lobby() {
             removeHandler(lobbyPageHandlers.onGetUserConnectionId);
             removeHandler(lobbyPageHandlers.onGetRoomKey);
             removeHandler(lobbyPageHandlers.onMatchFound);
-            stopConnection();
             setUserConnectionId(null);
         }
     }, [])

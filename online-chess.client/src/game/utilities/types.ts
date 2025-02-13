@@ -67,11 +67,10 @@ export interface ITimer{
 }
 
 export interface ISignalRContext {
-    startConnection: (closeEventCallback: (arg: any) => void) => void;
-    stopConnection: () => void;
     invoke: (methodName: string, ...args: any[]) => void;
     addHandler: (methodName: string, method: (...args: any[]) => void) => void;
     removeHandler: (methodName: string) => void;
+    isConnected: boolean;
 }
 
 export interface IBothKingsPosition{
