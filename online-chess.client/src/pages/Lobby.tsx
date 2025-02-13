@@ -1,18 +1,16 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Spinner } from "react-bootstrap"
 import { IGameRoomList } from "../game/utilities/types";
 import LobbyTable from "../components/lobby/LobbyTable";
 import { toast } from "react-toastify";
 import useSignalRContext from "../hooks/useSignalRContext";
-import useAuthContext from "../hooks/useAuthContext";
 import LobbyForm from "../components/lobby/LobbyForm";
 import { useNavigate } from "react-router";
 import { lobbyPageHandlers, lobbyPageInvokers } from "../game/utilities/constants";
 
 export default function Lobby() {
     const [gameRoomList, setGameRoomList] = useState<IGameRoomList>({ list: [], isLoading: true });
-    const { isConnected, addHandler, removeHandler, invoke } = useSignalRContext();
-    const { setUserConnectionId } = useAuthContext(); 
+    const { userConnectionId, addHandler, removeHandler, invoke } = useSignalRContext();
     const [roomKey, setRoomKey] = useState<string | null>(null);
     const navigate = useNavigate();
 
@@ -20,7 +18,6 @@ export default function Lobby() {
         async function start(){
             await addHandler(lobbyPageHandlers.onRefreshRoomList, (roomList) => setGameRoomList({ isLoading: false, list: roomList }));
             await addHandler(lobbyPageHandlers.onInvalidRoomKey, (msg) => toast(msg, { type: "error" }));
-            await addHandler(lobbyPageHandlers.onGetUserConnectionId, (connectionId) => setUserConnectionId(connectionId));
             await addHandler(lobbyPageHandlers.onGetRoomKey, (roomKey) => setRoomKey(roomKey));
             await addHandler(lobbyPageHandlers.onMatchFound, (roomKey) => navigate(`/play/${roomKey}`));
 
@@ -28,18 +25,15 @@ export default function Lobby() {
             await invoke(lobbyPageInvokers.getCreatedRoomKey);
         }
 
-        if (isConnected){
-            console.log("start")
+        if (userConnectionId){
             start();
         }
         
         return () => {
             removeHandler(lobbyPageHandlers.onRefreshRoomList);
             removeHandler(lobbyPageHandlers.onInvalidRoomKey);
-            removeHandler(lobbyPageHandlers.onGetUserConnectionId);
             removeHandler(lobbyPageHandlers.onGetRoomKey);
             removeHandler(lobbyPageHandlers.onMatchFound);
-            setUserConnectionId(null);
         }
     }, [])
 

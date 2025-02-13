@@ -1,6 +1,7 @@
 import { createContext, ReactNode, useEffect, useState } from 'react'
 import { ISignalRContext } from '../game/utilities/types';
 import { HttpTransportType, HubConnection, HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
+import { mainPageHandlers } from '../game/utilities/constants';
 
 interface ISignalRContextProps{
     children: ReactNode
@@ -12,7 +13,7 @@ let hubConnection: HubConnection;
 export default function SignalRContext(
     {children}: ISignalRContextProps
 ) {
-    const [isConnected, setIsConnected] = useState(false);
+    const [userConnectionId, setUserConnectionId] = useState<string | null>(null);
 
     async function startConnection(){
         hubConnection = new HubConnectionBuilder()
@@ -26,12 +27,18 @@ export default function SignalRContext(
         try {
             await hubConnection.start();
             //hubConnection.onclose(closeEventCallback);
+
             hubConnection.onreconnected((e) => console.info(`Reconnected: ${e}`))
             hubConnection.onreconnecting((e) => console.info(`Reconnecting: ${e}`))
             console.log("Connection started");
-            setIsConnected(true);
+
+            await addHandler(mainPageHandlers.onGetUserConnectionId, (connectionId) => {
+                setUserConnectionId(connectionId);
+            });
+
         } catch (error) {
             console.error(error);
+            removeHandler(mainPageHandlers.onGetUserConnectionId);
         }
     }
 
@@ -39,7 +46,7 @@ export default function SignalRContext(
         if (!hubConnection) return;
 
         try{
-            setIsConnected(false);
+            setUserConnectionId(null);
             await hubConnection.stop();
         } catch(err){
             console.log(`Stop connection error ${err}`)
@@ -70,18 +77,19 @@ export default function SignalRContext(
     }
 
     useEffect(() => {
-        if (!isConnected){
+        if (!userConnectionId){
             startConnection();
         }
 
         return () => {
             stopConnection();
+            removeHandler(mainPageHandlers.onGetUserConnectionId);
         }
     }, [])
 
   return (
     <signalRContext.Provider value={{
-        addHandler, invoke, removeHandler, isConnected
+        addHandler, invoke, removeHandler, userConnectionId
     }}>
         {children}
     </signalRContext.Provider>

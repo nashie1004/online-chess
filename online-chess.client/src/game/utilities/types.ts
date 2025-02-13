@@ -70,7 +70,7 @@ export interface ISignalRContext {
     invoke: (methodName: string, ...args: any[]) => void;
     addHandler: (methodName: string, method: (...args: any[]) => void) => void;
     removeHandler: (methodName: string) => void;
-    isConnected: boolean;
+    userConnectionId: string | null;
 }
 
 export interface IBothKingsPosition{
@@ -124,7 +124,7 @@ export interface IGameRoomList{
 
 export interface IUser {
     userName: string;
-    connectionId: string | null;
+    profileURL: string; // TODO
 }
 
 export interface ILeaderboard{

@@ -20,7 +20,7 @@ import useOnSetPromotionPreference from "../game/signalRhandlers/useOnSetPromoti
 
 export default function Main(){
     const gameRef = useRef<Phaser.Game | null>();
-    const { isConnected, addHandler, invoke, removeHandler } = useSignalRContext();
+    const { userConnectionId, addHandler, invoke, removeHandler } = useSignalRContext();
     const url = useParams();
     const { setGameState } = useGameContext();
     
@@ -50,7 +50,7 @@ export default function Main(){
             await invoke(playPageInvokers.gameStart, url.gameRoomId);
         }
 
-        if (isConnected){
+        if (userConnectionId){
             //console.info("Game Start")
             start();
         }

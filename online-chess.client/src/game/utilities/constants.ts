@@ -167,10 +167,13 @@ export const baseNotificationState: INotificationContextReducerState = {
  * React to SignalR
  * SignalR to React
  */
+export const mainPageHandlers = {
+    onGetUserConnectionId: "onGetUserConnectionId"
+};
+
 export const lobbyPageHandlers = {
     onRefreshRoomList: "onRefreshRoomList"
     ,onInvalidRoomKey: "onInvalidRoomKey"
-    ,onGetUserConnectionId: "onGetUserConnectionId"
     ,onGetRoomKey: "onGetRoomKey"
     ,onMatchFound: "onMatchFound"
 }

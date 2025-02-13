@@ -2,7 +2,6 @@ import { useState, useEffect, createContext } from 'react'
 import BaseApiService from '../services/BaseApiService';
 import { IUser } from '../game/utilities/types';
 
-
 const authService = new BaseApiService();
 
 interface IAuthContext {
@@ -10,7 +9,6 @@ interface IAuthContext {
     login: (user: IUser) => void;
     logout: () => void;
     user: IUser | null;
-    setUserConnectionId: (val: string | null) => void;
     setUserName: (val: string) => void;
 }
 
@@ -20,10 +18,9 @@ interface IAuthContextProps {
 
 export const authContext = createContext<IAuthContext>({
     isAuthenticating: true,
-    login: (user: IUser) => { },
+    login: () => { },
     logout: () => { },
     user: null,
-    setUserConnectionId: () => {},
     setUserName: () => {}
 });
 
@@ -47,13 +44,6 @@ export default function AuthContext(
         setIsAuthenticating(false)
     }
 
-    function setUserConnectionId(connectionId: string | null){
-        setUser(prev => {
-            if (!prev) return prev;
-            return ({ ...prev, connectionId })
-        });
-    }
-
     function setUserName(userName: string){
         setUser(prev => {
             if (!prev) return prev;
@@ -65,7 +55,7 @@ export default function AuthContext(
         async function authenticate() {
             const res = await authService.baseGet("/api/Auth/isSignedIn");
             if (res.isOk) {
-                setUser({ userName: res.data.userName, connectionId: null })
+                setUser({ userName: res.data.userName, profileURL: "" })
             }
             setIsAuthenticating(false)
         }
@@ -75,7 +65,7 @@ export default function AuthContext(
     }, [])
 
     const data = {
-        user, login, logout, isAuthenticating, setUserConnectionId, setUserName
+        user, login, logout, isAuthenticating, setUserName
     }
 
   return (
