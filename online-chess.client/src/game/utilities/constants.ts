@@ -180,6 +180,7 @@ export const authHandlers = {
     ,onLogin: "onLogin"
     ,onIsSignedIn: "onIsSignedIn"
     ,onLogout: "onLogout"
+    ,onEditAccount: "onEditAccount"
 };
 
 export const authInvokers = {
@@ -187,6 +188,7 @@ export const authInvokers = {
     , login: "Login"
     , IsSignedIn: "IsSignedIn"
     , Logout: "Logout"
+    , EditAccount: "EditAccount"
 };
 
 export const lobbyPageHandlers = {

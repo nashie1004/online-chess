@@ -23,6 +23,8 @@ using online_chess.Server.Features.Auth.Commands.Register;
 using online_chess.Server.Features.Auth.Commands.LogIn;
 using online_chess.Server.Features.Auth.Queries.GetPlayerInfo;
 using online_chess.Server.Features.Auth.Commands.LogOut;
+using online_chess.Server.Features.Auth.Commands.Edit;
+using online_chess.Server.Features.Auth.Queries.GetGameHistory;
 
 namespace online_chess.Server.Hubs
 {
@@ -68,6 +70,29 @@ namespace online_chess.Server.Hubs
         {
             var response = await _mediator.Send(new LogoutRequest());
             await Clients.Caller.SendAsync(RoomMethods.onLogout, response);
+        }
+
+        public async Task EditAccount(string oldUsername, string newUsername, string oldPassword, string newPassword)
+        {
+            var response = await _mediator.Send(new EditRequest(){
+                OldUsername = oldUsername
+                ,OldPassword = oldPassword
+                ,NewUsername = newUsername
+                ,NewPassword = newPassword
+            });
+            await Clients.Caller.SendAsync(RoomMethods.onEditAccount, response);
+        }
+        
+        // TODO convert this
+        public async Task GameHistory(int pageSize, int pageNumber, string? sortBy, string? filters)
+        {
+            var response = await _mediator.Send(new GetGameHistoryRequest(){
+                PageSize = pageSize
+                , PageNumber = pageNumber
+                , SortBy = sortBy
+                , Filters = filters
+            });
+            await Clients.Caller.SendAsync(RoomMethods.onGameHistory, response);
         }
 
         #endregion

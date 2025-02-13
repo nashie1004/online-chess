@@ -1,12 +1,14 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Row, Col, Form, Button, Spinner } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import useAuthContext from "../../hooks/useAuthContext";
 import useIsFirstRender from "../../hooks/useIsFirstRender";
 import { toast } from "react-toastify";
-import BaseApiService from "../../services/BaseApiService";
+import { GenericReturnMessage } from "../../services/BaseApiService";
+import useSignalRContext from "../../hooks/useSignalRContext";
+import { authHandlers, authInvokers } from "../../game/utilities/constants";
 
 const schema = z.object({
     newUsername: z.string().nonempty().min(8, "New username must contain at least 8 character(s)"),
@@ -24,15 +26,14 @@ const schema = z.object({
   
 type FormFields = z.infer<typeof schema>;
 
-const profileService = new BaseApiService();
-
 export default function ProfileForm(){
     const { user, setUserName } = useAuthContext();
     const [editableProfile, setEditableProfile] = useState(true);
     const isFirstRender = useIsFirstRender();
+    const { addHandler, removeHandler, invoke } = useSignalRContext();
   
     const {
-      register, handleSubmit, setError, watch,
+      register, handleSubmit, watch,
       formState: { errors, isSubmitting }
     } = useForm<FormFields>({
       defaultValues: {
@@ -43,21 +44,32 @@ export default function ProfileForm(){
     });
   
     async function submitForm(data: FormFields){
-      const res = await profileService.basePost("/api/Auth/edit", {
+      invoke(authInvokers.EditAccount, {
         oldUserName: user?.userName, ...data 
       });
-          
-      toast(res.message, { type: res.isOk ? "success" : "error" });
+    }
 
-      if (!res.isOk) return;
+    useEffect(() => {
 
-      // if username is updated
-      if (res.data.newUsername){
-        setUserName(res.data.newUsername);
+      async function init(){
+        await addHandler(authHandlers.onEditAccount, (res: GenericReturnMessage) => {{
+          toast(res.message, { type: res.isOk ? "success" : "error" });
+    
+          if (!res.isOk) return;
+    
+          // if username is updated
+          if (res.data.newUsername){
+            setUserName(res.data.newUsername);
+          }
+        }});
       }
 
-      //console.log("profile form: ", res)
-    }
+      init();
+
+      return () => {
+        removeHandler(authHandlers.onEditAccount);
+      };
+    }, []);
     
     const formValues = watch();
     const loading = isSubmitting;
