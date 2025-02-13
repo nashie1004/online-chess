@@ -32,13 +32,13 @@ after that, the web application should now be running.
 All [board](https://github.com/lichess-org/lila/blob/master/public/images/board/), [pieces](https://github.com/lichess-org/lila/blob/master/public/piece/), and [sound](https://github.com/lichess-org/lila/blob/master/public/sound/) assets are sourced from [Lichess](https://github.com/lichess-org/lila) Github repo. Custom assets were created using [Piskel](https://www.piskelapp.com/).
 
 ## TODO Essential (Game) In Order as of 2/9/2025 9:35PM
-1. promotion picker - DOING
-2. display move turn, check, checkmate, stalemate
-3. bug on if king in check
-4. en passant bug
-5. disconnect or leave logic
-6. long castling bug
-7. promotion pawn check if king pin
+1. display move turn, check, checkmate, stalemate
+2. bug on if king in check - cause of issue move() is called twice/ on isCheck()
+3. en passant bug
+4. disconnect or leave logic
+5. long castling bug
+6. promotion pawn check if king pin
+7. multiple games in a row without rebuilding
 
 ## Others
 1. fifty move rule

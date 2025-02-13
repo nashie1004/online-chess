@@ -273,3 +273,24 @@ export interface PlayersPromotePreference{
     white: PromotionPrefence;
     black: PromotionPrefence;
 }
+
+export interface INotificationContext{
+    notificationState: INotificationContextReducerState;
+    setNotificationState: React.Dispatch<INotificationContextReducerActions>;
+}
+
+export interface INotificationContextReducerState{
+    hasAGameQueuing: boolean;
+    hasAGameDisconnected: boolean;
+    hasAGameOnGoing: boolean;
+    roomKey: string | null;
+    asOfDate: Date | null;
+}
+
+export type INotificationContextReducerActions = 
+{ type: "SET_HASAGAMEQUEUING", payload: boolean }
+| { type: "SET_HASAGAMEDISCONNECTED", payload: boolean }
+| { type: "SET_HASAGAMEONGOING", payload: boolean }
+| { type: "SET_ROOMKEY", payload: string }
+| { type: "SET_ASOFDATE", payload: Date }
+;

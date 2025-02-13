@@ -2,8 +2,9 @@ import { Outlet, useLocation, useNavigate } from "react-router";
 import Navbar from "./Navigationbar";
 import useAuthContext from "../hooks/useAuthContext";
 import { useEffect } from "react";
-import { Alert, Spinner } from "react-bootstrap";
+import { Spinner } from "react-bootstrap";
 import { ToastContainer } from "react-toastify";
+import GameAlert from "./GameAlert";
 
 export default function Layout() {
     const navigate = useNavigate();
@@ -24,6 +25,7 @@ export default function Layout() {
   return (
     <>
       <Navbar />
+      <GameAlert />
       <main className="container d-flex justify-content-center align-items-start flex-grow-1">
         {
         !isAuthenticating ? 

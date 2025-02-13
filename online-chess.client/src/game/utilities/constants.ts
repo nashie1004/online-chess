@@ -11,7 +11,7 @@ import bKnight from "../../assets/pieces/cburnett/bN.svg?raw"
 import bBishop from "../../assets/pieces/cburnett/bB.svg?raw"
 import bQueen from "../../assets/pieces/cburnett/bQ.svg?raw"
 import bKing from "../../assets/pieces/cburnett/bK.svg?raw"
-import { IGameContextReducerState, IKingState, IPiece, IPlayerInfo, PromotionPrefence } from "./types"
+import { IGameContextReducerState, IKingState, INotificationContextReducerState, IPiece, IPlayerInfo, PromotionPrefence } from "./types"
 
 export enum PieceNames{
     wPawn = "wPawn",
@@ -154,6 +154,14 @@ export const baseGameState: IGameContextReducerState = {
     ,gameStatus: "LOADING"
     ,gameType: GameType.Classical
 };
+
+export const baseNotificationState: INotificationContextReducerState = {
+    hasAGameQueuing: false
+    ,hasAGameDisconnected: false
+    ,hasAGameOnGoing: false
+    ,roomKey: null
+    ,asOfDate: null 
+}
 
 /**
  * React to SignalR

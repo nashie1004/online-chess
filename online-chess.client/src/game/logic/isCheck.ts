@@ -4,7 +4,7 @@ import KnightValidator from "../pieces/knightValidator";
 import PawnValidator from "../pieces/pawnValidator";
 import RookValidator from "../pieces/rookValidator";
 import { PieceNames } from "../utilities/constants";
-import { IBothKingsPosition, IMoveHistory, IKingState, IBaseCoordinates } from "../utilities/types";
+import { IBothKingsPosition, IMoveHistory, IKingState } from "../utilities/types";
 
 export default class IsCheck {
     private readonly board: (null | GameObjects.Sprite)[][]
@@ -42,7 +42,6 @@ export default class IsCheck {
         const kingUpdate = (kingPiece === PieceNames.wKing) ? this.kingsState.white : this.kingsState.black;
         const _this = this;
 
-        // console.log("start king pos: ", this.bothKingsPosition)
 
         /**
          * 1. handle normal checks - once an opponent piece moves and their move causes a direct check
@@ -139,6 +138,13 @@ export default class IsCheck {
 
         // consolidate if there any checks/attackers
         if (kingUpdate.checkedBy.length > 0){
+            //console.log("before: ", JSON.parse(JSON.stringify(kingUpdate)))
+            
+            /**
+             * TODO
+             * - as of 2/13/2025 6:14PM this is the cause of issue
+             * when king in check, to fix
+             */
             kingUpdate.isInCheck = true;
             // remove any duplicate attackers/checkers
             kingUpdate.checkedBy = kingUpdate.checkedBy.filter((value, index, self) =>
@@ -147,9 +153,8 @@ export default class IsCheck {
                 ))
             );
 
+            //console.log("after: ", JSON.parse(JSON.stringify(kingUpdate)))
         }
-
-        // console.log("end king pos: ", this.bothKingsPosition)
 
         return kingUpdate.checkedBy.length > 0;
     }

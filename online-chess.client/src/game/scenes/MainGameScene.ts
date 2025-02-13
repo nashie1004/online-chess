@@ -123,7 +123,7 @@ export class MainGameScene extends Scene{
                     .on("pointerover", () => { previewMove.setTint(0x98DEC7) })
                     .on("pointerout", () => { previewMove.clearTint() })
                     .on("pointerdown", () => {
-                        // console.log("CALL MOVE FUNC 1", colIdx, rowIdx)
+                        console.log("TODO CALL MOVE FUNC 1", {x: colIdx, y: rowIdx}, this.selectedPiece)
                         this.move(colIdx, rowIdx)
                     }, this)
                     .setAlpha(.5)
@@ -192,7 +192,7 @@ export class MainGameScene extends Scene{
                     }
 
                     // use latest sprite name
-                    // since on this.move() > pawn promotion the sprite name gets change
+                    // since on this.move ( ) > pawn promotion the sprite name gets change
                     const pieceName = sprite.name.split("-")[0] as PieceNames
                     const pieceX = Number(sprite.name.split("-")[1])
                     const pieceY = Number(sprite.name.split("-")[2])
@@ -242,7 +242,7 @@ export class MainGameScene extends Scene{
                 pieceName: data.old.uniqueName ?? ``
             }
 
-            // console.log("CALL MOVE FUNC 2", data.new.x, data.new.y)
+            console.log("TODO CALL MOVE FUNC 2", { x: data.new.x, y: data.new.y }, this.selectedPiece)
             this.move(data.new.x, data.new.y);
             this.isPlayersTurnToMove = true;
         });
@@ -272,6 +272,9 @@ export class MainGameScene extends Scene{
 
         // current piece to move
         const sprite = this.board[this.selectedPiece.x][this.selectedPiece.y];
+
+        console.log("TODO selected piece: ", this.selectedPiece, { newX, newY }, sprite?.name)
+
         if (!sprite) return false;
 
         // console.log("main move: ", this.selectedPiece, { newX, newY })
