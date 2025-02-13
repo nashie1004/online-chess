@@ -39,51 +39,6 @@ namespace online_chess.Server.Hubs
             _mediator = mediator;
         }
 
-        #region Auth
-        
-        [AllowAnonymous]
-        public async Task Register(string userName, string password)
-        {
-            var response = await _mediator.Send(new RegisterRequest(){
-                Username = userName
-                , Password = password
-            });
-            await Clients.Caller.SendAsync(RoomMethods.onRegister, response);
-        }
-
-        [AllowAnonymous]
-        public async Task Login(string userName, string password)
-        {
-            var response = await _mediator.Send(new LoginRequest(){
-                Username = userName
-                , Password = password
-            });
-            await Clients.Caller.SendAsync(RoomMethods.onLogin, response);
-        }
-
-        public async Task IsSignedIn()
-        {
-            var response = await _mediator.Send(new GetPlayerInfoRequest());
-            await Clients.Caller.SendAsync(RoomMethods.onIsSignedIn, response);
-        }
-
-        public async Task Logout()
-        {
-            var response = await _mediator.Send(new LogoutRequest());
-            await Clients.Caller.SendAsync(RoomMethods.onLogout, response);
-        }
-
-        public async Task EditAccount(string oldUsername, string newUsername, string oldPassword, string newPassword)
-        {
-            var response = await _mediator.Send(new EditRequest(){
-                OldUsername = oldUsername
-                ,OldPassword = oldPassword
-                ,NewUsername = newUsername
-                ,NewPassword = newPassword
-            });
-            await Clients.Caller.SendAsync(RoomMethods.onEditAccount, response);
-        }
-        #endregion
         
         #region Lists
 

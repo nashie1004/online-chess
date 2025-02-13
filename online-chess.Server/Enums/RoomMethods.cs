@@ -6,13 +6,6 @@ public class RoomMethods
 {
     public const string onNotFound = "onNotFound";
 
-    #region Auth
-    public const string onRegister = "onRegister";
-    public const string onLogin = "onLogin";
-    public const string onIsSignedIn = "onIsSignedIn";
-    public const string onLogout = "onLogout";
-    public const string onEditAccount = "onEditAccount";
-    #endregion
     #region Lists
     public const string onGetGameHistory = "onGetGameHistory";
     public const string onGetLeaderboard = "onGetLeaderboard";

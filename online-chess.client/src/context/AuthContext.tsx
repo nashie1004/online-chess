@@ -24,19 +24,27 @@ export const authContext = createContext<IAuthContext>({
     setUserName: () => {}
 });
 
+const authService = new BaseApiService();
+
 export default function AuthContext(
     { children }: IAuthContextProps
 ) {
     const [isAuthenticating, setIsAuthenticating] = useState(true);
     const [user, setUser] = useState<null | IUser>(null);
-    const { invoke, addHandler, removeHandler, userConnectionId } = useSignalRContext();
+    const { userConnectionId } = useSignalRContext();
 
     async function login(user: IUser) {
         setUser(user);
     }
 
     async function logout() {
-        invoke(authInvokers.Logout);
+        setIsAuthenticating(true);
+        const res = await authService.basePost("/api/Auth/logout", {});
+        if (res.isOk) {
+            setUser(null);
+        }
+
+        setIsAuthenticating(false);
     }
 
     function setUserName(userName: string){
@@ -47,36 +55,15 @@ export default function AuthContext(
     }
 
     useEffect(() => {
-        setIsAuthenticating(true);
-
         async function authenticate() {
-            await addHandler(authHandlers.onIsSignedIn, (res: GenericReturnMessage) => {
-                if (res.isOk) {
-                    setUser({ userName: res.data.userName, profileURL: "" })
-                }
-
-                setIsAuthenticating(false);
-            });
-
-            await addHandler(authHandlers.onLogout, (res: GenericReturnMessage) => {
-                if (res.isOk) {
-                    setUser(null);
-                }
-
-                setIsAuthenticating(false);
-            });
-
-            invoke(authInvokers.IsSignedIn);
+            const res = await authService.baseGet("/api/Auth/isSignedIn");
+            if (res.isOk) {
+                setUser({ userName: res.data.userName, profileURL: "" })
+            }
+            setIsAuthenticating(false)
         }
 
-        if (userConnectionId){
-            authenticate();
-        }
-
-        return () => {
-            removeHandler(authHandlers.onIsSignedIn);
-            removeHandler(authHandlers.onLogout);
-        };
+        authenticate();
     }, [userConnectionId])
 
     const data = {

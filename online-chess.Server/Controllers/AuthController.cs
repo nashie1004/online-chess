@@ -22,7 +22,6 @@ namespace online_chess.Server.Controllers
             _mediator = mediator;
         }
 
-        /*
         [AllowAnonymous]
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequest req)
@@ -55,12 +54,11 @@ namespace online_chess.Server.Controllers
             return Ok(await _mediator.Send(req));
         }
         
-        [HttpGet("gameHistory")]
-        public async Task<IActionResult> GameHistory([FromQuery] GetGameHistoryRequest req)
-        {
-            return Ok(await _mediator.Send(req));
-        }
-        */
+        // [HttpGet("gameHistory")]
+        // public async Task<IActionResult> GameHistory([FromQuery] GetGameHistoryRequest req)
+        // {
+        //     return Ok(await _mediator.Send(req));
+        // }
 
     }
 }

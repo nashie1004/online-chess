@@ -175,22 +175,6 @@ export const mainPageInvokers = {
     deleteRoom: "DeleteRoom"
 };
 
-export const authHandlers = {
-    onRegister: "onRegister"
-    ,onLogin: "onLogin"
-    ,onIsSignedIn: "onIsSignedIn"
-    ,onLogout: "onLogout"
-    ,onEditAccount: "onEditAccount"
-};
-
-export const authInvokers = {
-    register: "Register"
-    , login: "Login"
-    , IsSignedIn: "IsSignedIn"
-    , Logout: "Logout"
-    , EditAccount: "EditAccount"
-};
-
 export const listHandlers = {
     onGetGameHistory: "onGetGameHistory"
     ,onGetLeaderboard: "onGetLeaderboard"

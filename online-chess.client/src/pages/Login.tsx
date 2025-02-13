@@ -3,12 +3,10 @@ import { NavLink, useNavigate } from "react-router";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { GenericReturnMessage } from "../services/BaseApiService";
+import BaseApiService from "../services/BaseApiService";
 import { toast } from 'react-toastify';
 import useAuthContext from "../hooks/useAuthContext";
 import { useEffect } from "react";
-import useSignalRContext from "../hooks/useSignalRContext";
-import { authHandlers, authInvokers } from "../game/utilities/constants";
 
 const schema = z.object({
   userName: z.string().min(8, "Username must contain at least 8 character(s)"),
@@ -17,10 +15,11 @@ const schema = z.object({
 
 type FormFields = z.infer<typeof schema>;
 
+const registerService = new BaseApiService();
+
 export default function Login() {
   const navigate = useNavigate();
   const { login, user } = useAuthContext();
-  const { invoke, addHandler, removeHandler } = useSignalRContext();
   
   const {
     register, handleSubmit,
@@ -34,32 +33,22 @@ export default function Login() {
   })
 
   async function submitForm(data: FormFields){
-    await invoke(authInvokers.login, data.userName, data.password);
+    const res = await registerService.basePost("/api/Auth/login", data);
+    
+    if (!res.isOk){
+      toast(res.message, { type: "error" })
+      return;
+    }
+    
+    login({ userName: res.data.userName, profileURL: "" });
+    navigate("/");
   }
 
   useEffect(() => {
     if (user){
       navigate("/")
     }
-
-    async function start(){
-      await addHandler(authHandlers.onLogin, (res: GenericReturnMessage) => {
-        if (!res.isOk){
-          toast(res.message, { type: "error" })
-          return;
-        }
-        
-        login({ userName: res.data.userName, profileURL: "" });
-        navigate("/");
-      });
-    }
-
-    start();
-
-    return () => {
-      removeHandler(authHandlers.onLogin);
-    };
-  }, [])
+  }, []);
 
   const loading = isSubmitting;
 
