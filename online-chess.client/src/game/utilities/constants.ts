@@ -156,7 +156,7 @@ export const baseGameState: IGameContextReducerState = {
 };
 
 export const baseNotificationState: INotificationContextReducerState = {
-    hasAGameQueuing: true
+    gameQueuingRoomKey: null
     ,hasAGameDisconnected: false
     ,hasAGameOnGoing: false
     ,roomKey: null
@@ -173,6 +173,14 @@ export const mainPageHandlers = {
 
 export const mainPageInvokers = {
     deleteRoom: "DeleteRoom"
+};
+
+export const registerPageHandlers = {
+    onRegister: "onRegister"
+};
+
+export const registerInvokersHandlers = {
+    register: "Register"
 };
 
 export const lobbyPageHandlers = {

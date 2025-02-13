@@ -6,6 +6,10 @@ public class RoomMethods
 {
     public const string onNotFound = "onNotFound";
 
+    #region Auth
+    public const string onRegister = "onRegister";
+    #endregion
+
     #region LobbyPage
     public const string onGetRoomKey = "onGetRoomKey";
     public const string onRefreshRoomList = "onRefreshRoomList";

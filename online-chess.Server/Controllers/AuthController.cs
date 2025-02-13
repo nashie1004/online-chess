@@ -22,12 +22,14 @@ namespace online_chess.Server.Controllers
             _mediator = mediator;
         }
 
+        /*
         [AllowAnonymous]
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequest req)
         {
             return Ok(await _mediator.Send(req));
         }
+        */
 
         [AllowAnonymous]
         [HttpPost("login")]
