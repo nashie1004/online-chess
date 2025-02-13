@@ -179,6 +179,11 @@ export const listHandlers = {
     onGetGameHistory: "onGetGameHistory"
     ,onGetLeaderboard: "onGetLeaderboard"
     ,onGetGameTypeList: "onGetGameTypeList"
+    ,onGetGameTypeListClassical: "onGetGameTypeList_Classical"
+    ,onGetGameTypeListBlitz3Mins: "onGetGameTypeList_Blitz3Mins"
+    ,onGetGameTypeListBlitz5Mins: "onGetGameTypeList_Blitz5Mins"
+    ,onGetGameTypeListRapid10Mins: "onGetGameTypeList_Rapid10Mins"
+    ,onGetGameTypeListRapid25Mins: "onGetGameTypeList_Rapid25Mins"
 };
 
 export const listInvokers = {

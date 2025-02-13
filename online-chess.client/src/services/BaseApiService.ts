@@ -15,11 +15,16 @@ export interface GenericReturnMessage {
     message: string
 }
 
+
 interface RequestBaseResponse {
     isSuccess: boolean,
     rowsAffected: number
     successMessage: string
     validationErrors: string[]
+}
+
+export interface GenericReturnMessageList extends RequestBaseResponse  {
+    items: any;
 }
 
 export default class BaseApiService {

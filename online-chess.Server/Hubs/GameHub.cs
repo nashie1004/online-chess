@@ -18,11 +18,6 @@ using online_chess.Server.Features.Game.Commands.Resign;
 using online_chess.Server.Features.Game.Commands.RequestADraw;
 using online_chess.Server.Features.Game.Commands.DrawAgree;
 using online_chess.Server.Features.Game.Commands.SetPromotionPreference;
-using online_chess.Server.Features.Auth.Commands.Register;
-using online_chess.Server.Features.Auth.Commands.LogIn;
-using online_chess.Server.Features.Auth.Queries.GetPlayerInfo;
-using online_chess.Server.Features.Auth.Commands.LogOut;
-using online_chess.Server.Features.Auth.Commands.Edit;
 using online_chess.Server.Features.Auth.Queries.GetGameHistory;
 using online_chess.Server.Features.Leaderboard.Queries.GetDefaultLeaderboard;
 using online_chess.Server.Features.Leaderboard.Queries.GetGameTypeList;
@@ -67,7 +62,7 @@ namespace online_chess.Server.Hubs
                 , PageNumber = pageNo
                 , GameType = gameType
             });
-            await Clients.Caller.SendAsync(RoomMethods.onGetGameTypeList, response);
+            await Clients.Caller.SendAsync(RoomMethods.onGetGameTypeList + "_" + gameType.ToString(), response);
         }
 
         #endregion

@@ -1,9 +1,9 @@
 import moment from "moment";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Table, Spinner } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { IGameTypeList } from "../../game/utilities/types";
-import { GenericReturnMessage } from "../../services/BaseApiService";
+import { GenericReturnMessageList } from "../../services/BaseApiService";
 import { GameType, listHandlers, listInvokers,  } from "../../game/utilities/constants";
 import useSignalRContext from "../../hooks/useSignalRContext";
 
@@ -20,31 +20,52 @@ export default function GameTypeTable(
     const [list, setList] = useState<IGameTypeList>({
       isLoading: true, data: []
     });
-    const { addHandler, removeHandler, invoke } = useSignalRContext();
-  
-    useEffect(() => {
-      setList({ isLoading: true, data: [] });
-      invoke(listInvokers.gameHistory, 10, pageNo, gameType);
-    }, [pageNo])
+    const { addHandler, removeHandler, invoke, userConnectionId } = useSignalRContext();
+
+    const listHandler = useMemo(() => {
+      switch(gameType){
+        case GameType.Classical:
+          return listHandlers.onGetGameTypeListClassical;
+        case GameType.Blitz3Mins:
+          return listHandlers.onGetGameTypeListBlitz3Mins;
+        case GameType.Blitz5Mins:
+          return listHandlers.onGetGameTypeListBlitz5Mins;
+        case GameType.Rapid10Mins:
+          return listHandlers.onGetGameTypeListRapid10Mins;
+        case GameType.Rapid25Mins:
+          return listHandlers.onGetGameTypeListRapid25Mins;
+        default: 
+          return "";
+      }
+    }, []);
 
     useEffect(() => {
+      if (!userConnectionId) return;
+
       async function init(){
-        await addHandler(listHandlers.onGetGameTypeList, (res: GenericReturnMessage) => {
-          if (!res.isOk){
-            toast(res.message, { type: "error" })
+        await addHandler(listHandler, (res: GenericReturnMessageList) => {
+          if (!res.isSuccess){
+            toast(res.validationErrors.join(","), { type: "error" })
             return;
           }
-      
-          setList({ isLoading: false, data: res.data.items });
+          
+          setList({ isLoading: false, data: res.items });
         });
       }
 
       init();
 
       return () => {
-        removeHandler(listHandlers.onGetGameTypeList);
+        removeHandler(listHandler);
       };
-    }, []);
+    }, [userConnectionId]);
+
+    useEffect(() => {
+      if (!userConnectionId) return;
+
+      setList({ isLoading: true, data: [] });
+      invoke(listInvokers.gameTypeList, 10, pageNo, gameType);
+    }, [pageNo, userConnectionId]);
 
     return <>
     
