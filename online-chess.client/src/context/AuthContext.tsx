@@ -3,6 +3,8 @@ import BaseApiService, { GenericReturnMessage } from '../services/BaseApiService
 import { IUser } from '../game/utilities/types';
 import useSignalRContext from '../hooks/useSignalRContext';
 import { authHandlers, authInvokers } from '../game/utilities/constants';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router';
 
 interface IAuthContext {
     isAuthenticating: boolean;
@@ -31,7 +33,10 @@ export default function AuthContext(
 ) {
     const [isAuthenticating, setIsAuthenticating] = useState(true);
     const [user, setUser] = useState<null | IUser>(null);
-    const { userConnectionId } = useSignalRContext();
+    const { 
+        startConnection, stopConnection, userConnectionId
+    } = useSignalRContext();
+    const navigate = useNavigate();
 
     async function login(user: IUser) {
         setUser(user);
@@ -55,20 +60,34 @@ export default function AuthContext(
     }
 
     useEffect(() => {
-        async function authenticate() {
+        async function init() {
             const res = await authService.baseGet("/api/Auth/isSignedIn");
-            if (res.isOk) {
-                setUser({ userName: res.data.userName, profileURL: "" })
+            
+            if (res.status === 404){
+                navigate("/login");
+                // toast(res.message, { type: "error" })
+            } else {
+                setUser({ userName: res.data.userName, profileURL: "" });
             }
-            setIsAuthenticating(false)
+            
+            setIsAuthenticating(false);
+            
+            if (userConnectionId) return;
+
+            await startConnection();
         }
 
-        authenticate();
+        init();
+
+        return () => {
+            stopConnection();
+        };
     }, [userConnectionId])
 
     const data = {
-        user, login, logout, isAuthenticating, setUserName
-    }
+        user, login, logout
+        , isAuthenticating, setUserName
+    };
 
   return (
       <authContext.Provider value={data}>

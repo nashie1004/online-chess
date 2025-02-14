@@ -96,7 +96,7 @@ export default function GameTypeTable(
         </thead>
         <tbody>
           {list.isLoading ? <>
-            <Spinner animation="border" variant="dark" className="mt-3" /> 
+            <Spinner animation="border" variant="light" size="sm" className="my-2" /> 
           </> : <>
             {list.data.map((item, idx) => {
               let rankColor = "ps-3";

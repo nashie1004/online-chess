@@ -46,7 +46,6 @@ All [board](https://github.com/lichess-org/lila/blob/master/public/images/board/
 3. 3 fold repetition
 5. responsive ui
 6. bug - toaster
-7. bug - table reload/refresh
 8. some framer motion?, more sounds and some phaser effects
 10. bug - if both player exited and a timer is running, cancel timer?
 11. bug - timer not found on resignation and draw

@@ -54,7 +54,7 @@ export default function LobbyTable({
             <tbody>
                 {
                     gameRoomList.isLoading ? <>
-                        <Spinner animation="border" variant="dark" className="mt-3" /> 
+                        <Spinner animation="border" variant="light" size="sm" className="my-2" /> 
                     </> : gameRoomList.list.map((item, idx) => {
 
                     return <tr key={idx}> 

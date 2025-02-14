@@ -19,27 +19,27 @@ import NotificationContext from "./context/NotificationContext";
 
 export default function App(){
     return <>
-        <SignalRContext>
-            <AuthContext>
-                <NotificationContext>
-                    <GameContext>
-                        <BrowserRouter>
-                            <Routes>
-                                <Route path="/" element={<Layout />}>
-                                    <Route path="/" element={<Home /> } />
-                                    <Route path="/play/:gameRoomId" element={<Play /> } />
-                                    <Route path="/register" element={<Register /> } />
-                                    <Route path="/login" element={<Login /> } />
-                                    <Route path="/profile" element={<Profile /> } />
-                                    <Route path="/about" element={<About /> } />
-                                    <Route path="/lobby" element={<Lobby /> } />
-                                    <Route path="*" element={<NotFound /> } />
-                                </Route>
-                            </Routes>
-                        </BrowserRouter>
-                    </GameContext>
-                </NotificationContext>
-            </AuthContext>
-        </SignalRContext>
+        <BrowserRouter>
+            <SignalRContext>
+                <AuthContext>
+                    <NotificationContext>
+                        <GameContext>
+                                <Routes>
+                                    <Route path="/" element={<Layout />}>
+                                        <Route path="/" element={<Home /> } />
+                                        <Route path="/play/:gameRoomId" element={<Play /> } />
+                                        <Route path="/register" element={<Register /> } />
+                                        <Route path="/login" element={<Login /> } />
+                                        <Route path="/profile" element={<Profile /> } />
+                                        <Route path="/about" element={<About /> } />
+                                        <Route path="/lobby" element={<Lobby /> } />
+                                        <Route path="*" element={<NotFound /> } />
+                                    </Route>
+                                </Routes>
+                        </GameContext>
+                    </NotificationContext>
+                </AuthContext>
+            </SignalRContext>
+        </BrowserRouter>
     </>
 }

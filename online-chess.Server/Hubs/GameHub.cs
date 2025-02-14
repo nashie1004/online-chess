@@ -46,6 +46,7 @@ namespace online_chess.Server.Hubs
             await Clients.Caller.SendAsync(RoomMethods.onGetGameHistory, response);
         }
 
+        [AllowAnonymous]
         public async Task Leaderboard(int pageSize, int pageNo)
         {
             var response = await _mediator.Send(new GetDefaultLeaderboardRequest(){
@@ -55,6 +56,7 @@ namespace online_chess.Server.Hubs
             await Clients.Caller.SendAsync(RoomMethods.onGetLeaderboard, response);
         }
 
+        [AllowAnonymous]
         public async Task GameTypeList(int pageSize, int pageNo, GameType gameType)
         {
             var response = await _mediator.Send(new GetGameTypeListRequest(){
@@ -199,6 +201,12 @@ namespace online_chess.Server.Hubs
         #endregion
 
         #region Connection
+        [AllowAnonymous]
+        public async Task GetConnectionId(){
+            await Clients.Caller.SendAsync(RoomMethods.onGetUserConnectionId, Context.ConnectionId);
+        }
+
+        [AllowAnonymous]
         public override async Task OnConnectedAsync()
         {
             await base.OnConnectedAsync();

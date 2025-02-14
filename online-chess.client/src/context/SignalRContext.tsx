@@ -1,7 +1,9 @@
 import { createContext, ReactNode, useEffect, useState } from 'react'
 import { ISignalRContext } from '../game/utilities/types';
 import { HttpTransportType, HubConnection, HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
-import { mainPageHandlers } from '../game/utilities/constants';
+import { mainPageHandlers, mainPageInvokers } from '../game/utilities/constants';
+import { toast } from 'react-toastify';
+import useAuthContext from '../hooks/useAuthContext';
 
 interface ISignalRContextProps{
     children: ReactNode
@@ -25,6 +27,8 @@ export default function SignalRContext(
             .build();
         
         try {
+
+            console.log("Connection Starting");
             await hubConnection.start();
             //hubConnection.onclose(closeEventCallback);
 
@@ -33,10 +37,14 @@ export default function SignalRContext(
             console.log("Connection started");
 
             await addHandler(mainPageHandlers.onGetUserConnectionId, (connectionId) => {
+                console.log(`onGetUserConnectionId: `, connectionId)
                 setUserConnectionId(connectionId);
             });
 
+            invoke(mainPageInvokers.getConnectionId);
+
         } catch (error) {
+            //toast(`${error}`, { type: "error" })
             console.error(error);
             removeHandler(mainPageHandlers.onGetUserConnectionId);
         }
@@ -44,6 +52,8 @@ export default function SignalRContext(
 
     async function stopConnection(){
         if (!hubConnection) return;
+
+        removeHandler(mainPageHandlers.onGetUserConnectionId);
 
         try{
             setUserConnectionId(null);
@@ -54,7 +64,7 @@ export default function SignalRContext(
     }
     
     async function invoke(methodName: string, ...arg: any) {
-        if (!hubConnection) return;
+        if (!hubConnection || !userConnectionId) return;
         
         try{
             await hubConnection.invoke(methodName, ...arg)
@@ -64,7 +74,7 @@ export default function SignalRContext(
     }
     
     async function addHandler(methodName: string, method: (...args: any[]) => any){
-        if (!hubConnection) return;
+        if (!hubConnection || !userConnectionId) return;
         try{
             await hubConnection.on(methodName, method);
         } catch(err){
@@ -73,23 +83,30 @@ export default function SignalRContext(
     }
 
     function removeHandler(methodName: string){
+        if (!hubConnection || !userConnectionId) return;
+        
         hubConnection.off(methodName);
     }
 
+    /*
     useEffect(() => {
-        if (!userConnectionId){
-            startConnection();
-        }
+        console.log("signalr context ", isAuthenticating, userConnectionId)
+
+        if (isAuthenticating) return;
+        if (userConnectionId) return;
+
+        startConnection();
 
         return () => {
             stopConnection();
-            removeHandler(mainPageHandlers.onGetUserConnectionId);
         }
-    }, [])
+    }, [isAuthenticating])
+    */
 
   return (
     <signalRContext.Provider value={{
-        addHandler, invoke, removeHandler, userConnectionId
+        addHandler, invoke, removeHandler
+        , userConnectionId, stopConnection, startConnection
     }}>
         {children}
     </signalRContext.Provider>
