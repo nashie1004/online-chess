@@ -17,9 +17,7 @@ export default function GameTypeTable(
   { gameTypeLabel, icon, gameType } : IGameTypeTable
 ){
     const [pageNo, setPageNo] = useState<number>(1);
-    const [list, setList] = useState<IGameTypeList>({
-      isLoading: true, data: []
-    });
+    const [list, setList] = useState<IGameTypeList>({ isLoading: true, data: [] });
     const { addHandler, removeHandler, invoke, userConnectionId } = useSignalRContext();
 
     const listHandler = useMemo(() => {

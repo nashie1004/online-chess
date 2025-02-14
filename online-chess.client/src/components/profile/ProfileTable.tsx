@@ -3,40 +3,45 @@ import { useEffect, useState } from "react"
 import { Table, Spinner } from "react-bootstrap"
 import { toast } from "react-toastify";
 import { IGameHistoryList } from "../../game/utilities/types";
-import BaseApiService from "../../services/BaseApiService";
+import { GenericReturnMessageList } from "../../services/BaseApiService";
 import { gameStatusDisplay, gameTypeDisplay } from "../../utils/helper";
-
-const baseApiService = new BaseApiService();
+import useSignalRContext from "../../hooks/useSignalRContext";
+import { listHandlers, listInvokers } from "../../game/utilities/constants";
 
 export default function ProfileTable(){
   const [pageNo, setPageNo] = useState<number>(1);
-  const [list, setList] = useState<IGameHistoryList>({
-    isLoading: true, data: []
-  });
+  const [list, setList] = useState<IGameHistoryList>({ isLoading: true, data: [] });
+  const { addHandler, removeHandler, invoke, userConnectionId } = useSignalRContext();
+
+  useEffect(() => {
+    if (!userConnectionId) return;
   
-  async function getData(){
-    setList({ isLoading: true, data: [] });
-
-    const res = await baseApiService.baseGetList("/api/Auth/gameHistory", {
-      pageSize: 10,
-      pageNumber: pageNo,
-      sortBy: "",
-      filters: ""
-    });
-
-    if (!res.isOk){
-      toast(res.message, { type: "error" })
-      return;
+    async function init(){
+      await addHandler(listHandlers.onGetGameHistory, (res: GenericReturnMessageList) => {
+        if (!res.isSuccess){
+          toast(res.validationErrors.join(","), { type: "error" })
+          return;
+        }
+        
+        setList({ isLoading: false, data: res.items });
+      });
     }
 
-    setList({ isLoading: false, data: res.data.items });
-  }
+    init();
+    
+    return () => {
+      removeHandler(listHandlers.onGetGameHistory);
+    };
+  }, [userConnectionId]);
   
   useEffect(() => {
-    getData();
-  }, [pageNo])
+    if (!userConnectionId) return;
 
-    return <>
+    setList({ isLoading: true, data: [] });
+    invoke(listInvokers.gameHistory, 10, pageNo);
+  }, [pageNo, userConnectionId]);
+
+  return <>
     <div className="table-title">
      <h5 className="">
       <i className="bi bi-clock-history" style={{ color: "#FFFFFF", fontSize: "1.5rem" }}></i>

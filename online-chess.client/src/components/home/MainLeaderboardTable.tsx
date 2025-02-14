@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { Table, Spinner } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { ILeaderboardList } from "../../game/utilities/types";
-import { GenericReturnMessage } from "../../services/BaseApiService";
+import { GenericReturnMessage, GenericReturnMessageList } from "../../services/BaseApiService";
 import useSignalRContext from "../../hooks/useSignalRContext";
 import { listHandlers, listInvokers } from "../../game/utilities/constants";
 
@@ -12,22 +12,26 @@ export default function MainLeaderboardTable(){
     const [list, setList] = useState<ILeaderboardList>({
       isLoading: true, data: []
     });
-    const { addHandler, removeHandler, invoke } = useSignalRContext();
+    const { addHandler, removeHandler, invoke, userConnectionId } = useSignalRContext();
   
     useEffect(() => {
+      if (!userConnectionId) return;
+
       setList({ isLoading: true, data: [] });
       invoke(listInvokers.leaderboard, 10, pageNo);
-    }, [pageNo])
+    }, [pageNo, userConnectionId]);
   
     useEffect(() => {
+      if (!userConnectionId) return;
+
       async function init(){
-        await addHandler(listHandlers.onGetLeaderboard, (res: GenericReturnMessage) => {
-          if (!res.isOk){
-            toast(res.message, { type: "error" })
+        await addHandler(listHandlers.onGetLeaderboard, (res: GenericReturnMessageList) => {
+          if (!res.isSuccess){
+            toast(res.validationErrors.join(","), { type: "error" })
             return;
           }
       
-          setList({ isLoading: false, data: res.data.items });
+          setList({ isLoading: false, data: res.items });
         });
       }
 
@@ -36,7 +40,7 @@ export default function MainLeaderboardTable(){
       return () => {
         removeHandler(listHandlers.onGetLeaderboard);
       };
-    }, []);
+    }, [userConnectionId]);
 
     return <>
     
