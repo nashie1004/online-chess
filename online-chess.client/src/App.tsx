@@ -15,6 +15,7 @@ import Lobby from "./pages/Lobby";
 import SignalRContext from "./context/SignalRContext";
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import NotificationContext from "./context/NotificationContext";
+import InitializerContext from "./context/InitializerContext";
 
 export default function App(){
     return <>
@@ -23,18 +24,20 @@ export default function App(){
                 <SignalRContext>
                     <AuthContext>
                         <GameContext>
-                            <Routes>
-                                <Route path="/" element={<Layout />}>
-                                    <Route path="/" element={<Home /> } />
-                                    <Route path="/play/:gameRoomId" element={<Play /> } />
-                                    <Route path="/register" element={<Register /> } />
-                                    <Route path="/login" element={<Login /> } />
-                                    <Route path="/profile" element={<Profile /> } />
-                                    <Route path="/about" element={<About /> } />
-                                    <Route path="/lobby" element={<Lobby /> } />
-                                    <Route path="*" element={<NotFound /> } />
-                                </Route>
-                            </Routes>
+                            <InitializerContext>
+                                <Routes>
+                                    <Route path="/" element={<Layout />}>
+                                        <Route path="/" element={<Home /> } />
+                                        <Route path="/play/:gameRoomId" element={<Play /> } />
+                                        <Route path="/register" element={<Register /> } />
+                                        <Route path="/login" element={<Login /> } />
+                                        <Route path="/profile" element={<Profile /> } />
+                                        <Route path="/about" element={<About /> } />
+                                        <Route path="/lobby" element={<Lobby /> } />
+                                        <Route path="*" element={<NotFound /> } />
+                                    </Route>
+                                </Routes>
+                            </InitializerContext>
                         </GameContext>
                     </AuthContext>
                 </SignalRContext>

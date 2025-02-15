@@ -276,6 +276,10 @@ export interface PlayersPromotePreference{
     black: PromotionPrefence;
 }
 
+export interface IInitializerContext{
+    
+}
+
 export interface INotificationContext{
     notificationState: INotificationContextReducerState;
     setNotificationState: React.Dispatch<INotificationContextReducerActions>;

@@ -26,7 +26,7 @@ type FormFields = z.infer<typeof schema>;
 const profileService = new BaseApiService();
 
 export default function ProfileForm(){
-    const { user, setUserName } = useAuthContext();
+    const { user, setUser } = useAuthContext();
     const [editableProfile, setEditableProfile] = useState(true);
     const { setNotificationState } = useNotificationContext();
   
@@ -55,7 +55,10 @@ export default function ProfileForm(){
 
       // if username is updated
       if (res.data.newUsername){
-        setUserName(res.data.newUsername);
+        setUser(prev => {
+          if (!prev) return prev;
+          return ({ ...prev, userName: res.data.newUsername })
+      }); 
       }
     }
     
