@@ -21,8 +21,8 @@ export default function SignalRContext(
         hubConnection = new HubConnectionBuilder()
             .configureLogging(LogLevel.Information) 
             .withUrl("https://localhost:44332/hub", {
-                skipNegotiation: true,  // skipNegotiation as we specify WebSockets
-                transport: HttpTransportType.WebSockets  // force WebSocket transport
+                //skipNegotiation: true,  // skipNegotiation as we specify WebSockets
+                //transport: HttpTransportType.WebSockets  // force WebSocket transport
             })
             .build();
         
@@ -62,7 +62,7 @@ export default function SignalRContext(
     }
     
     async function invoke(methodName: string, ...arg: any) {
-        if (!hubConnection || !userConnectionId) return;
+        if (!hubConnection) return;
         
         try{
             await hubConnection.invoke(methodName, ...arg)
@@ -72,7 +72,7 @@ export default function SignalRContext(
     }
     
     async function addHandler(methodName: string, method: (...args: any[]) => any){
-        if (!hubConnection || !userConnectionId) return;
+        if (!hubConnection) return;
         try{
             await hubConnection.on(methodName, method);
         } catch(err){
@@ -81,7 +81,7 @@ export default function SignalRContext(
     }
 
     function removeHandler(methodName: string){
-        if (!hubConnection || !userConnectionId) return;
+        if (!hubConnection) return;
         
         hubConnection.off(methodName);
     }

@@ -39,7 +39,7 @@ export default function GameTypeTable(
     }, []);
 
     useEffect(() => {
-      if (!userConnectionId) return;
+      //if (!userConnectionId) return;
 
       async function init(){
         await addHandler(listHandler, (res: GenericReturnMessageList) => {
@@ -66,7 +66,9 @@ export default function GameTypeTable(
     }, [userConnectionId]);
 
     useEffect(() => {
-      if (!userConnectionId) return;
+      console.log(userConnectionId)
+
+      //if (!userConnectionId) return;
 
       setList({ isLoading: true, data: [] });
       invoke(listInvokers.gameTypeList, 10, pageNo, gameType);

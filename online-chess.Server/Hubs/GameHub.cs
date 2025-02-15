@@ -24,7 +24,7 @@ using online_chess.Server.Features.Leaderboard.Queries.GetGameTypeList;
 
 namespace online_chess.Server.Hubs
 {
-    [Authorize]
+    // [Authorize]
     public class GameHub : Hub
     {
         private readonly IMediator _mediator;
@@ -203,12 +203,14 @@ namespace online_chess.Server.Hubs
         #region Connection
         [AllowAnonymous]
         public async Task GetConnectionId(){
+            // PROBLEM THIS IS NOT CALLED
             await Clients.Caller.SendAsync(RoomMethods.onGetUserConnectionId, Context.ConnectionId);
         }
 
         [AllowAnonymous]
         public override async Task OnConnectedAsync()
         {
+            // PROBLEM THIS IS CALLED, BUT CALLER DOES NOT RECEIVE IT
             await base.OnConnectedAsync();
 
             await _mediator.Send(new ConnectRequest()

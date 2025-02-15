@@ -9,7 +9,6 @@ export default function GameAlert(){
     const { notificationState, setNotificationState } = useNotificationContext();
     const { invoke } = useSignalRContext();
     const { gameState } = useGameContext();
-    const [showCloseBtn, setShowCloseBtn] = useState(false);
 
     if (
         !notificationState.customMessage &&
@@ -24,7 +23,6 @@ export default function GameAlert(){
     function gameNotif(){
 
         if (notificationState.signalRConnectionDisconnected){
-            setShowCloseBtn(false);
             return <>
                 <i className="bi bi-exclamation-circle-fill"></i>
                 <span className="ps-1">Unable to establish real time connection with the server. 
@@ -40,7 +38,6 @@ export default function GameAlert(){
         }
 
         if (notificationState.customMessage){
-            setShowCloseBtn(true);
             let icon = "bi bi-check2";
 
             switch(notificationState.customMessageType){
@@ -64,7 +61,6 @@ export default function GameAlert(){
         }
 
         if (notificationState.gameQueuingRoomKey){
-            setShowCloseBtn(false);
             return <>
                 <Spinner size="sm" animation="border" variant="dark" /> 
                 <span className="ps-2">
@@ -82,12 +78,10 @@ export default function GameAlert(){
         }
 
         if (notificationState.hasAGameOnGoing){
-            setShowCloseBtn(false);
             return <>TODO</>
         }
 
         if (notificationState.hasAGameDisconnected){
-            setShowCloseBtn(false);
             return <>TODO</>
         }
 
@@ -98,7 +92,9 @@ export default function GameAlert(){
         <div className="sticky-sm-top alert alert-warning" role="alert">
             <div className="container">
                 {gameNotif()}
-                {/* TODO CLOSE BTN */}
+                {notificationState.customMessage ? 
+                <>"close btn todo"</> 
+                : <></>}
             </div>
         </div>
     </>

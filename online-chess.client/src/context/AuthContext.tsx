@@ -36,7 +36,7 @@ export default function AuthContext(
     const {  setNotificationState } = useNotificationContext();
     const { 
         startConnection, stopConnection, userConnectionId
-        , addHandler, invoke, setUserConnectionId
+        , addHandler, invoke, setUserConnectionId, removeHandler
     } = useSignalRContext();
     const navigate = useNavigate();
 
@@ -62,30 +62,34 @@ export default function AuthContext(
     }
 
     useEffect(() => {
-        if (userConnectionId) return;
+        if (userConnectionId) {
+            setNotificationState({ type: "SET_SIGNALRCONNECTIONDISCONNECTED", payload: false });
+            return;
+        }
         
         async function init(){
             const connected = await startConnection();
 
             setNotificationState({ type: "SET_SIGNALRCONNECTIONDISCONNECTED", payload: true });
-            console.log("Invoking", connected);
 
             if (!connected) return;
 
-            await addHandler(mainPageHandlers.onGetUserConnectionId, (connectionId) => {
-                console.log(`onGetUserConnectionId: `, connectionId)
-                setUserConnectionId(connectionId);
-            });
+            console.log("Invoking", connected);
+            // await addHandler(mainPageHandlers.onGetUserConnectionId, (connectionId) => {
+            //     console.log(`onGetUserConnectionId: `, connectionId)
+            //     setUserConnectionId(connectionId);
+            // });
 
-            invoke(mainPageInvokers.getConnectionId);
+            await invoke(mainPageInvokers.getConnectionId);
         }
 
         init();
 
         return () => {
+            removeHandler(mainPageHandlers.onGetUserConnectionId);
             stopConnection();
         }
-    }, [userConnectionId]);
+    }, [isAuthenticating]);
 
     useEffect(() => {
         async function init() {
