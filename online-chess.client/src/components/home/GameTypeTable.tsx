@@ -1,11 +1,11 @@
 import moment from "moment";
 import { useState, useEffect, useMemo } from "react";
 import { Table, Spinner } from "react-bootstrap";
-import { toast } from "react-toastify";
 import { IGameTypeList } from "../../game/utilities/types";
 import { GenericReturnMessageList } from "../../services/BaseApiService";
 import { GameType, listHandlers, listInvokers,  } from "../../game/utilities/constants";
 import useSignalRContext from "../../hooks/useSignalRContext";
+import useNotificationContext from "../../hooks/useNotificationContext";
 
 interface IGameTypeTable{
   gameTypeLabel: string;
@@ -19,6 +19,7 @@ export default function GameTypeTable(
     const [pageNo, setPageNo] = useState<number>(1);
     const [list, setList] = useState<IGameTypeList>({ isLoading: true, data: [] });
     const { addHandler, removeHandler, invoke, userConnectionId } = useSignalRContext();
+    const { setNotificationState } = useNotificationContext();
 
     const listHandler = useMemo(() => {
       switch(gameType){
@@ -43,7 +44,13 @@ export default function GameTypeTable(
       async function init(){
         await addHandler(listHandler, (res: GenericReturnMessageList) => {
           if (!res.isSuccess){
-            toast(res.validationErrors.join(","), { type: "error" })
+            setNotificationState({ 
+              type: "SET_CUSTOMMESSAGE"
+              , payload: { 
+                customMessage: res.validationErrors.join(",")
+                , customMessageType: "DANGER" 
+              } 
+            });
             return;
           }
           

@@ -4,8 +4,8 @@ import { Row, Col, Form, Button, Spinner } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import useAuthContext from "../../hooks/useAuthContext";
-import { toast } from "react-toastify";
 import BaseApiService from "../../services/BaseApiService";
+import useNotificationContext from "../../hooks/useNotificationContext";
 
 const schema = z.object({
     newUsername: z.string().nonempty().min(8, "New username must contain at least 8 character(s)"),
@@ -28,6 +28,7 @@ const profileService = new BaseApiService();
 export default function ProfileForm(){
     const { user, setUserName } = useAuthContext();
     const [editableProfile, setEditableProfile] = useState(true);
+    const { setNotificationState } = useNotificationContext();
   
     const {
       register, handleSubmit, watch,
@@ -45,7 +46,10 @@ export default function ProfileForm(){
         oldUserName: user?.userName, ...data 
       });
           
-      toast(res.message, { type: res.isOk ? "success" : "error" });
+      setNotificationState({ 
+        type: "SET_CUSTOMMESSAGE"
+        , payload: { customMessage: res.message, customMessageType: "DANGER" } 
+      });
 
       if (!res.isOk) return;
 

@@ -11,7 +11,6 @@ import Profile from "./pages/Profile";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import About from "./pages/About";
 import AuthContext from "./context/AuthContext";
-import "react-toastify/dist/ReactToastify.css";
 import Lobby from "./pages/Lobby";
 import SignalRContext from "./context/SignalRContext";
 import 'bootstrap-icons/font/bootstrap-icons.css';

@@ -1,11 +1,10 @@
 import { useState, useEffect, createContext } from 'react'
-import BaseApiService, { GenericReturnMessage } from '../services/BaseApiService';
+import BaseApiService from '../services/BaseApiService';
 import { IUser } from '../game/utilities/types';
 import useSignalRContext from '../hooks/useSignalRContext';
-import { authHandlers, authInvokers, mainPageHandlers, mainPageInvokers } from '../game/utilities/constants';
-import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router';
+import { mainPageHandlers, mainPageInvokers } from '../game/utilities/constants';
 import useNotificationContext from '../hooks/useNotificationContext';
+import { useNavigate } from 'react-router';
 
 interface IAuthContext {
     isAuthenticating: boolean;
@@ -94,7 +93,6 @@ export default function AuthContext(
             
             if (res.status === 404){
                 navigate("/login");
-                // toast(res.message, { type: "error" })
             } else {
                 setUser({ userName: res.data.userName, profileURL: "" });
             }

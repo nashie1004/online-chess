@@ -1,9 +1,7 @@
 import { createContext, ReactNode, useEffect, useState } from 'react'
 import { ISignalRContext } from '../game/utilities/types';
 import { HttpTransportType, HubConnection, HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
-import { mainPageHandlers, mainPageInvokers } from '../game/utilities/constants';
-import { toast } from 'react-toastify';
-import useAuthContext from '../hooks/useAuthContext';
+import { mainPageHandlers } from '../game/utilities/constants';
 
 interface ISignalRContextProps{
     children: ReactNode
@@ -41,7 +39,6 @@ export default function SignalRContext(
 
             connected = true;
         } catch (error) {
-            //toast(`${error}`, { type: "error" })
             console.error(error);
             removeHandler(mainPageHandlers.onGetUserConnectionId);
             

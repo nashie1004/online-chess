@@ -22,7 +22,6 @@
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.54.2",
     "react-router": "^7.1.1",
-    "react-toastify": "^11.0.2",
     "remove": "^0.1.5",
     "signalr": "^2.4.3",
     "zod": "^3.24.1"

@@ -281,8 +281,15 @@ export interface INotificationContext{
     setNotificationState: React.Dispatch<INotificationContextReducerActions>;
 }
 
+export type customMessageType = "INFO" | "SUCCESS" | "DANGER";
+export interface ICustomMesage {
+    customMessage: string | null;
+    customMessageType: customMessageType;
+};
+
 export interface INotificationContextReducerState{
     customMessage: string | null;
+    customMessageType: customMessageType;
     gameQueuingRoomKey: string | null;
     hasAGameDisconnected: boolean;
     signalRConnectionDisconnected: boolean;
@@ -292,10 +299,10 @@ export interface INotificationContextReducerState{
 }
 
 export type INotificationContextReducerActions = 
-{ type: "SET_CUSTOMMESSAGE", payload: string | null }
+{ type: "SET_CUSTOMMESSAGE", payload: ICustomMesage }
 | { type: "SET_GAMEQUEUINGROOMKEY", payload: string | null }
 | { type: "SET_HASAGAMEDISCONNECTED", payload: boolean }
-| { type: "SET_SIGNALRCONNECTIONDISCONNECTED", payload: boolean }
+| { type: "SET_SIGNALRCONNECTIONDISCONNECTED", payload: ICustomMesage }
 | { type: "SET_HASAGAMEONGOING", payload: boolean }
 | { type: "SET_ROOMKEY", payload: string }
 | { type: "SET_ASOFDATE", payload: Date }

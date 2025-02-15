@@ -18,6 +18,8 @@ function reducerFn(state: INotificationContextReducerState, action: INotificatio
             return { ...state, signalRConnectionDisconnected: action.payload };
         case "SET_HASAGAMEONGOING":
             return { ...state, hasAGameOnGoing: action.payload };
+        case "SET_CUSTOMMESSAGE":
+            return {  ...state, customMessage: action.payload.customMessage, customMessageType: action.payload.customMessageType }
         case "SET_RESETNOTIFICATIONS":
             return baseNotificationState;
         default:
