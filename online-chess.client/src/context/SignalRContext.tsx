@@ -16,34 +16,42 @@ export default function SignalRContext(
     const [userConnectionId, setUserConnectionId] = useState<string | null>(null);
 
     async function startConnection(){
+        let connected = false;
+
         hubConnection = new HubConnectionBuilder()
             .configureLogging(LogLevel.Information) 
             .withUrl("https://localhost:44332/hub", {
-                skipNegotiation: true,  // skipNegotiation as we specify WebSockets
-                transport: HttpTransportType.WebSockets  // force WebSocket transport
+                //skipNegotiation: true,  // skipNegotiation as we specify WebSockets
+                //transport: HttpTransportType.WebSockets  // force WebSocket transport
             })
             .build();
         
         try {
+
+            //console.log("Connection Starting");
+
             await hubConnection.start();
             //hubConnection.onclose(closeEventCallback);
 
             hubConnection.onreconnected((e) => console.info(`Reconnected: ${e}`))
             hubConnection.onreconnecting((e) => console.info(`Reconnecting: ${e}`))
-            console.log("Connection started");
+            //console.log("Connection started");
 
-            await addHandler(mainPageHandlers.onGetUserConnectionId, (connectionId) => {
-                setUserConnectionId(connectionId);
-            });
-
+            connected = true;
         } catch (error) {
             console.error(error);
             removeHandler(mainPageHandlers.onGetUserConnectionId);
+            
+            connected = false;
         }
+
+        return connected;
     }
 
     async function stopConnection(){
         if (!hubConnection) return;
+
+        removeHandler(mainPageHandlers.onGetUserConnectionId);
 
         try{
             setUserConnectionId(null);
@@ -73,23 +81,31 @@ export default function SignalRContext(
     }
 
     function removeHandler(methodName: string){
+        if (!hubConnection) return;
+        
         hubConnection.off(methodName);
     }
 
+    /*
     useEffect(() => {
-        if (!userConnectionId){
-            startConnection();
-        }
+        console.log("signalr context ", isAuthenticating, userConnectionId)
+
+        if (isAuthenticating) return;
+        if (userConnectionId) return;
+
+        startConnection();
 
         return () => {
             stopConnection();
-            removeHandler(mainPageHandlers.onGetUserConnectionId);
         }
-    }, [])
+    }, [isAuthenticating])
+    */
 
   return (
     <signalRContext.Provider value={{
-        addHandler, invoke, removeHandler, userConnectionId
+        addHandler, invoke, removeHandler
+        , userConnectionId, stopConnection, startConnection
+        , setUserConnectionId
     }}>
         {children}
     </signalRContext.Provider>

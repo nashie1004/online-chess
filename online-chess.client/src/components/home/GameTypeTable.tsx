@@ -1,11 +1,11 @@
 import moment from "moment";
 import { useState, useEffect, useMemo } from "react";
 import { Table, Spinner } from "react-bootstrap";
-import { toast } from "react-toastify";
 import { IGameTypeList } from "../../game/utilities/types";
 import { GenericReturnMessageList } from "../../services/BaseApiService";
 import { GameType, listHandlers, listInvokers,  } from "../../game/utilities/constants";
 import useSignalRContext from "../../hooks/useSignalRContext";
+import useNotificationContext from "../../hooks/useNotificationContext";
 
 interface IGameTypeTable{
   gameTypeLabel: string;
@@ -19,6 +19,7 @@ export default function GameTypeTable(
     const [pageNo, setPageNo] = useState<number>(1);
     const [list, setList] = useState<IGameTypeList>({ isLoading: true, data: [] });
     const { addHandler, removeHandler, invoke, userConnectionId } = useSignalRContext();
+    const { setNotificationState } = useNotificationContext();
 
     const listHandler = useMemo(() => {
       switch(gameType){
@@ -38,12 +39,18 @@ export default function GameTypeTable(
     }, []);
 
     useEffect(() => {
-      if (!userConnectionId) return;
+      //if (!userConnectionId) return;
 
       async function init(){
         await addHandler(listHandler, (res: GenericReturnMessageList) => {
           if (!res.isSuccess){
-            toast(res.validationErrors.join(","), { type: "error" })
+            setNotificationState({ 
+              type: "SET_CUSTOMMESSAGE"
+              , payload: { 
+                customMessage: res.validationErrors.join(",")
+                , customMessageType: "DANGER" 
+              } 
+            });
             return;
           }
           
@@ -59,8 +66,6 @@ export default function GameTypeTable(
     }, [userConnectionId]);
 
     useEffect(() => {
-      if (!userConnectionId) return;
-
       setList({ isLoading: true, data: [] });
       invoke(listInvokers.gameTypeList, 10, pageNo, gameType);
     }, [pageNo, userConnectionId]);
@@ -96,7 +101,7 @@ export default function GameTypeTable(
         </thead>
         <tbody>
           {list.isLoading ? <>
-            <Spinner animation="border" variant="dark" className="mt-3" /> 
+            <Spinner animation="border" variant="light" size="sm" className="my-2" /> 
           </> : <>
             {list.data.map((item, idx) => {
               let rankColor = "ps-3";

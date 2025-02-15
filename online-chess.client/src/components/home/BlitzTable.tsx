@@ -1,9 +1,9 @@
 import moment from "moment";
 import { useState, useEffect } from "react";
 import { Table, Spinner } from "react-bootstrap";
-import { toast } from "react-toastify";
 import { ILeaderboardList } from "../../game/utilities/types";
 import BaseApiService from "../../services/BaseApiService";
+import useNotificationContext from "../../hooks/useNotificationContext";
 
 const baseApiService = new BaseApiService();
 
@@ -12,6 +12,7 @@ export default function BlitzTable(){
     const [list, setList] = useState<ILeaderboardList>({
       isLoading: true, data: []
     });
+    const { setNotificationState } = useNotificationContext();
   
     async function getData(){
       setList({ isLoading: true, data: [] });
@@ -24,7 +25,10 @@ export default function BlitzTable(){
       });
   
       if (!res.isOk){
-        toast(res.message, { type: "error" })
+        setNotificationState({ 
+          type: "SET_CUSTOMMESSAGE"
+          , payload: { customMessage: res.message, customMessageType: "DANGER" } 
+        });
         return;
       }
   

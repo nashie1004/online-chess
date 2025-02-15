@@ -11,7 +11,6 @@ import Profile from "./pages/Profile";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import About from "./pages/About";
 import AuthContext from "./context/AuthContext";
-import "react-toastify/dist/ReactToastify.css";
 import Lobby from "./pages/Lobby";
 import SignalRContext from "./context/SignalRContext";
 import 'bootstrap-icons/font/bootstrap-icons.css';
@@ -19,11 +18,11 @@ import NotificationContext from "./context/NotificationContext";
 
 export default function App(){
     return <>
-        <SignalRContext>
-            <AuthContext>
-                <NotificationContext>
-                    <GameContext>
-                        <BrowserRouter>
+        <BrowserRouter>
+            <NotificationContext>
+                <SignalRContext>
+                    <AuthContext>
+                        <GameContext>
                             <Routes>
                                 <Route path="/" element={<Layout />}>
                                     <Route path="/" element={<Home /> } />
@@ -36,10 +35,10 @@ export default function App(){
                                     <Route path="*" element={<NotFound /> } />
                                 </Route>
                             </Routes>
-                        </BrowserRouter>
-                    </GameContext>
-                </NotificationContext>
-            </AuthContext>
-        </SignalRContext>
+                        </GameContext>
+                    </AuthContext>
+                </SignalRContext>
+            </NotificationContext>
+        </BrowserRouter>
     </>
 }

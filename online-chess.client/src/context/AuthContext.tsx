@@ -1,8 +1,10 @@
 import { useState, useEffect, createContext } from 'react'
-import BaseApiService, { GenericReturnMessage } from '../services/BaseApiService';
+import BaseApiService from '../services/BaseApiService';
 import { IUser } from '../game/utilities/types';
 import useSignalRContext from '../hooks/useSignalRContext';
-import { authHandlers, authInvokers } from '../game/utilities/constants';
+import { mainPageHandlers, mainPageInvokers } from '../game/utilities/constants';
+import useNotificationContext from '../hooks/useNotificationContext';
+import { useNavigate } from 'react-router';
 
 interface IAuthContext {
     isAuthenticating: boolean;
@@ -31,7 +33,12 @@ export default function AuthContext(
 ) {
     const [isAuthenticating, setIsAuthenticating] = useState(true);
     const [user, setUser] = useState<null | IUser>(null);
-    const { userConnectionId } = useSignalRContext();
+    const {  setNotificationState } = useNotificationContext();
+    const { 
+        startConnection, stopConnection, userConnectionId
+        , addHandler, invoke, setUserConnectionId, removeHandler
+    } = useSignalRContext();
+    const navigate = useNavigate();
 
     async function login(user: IUser) {
         setUser(user);
@@ -55,20 +62,50 @@ export default function AuthContext(
     }
 
     useEffect(() => {
-        async function authenticate() {
+        // if (userConnectionId) {
+        //     setNotificationState({ type: "SET_SIGNALRCONNECTIONDISCONNECTED", payload: false });
+        //     return;
+        // }
+        
+        async function checkIfSignedIn() {
             const res = await authService.baseGet("/api/Auth/isSignedIn");
-            if (res.isOk) {
-                setUser({ userName: res.data.userName, profileURL: "" })
+            
+            if (res.status === 404){
+                navigate("/login");
+            } else {
+                setUser({ userName: res.data.userName, profileURL: "" });
             }
-            setIsAuthenticating(false)
+            
+            setIsAuthenticating(false);
         }
 
-        authenticate();
-    }, [userConnectionId])
+        async function connectToSignalR(){
+            const connected = await startConnection();
+
+            setNotificationState({ type: "SET_SIGNALRCONNECTIONDISCONNECTED", payload: !connected });
+
+            if (!connected) return;
+
+            await addHandler(mainPageHandlers.onGetUserConnectionId, (connectionId) => {
+                setUserConnectionId(connectionId);
+            });
+
+            await invoke(mainPageInvokers.getConnectionId);
+        }
+
+        checkIfSignedIn();
+        connectToSignalR();
+
+        return () => {
+            removeHandler(mainPageHandlers.onGetUserConnectionId);
+            stopConnection();
+        }
+    }, []);
 
     const data = {
-        user, login, logout, isAuthenticating, setUserName
-    }
+        user, login, logout
+        , isAuthenticating, setUserName
+    };
 
   return (
       <authContext.Provider value={data}>

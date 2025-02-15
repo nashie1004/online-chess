@@ -385,3 +385,7 @@ select {
   padding: 5px;
   font-size: 16px;
 }
+
+.alert{
+  border-radius: 0 !important;
+}

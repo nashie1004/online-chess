@@ -156,8 +156,11 @@ export const baseGameState: IGameContextReducerState = {
 };
 
 export const baseNotificationState: INotificationContextReducerState = {
-    gameQueuingRoomKey: null
+    customMessage: null
+    ,customMessageType: "SUCCESS"
+    ,gameQueuingRoomKey: null
     ,hasAGameDisconnected: false
+    ,signalRConnectionDisconnected: false
     ,hasAGameOnGoing: false
     ,roomKey: null
     ,asOfDate: null 
@@ -173,6 +176,7 @@ export const mainPageHandlers = {
 
 export const mainPageInvokers = {
     deleteRoom: "DeleteRoom"
+    , getConnectionId: "GetConnectionId"
 };
 
 export const listHandlers = {

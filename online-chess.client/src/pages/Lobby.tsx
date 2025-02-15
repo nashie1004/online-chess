@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Spinner } from "react-bootstrap"
 import { IGameRoomList } from "../game/utilities/types";
 import LobbyTable from "../components/lobby/LobbyTable";
-import { toast } from "react-toastify";
 import useSignalRContext from "../hooks/useSignalRContext";
 import LobbyForm from "../components/lobby/LobbyForm";
 import { useNavigate } from "react-router";
@@ -18,7 +17,12 @@ export default function Lobby() {
     useEffect(() => {
         async function start(){
             await addHandler(lobbyPageHandlers.onRefreshRoomList, (roomList) => setGameRoomList({ isLoading: false, list: roomList }));
-            await addHandler(lobbyPageHandlers.onInvalidRoomKey, (msg) => toast(msg, { type: "error" }));
+            await addHandler(lobbyPageHandlers.onInvalidRoomKey, (msg) => {
+                setNotificationState({ 
+                  type: "SET_CUSTOMMESSAGE"
+                  , payload: { customMessage: msg, customMessageType: "DANGER" } 
+                });
+            });
             await addHandler(lobbyPageHandlers.onGetRoomKey, (roomKey: string) => {
                 setNotificationState({ type: "SET_GAMEQUEUINGROOMKEY", payload: roomKey });
             });

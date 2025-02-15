@@ -1,11 +1,11 @@
 import moment from "moment";
 import { useState, useEffect } from "react";
 import { Table, Spinner } from "react-bootstrap";
-import { toast } from "react-toastify";
 import { ILeaderboardList } from "../../game/utilities/types";
-import { GenericReturnMessage, GenericReturnMessageList } from "../../services/BaseApiService";
+import { GenericReturnMessageList } from "../../services/BaseApiService";
 import useSignalRContext from "../../hooks/useSignalRContext";
 import { listHandlers, listInvokers } from "../../game/utilities/constants";
+import useNotificationContext from "../../hooks/useNotificationContext";
 
 export default function MainLeaderboardTable(){
     const [pageNo, setPageNo] = useState<number>(1);
@@ -13,7 +13,8 @@ export default function MainLeaderboardTable(){
       isLoading: true, data: []
     });
     const { addHandler, removeHandler, invoke, userConnectionId } = useSignalRContext();
-  
+    const { setNotificationState } = useNotificationContext();
+
     useEffect(() => {
       if (!userConnectionId) return;
 
@@ -27,7 +28,10 @@ export default function MainLeaderboardTable(){
       async function init(){
         await addHandler(listHandlers.onGetLeaderboard, (res: GenericReturnMessageList) => {
           if (!res.isSuccess){
-            toast(res.validationErrors.join(","), { type: "error" })
+            setNotificationState({ 
+              type: "SET_CUSTOMMESSAGE"
+              , payload: { customMessage: res.validationErrors.join(","), customMessageType: "DANGER" } 
+            });
             return;
           }
       
@@ -76,7 +80,7 @@ export default function MainLeaderboardTable(){
         </thead>
         <tbody>
           {list.isLoading ? <>
-            <Spinner animation="border" variant="dark" className="mt-3" /> 
+            <Spinner animation="border" variant="light" size="sm" className="my-2" /> 
           </> : <>
             {list.data.map((item, idx) => {
               let rankColor = "ps-3";

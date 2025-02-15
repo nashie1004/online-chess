@@ -17,18 +17,18 @@ namespace online_chess.Server.Controllers
             _mediator = mediator;
         }
 
-        [AllowAnonymous]
-        [HttpGet("leaderboard")]
-        public async Task<IActionResult> Leaderboard([FromQuery] GetDefaultLeaderboardRequest req)
-        {
-            return Ok(await _mediator.Send(req));
-        }
+        // [AllowAnonymous]
+        // [HttpGet("leaderboard")]
+        // public async Task<IActionResult> Leaderboard([FromQuery] GetDefaultLeaderboardRequest req)
+        // {
+        //     return Ok(await _mediator.Send(req));
+        // }
         
-        [AllowAnonymous]
-        [HttpGet("gameTypeList")]
-        public async Task<IActionResult> GameTypeList([FromQuery] GetGameTypeListRequest req)
-        {
-            return Ok(await _mediator.Send(req));
-        }
+        // [AllowAnonymous]
+        // [HttpGet("gameTypeList")]
+        // public async Task<IActionResult> GameTypeList([FromQuery] GetGameTypeListRequest req)
+        // {
+        //     return Ok(await _mediator.Send(req));
+        // }
     }
 }
