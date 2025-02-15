@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useMemo } from 'react'
+import React, { createContext, useEffect, useMemo, useState } from 'react'
 import { IInitializerContext } from '../game/utilities/types';
 import useNotificationContext from '../hooks/useNotificationContext';
 import useSignalRContext from '../hooks/useSignalRContext';
@@ -25,6 +25,7 @@ export default function InitializerContext(
   const { setUser, setIsAuthenticating } = useAuthContext();
   const { setQueuingRoomKey } = useQueuingContext();
   const navigate = useNavigate();
+  const [initialize, setInitialize] = useState<boolean>(true);
 
   const authService = useMemo(() => new BaseApiService(), []);
   
@@ -40,9 +41,32 @@ export default function InitializerContext(
     setIsAuthenticating(false);
   }
 
+  async function addHandlers(){
+    await addHandler(mainPageHandlers.onGetUserConnectionId, (connectionId) => {
+      setUserConnectionId(connectionId);
+    });
+
+    await addHandler(lobbyPageHandlers.onInvalidRoomKey, (msg) => {
+      setNotificationState({ 
+        type: "SET_CUSTOMMESSAGE" , payload: { customMessage: msg, customMessageType: "DANGER" } 
+      });
+    });
+    await addHandler(lobbyPageHandlers.onGetRoomKey, (roomKey: string) => {
+      setNotificationState({ type: "SET_HASAGAMEQUEUINGROOMKEY", payload: true });
+      setQueuingRoomKey(roomKey);
+    });
+    await addHandler(lobbyPageHandlers.onMatchFound, (roomKey: string) => navigate(`/play/${roomKey}`));
+
+    await invoke(mainPageInvokers.getConnectionId);
+  }
+
   useEffect(() => {
     
     async function init(){
+      // 0. clear state
+      setInitialize(false);
+      setNotificationState({ type: "SET_RESETNOTIFICATIONS" });
+
       // 1. check if signed in
       await checkIfSignedIn();
 
@@ -51,26 +75,13 @@ export default function InitializerContext(
       setNotificationState({ type: "SET_SIGNALRCONNECTIONDISCONNECTED", payload: !connected });
       if (!connected) return;
 
-      // 3. add handlers
-      await addHandler(mainPageHandlers.onGetUserConnectionId, (connectionId) => {
-        setUserConnectionId(connectionId);
-      });
-  
-      await addHandler(lobbyPageHandlers.onInvalidRoomKey, (msg) => {
-        setNotificationState({ 
-          type: "SET_CUSTOMMESSAGE" , payload: { customMessage: msg, customMessageType: "DANGER" } 
-        });
-      });
-      await addHandler(lobbyPageHandlers.onGetRoomKey, (roomKey: string) => {
-        setNotificationState({ type: "SET_HASAGAMEQUEUINGROOMKEY", payload: true });
-        setQueuingRoomKey(roomKey);
-      });
-      await addHandler(lobbyPageHandlers.onMatchFound, (roomKey: string) => navigate(`/play/${roomKey}`));
-
-      await invoke(mainPageInvokers.getConnectionId);
+      // 3. add handlers and invoke
+      await addHandlers();
     }
 
-    init();
+    if (initialize){
+      init();
+    }
 
     return () => {
       removeHandler(mainPageHandlers.onGetUserConnectionId);
@@ -79,10 +90,12 @@ export default function InitializerContext(
       removeHandler(lobbyPageHandlers.onMatchFound);
       stopConnection();
     }
-  }, []);
+  }, [initialize]);
 
   return (
-    <initializerContext.Provider value={{}}>
+    <initializerContext.Provider value={{
+      setInitialize
+    }}>
       {children}
     </initializerContext.Provider>
   )

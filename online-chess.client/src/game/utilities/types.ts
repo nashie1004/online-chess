@@ -277,7 +277,7 @@ export interface PlayersPromotePreference{
 }
 
 export interface IInitializerContext{
-    
+    setInitialize: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export interface INotificationContext{

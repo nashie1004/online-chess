@@ -158,7 +158,7 @@ export const baseGameState: IGameContextReducerState = {
 export const baseNotificationState: INotificationContextReducerState = {
     customMessage: null
     ,customMessageType: "SUCCESS"
-    ,gameQueuingRoomKey: null
+    ,hasAGameQueuing: false
     ,hasAGameDisconnected: false
     ,signalRConnectionDisconnected: false
     ,hasAGameOnGoing: false

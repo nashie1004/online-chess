@@ -4,12 +4,14 @@ import useSignalRContext from "../hooks/useSignalRContext";
 import { mainPageInvokers } from "../game/utilities/constants";
 // import useGameContext from "../hooks/useGameContext";
 import useQueuingContext from "../hooks/useQueuingContext";
+import useInitializerContext from "../hooks/useInitializerContext";
 
 export default function GameAlert(){
     const { notificationState, setNotificationState } = useNotificationContext();
     const { invoke } = useSignalRContext();
     // const { gameState } = useGameContext();
     const { setQueuingRoomKey, queuingRoomKey } = useQueuingContext();
+    const { setInitialize } = useInitializerContext();
 
     if (
         !notificationState.customMessage &&
@@ -30,10 +32,8 @@ export default function GameAlert(){
                     <a 
                         href="#" 
                         className="ps-1 alert-link"
-                        onClick={() => {
-                            alert("todo")
-                        }}
-                    >Retry?</a>
+                        onClick={() => setInitialize(true)}
+                    >Reconnect and reauthorize?</a>
                 </span>
             </> 
         }
@@ -61,7 +61,7 @@ export default function GameAlert(){
             </>
         }
 
-        if (notificationState.hasAGameQueuing || queuingRoomKey){
+        if (notificationState.hasAGameQueuing){
             return <>
                 <Spinner size="sm" animation="border" variant="dark" /> 
                 <span className="ps-2">
