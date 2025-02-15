@@ -2,18 +2,19 @@ import { Spinner } from "react-bootstrap";
 import useNotificationContext from "../hooks/useNotificationContext"
 import useSignalRContext from "../hooks/useSignalRContext";
 import { mainPageInvokers } from "../game/utilities/constants";
-import useGameContext from "../hooks/useGameContext";
-import { useState } from "react";
+// import useGameContext from "../hooks/useGameContext";
+import useQueuingContext from "../hooks/useQueuingContext";
 
 export default function GameAlert(){
     const { notificationState, setNotificationState } = useNotificationContext();
     const { invoke } = useSignalRContext();
-    const { gameState } = useGameContext();
+    // const { gameState } = useGameContext();
+    const { setQueuingRoomKey, queuingRoomKey } = useQueuingContext();
 
     if (
         !notificationState.customMessage &&
         !notificationState.signalRConnectionDisconnected &&
-        !notificationState.gameQueuingRoomKey &&
+        !notificationState.hasAGameQueuing &&
         !notificationState.hasAGameOnGoing &&
         !notificationState.hasAGameDisconnected
     ){
@@ -60,7 +61,7 @@ export default function GameAlert(){
             </>
         }
 
-        if (notificationState.gameQueuingRoomKey){
+        if (notificationState.hasAGameQueuing || queuingRoomKey){
             return <>
                 <Spinner size="sm" animation="border" variant="dark" /> 
                 <span className="ps-2">
@@ -69,8 +70,9 @@ export default function GameAlert(){
                         href="#" 
                         className="ps-1 alert-link"
                         onClick={() => {
-                            invoke(mainPageInvokers.deleteRoom, notificationState.gameQueuingRoomKey);
-                            setNotificationState({ type: "SET_GAMEQUEUINGROOMKEY", payload: null });
+                            setNotificationState({ type: "SET_HASAGAMEQUEUINGROOMKEY", payload: false });
+                            setQueuingRoomKey(null);
+                            invoke(mainPageInvokers.deleteRoom, queuingRoomKey);
                         }}
                         >Stop queuing?</a> 
                 </span>

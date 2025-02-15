@@ -7,27 +7,19 @@ import LobbyForm from "../components/lobby/LobbyForm";
 import { useNavigate } from "react-router";
 import { lobbyPageHandlers, lobbyPageInvokers, mainPageInvokers } from "../game/utilities/constants";
 import useNotificationContext from "../hooks/useNotificationContext";
+import useQueuingContext from "../hooks/useQueuingContext";
 
 export default function Lobby() {
     const [gameRoomList, setGameRoomList] = useState<IGameRoomList>({ list: [], isLoading: true });
     const { userConnectionId, addHandler, removeHandler, invoke } = useSignalRContext();
     const navigate = useNavigate();
-    const { notificationState, setNotificationState } = useNotificationContext();
+    const { setNotificationState } = useNotificationContext();
+    const { setQueuingRoomKey, queuingRoomKey } = useQueuingContext();
 
     useEffect(() => {
         async function start(){
             await addHandler(lobbyPageHandlers.onRefreshRoomList, (roomList) => setGameRoomList({ isLoading: false, list: roomList }));
-            await addHandler(lobbyPageHandlers.onInvalidRoomKey, (msg) => {
-                setNotificationState({ 
-                  type: "SET_CUSTOMMESSAGE"
-                  , payload: { customMessage: msg, customMessageType: "DANGER" } 
-                });
-            });
-            await addHandler(lobbyPageHandlers.onGetRoomKey, (roomKey: string) => {
-                setNotificationState({ type: "SET_GAMEQUEUINGROOMKEY", payload: roomKey });
-            });
-            await addHandler(lobbyPageHandlers.onMatchFound, (roomKey: string) => navigate(`/play/${roomKey}`));
-
+       
             await invoke(lobbyPageInvokers.getRoomList, 1);
             await invoke(lobbyPageInvokers.getCreatedRoomKey);
         }
@@ -38,28 +30,26 @@ export default function Lobby() {
         
         return () => {
             removeHandler(lobbyPageHandlers.onRefreshRoomList);
-            removeHandler(lobbyPageHandlers.onInvalidRoomKey);
-            removeHandler(lobbyPageHandlers.onGetRoomKey);
-            removeHandler(lobbyPageHandlers.onMatchFound);
         }
     }, [])
 
     return <div className="col">
         <LobbyForm 
             setGameRoomList={setGameRoomList}
-            roomKey={notificationState.gameQueuingRoomKey}
+            roomKey={queuingRoomKey}
         />
-        {notificationState.gameQueuingRoomKey ? <>
+        {queuingRoomKey && <>
             <div className="game-alert">
                 <Spinner size="sm" animation="border" variant="light" className="mt-3" /> 
                 <span className="ps-2">
                     You have a game queuing... <a href="#" className="alert-link" onClick={() => {
-                        invoke(mainPageInvokers.deleteRoom, notificationState.gameQueuingRoomKey);
-                        setNotificationState({ type: "SET_GAMEQUEUINGROOMKEY", payload: null });
+                        setNotificationState({ type: "SET_HASAGAMEQUEUINGROOMKEY", payload: false });
+                        setQueuingRoomKey(null);
+                        invoke(mainPageInvokers.deleteRoom, queuingRoomKey);
                     }}>Stop queuing?</a>
                 </span>
             </div>
-        </> : <></>}
+        </>}
         <LobbyTable 
             gameRoomList={gameRoomList}
             setGameRoomList={setGameRoomList}

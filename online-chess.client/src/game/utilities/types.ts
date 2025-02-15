@@ -294,7 +294,7 @@ export interface ICustomMesage {
 export interface INotificationContextReducerState{
     customMessage: string | null;
     customMessageType: customMessageType;
-    gameQueuingRoomKey: string | null;
+    hasAGameQueuing: boolean;
     hasAGameDisconnected: boolean;
     signalRConnectionDisconnected: boolean;
     hasAGameOnGoing: boolean;
@@ -304,7 +304,7 @@ export interface INotificationContextReducerState{
 
 export type INotificationContextReducerActions = 
 { type: "SET_CUSTOMMESSAGE", payload: ICustomMesage }
-| { type: "SET_GAMEQUEUINGROOMKEY", payload: string | null }
+| { type: "SET_HASAGAMEQUEUINGROOMKEY", payload: boolean }
 | { type: "SET_HASAGAMEDISCONNECTED", payload: boolean }
 | { type: "SET_SIGNALRCONNECTIONDISCONNECTED", payload: boolean }
 | { type: "SET_HASAGAMEONGOING", payload: boolean }

@@ -17,12 +17,14 @@ import useOnDeclineDraw from "../game/signalRhandlers/useOnDeclineDraw";
 import PromotionPicker from "../components/play/PromotionPickerModal";
 import { playPageHandlers, playPageInvokers } from "../game/utilities/constants";
 import useOnSetPromotionPreference from "../game/signalRhandlers/useOnSetPromotionPreference";
+import useNotificationContext from "../hooks/useNotificationContext";
 
 export default function Main(){
     const gameRef = useRef<Phaser.Game | null>();
     const { userConnectionId, addHandler, invoke, removeHandler } = useSignalRContext();
     const url = useParams();
     const { setGameState } = useGameContext();
+    const { setNotificationState } = useNotificationContext();
     
     const onInitializeGameInfo = useOnInitializeGameInfo(gameRef);
     const onUpdateBoard = useOnUpdateBoard();
@@ -34,6 +36,7 @@ export default function Main(){
     const onSetPromotionPreference = useOnSetPromotionPreference();
 
     useEffect(() => {
+        setNotificationState({ type: "SET_RESETNOTIFICATIONS" });
         setGameState({ type: "SET_CLEARGAMESTATE" });
         setGameState({ type: "SET_GAMESTATUS", payload: "LOADING" });
 
