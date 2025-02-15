@@ -18,6 +18,8 @@ export default function SignalRContext(
     const [userConnectionId, setUserConnectionId] = useState<string | null>(null);
 
     async function startConnection(){
+        let connected = false;
+
         hubConnection = new HubConnectionBuilder()
             .configureLogging(LogLevel.Information) 
             .withUrl("https://localhost:44332/hub", {
@@ -29,6 +31,7 @@ export default function SignalRContext(
         try {
 
             console.log("Connection Starting");
+
             await hubConnection.start();
             //hubConnection.onclose(closeEventCallback);
 
@@ -36,18 +39,16 @@ export default function SignalRContext(
             hubConnection.onreconnecting((e) => console.info(`Reconnecting: ${e}`))
             console.log("Connection started");
 
-            await addHandler(mainPageHandlers.onGetUserConnectionId, (connectionId) => {
-                console.log(`onGetUserConnectionId: `, connectionId)
-                setUserConnectionId(connectionId);
-            });
-
-            invoke(mainPageInvokers.getConnectionId);
-
+            connected = true;
         } catch (error) {
             //toast(`${error}`, { type: "error" })
             console.error(error);
             removeHandler(mainPageHandlers.onGetUserConnectionId);
+            
+            connected = false;
         }
+
+        return connected;
     }
 
     async function stopConnection(){
@@ -107,6 +108,7 @@ export default function SignalRContext(
     <signalRContext.Provider value={{
         addHandler, invoke, removeHandler
         , userConnectionId, stopConnection, startConnection
+        , setUserConnectionId
     }}>
         {children}
     </signalRContext.Provider>

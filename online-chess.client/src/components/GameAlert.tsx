@@ -10,6 +10,8 @@ export default function GameAlert(){
     const { gameState } = useGameContext();
 
     if (
+        !notificationState.customMessage &&
+        !notificationState.signalRConnectionDisconnected &&
         !notificationState.gameQueuingRoomKey &&
         !notificationState.hasAGameOnGoing &&
         !notificationState.hasAGameDisconnected
@@ -18,6 +20,22 @@ export default function GameAlert(){
     }
 
     function gameNotif(){
+
+        if (notificationState.signalRConnectionDisconnected){
+            return <>
+                <i className="bi bi-exclamation-circle-fill"></i>
+                <span className="ps-1">Unable to establish real time connection with the server. 
+                    <a 
+                        href="#" 
+                        className="ps-1 alert-link"
+                        onClick={() => {
+                            alert("todo")
+                        }}
+                    >Retry?</a>
+                </span>
+            </> 
+        }
+
         if (notificationState.gameQueuingRoomKey){
             return <>
                 <Spinner size="sm" animation="border" variant="dark" /> 

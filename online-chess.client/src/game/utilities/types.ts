@@ -67,12 +67,13 @@ export interface ITimer{
 }
 
 export interface ISignalRContext {
-    startConnection: () => void;
+    startConnection: () => Promise<boolean>;
     stopConnection: () => void;
     invoke: (methodName: string, ...args: any[]) => void;
     addHandler: (methodName: string, method: (...args: any[]) => void) => void;
     removeHandler: (methodName: string) => void;
     userConnectionId: string | null;
+    setUserConnectionId: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
 export interface IBothKingsPosition{
@@ -281,17 +282,22 @@ export interface INotificationContext{
 }
 
 export interface INotificationContextReducerState{
+    customMessage: string | null;
     gameQueuingRoomKey: string | null;
     hasAGameDisconnected: boolean;
+    signalRConnectionDisconnected: boolean;
     hasAGameOnGoing: boolean;
     roomKey: string | null;
     asOfDate: Date | null;
 }
 
 export type INotificationContextReducerActions = 
-{ type: "SET_GAMEQUEUINGROOMKEY", payload: string | null }
+{ type: "SET_CUSTOMMESSAGE", payload: string | null }
+| { type: "SET_GAMEQUEUINGROOMKEY", payload: string | null }
 | { type: "SET_HASAGAMEDISCONNECTED", payload: boolean }
+| { type: "SET_SIGNALRCONNECTIONDISCONNECTED", payload: boolean }
 | { type: "SET_HASAGAMEONGOING", payload: boolean }
 | { type: "SET_ROOMKEY", payload: string }
 | { type: "SET_ASOFDATE", payload: Date }
+| { type: "SET_RESETNOTIFICATIONS" }
 ;

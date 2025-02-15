@@ -14,8 +14,12 @@ function reducerFn(state: INotificationContextReducerState, action: INotificatio
             return { ...state, gameQueuingRoomKey: action.payload };
         case "SET_HASAGAMEDISCONNECTED":
             return { ...state, hasAGameDisconnected: action.payload };
+        case "SET_SIGNALRCONNECTIONDISCONNECTED":
+            return { ...state, signalRConnectionDisconnected: action.payload };
         case "SET_HASAGAMEONGOING":
             return { ...state, hasAGameOnGoing: action.payload };
+        case "SET_RESETNOTIFICATIONS":
+            return baseNotificationState;
         default:
             return state;
     }

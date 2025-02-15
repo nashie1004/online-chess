@@ -22,8 +22,6 @@ export default function MainLeaderboardTable(){
     }, [pageNo, userConnectionId]);
   
     useEffect(() => {
-      console.log(userConnectionId)
-
       if (!userConnectionId) return;
 
       async function init(){
