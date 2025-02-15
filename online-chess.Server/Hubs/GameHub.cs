@@ -24,7 +24,6 @@ using online_chess.Server.Features.Leaderboard.Queries.GetGameTypeList;
 
 namespace online_chess.Server.Hubs
 {
-    // [Authorize]
     public class GameHub : Hub
     {
         private readonly IMediator _mediator;
@@ -33,10 +32,9 @@ namespace online_chess.Server.Hubs
         {
             _mediator = mediator;
         }
-
         
         #region Lists
-
+        [Authorize]
         public async Task GameHistory(int pageSize, int pageNo)
         {
             var response = await _mediator.Send(new GetGameHistoryRequest(){
@@ -70,6 +68,7 @@ namespace online_chess.Server.Hubs
         #endregion
 
         #region LobbyPage
+        [Authorize]
         public async Task AddToQueue(short gameType, short colorOption)
         {
             await _mediator.Send(new AddToQueueRequest()
@@ -81,6 +80,7 @@ namespace online_chess.Server.Hubs
             });
         }
 
+        [Authorize]
         public async Task GetRoomList(int pageNumber)
         {
             await _mediator.Send(new GetRoomListRequest()
@@ -91,6 +91,7 @@ namespace online_chess.Server.Hubs
             });
         }
 
+        [Authorize]
         public async Task JoinRoom(string gameRoomKey)
         {
             await _mediator.Send(new JoinRoomRequest()
@@ -101,6 +102,7 @@ namespace online_chess.Server.Hubs
             });
         }
 
+        [Authorize]
         public async Task DeleteRoom(string gameRoomKey)
         {
             await _mediator.Send(new DeleteRoomRequest()
@@ -111,6 +113,7 @@ namespace online_chess.Server.Hubs
             });
         }
         
+        [Authorize]
         public async Task GetCreatedRoomKey()
         {
             await _mediator.Send(new GetCreatedRoomKeyRequest()
@@ -122,6 +125,7 @@ namespace online_chess.Server.Hubs
         #endregion
 
         #region PlayPage
+        [Authorize]
         public async Task GameStart(string gameRoomKey)
         {
             await _mediator.Send(new GameStartRequest()
@@ -132,6 +136,7 @@ namespace online_chess.Server.Hubs
             });
         }
 
+        [Authorize]
         public async Task AddMessageToRoom(string gameRoomKey, string message)
         {
             await _mediator.Send(new AddMessageToRoomRequest()
@@ -143,6 +148,7 @@ namespace online_chess.Server.Hubs
             });
         }
 
+        [Authorize]
         public async Task MovePiece(string gameRoomKey, BaseMoveInfo oldMove, BaseMoveInfo newMove, bool hasCapture)
         {
             await _mediator.Send(new MovePieceRequest()
@@ -156,6 +162,7 @@ namespace online_chess.Server.Hubs
             });
         }
         
+        [Authorize]
         public async Task Resign(string gameRoomKey)
         {
             await _mediator.Send(new ResignRequest()
@@ -166,6 +173,7 @@ namespace online_chess.Server.Hubs
             });
         }
 
+        [Authorize]
         public async Task RequestADraw(string gameRoomKey)
         {
             await _mediator.Send(new RequestADrawRequest()
@@ -176,6 +184,7 @@ namespace online_chess.Server.Hubs
             });
         }
 
+        [Authorize]
         public async Task DrawAgree(string gameRoomKey, bool agreeOnDraw)
         {
             await _mediator.Send(new DrawAgreeRequest()
@@ -187,6 +196,7 @@ namespace online_chess.Server.Hubs
             });
         }
 
+        [Authorize]
         public async Task SetPromotionPreference(string gameRoomKey, PawnPromotionPreference preference)
         {
             await _mediator.Send(new SetPromotionPreferenceRequest()
@@ -203,14 +213,12 @@ namespace online_chess.Server.Hubs
         #region Connection
         [AllowAnonymous]
         public async Task GetConnectionId(){
-            // PROBLEM THIS IS NOT CALLED
             await Clients.Caller.SendAsync(RoomMethods.onGetUserConnectionId, Context.ConnectionId);
         }
 
         [AllowAnonymous]
         public override async Task OnConnectedAsync()
         {
-            // PROBLEM THIS IS CALLED, BUT CALLER DOES NOT RECEIVE IT
             await base.OnConnectedAsync();
 
             await _mediator.Send(new ConnectRequest()
@@ -220,6 +228,7 @@ namespace online_chess.Server.Hubs
             });
         }
 
+        [AllowAnonymous]
         public override async Task OnDisconnectedAsync(Exception? ex)
         {
             await _mediator.Send(new LeaveRequest()

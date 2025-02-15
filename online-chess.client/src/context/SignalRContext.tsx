@@ -28,14 +28,14 @@ export default function SignalRContext(
         
         try {
 
-            console.log("Connection Starting");
+            //console.log("Connection Starting");
 
             await hubConnection.start();
             //hubConnection.onclose(closeEventCallback);
 
             hubConnection.onreconnected((e) => console.info(`Reconnected: ${e}`))
             hubConnection.onreconnecting((e) => console.info(`Reconnecting: ${e}`))
-            console.log("Connection started");
+            //console.log("Connection started");
 
             connected = true;
         } catch (error) {

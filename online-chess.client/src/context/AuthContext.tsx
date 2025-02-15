@@ -62,37 +62,12 @@ export default function AuthContext(
     }
 
     useEffect(() => {
-        if (userConnectionId) {
-            setNotificationState({ type: "SET_SIGNALRCONNECTIONDISCONNECTED", payload: false });
-            return;
-        }
+        // if (userConnectionId) {
+        //     setNotificationState({ type: "SET_SIGNALRCONNECTIONDISCONNECTED", payload: false });
+        //     return;
+        // }
         
-        async function init(){
-            const connected = await startConnection();
-
-            setNotificationState({ type: "SET_SIGNALRCONNECTIONDISCONNECTED", payload: true });
-
-            if (!connected) return;
-
-            console.log("Invoking", connected);
-            // await addHandler(mainPageHandlers.onGetUserConnectionId, (connectionId) => {
-            //     console.log(`onGetUserConnectionId: `, connectionId)
-            //     setUserConnectionId(connectionId);
-            // });
-
-            await invoke(mainPageInvokers.getConnectionId);
-        }
-
-        init();
-
-        return () => {
-            removeHandler(mainPageHandlers.onGetUserConnectionId);
-            stopConnection();
-        }
-    }, [isAuthenticating]);
-
-    useEffect(() => {
-        async function init() {
+        async function checkIfSignedIn() {
             const res = await authService.baseGet("/api/Auth/isSignedIn");
             
             if (res.status === 404){
@@ -104,8 +79,28 @@ export default function AuthContext(
             setIsAuthenticating(false);
         }
 
-        init();
-    }, [])
+        async function connectToSignalR(){
+            const connected = await startConnection();
+
+            setNotificationState({ type: "SET_SIGNALRCONNECTIONDISCONNECTED", payload: !connected });
+
+            if (!connected) return;
+
+            await addHandler(mainPageHandlers.onGetUserConnectionId, (connectionId) => {
+                setUserConnectionId(connectionId);
+            });
+
+            await invoke(mainPageInvokers.getConnectionId);
+        }
+
+        checkIfSignedIn();
+        connectToSignalR();
+
+        return () => {
+            removeHandler(mainPageHandlers.onGetUserConnectionId);
+            stopConnection();
+        }
+    }, []);
 
     const data = {
         user, login, logout

@@ -66,10 +66,6 @@ export default function GameTypeTable(
     }, [userConnectionId]);
 
     useEffect(() => {
-      console.log(userConnectionId)
-
-      //if (!userConnectionId) return;
-
       setList({ isLoading: true, data: [] });
       invoke(listInvokers.gameTypeList, 10, pageNo, gameType);
     }, [pageNo, userConnectionId]);
