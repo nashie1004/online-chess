@@ -33,7 +33,7 @@ namespace online_chess.Server.Features.Game.Commands.LeaveRoom
             
             if (aQueuedRoomIsRemoved){
                 await _hubContext.Clients.All.SendAsync(RoomMethods.onRefreshRoomList,
-                    _gameRoomService.GetPaginatedDictionary().ToArray().OrderByDescending(i => i.Value.CreateDate)
+                    _gameQueueService.GetPaginatedDictionary().ToArray().OrderByDescending(i => i.Value.CreateDate)
                 );
             }
 

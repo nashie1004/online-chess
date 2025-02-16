@@ -50,6 +50,7 @@ All [board](https://github.com/lichess-org/lila/blob/master/public/images/board/
 11. bug - timer not found on resignation and draw
 12. use redis
 13. add board coordinates
+14. add profile image
 
 ### SQLite
 ```

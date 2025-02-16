@@ -4,11 +4,11 @@ using System.Collections.Generic;
 
 namespace online_chess.Server.Service
 {
-    public class LogInTackerService
+    public class LogInTrackerService
     {
         private static ConcurrentDictionary<string, DateTime> _authenticatedUsers = new();
 
-        public LogInTackerService()
+        public LogInTrackerService()
         {
             
         }

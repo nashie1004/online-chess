@@ -9,17 +9,17 @@ namespace online_chess.Server.Features.Auth.Commands.LogIn
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signManager;
-        private readonly LogInTackerService _logInTackerService;
+        private readonly LogInTrackerService _logInTrackerService;
 
         public LoginHandler(
             UserManager<User> userManager,
             SignInManager<User> signInManager,
-            LogInTackerService logInTackerService
+            LogInTrackerService logInTrackerService
             )
         {
             _userManager = userManager;
             _signManager = signInManager;
-            _logInTackerService = logInTackerService;
+            _logInTrackerService = logInTrackerService;
         }
 
         public async Task<LoginResponse> Handle(LoginRequest request, CancellationToken cancellationToken)
@@ -44,7 +44,7 @@ namespace online_chess.Server.Features.Auth.Commands.LogIn
                 }
 
                 string identityUserName = user.UserName ?? string.Empty;
-                var alreadyLoggedIn = _logInTackerService.AlreadyExists(identityUserName);
+                var alreadyLoggedIn = _logInTrackerService.AlreadyExists(identityUserName);
                 
                 if (alreadyLoggedIn)
                 {
@@ -53,7 +53,7 @@ namespace online_chess.Server.Features.Auth.Commands.LogIn
                     return retVal;
                 }
 
-                _logInTackerService.Add(identityUserName);
+                _logInTrackerService.Add(identityUserName);
 
                 retVal.UserName = identityUserName;
             }

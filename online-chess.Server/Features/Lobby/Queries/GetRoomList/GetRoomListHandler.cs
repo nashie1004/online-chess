@@ -9,18 +9,18 @@ namespace online_chess.Server.Features.Lobby.Queries.GetRoomList
     public class GetRoomListHandler : IRequestHandler<GetRoomListRequest, Unit>
     {
         private readonly IHubContext<GameHub> _hubCtx;
-        private readonly GameQueueService _gameRoomService;
+        private readonly GameQueueService _gameQueueService;
 
-        public GetRoomListHandler(IHubContext<GameHub> ctx, GameQueueService gameRoomService)
+        public GetRoomListHandler(IHubContext<GameHub> ctx, GameQueueService gameQueueService)
         {
             _hubCtx = ctx;
-            _gameRoomService = gameRoomService;
+            _gameQueueService = gameQueueService;
         }
 
         public async Task<Unit> Handle(GetRoomListRequest request, CancellationToken cancellationToken)
         {
             await _hubCtx.Clients.Client(request.UserConnectionId).SendAsync(RoomMethods.onRefreshRoomList,
-                _gameRoomService.GetPaginatedDictionary(request.PageNumber).ToArray().OrderByDescending(i => i.Value.CreateDate)
+                _gameQueueService.GetPaginatedDictionary(request.PageNumber).ToArray().OrderByDescending(i => i.Value.CreateDate)
             );
 
             return Unit.Value;
