@@ -12,31 +12,48 @@ namespace online_chess.Server.Features.Game.Commands.LeaveRoom
         private readonly GameQueueService _gameQueueService;
         private readonly GameRoomService _gameRoomService;
         private readonly AuthenticatedUserService _authenticatedUserService;
+        private readonly LogInTrackerService _logInTrackerService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public LeaveHandler(
             IHubContext<GameHub> hubContext
             , GameQueueService gameQueueService
             , AuthenticatedUserService authenticatedUserService
             , GameRoomService gameRoomService
+            , LogInTrackerService logInTrackerService
+            , IHttpContextAccessor httpContextAccessor
             )
         {
             _hubContext = hubContext;
             _gameQueueService = gameQueueService;
             _gameRoomService = gameRoomService;
             _authenticatedUserService = authenticatedUserService;
+            _logInTrackerService = logInTrackerService;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<Unit> Handle(LeaveRequest request, CancellationToken cancellationToken)
         {
+            string identityUserName = request.IdentityUserName ?? "";
+
             _authenticatedUserService.RemoveWithConnectionId(request.UserConnectionId);
-            _authenticatedUserService.RemoveWithIdentityUsername(request.IdentityUserName ?? "");
-            var aQueuedRoomIsRemoved = _gameQueueService.RemoveByCreator(request.IdentityUserName ?? "");
+            _authenticatedUserService.RemoveWithIdentityUsername(identityUserName);
+            var aQueuedRoomIsRemoved = _gameQueueService.RemoveByCreator(identityUserName);
             
             if (aQueuedRoomIsRemoved){
                 await _hubContext.Clients.All.SendAsync(RoomMethods.onRefreshRoomList,
                     _gameQueueService.GetPaginatedDictionary().ToArray().OrderByDescending(i => i.Value.CreateDate)
                 );
             }
+
+            bool currentLogIn = _httpContextAccessor.HttpContext?.User?.Identity?.IsAuthenticated ?? false;
+            bool alreadyLogInDiffBrowser = _logInTrackerService.AlreadyExists(identityUserName);
+
+            if (currentLogIn && alreadyLogInDiffBrowser){
+                _logInTrackerService.Remove(identityUserName);
+            }
+
+            return Unit.Value;
 
             /*
             foreach (var item in gameRooms)
@@ -62,8 +79,6 @@ namespace online_chess.Server.Features.Game.Commands.LeaveRoom
                 }
             }
             */
-
-            return Unit.Value;
         }
     }
 }

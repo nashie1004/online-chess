@@ -27,14 +27,17 @@ namespace online_chess.Server.Features.Lobby.Commands.JoinRoom
             // 1.1 if not a valid guid, redirect to 404 not found
             // 1.2 or no connection id found
             var room = _gameQueueService.GetOne(request.GameRoomKeyString);
-            var p1Connection = _authenticatedUserService.GetConnectionId(room.CreatedByUserId);
-            var p2Connection = _authenticatedUserService.GetConnectionId(room.JoinedByUserId);
 
             if (room == null)
             {
                 await _hubContext.Clients.Client(request.UserConnectionId).SendAsync(RoomMethods.onGenericError, "404 Room Not Found");
                 return Unit.Value;
             }
+
+            room.JoinedByUserId = request.IdentityUserName;
+
+            var p1Connection = _authenticatedUserService.GetConnectionId(room.CreatedByUserId);
+            var p2Connection = _authenticatedUserService.GetConnectionId(room.JoinedByUserId);
 
             if (string.IsNullOrWhiteSpace(p1Connection))
             {
@@ -50,7 +53,6 @@ namespace online_chess.Server.Features.Lobby.Commands.JoinRoom
                 return Unit.Value;
             }
 
-            room.JoinedByUserId = request.IdentityUserName;
 
             var val = new Random().Next(0, 2);  // Generates either 0 or 1
             var randomColor = val == 0 ? Color.White : Color.Black;

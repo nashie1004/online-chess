@@ -1,8 +1,10 @@
 using System;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 using online_chess.Server.Enums;
 using online_chess.Server.Hubs;
+using online_chess.Server.Models.Entities;
 using online_chess.Server.Service;
 
 namespace online_chess.Server.Features.Lobby.Commands.Connect;
@@ -11,11 +13,23 @@ public class ConnectHandler : IRequestHandler<ConnectRequest, Unit>
 {
     private readonly AuthenticatedUserService _authenticatedUserService;
     private readonly IHubContext<GameHub> _hubContext;
+    private readonly SignInManager<User> _signInManager;
+    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly LogInTrackerService _logInTrackerService;
 
-    public ConnectHandler(AuthenticatedUserService authenticatedUserService, IHubContext<GameHub> hubContext)
+    public ConnectHandler(
+        AuthenticatedUserService authenticatedUserService
+        , IHubContext<GameHub> hubContext
+        , SignInManager<User> signInManager
+        , IHttpContextAccessor httpContextAccessor
+        , LogInTrackerService logInTrackerService
+        )
     {
         _authenticatedUserService = authenticatedUserService;
         _hubContext = hubContext;
+        _signInManager = signInManager;
+        _httpContextAccessor = httpContextAccessor;
+        _logInTrackerService = logInTrackerService;
     }
 
     public async Task<Unit> Handle(ConnectRequest req, CancellationToken ct)
@@ -27,10 +41,22 @@ public class ConnectHandler : IRequestHandler<ConnectRequest, Unit>
 
         _authenticatedUserService.Add(req.UserConnectionId, req.IdentityUserName);
 
-        // TODO - handle 2 case: if login and not logged in
-
         await _hubContext.Clients.Client(req.UserConnectionId).SendAsync(RoomMethods.onGetUserConnectionId, req.UserConnectionId);
 
+        bool currentLogIn = _httpContextAccessor.HttpContext?.User?.Identity?.IsAuthenticated ?? false;
+        bool alreadyLogInDiffBrowser = _logInTrackerService.AlreadyExists(req.IdentityUserName);
+
+        if (currentLogIn && alreadyLogInDiffBrowser){
+            await _hubContext.Clients.Client(req.UserConnectionId).SendAsync(RoomMethods.onGenericError, 
+                "Account is already signed-in in a different browser. Please logout your other sessions first."
+            );
+        }
+
+        if (currentLogIn){
+            _logInTrackerService.Add(req.IdentityUserName);
+        }
+
+        return Unit.Value;
         /*
         var existing = _authenticatedUserService.GetIdentityName(req.UserConnectionId);
 

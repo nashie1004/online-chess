@@ -33,7 +33,7 @@ builder.Services.AddIdentity<User, Role>()
     .AddEntityFrameworkStores<UserIdentityDbContext>()
     .AddDefaultTokenProviders();
 builder.Services.ConfigureApplicationCookie(cfg => {
-    cfg.ExpireTimeSpan = TimeSpan.FromHours(5);
+    cfg.ExpireTimeSpan = TimeSpan.FromHours(3);
     cfg.SlidingExpiration = true;
 });
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));

@@ -23,8 +23,8 @@ export default function NavigationBar() {
     <Navbar collapseOnSelect expand="lg" id="navbar">
       <Container>
         <Navbar.Brand id="page-title">
-          {userConnectionId}
-          {/* <i className="bi bi-app-indicator" style={{color: "#FFFFFF"}}></i> ONLINE-CHESS.COM */}
+          {/* {userConnectionId} */}
+          <i className="bi bi-app-indicator" style={{color: "#FFFFFF"}}></i> ONLINE-CHESS.COM
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">

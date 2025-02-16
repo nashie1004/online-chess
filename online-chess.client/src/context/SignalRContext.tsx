@@ -1,6 +1,6 @@
 import { createContext, ReactNode, useMemo, useState } from 'react'
 import { ISignalRContext } from '../game/utilities/types';
-import { HubConnection, HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
+import { HttpTransportType, HubConnection, HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
 import { mainPageHandlers } from '../game/utilities/constants';
 import useNotificationContext from '../hooks/useNotificationContext';
 
@@ -25,8 +25,8 @@ export default function SignalRContext(
         hubConnection = new HubConnectionBuilder()
             .configureLogging(LogLevel.Information) 
             .withUrl("https://localhost:44332/hub", {
-                //skipNegotiation: true,  // skipNegotiation as we specify WebSockets
-                //transport: HttpTransportType.WebSockets  // force WebSocket transport
+                skipNegotiation: true,  // skipNegotiation as we specify WebSockets
+                transport: HttpTransportType.WebSockets  // force WebSocket transport
             })
             .build();
         
