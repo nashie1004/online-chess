@@ -2,10 +2,20 @@ import { NavLink, useLocation } from 'react-router'
 import Navbar from 'react-bootstrap/Navbar';
 import { Container, Nav } from 'react-bootstrap';
 import useAuthContext from '../hooks/useAuthContext';
+import useNotificationContext from '../hooks/useNotificationContext';
+import useQueuingContext from '../hooks/useQueuingContext';
   
 export default function NavigationBar() {
-    const url = useLocation();
+  const url = useLocation();
   const {logout, user} = useAuthContext();
+  const { setNotificationState } = useNotificationContext();
+  const { setQueuingRoomKey } = useQueuingContext();
+
+  function logoutHandler(){
+    setQueuingRoomKey(null);
+    setNotificationState({ type: "SET_RESETNOTIFICATIONS" });
+    logout();
+  }
   
   return (
     <Navbar collapseOnSelect expand="lg" id="navbar">
@@ -56,7 +66,7 @@ export default function NavigationBar() {
               <>
                 <span className="text-white">{user.userName}</span>
                 <button 
-                  onClick={() => logout()}
+                  onClick={logoutHandler}
                   className='btn btn-outline-info'>
                   Log out
                 </button>

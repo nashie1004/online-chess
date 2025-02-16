@@ -5,7 +5,7 @@ import { GameType } from "../game/utilities/constants";
 export default function Home() {
   
   return (
-    <div className="col pb-5">
+    <div className="col">
       <MainLeaderboardTable />
       <GameTypeTable 
         gameType={GameType.Classical} 

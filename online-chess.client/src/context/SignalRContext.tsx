@@ -35,6 +35,9 @@ export default function SignalRContext(
 
             hubConnection.onreconnected((e) => console.info(`Reconnected: ${e}`))
             hubConnection.onreconnecting((e) => console.info(`Reconnecting: ${e}`))
+            hubConnection.onclose(() => {
+                setUserConnectionId(null);
+            });
             //console.log("Connection started");
 
             connected = true;

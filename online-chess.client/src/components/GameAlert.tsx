@@ -33,7 +33,7 @@ export default function GameAlert(){
                         href="#" 
                         className="ps-1 alert-link"
                         onClick={() => setInitialize(true)}
-                    >Reconnect and reauthorize?</a>
+                    >Reconnect and reauthenticate?</a>
                 </span>
             </> 
         }
@@ -84,7 +84,10 @@ export default function GameAlert(){
         }
 
         if (notificationState.hasAGameDisconnected){
-            return <>TODO</>
+            return <>
+                <i className="bi bi-exclamation-circle-fill"></i>
+                <span className="ps-2">Disconnected from a game. TODO</span>
+            </>
         }
 
         return <></>
@@ -92,11 +95,20 @@ export default function GameAlert(){
 
     return <>
         <div className="sticky-sm-top alert alert-warning" role="alert">
-            <div className="container">
-                {gameNotif()}
-                {notificationState.customMessage ? 
-                <>"close btn todo"</> 
-                : <></>}
+            <div className="container d-flex justify-content-between">
+                <div>
+                    {gameNotif()}
+                </div>
+                {notificationState.customMessage && <>
+                    <button 
+                        type="button" 
+                        className="btn-close" 
+                        aria-label="Close"
+                        onClick={() => {
+                            setNotificationState({ type: "SET_RESETNOTIFICATIONS" });
+                        }}
+                    />
+                </>}
             </div>
         </div>
     </>

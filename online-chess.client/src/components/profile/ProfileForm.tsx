@@ -6,6 +6,7 @@ import { z } from "zod";
 import useAuthContext from "../../hooks/useAuthContext";
 import BaseApiService from "../../services/BaseApiService";
 import useNotificationContext from "../../hooks/useNotificationContext";
+import useSignalRContext from "../../hooks/useSignalRContext";
 
 const schema = z.object({
     newUsername: z.string().nonempty().min(8, "New username must contain at least 8 character(s)"),
@@ -29,6 +30,7 @@ export default function ProfileForm(){
     const { user, setUser } = useAuthContext();
     const [editableProfile, setEditableProfile] = useState(true);
     const { setNotificationState } = useNotificationContext();
+    const { userConnectionId } = useSignalRContext();
   
     const {
       register, handleSubmit, watch,
@@ -42,6 +44,8 @@ export default function ProfileForm(){
     });
   
     async function submitForm(data: FormFields){
+      if (!userConnectionId) return;
+
       const res = await profileService.basePost("/api/Auth/edit", {
         oldUserName: user?.userName, ...data 
       });

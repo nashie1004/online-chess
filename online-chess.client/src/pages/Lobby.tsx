@@ -31,7 +31,7 @@ export default function Lobby() {
         return () => {
             removeHandler(lobbyPageHandlers.onRefreshRoomList);
         }
-    }, [])
+    }, [userConnectionId])
 
     return <div className="col">
         <LobbyForm 

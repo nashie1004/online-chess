@@ -12,12 +12,12 @@ public class TimerService
         _timer.TryAdd(gameRoomKey, playerTimers);
     }
 
-    public void UpdateTimer(Guid gameRoomKey, (double, double) playerTimers){
-        _timer.TryUpdate(gameRoomKey, playerTimers, _timer[gameRoomKey]);
+    public bool UpdateTimer(Guid gameRoomKey, (double, double) playerTimers){
+        return _timer.TryUpdate(gameRoomKey, playerTimers, GetTimer(gameRoomKey));
     }
     
-    public void RemoveTimer(Guid gameRoomKey){
-        _timer.Remove(gameRoomKey, out (double, double) _);
+    public bool RemoveTimer(Guid gameRoomKey){
+        return _timer.TryRemove(gameRoomKey, out (double, double) _);
     }
 
     public (double, double) GetTimer(Guid gameRoomKey){
