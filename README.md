@@ -35,7 +35,7 @@ All [board](https://github.com/lichess-org/lila/blob/master/public/images/board/
 1. display move turn, check, checkmate, stalemate
 2. bug on if king in check - cause of issue move() is called twice/ on isCheck()
 3. en passant bug
-4. disconnect or leave logic
+4. disconnect or leave logic + sync all state
 5. long castling bug
 6. promotion pawn check if king pin
 7. multiple games in a row without rebuilding

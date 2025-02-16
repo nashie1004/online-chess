@@ -5,7 +5,7 @@ namespace online_chess.Server.Service;
 
 public class AuthenticatedUserService
 {
-    private static ConcurrentDictionary<string, string> _authenticatedUsers = new ConcurrentDictionary<string, string>();
+    private static ConcurrentDictionary<string, string> _authenticatedUsers = new();
 
     public AuthenticatedUserService()
     {

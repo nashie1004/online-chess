@@ -27,6 +27,7 @@ export default function AuthContext(
 
     async function login(user: IUser) {
         setUser(user);
+        setInitialize(true);
     }
 
     async function logout() {

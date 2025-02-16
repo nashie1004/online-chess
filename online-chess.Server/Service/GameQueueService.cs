@@ -60,5 +60,12 @@ namespace online_chess.Server.Service
 
             return new ConcurrentDictionary<Guid, GameQueue>(paginatedDict);
         }
+
+        public bool QueueCreatorDisconnect(string identityUserName)
+        {
+            var roomQueueKey = _gameRoomIds.FirstOrDefault(i => i.Value.CreatedByUserId == identityUserName).Key;
+            return _gameRoomIds.TryRemove(roomQueueKey, out GameQueue? val);
+        }
+
     }
 }

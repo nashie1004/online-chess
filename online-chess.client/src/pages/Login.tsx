@@ -7,6 +7,7 @@ import BaseApiService from "../services/BaseApiService";
 import useAuthContext from "../hooks/useAuthContext";
 import { useEffect } from "react";
 import useNotificationContext from "../hooks/useNotificationContext";
+import useInitializerContext from "../hooks/useInitializerContext";
 
 const schema = z.object({
   userName: z.string().min(8, "Username must contain at least 8 character(s)"),
@@ -21,6 +22,7 @@ export default function Login() {
   const navigate = useNavigate();
   const { login, user } = useAuthContext();
   const { setNotificationState } = useNotificationContext();
+  const { setInitialize } = useInitializerContext();
   
   const {
     register, handleSubmit,
@@ -45,6 +47,7 @@ export default function Login() {
     }
     
     login({ userName: res.data.userName, profileURL: "" });
+    setInitialize(true);
     navigate("/");
   }
 

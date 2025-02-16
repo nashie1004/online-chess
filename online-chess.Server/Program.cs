@@ -32,13 +32,17 @@ builder.Services.AddDbContext<UserIdentityDbContext>(opt => opt.UseSqlite($"Data
 builder.Services.AddIdentity<User, Role>()
     .AddEntityFrameworkStores<UserIdentityDbContext>()
     .AddDefaultTokenProviders();
-
+builder.Services.ConfigureApplicationCookie(cfg => {
+    cfg.ExpireTimeSpan = TimeSpan.FromHours(5);
+    cfg.SlidingExpiration = true;
+});
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<GameQueueService>();
 builder.Services.AddSingleton<GameRoomService>();
 builder.Services.AddSingleton<AuthenticatedUserService>();
 builder.Services.AddSingleton<TimerService>();
+builder.Services.AddSingleton<LogInTackerService>();
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 builder.Logging.AddDebug();

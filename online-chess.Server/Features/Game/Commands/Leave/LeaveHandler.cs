@@ -29,9 +29,15 @@ namespace online_chess.Server.Features.Game.Commands.LeaveRoom
         public async Task<Unit> Handle(LeaveRequest request, CancellationToken cancellationToken)
         {
             _authenticatedUserService.RemoveOneWithConnectionId(request.UserConnectionId);
-
-            var gameRooms = _gameQueueService.GetAll();
+            var aQueuedRoomIsRemoved = _gameQueueService.QueueCreatorDisconnect(request.IdentityUserName ?? "");
             
+            if (aQueuedRoomIsRemoved){
+                await _hubContext.Clients.All.SendAsync(RoomMethods.onRefreshRoomList,
+                    _gameRoomService.GetPaginatedDictionary().ToArray().OrderByDescending(i => i.Value.CreateDate)
+                );
+            }
+
+            /*
             foreach (var item in gameRooms)
             {
                 // if either the user who created the room or a user who joined the room leaves
@@ -54,6 +60,7 @@ namespace online_chess.Server.Features.Game.Commands.LeaveRoom
                     await _hubContext.Clients.Group(item.Key.ToString()).SendAsync(RoomMethods.onLeaveRoom, $"{request.IdentityUserName} has left the room");
                 }
             }
+            */
 
             return Unit.Value;
         }

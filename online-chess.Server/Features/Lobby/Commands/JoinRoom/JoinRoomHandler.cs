@@ -33,13 +33,6 @@ namespace online_chess.Server.Features.Lobby.Commands.JoinRoom
                 return Unit.Value;
             }
 
-            // 2. if room is not found, redirect to 404 not found
-            if (room == null)
-            {
-                await _hubContext.Clients.Client(request.UserConnectionId).SendAsync(RoomMethods.onNotFound, true);
-                return Unit.Value;
-            }
-
             room.JoinedByUserId = request.IdentityUserName;
 
             var val = new Random().Next(0, 2);  // Generates either 0 or 1
@@ -59,6 +52,10 @@ namespace online_chess.Server.Features.Lobby.Commands.JoinRoom
             });
 
             _gameQueueService.Remove(room.GameKey);
+
+            await _hubContext.Clients.All.SendAsync(RoomMethods.onRefreshRoomList,
+                _gameRoomService.GetPaginatedDictionary().ToArray().OrderByDescending(i => i.Value.CreateDate)
+            );
 
             // redirect both users
             await _hubContext.Clients.Client(

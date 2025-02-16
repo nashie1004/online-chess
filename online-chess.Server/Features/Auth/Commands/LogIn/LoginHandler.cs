@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
 using online_chess.Server.Models.Entities;
+using online_chess.Server.Service;
 
 namespace online_chess.Server.Features.Auth.Commands.LogIn
 {
@@ -8,14 +9,17 @@ namespace online_chess.Server.Features.Auth.Commands.LogIn
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signManager;
+        private readonly LogInTackerService _logInTackerService;
 
         public LoginHandler(
             UserManager<User> userManager,
-            SignInManager<User> signInManager
+            SignInManager<User> signInManager,
+            LogInTackerService logInTackerService
             )
         {
             _userManager = userManager;
             _signManager = signInManager;
+            _logInTackerService = logInTackerService;
         }
 
         public async Task<LoginResponse> Handle(LoginRequest request, CancellationToken cancellationToken)
@@ -39,7 +43,19 @@ namespace online_chess.Server.Features.Auth.Commands.LogIn
                     return retVal;
                 }
 
-                retVal.UserName = user.UserName ?? string.Empty;
+                string identityUserName = user.UserName ?? string.Empty;
+                var alreadyLoggedIn = _logInTackerService.AlreadyExists(identityUserName);
+                
+                if (alreadyLoggedIn)
+                {
+                    retVal.ValidationErrors.Add(
+                        "Account is already signed-in in a different browser. Please logout your other sessions first.");
+                    return retVal;
+                }
+
+                _logInTackerService.Add(identityUserName);
+
+                retVal.UserName = identityUserName;
             }
             catch (Exception ex)
             {
