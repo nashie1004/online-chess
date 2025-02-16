@@ -5,6 +5,7 @@ namespace online_chess.Server.Enums;
 public class RoomMethods
 {
     public const string onGenericError = "onGenericError";
+    public const string onHasAGameInProgress = "onHasAGameInProgress";
 
     #region Lists
     public const string onGetGameHistory = "onGetGameHistory";

@@ -173,6 +173,7 @@ export const baseNotificationState: INotificationContextReducerState = {
 export const mainPageHandlers = {
     onGetUserConnectionId: "onGetUserConnectionId"
     ,onGenericError: "onGenericError"
+    ,onHasAGameInProgress: "onHasAGameInProgress"
 };
 
 export const mainPageInvokers = {

@@ -56,6 +56,9 @@ export default function InitializerContext(
     await addHandler(lobbyPageHandlers.onMatchFound, (roomKey: string) => {
       navigate(`/play/${roomKey}`);
     });
+    await addHandler(mainPageHandlers.onHasAGameInProgress, (roomKey: string) => {
+      console.log("TODO", roomKey)
+    });
 
     await invoke(mainPageInvokers.getConnectionId);
   }

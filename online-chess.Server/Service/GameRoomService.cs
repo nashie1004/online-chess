@@ -60,5 +60,16 @@ namespace online_chess.Server.Service
 
             return new ConcurrentDictionary<Guid, GameRoom>(paginatedDict);
         }
+
+        public GameRoom? GetRoomByEitherPlayer(string playerIdentityName)
+        {
+            var room = _gameRoomIds.First(i => i.Value.CreatedByUserId == playerIdentityName || i.Value.JoinedByUserId == playerIdentityName);
+
+            if (room.Value != null){
+                return room.Value;
+            }
+
+            return null;
+        }
     }
 }

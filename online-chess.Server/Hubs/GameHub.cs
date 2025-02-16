@@ -21,6 +21,7 @@ using online_chess.Server.Features.Game.Commands.SetPromotionPreference;
 using online_chess.Server.Features.Auth.Queries.GetGameHistory;
 using online_chess.Server.Features.Leaderboard.Queries.GetDefaultLeaderboard;
 using online_chess.Server.Features.Leaderboard.Queries.GetGameTypeList;
+using online_chess.Server.Features.Game.Queries.HasAGameInProgress;
 
 namespace online_chess.Server.Hubs
 {
@@ -205,6 +206,16 @@ namespace online_chess.Server.Hubs
                 IdentityUserName = Context.User?.Identity?.Name,
                 GameRoomKeyString = gameRoomKey,
                 UserPreference = preference
+            });
+        }
+
+        [Authorize]
+        public async Task GetHasAGameInProgress()
+        {
+            await _mediator.Send(new HasAGameInProgressRequest()
+            {
+                UserConnectionId = Context.ConnectionId,
+                IdentityUserName = Context.User?.Identity?.Name,
             });
         }
 

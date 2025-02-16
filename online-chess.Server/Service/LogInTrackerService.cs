@@ -1,6 +1,4 @@
-﻿using online_chess.Server.Models.Lobby;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
 
 namespace online_chess.Server.Service
 {
@@ -13,9 +11,9 @@ namespace online_chess.Server.Service
             
         }
 
-        public void Add(string identityUserName)
+        public bool Add(string identityUserName)
         {
-            _authenticatedUsers.TryAdd(identityUserName, DateTime.Now);
+            return _authenticatedUsers.TryAdd(identityUserName, DateTime.Now);
         }
 
         public bool Remove(string identityUserName)
@@ -25,8 +23,7 @@ namespace online_chess.Server.Service
 
         public bool AlreadyExists(string identityUserName) 
         {
-            var exists = _authenticatedUsers.TryGetValue(identityUserName, out DateTime signInTime);
-            return exists;
+            return _authenticatedUsers.TryGetValue(identityUserName, out DateTime signInTime);
         }
 
     }
