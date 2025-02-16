@@ -199,7 +199,6 @@ export const listInvokers = {
 
 export const lobbyPageHandlers = {
     onRefreshRoomList: "onRefreshRoomList"
-    ,onInvalidRoomKey: "onInvalidRoomKey"
     ,onGetRoomKey: "onGetRoomKey"
     ,onMatchFound: "onMatchFound"
 }

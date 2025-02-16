@@ -44,15 +44,9 @@ export default function InitializerContext(
       setUserConnectionId(connectionId);
     });
     await addHandler(mainPageHandlers.onGenericError, (msg: string) => {
-      //navigate("/notFound");
       setNotificationState({ 
         type: "SET_CUSTOMMESSAGE"
         , payload: { customMessage: msg, customMessageType: "DANGER" } 
-      });
-    });
-    await addHandler(lobbyPageHandlers.onInvalidRoomKey, (msg) => {
-      setNotificationState({ 
-        type: "SET_CUSTOMMESSAGE" , payload: { customMessage: msg, customMessageType: "DANGER" } 
       });
     });
     await addHandler(lobbyPageHandlers.onGetRoomKey, (roomKey: string) => {
@@ -90,7 +84,6 @@ export default function InitializerContext(
 
     return () => {
       removeHandler(mainPageHandlers.onGetUserConnectionId);
-      removeHandler(lobbyPageHandlers.onInvalidRoomKey);
       removeHandler(lobbyPageHandlers.onGetRoomKey);
       removeHandler(lobbyPageHandlers.onMatchFound);
       stopConnection();

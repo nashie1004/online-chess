@@ -16,7 +16,6 @@ public class RoomMethods
     public const string onGetRoomKey = "onGetRoomKey";
     public const string onRefreshRoomList = "onRefreshRoomList";
     public const string onMatchFound = "onMatchFound";
-    public const string onInvalidRoomKey = "onInvalidRoomKey";
     #endregion
 
     #region PlayPage

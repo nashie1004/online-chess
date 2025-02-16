@@ -26,7 +26,7 @@ public class DeleteRoomHandler : IRequestHandler<DeleteRoomRequest, Unit>
             await _hubContext
                 .Clients
                 .Client(req.UserConnectionId)
-                .SendAsync(RoomMethods.onInvalidRoomKey, $"Room key {req.GameRoomKeyString} is invalid");
+                .SendAsync(RoomMethods.onGenericError, $"Room key {req.GameRoomKeyString} is invalid");
 
             return Unit.Value;
         }

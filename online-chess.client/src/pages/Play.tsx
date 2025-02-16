@@ -54,7 +54,6 @@ export default function Main(){
         }
 
         if (userConnectionId){
-            //console.info("Game Start")
             start();
         }
 
@@ -76,8 +75,6 @@ export default function Main(){
             removeHandler(playPageHandlers.onSetPromotionPreference);
         };
     }, [])
-
-    //console.log("game state:", gameState)
  
     return <> 
         <div className="col-auto pt-2">
