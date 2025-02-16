@@ -179,6 +179,7 @@ export const mainPageHandlers = {
 export const mainPageInvokers = {
     deleteRoom: "DeleteRoom"
     , getConnectionId: "GetConnectionId"
+    , getHasAGameInProgress: "GetHasAGameInProgress"
 };
 
 export const listHandlers = {

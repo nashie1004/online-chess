@@ -4,7 +4,7 @@ import useNotificationContext from '../hooks/useNotificationContext';
 import useSignalRContext from '../hooks/useSignalRContext';
 import useAuthContext from '../hooks/useAuthContext';
 import BaseApiService from '../services/BaseApiService';
-import { useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import { lobbyPageHandlers, mainPageHandlers, mainPageInvokers } from '../game/utilities/constants';
 import useQueuingContext from '../hooks/useQueuingContext';
 
@@ -17,18 +17,21 @@ interface IInitializerContextProps{
 export default function InitializerContext(
   { children } : IInitializerContextProps
 ) {
-  const { setNotificationState } = useNotificationContext();
+  const { setNotificationState, notificationState } = useNotificationContext();
   const { 
     startConnection, stopConnection, addHandler
     , setUserConnectionId, invoke, removeHandler
   } = useSignalRContext();
-  const { setUser, setIsAuthenticating } = useAuthContext();
+  const { setUser, setIsAuthenticating, user } = useAuthContext();
   const { setQueuingRoomKey } = useQueuingContext();
   const navigate = useNavigate();
   const [initialize, setInitialize] = useState<boolean>(true);
+  const url = useLocation();
 
+  // if not signed in, allowed urls are these
+  const unAuthenticatedAllowedPaths = useMemo(() => ["/", "/about", "/register", "/login"], []);
   const authService = useMemo(() => new BaseApiService(), []);
-  
+
   async function checkIfSignedIn() {
     const res = await authService.baseGet("/api/Auth/isSignedIn");
     
@@ -40,7 +43,7 @@ export default function InitializerContext(
   }
 
   async function addHandlers(){
-    await addHandler(mainPageHandlers.onGetUserConnectionId, (connectionId) => {
+    await addHandler(mainPageHandlers.onGetUserConnectionId, (connectionId: string) => {
       setUserConnectionId(connectionId);
     });
     await addHandler(mainPageHandlers.onGenericError, (msg: string) => {
@@ -56,13 +59,38 @@ export default function InitializerContext(
     await addHandler(lobbyPageHandlers.onMatchFound, (roomKey: string) => {
       navigate(`/play/${roomKey}`);
     });
-    await addHandler(mainPageHandlers.onHasAGameInProgress, (roomKey: string) => {
-      console.log("TODO", roomKey)
-    });
+    await addHandler(mainPageHandlers.onHasAGameInProgress, (roomKey: (string | null)) => {
+      console.log("TODO onHasAGameInProgress: ", roomKey)
+      
+      const test = url.pathname.startsWith("/play/")
+      console.log(test)
 
+    });
+    
     await invoke(mainPageInvokers.getConnectionId);
+    await invoke(mainPageInvokers.getHasAGameInProgress);
   }
 
+  /**
+   * Handles on page change event
+   */
+  useEffect(() => {
+    if (user) return;
+
+    if (notificationState.customMessage){
+      setNotificationState({ type: "SET_RESETNOTIFICATIONS" });
+    }
+
+    if (!unAuthenticatedAllowedPaths.includes(url.pathname)) {
+      navigate('/login');
+      return;
+    }
+
+  }, [user, url.pathname]);
+
+  /**
+   * This is the actual initializer of our app
+   */
   useEffect(() => {
     
     async function init(){

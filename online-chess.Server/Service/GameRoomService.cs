@@ -5,7 +5,7 @@ namespace online_chess.Server.Service
 {
     public class GameRoomService
     {
-        private static ConcurrentDictionary<Guid, GameRoom> _gameRoomIds = new ConcurrentDictionary<Guid, GameRoom>();
+        private static ConcurrentDictionary<Guid, GameRoom> _gameRoomIds = new();
 
         public GameRoomService()
         {
@@ -63,7 +63,7 @@ namespace online_chess.Server.Service
 
         public GameRoom? GetRoomByEitherPlayer(string playerIdentityName)
         {
-            var room = _gameRoomIds.First(i => i.Value.CreatedByUserId == playerIdentityName || i.Value.JoinedByUserId == playerIdentityName);
+            var room = _gameRoomIds.FirstOrDefault(i => i.Value.CreatedByUserId == playerIdentityName || i.Value.JoinedByUserId == playerIdentityName);
 
             if (room.Value != null){
                 return room.Value;

@@ -1,6 +1,6 @@
-import { createContext, ReactNode, useMemo, useState } from 'react'
+import { createContext, ReactNode, useState } from 'react'
 import { ISignalRContext } from '../game/utilities/types';
-import { HttpTransportType, HubConnection, HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
+import { HttpTransportType, HubConnection, HubConnectionBuilder, HubConnectionState, LogLevel } from '@microsoft/signalr';
 import { mainPageHandlers } from '../game/utilities/constants';
 import useNotificationContext from '../hooks/useNotificationContext';
 
@@ -21,10 +21,11 @@ export default function SignalRContext(
 
     async function startConnection(){
         let connected = false;
+        const URL = import.meta.env.VITE_API_URL + "/hub"
 
         hubConnection = new HubConnectionBuilder()
             .configureLogging(LogLevel.Information) 
-            .withUrl("https://localhost:44332/hub", {
+            .withUrl(URL, {
                 skipNegotiation: true,  // skipNegotiation as we specify WebSockets
                 transport: HttpTransportType.WebSockets  // force WebSocket transport
             })
@@ -53,6 +54,9 @@ export default function SignalRContext(
 
     async function stopConnection(){
         if (!hubConnection) return;
+        if (hubConnection.state !== HubConnectionState.Connected){
+            return;
+        }
 
         removeHandler(mainPageHandlers.onGetUserConnectionId);
 
@@ -66,6 +70,9 @@ export default function SignalRContext(
     
     async function invoke(methodName: string, ...arg: any) {
         if (!hubConnection) return;
+        if (hubConnection.state !== HubConnectionState.Connected){
+            return;
+        }
         
         try{
             await hubConnection.invoke(methodName, ...arg)
@@ -76,6 +83,10 @@ export default function SignalRContext(
     
     async function addHandler(methodName: string, method: (...args: any[]) => any){
         if (!hubConnection) return;
+        if (hubConnection.state !== HubConnectionState.Connected){
+            return;
+        }
+
         try{
             await hubConnection.on(methodName, method);
         } catch(err){

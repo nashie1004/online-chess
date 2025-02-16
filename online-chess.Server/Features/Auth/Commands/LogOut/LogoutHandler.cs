@@ -12,7 +12,7 @@ namespace online_chess.Server.Features.Auth.Commands.LogOut
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signManager;
-        private readonly LogInTrackerService _logInTackerService;
+        private readonly LogInTrackerService _logInTrackerService;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IHubContext<GameHub> _hubContext;
         private readonly GameQueueService _gameQueueService;
@@ -28,7 +28,7 @@ namespace online_chess.Server.Features.Auth.Commands.LogOut
         {
             _userManager = userManager;
             _signManager = signInManager;
-            _logInTackerService = logInTackerService;
+            _logInTrackerService = logInTackerService;
             _httpContextAccessor = httpContextAccessor;
             _hubContext = hubContext;
             _gameQueueService = gameQueueService;
@@ -41,7 +41,7 @@ namespace online_chess.Server.Features.Auth.Commands.LogOut
             try
             {
                 var identityUserName = _httpContextAccessor.HttpContext?.User?.Identity?.Name ?? "";
-                _logInTackerService.Remove(identityUserName);
+                _logInTrackerService.Remove(identityUserName);
 
                 await _signManager.SignOutAsync();
                 

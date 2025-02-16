@@ -23,7 +23,7 @@ namespace online_chess.Server.Service
 
         public bool AlreadyExists(string identityUserName) 
         {
-            return _authenticatedUsers.TryGetValue(identityUserName, out DateTime signInTime);
+            return _authenticatedUsers.TryGetValue(identityUserName, out DateTime res);
         }
 
     }

@@ -44,13 +44,14 @@ public class ConnectHandler : IRequestHandler<ConnectRequest, Unit>
         await _hubContext.Clients.Client(req.UserConnectionId).SendAsync(RoomMethods.onGetUserConnectionId, req.UserConnectionId);
 
         bool currentLogIn = _httpContextAccessor.HttpContext?.User?.Identity?.IsAuthenticated ?? false;
-        bool alreadyLogInDiffBrowser = _logInTrackerService.AlreadyExists(req.IdentityUserName);
+        //bool alreadyLogInDiffBrowser = _logInTrackerService.AlreadyExists(req.IdentityUserName);
 
-        if (currentLogIn && alreadyLogInDiffBrowser){
-            await _hubContext.Clients.Client(req.UserConnectionId).SendAsync(RoomMethods.onGenericError, 
-                "Account is already signed-in in a different browser. Please logout your other sessions first."
-            );
-        }
+        //if (currentLogIn && alreadyLogInDiffBrowser){
+        // if (currentLogIn){
+        //     await _hubContext.Clients.Client(req.UserConnectionId).SendAsync(RoomMethods.onGenericError, 
+        //         "Account is already signed-in in a different browser. Please logout your other sessions first."
+        //     );
+        // }
 
         if (currentLogIn){
             _logInTrackerService.Add(req.IdentityUserName);

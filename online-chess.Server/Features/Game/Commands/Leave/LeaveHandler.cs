@@ -47,9 +47,10 @@ namespace online_chess.Server.Features.Game.Commands.LeaveRoom
             }
 
             bool currentLogIn = _httpContextAccessor.HttpContext?.User?.Identity?.IsAuthenticated ?? false;
-            bool alreadyLogInDiffBrowser = _logInTrackerService.AlreadyExists(identityUserName);
+            //bool alreadyLogInDiffBrowser = _logInTrackerService.AlreadyExists(identityUserName);
 
-            if (currentLogIn && alreadyLogInDiffBrowser){
+            //if (currentLogIn && alreadyLogInDiffBrowser){
+            if (currentLogIn){
                 _logInTrackerService.Remove(identityUserName);
             }
 
