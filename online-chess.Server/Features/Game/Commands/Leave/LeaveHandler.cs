@@ -29,7 +29,7 @@ namespace online_chess.Server.Features.Game.Commands.LeaveRoom
         public async Task<Unit> Handle(LeaveRequest request, CancellationToken cancellationToken)
         {
             _authenticatedUserService.RemoveOneWithConnectionId(request.UserConnectionId);
-            var aQueuedRoomIsRemoved = _gameQueueService.QueueCreatorDisconnect(request.IdentityUserName ?? "");
+            var aQueuedRoomIsRemoved = _gameQueueService.RemoveByCreator(request.IdentityUserName ?? "");
             
             if (aQueuedRoomIsRemoved){
                 await _hubContext.Clients.All.SendAsync(RoomMethods.onRefreshRoomList,

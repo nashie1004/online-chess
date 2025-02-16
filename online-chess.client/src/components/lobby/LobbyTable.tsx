@@ -120,12 +120,12 @@ export default function LobbyTable({
                 </div>
                 <div className="m-body">
                     {
-                        selectedRoom ? <>
+                        selectedRoom && <>
                             <p><b>Connection Id:</b> {selectedRoom.key}</p>
                             <p><b>Created By User:</b> {selectedRoom.value.createdByUserId}</p>
                             <p><b>Game Type:</b> {gameTypeDisplay(selectedRoom.value.gameType)}</p>
                             <p><b>Create Date Time:</b> {moment(selectedRoom.value.createDate).fromNow()}</p>
-                        </> : <></>
+                        </>
                     }
                 </div>
                 <div className="m-footer">

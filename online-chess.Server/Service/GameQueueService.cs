@@ -17,10 +17,9 @@ namespace online_chess.Server.Service
             _gameRoomIds.TryAdd(roomIdKey, gameQueue);
         }
 
-        public GameQueue? Remove(Guid key)
+        public bool Remove(Guid key)
         {
-            _gameRoomIds.Remove(key, out GameQueue? value);
-            return value;
+            return _gameRoomIds.TryRemove(key, out GameQueue? value);
         }
 
         public KeyValuePair<Guid, GameQueue>[] GetAll()
@@ -61,7 +60,7 @@ namespace online_chess.Server.Service
             return new ConcurrentDictionary<Guid, GameQueue>(paginatedDict);
         }
 
-        public bool QueueCreatorDisconnect(string identityUserName)
+        public bool RemoveByCreator(string identityUserName)
         {
             var roomQueueKey = _gameRoomIds.FirstOrDefault(i => i.Value.CreatedByUserId == identityUserName).Key;
             return _gameRoomIds.TryRemove(roomQueueKey, out GameQueue? val);

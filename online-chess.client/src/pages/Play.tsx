@@ -18,6 +18,7 @@ import PromotionPicker from "../components/play/PromotionPickerModal";
 import { playPageHandlers, playPageInvokers } from "../game/utilities/constants";
 import useOnSetPromotionPreference from "../game/signalRhandlers/useOnSetPromotionPreference";
 import useNotificationContext from "../hooks/useNotificationContext";
+import useQueuingContext from "../hooks/useQueuingContext";
 
 export default function Main(){
     const gameRef = useRef<Phaser.Game | null>();
@@ -25,6 +26,7 @@ export default function Main(){
     const url = useParams();
     const { setGameState } = useGameContext();
     const { setNotificationState } = useNotificationContext();
+    const { setQueuingRoomKey } = useQueuingContext();
     
     const onInitializeGameInfo = useOnInitializeGameInfo(gameRef);
     const onUpdateBoard = useOnUpdateBoard();
@@ -36,6 +38,7 @@ export default function Main(){
     const onSetPromotionPreference = useOnSetPromotionPreference();
 
     useEffect(() => {
+        setQueuingRoomKey(null);
         setNotificationState({ type: "SET_RESETNOTIFICATIONS" });
         setGameState({ type: "SET_CLEARGAMESTATE" });
         setGameState({ type: "SET_GAMESTATUS", payload: "LOADING" });

@@ -45,7 +45,7 @@ namespace online_chess.Server.Features.Auth.Commands.LogOut
 
                 await _signManager.SignOutAsync();
                 
-                var aQueuedRoomIsRemoved = _gameQueueService.QueueCreatorDisconnect(identityUserName);
+                var aQueuedRoomIsRemoved = _gameQueueService.RemoveByCreator(identityUserName);
             
                 if (aQueuedRoomIsRemoved){
                     await _hubContext.Clients.All.SendAsync(RoomMethods.onRefreshRoomList,

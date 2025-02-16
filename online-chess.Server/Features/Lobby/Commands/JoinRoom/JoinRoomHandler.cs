@@ -51,10 +51,12 @@ namespace online_chess.Server.Features.Lobby.Commands.JoinRoom
                 //GameStartedAt = DateTime.Now,
             });
 
-            _gameQueueService.Remove(room.GameKey);
+            // remove both player queuing rooms
+            _gameQueueService.RemoveByCreator(room.CreatedByUserId);
+            _gameQueueService.RemoveByCreator(room.JoinedByUserId);
 
             await _hubContext.Clients.All.SendAsync(RoomMethods.onRefreshRoomList,
-                _gameRoomService.GetPaginatedDictionary().ToArray().OrderByDescending(i => i.Value.CreateDate)
+                _gameQueueService.GetPaginatedDictionary().ToArray().OrderByDescending(i => i.Value.CreateDate)
             );
 
             var p1Connection = _authenticatedUserService.GetConnectionId(room.CreatedByUserId);
