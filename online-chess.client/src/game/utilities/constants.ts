@@ -172,6 +172,7 @@ export const baseNotificationState: INotificationContextReducerState = {
  */
 export const mainPageHandlers = {
     onGetUserConnectionId: "onGetUserConnectionId"
+    ,onGenericError: "onGenericError"
 };
 
 export const mainPageInvokers = {
@@ -211,8 +212,7 @@ export const lobbyPageInvokers = {
 }
 
 export const playPageHandlers = {
-    onNotFound: "onNotFound"
-    ,onInitializeGameInfo: "onInitializeGameInfo"
+    onInitializeGameInfo: "onInitializeGameInfo"
     ,onGameOver: "onGameOver"
     ,onReceiveMessages: "onReceiveMessages"
     ,onUpdateBoard: "onUpdateBoard"

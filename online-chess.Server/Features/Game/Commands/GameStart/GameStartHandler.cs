@@ -38,7 +38,7 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
 
             if (gameRoom == null)
             {
-                await _hubContext.Clients.Client(request.UserConnectionId).SendAsync(RoomMethods.onNotFound, true);
+                await _hubContext.Clients.Client(request.UserConnectionId).SendAsync(RoomMethods.onGenericError, "404 Room Not Found");
                 return Unit.Value;
             }
 

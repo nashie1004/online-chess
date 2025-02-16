@@ -43,7 +43,13 @@ export default function InitializerContext(
     await addHandler(mainPageHandlers.onGetUserConnectionId, (connectionId) => {
       setUserConnectionId(connectionId);
     });
-
+    await addHandler(mainPageHandlers.onGenericError, (msg: string) => {
+      //navigate("/notFound");
+      setNotificationState({ 
+        type: "SET_CUSTOMMESSAGE"
+        , payload: { customMessage: msg, customMessageType: "DANGER" } 
+      });
+    });
     await addHandler(lobbyPageHandlers.onInvalidRoomKey, (msg) => {
       setNotificationState({ 
         type: "SET_CUSTOMMESSAGE" , payload: { customMessage: msg, customMessageType: "DANGER" } 
@@ -54,7 +60,6 @@ export default function InitializerContext(
       setQueuingRoomKey(roomKey);
     });
     await addHandler(lobbyPageHandlers.onMatchFound, (roomKey: string) => {
-      console.log("redirecting to play page")
       navigate(`/play/${roomKey}`);
     });
 

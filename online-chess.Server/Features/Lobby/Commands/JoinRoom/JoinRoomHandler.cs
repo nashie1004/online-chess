@@ -24,12 +24,29 @@ namespace online_chess.Server.Features.Lobby.Commands.JoinRoom
 
         public async Task<Unit> Handle(JoinRoomRequest request, CancellationToken cancellationToken)
         {
-            // 1. if not a valid guid, redirect to 404 not found'
+            // 1.1 if not a valid guid, redirect to 404 not found
+            // 1.2 or no connection id found
             var room = _gameQueueService.GetOne(request.GameRoomKeyString);
+            var p1Connection = _authenticatedUserService.GetConnectionId(room.CreatedByUserId);
+            var p2Connection = _authenticatedUserService.GetConnectionId(room.JoinedByUserId);
 
             if (room == null)
             {
-                await _hubContext.Clients.Client(request.UserConnectionId).SendAsync(RoomMethods.onNotFound, true);
+                await _hubContext.Clients.Client(request.UserConnectionId).SendAsync(RoomMethods.onGenericError, "404 Room Not Found");
+                return Unit.Value;
+            }
+
+            if (string.IsNullOrWhiteSpace(p1Connection))
+            {
+                string retMsg = $"404 - Connection Id for {room.CreatedByUserId} not found";
+                await _hubContext.Clients.Client(request.UserConnectionId).SendAsync(RoomMethods.onGenericError, retMsg);
+                return Unit.Value;
+            }
+            
+            if (string.IsNullOrWhiteSpace(p2Connection))
+            {
+                string retMsg = $"404 - Connection Id for {room.JoinedByUserId} not found";
+                await _hubContext.Clients.Client(request.UserConnectionId).SendAsync(RoomMethods.onGenericError, retMsg);
                 return Unit.Value;
             }
 
@@ -58,9 +75,6 @@ namespace online_chess.Server.Features.Lobby.Commands.JoinRoom
             await _hubContext.Clients.All.SendAsync(RoomMethods.onRefreshRoomList,
                 _gameQueueService.GetPaginatedDictionary().ToArray().OrderByDescending(i => i.Value.CreateDate)
             );
-
-            var p1Connection = _authenticatedUserService.GetConnectionId(room.CreatedByUserId);
-            var p2Connection = _authenticatedUserService.GetConnectionId(room.JoinedByUserId);
 
             // redirect both users
             await _hubContext.Clients.Client(p1Connection).SendAsync(RoomMethods.onMatchFound, room.GameKey.ToString());

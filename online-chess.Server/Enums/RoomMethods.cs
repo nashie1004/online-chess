@@ -4,7 +4,7 @@ namespace online_chess.Server.Enums;
 
 public class RoomMethods
 {
-    public const string onNotFound = "onNotFound";
+    public const string onGenericError = "onGenericError";
 
     #region Lists
     public const string onGetGameHistory = "onGetGameHistory";

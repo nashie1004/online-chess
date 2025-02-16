@@ -7,7 +7,6 @@ import OutcomeModal from "../components/play/OutcomeModal";
 import useOnInitializeGameInfo from "../game/signalRhandlers/useOnInitializeGameInfo";
 import useOnUpdateBoard from "../game/signalRhandlers/useOnUpdateBoard";
 import useOpponentDrawRequest from "../game/signalRhandlers/useOpponentDrawRequest";
-import useOnNotFound from "../game/signalRhandlers/useOnNotFound";
 import useOnReceiveMessages from "../game/signalRhandlers/useOnReceiveMessages";
 import useOnGameOver from "../game/signalRhandlers/useOnGameOver";
 import useGameContext from "../hooks/useGameContext";
@@ -31,7 +30,6 @@ export default function Main(){
     const onInitializeGameInfo = useOnInitializeGameInfo(gameRef);
     const onUpdateBoard = useOnUpdateBoard();
     const onOpponentDrawRequest = useOpponentDrawRequest();
-    const onNotFound = useOnNotFound();
     const onReceiveMessages = useOnReceiveMessages();
     const onGameOver = useOnGameOver();
     const onDeclineDraw = useOnDeclineDraw();
@@ -44,7 +42,6 @@ export default function Main(){
         setGameState({ type: "SET_GAMESTATUS", payload: "LOADING" });
 
         async function start() {
-            await addHandler(playPageHandlers.onNotFound, onNotFound);
             await addHandler(playPageHandlers.onInitializeGameInfo, onInitializeGameInfo);
             await addHandler(playPageHandlers.onGameOver, onGameOver);
             await addHandler(playPageHandlers.onReceiveMessages, onReceiveMessages);
@@ -70,7 +67,6 @@ export default function Main(){
                 gameRef.current = null;
             }
             
-            removeHandler(playPageHandlers.onNotFound);
             removeHandler(playPageHandlers.onInitializeGameInfo);
             removeHandler(playPageHandlers.onGameOver);
             removeHandler(playPageHandlers.onReceiveMessages);

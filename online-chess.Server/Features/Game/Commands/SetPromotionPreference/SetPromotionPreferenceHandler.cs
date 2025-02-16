@@ -34,7 +34,7 @@ namespace online_chess.Server.Features.Game.Commands.SetPromotionPreference
 
             if (room == null)
             {
-                await _hubContext.Clients.Client(request.UserConnectionId).SendAsync(RoomMethods.onNotFound, true);
+                await _hubContext.Clients.Client(request.UserConnectionId).SendAsync(RoomMethods.onGenericError, "404 Room Not Found");
                 return Unit.Value;
             }
 
@@ -44,7 +44,7 @@ namespace online_chess.Server.Features.Game.Commands.SetPromotionPreference
 
             if (creator == null || joiner == null)
             {
-                await _hubContext.Clients.Client(request.UserConnectionId).SendAsync(RoomMethods.onNotFound, true);
+                await _hubContext.Clients.Client(request.UserConnectionId).SendAsync(RoomMethods.onGenericError, "404 Room Not Found");
                 return Unit.Value;
             }
 

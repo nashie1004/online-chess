@@ -12,13 +12,17 @@ public class AuthenticatedUserService
         
     }
 
-    public void Add(string userConnectionId, string identityUserName){
-        _authenticatedUsers.TryAdd(userConnectionId, identityUserName);
+    public bool Add(string userConnectionId, string identityUserName){
+        return _authenticatedUsers.TryAdd(userConnectionId, identityUserName);
     }
 
-    public string? RemoveOneWithConnectionId(string userConnectionId){
-        _authenticatedUsers.Remove(userConnectionId, out string? identityUserName);
-        return identityUserName;
+    public bool RemoveWithConnectionId(string userConnectionId){
+        return _authenticatedUsers.TryRemove(userConnectionId, out string? res);
+    }
+    
+    public bool RemoveWithIdentityUsername(string identityUserName){
+        string connectionId = this.GetConnectionId(identityUserName);
+        return _authenticatedUsers.TryRemove(connectionId, out string? res);
     }
 
     public string? GetIdentityName(string userConnectionId){
@@ -27,7 +31,9 @@ public class AuthenticatedUserService
     }
 
     public string GetConnectionId(string userIdentityName){
-        return _authenticatedUsers.FirstOrDefault(i => i.Value == userIdentityName).Key;
+        var record = _authenticatedUsers.FirstOrDefault(i => i.Value == userIdentityName);
+        //if (record == null) return string.Empty;
+        return record.Key == null ? string.Empty : record.Key;
     }
 
     public ConcurrentDictionary<string, string> GetAll(){

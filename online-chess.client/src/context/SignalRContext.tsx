@@ -42,9 +42,8 @@ export default function SignalRContext(
 
             connected = true;
         } catch (error) {
-            console.error(error);
+            setUserConnectionId(null);
             removeHandler(mainPageHandlers.onGetUserConnectionId);
-            
             connected = false;
         }
 

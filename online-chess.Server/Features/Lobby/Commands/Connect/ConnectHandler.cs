@@ -22,8 +22,16 @@ public class ConnectHandler : IRequestHandler<ConnectRequest, Unit>
     {
         if (string.IsNullOrEmpty(req.IdentityUserName)) return Unit.Value;
 
-        _authenticatedUserService.RemoveOneWithConnectionId(req.UserConnectionId);
+        _authenticatedUserService.RemoveWithConnectionId(req.UserConnectionId);
+        _authenticatedUserService.RemoveWithIdentityUsername(req.IdentityUserName);
 
+        _authenticatedUserService.Add(req.UserConnectionId, req.IdentityUserName);
+
+        // TODO - handle 2 case: if login and not logged in
+
+        await _hubContext.Clients.Client(req.UserConnectionId).SendAsync(RoomMethods.onGetUserConnectionId, req.UserConnectionId);
+
+        /*
         var existing = _authenticatedUserService.GetIdentityName(req.UserConnectionId);
 
         if (string.IsNullOrEmpty(existing))
@@ -31,6 +39,7 @@ public class ConnectHandler : IRequestHandler<ConnectRequest, Unit>
             _authenticatedUserService.Add(req.UserConnectionId, req.IdentityUserName);
             await _hubContext.Clients.Client(req.UserConnectionId).SendAsync(RoomMethods.onGetUserConnectionId, req.UserConnectionId);
         }
+        */
 
         return Unit.Value;
     }
