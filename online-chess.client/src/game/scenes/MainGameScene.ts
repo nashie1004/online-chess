@@ -4,7 +4,7 @@ import move from "../../assets/sounds/Move.ogg"
 import capture from "../../assets/sounds/Capture.ogg"
 import select from "../../assets/sounds/Select.ogg"
 import check from "../../assets/sounds/Check.mp3"
-import pieces, { Options as gameOptions, PieceNames, baseKingState, eventEmit, eventOn, pieceNamesV2 } from "../utilities/constants";
+import { Options as gameOptions, PieceNames, baseKingState, eventEmit, eventOn, pieceNamesV2 } from "../utilities/constants";
 import { IBothKingsPosition, IKingState, IMoveHistory, IMoveInfo, IPiece, IPieceMove, IPiecesCoordinates, PlayersPromotePreference, PromotionPrefence } from "../utilities/types";
 import { eventEmitter } from "../utilities/eventEmitter";
 import KingCastled from "../logic/kingCastled";
@@ -17,49 +17,56 @@ export class MainGameScene extends Scene{
     /**
      * unique name = piecename + x + y, example: 'wPawn-0-6'
      */
-    // internal state
+    // 1.1 server state - always changing
+    private moveHistory: IMoveHistory;
+    private kingsState: IKingState;
+    private piecesCoordinates_Actual: IPiecesCoordinates;
+    
+    // 1.2 server state - not always changing
+    private piecesCoordinates_Initial: IPiece[];
+    private promotePreference: PlayersPromotePreference; 
+    private bothKingsPosition: IBothKingsPosition;
+
+    // 2. internal state
     private readonly tileSize: number;
     private readonly previewBoard: (GameObjects.Sprite)[][]; // has a visible property
     private readonly boardOrientationIsWhite: boolean;
     private readonly board: (null | GameObjects.Sprite)[][];
     private selectedPiece: IMoveInfo | null;
     private isPlayersTurnToMove: boolean;
-    private bothKingsPosition: IBothKingsPosition;
+
+    // 3. user preference
     private readonly boardUI: string;
     private readonly piecesUI: string;
 
-    // server state
-    private moveHistory: IMoveHistory;
-    private kingsState: IKingState;
-    private readonly pieceCoordinates: IPiecesCoordinates;
-    private promotePreference: PlayersPromotePreference; 
-
-    constructor(key: string, isColorWhite: boolean, boardUI: string, piecesUI: string) {
+    constructor(
+        key: string, isColorWhite: boolean, boardUI: string
+        , piecesUI: string, piecesCoordinates_Initial: IPiece[], moveHistory: IMoveHistory
+        , bothKingsPosition: IBothKingsPosition, promotePreference: PlayersPromotePreference
+    ) {
         super({ key });
 
-        this.boardUI = boardUI;
-        this.piecesUI = piecesUI;
-
-        // server state
-        this.moveHistory = { white: [], black: [] };
+        // 1.1 server state - always changing
+        this.moveHistory = moveHistory; 
         this.kingsState = baseKingState;
-        this.pieceCoordinates = { white: [], black: [] };
+        this.piecesCoordinates_Actual = { white: [], black: [] };
 
-        // internal state
+        // 1.2 server state - not always changing
+        this.piecesCoordinates_Initial = piecesCoordinates_Initial;
+        this.promotePreference = promotePreference;
+        this.bothKingsPosition = bothKingsPosition;
+
+        // 2. internal state
         this.isPlayersTurnToMove = isColorWhite;
         this.boardOrientationIsWhite = isColorWhite;
         this.selectedPiece = null;
-        this.bothKingsPosition = {
-            // if black orientation switch queen and king coords
-            white: { x: this.boardOrientationIsWhite ? 4 : 3, y: this.boardOrientationIsWhite ? 7 : 0 }
-            , black: { x: this.boardOrientationIsWhite ? 4 : 3, y: this.boardOrientationIsWhite ? 0 : 7 }
-        };
         this.tileSize = gameOptions.tileSize; // 100
         this.board = Array.from({ length: 8 }).map(_ => new Array(8).fill(null)); // creates 8x8 grid
         this.previewBoard = Array.from({ length: 8 }).map(_ => new Array(8));
-        this.promotePreference = {
-            white: PromotionPrefence.Queen, black: PromotionPrefence.Queen
-        };
+
+        // 3. user prefernce
+        this.boardUI = boardUI;
+        this.piecesUI = piecesUI;
     }
 
     preload(){
@@ -134,7 +141,7 @@ export class MainGameScene extends Scene{
         })
 
         // 2. actual pieces
-        pieces.forEach(piece => {
+        this.piecesCoordinates_Initial.forEach(piece => {
             let { name, x, y } = piece;
             const pieceIsWhite = name[0] === "w";
 
@@ -153,7 +160,7 @@ export class MainGameScene extends Scene{
             }
 
             const uniqueName = `${name}-${x}-${y}`;
-            this.pieceCoordinates[pieceIsWhite ? "white" : "black"].push({
+            this.piecesCoordinates_Actual[pieceIsWhite ? "white" : "black"].push({
                 name, x, y, uniqueName
             });
 
@@ -202,7 +209,7 @@ export class MainGameScene extends Scene{
                     this.resetMoves();
                     this.selectedPiece = (new ShowPossibleMoves(
                         this.board, this.previewBoard
-                        ,this.boardOrientationIsWhite, this.pieceCoordinates
+                        ,this.boardOrientationIsWhite, this.piecesCoordinates_Actual
                         ,this.selectedPiece
                         ,this.bothKingsPosition, this.moveHistory
                         ,this.kingsState
@@ -288,7 +295,7 @@ export class MainGameScene extends Scene{
 
         // capture
         const pieceCapture = new PieceCapture(
-            this.board, this.boardOrientationIsWhite, this.pieceCoordinates
+            this.board, this.boardOrientationIsWhite, this.piecesCoordinates_Actual
             , this.bothKingsPosition
             ,this.moveHistory
         );
@@ -300,7 +307,7 @@ export class MainGameScene extends Scene{
         this.board[newX][newY] = sprite;
 
         // Set new coordinate
-        const pieceCoordinate = this.pieceCoordinates[isWhite ? "white" : "black"]
+        const pieceCoordinate = this.piecesCoordinates_Actual[isWhite ? "white" : "black"]
             .find(i => i.x === this.selectedPiece?.x && i.y === this.selectedPiece?.y);
 
         if (pieceCoordinate){
@@ -310,13 +317,13 @@ export class MainGameScene extends Scene{
 
         // some special logic
         const pawnPromoted = (new PawnPromote(
-            this.boardOrientationIsWhite, this.promotePreference, this.pieceCoordinates // TODO dynamic promote
+            this.boardOrientationIsWhite, this.promotePreference, this.piecesCoordinates_Actual // TODO dynamic promote
         )).pawnPromote(uniquePieceName, newX, newY, isWhite, sprite);
 
         const kingCastled = (new KingCastled(
             this.board
             , this.bothKingsPosition, this.boardOrientationIsWhite
-            , this.moveHistory, this.pieceCoordinates
+            , this.moveHistory, this.piecesCoordinates_Actual
         )).kingCastled(uniquePieceName, this.selectedPiece, isWhite, newX, newY);
 
         if (kingCastled){
@@ -367,7 +374,7 @@ export class MainGameScene extends Scene{
 
         const kingSafety = (new ValidateCheckOrCheckMateOrStalemate(
             this.board, this.boardOrientationIsWhite
-            , this.pieceCoordinates
+            , this.piecesCoordinates_Actual
             , this.bothKingsPosition, this.moveHistory
             , this.kingsState
         )).validate(isWhite);
@@ -385,13 +392,13 @@ export class MainGameScene extends Scene{
         // For testing only
         // console.info(" === TEST === ");
         if (kingSafety !== 0){
-            // console.log(this.pieceCoordinates.white.filter(i => i.name.toLowerCase().indexOf("king") >= 0));
-            // console.log(this.pieceCoordinates.black.filter(i => i.name.toLowerCase().indexOf("queen") >= 0));
+            // console.log(this.piecesCoordinates_Actual.white.filter(i => i.name.toLowerCase().indexOf("king") >= 0));
+            // console.log(this.piecesCoordinates_Actual.black.filter(i => i.name.toLowerCase().indexOf("queen") >= 0));
             // console.log(this.bothKingsPosition)
             // console.log(this.selectedPiece)
             // console.log(pieceCoordinate)
         }
-        // console.table(this.pieceCoordinates.black);
+        // console.table(this.piecesCoordinates_Actual.black);
         // this.debugHelper();
     }
 

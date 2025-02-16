@@ -49,63 +49,37 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
 
             if (string.IsNullOrEmpty(player1) || string.IsNullOrEmpty(player1))
             {
-                _logger.LogInformation("Game Start: {0} - {1}", player1, player2);
                 return Unit.Value;
             }
 
             await _hubContext.Groups.AddToGroupAsync(player1, request.GameRoomKeyString);
             await _hubContext.Groups.AddToGroupAsync(player2, request.GameRoomKeyString);
 
-            /*
-            Start The Game
-            - passed to Play.tsx > MainGameScene constructor
-            */
-            //gameRoom.InitializeGameLogic();
-
-            TimeSpan initialCreatorTime; 
-            TimeSpan initialJoinerTime; 
+            TimeSpan initialTime; 
 
             switch(gameRoom.GameType){
                 case GameType.Classical:
-                    initialCreatorTime = TimeSpan.FromMinutes(60);
-                    initialJoinerTime = TimeSpan.FromMinutes(60);
+                    initialTime = TimeSpan.FromMinutes(60);
                     break;
                 case GameType.Blitz3Mins:
-                    initialCreatorTime = TimeSpan.FromMinutes(3);
-                    initialJoinerTime = TimeSpan.FromMinutes(3);
+                    initialTime = TimeSpan.FromMinutes(3);
                     break;
                 case GameType.Blitz5Mins:
-                    initialCreatorTime = TimeSpan.FromMinutes(5);
-                    initialJoinerTime = TimeSpan.FromMinutes(5);
+                    initialTime = TimeSpan.FromMinutes(5);
                     break;
                 case GameType.Rapid10Mins:
-                    initialCreatorTime = TimeSpan.FromMinutes(10);
-                    initialJoinerTime = TimeSpan.FromMinutes(10);
+                    initialTime = TimeSpan.FromMinutes(10);
                     break;
                 case GameType.Rapid25Mins:
-                    initialCreatorTime = TimeSpan.FromMinutes(25);
-                    initialJoinerTime = TimeSpan.FromMinutes(25);
+                    initialTime = TimeSpan.FromMinutes(25);
                     break;
                 default:
-                    initialCreatorTime = TimeSpan.FromMinutes(5);
-                    initialJoinerTime = TimeSpan.FromMinutes(5);
+                    initialTime = TimeSpan.FromMinutes(5);
                     break;
             }
 
-            // add small buffer for player white
-            /*
-            initialCreatorTime = 
-                (gameRoom.CreatedByUserColor == Color.White) 
-                ? initialCreatorTime.Add(TimeSpan.FromSeconds(5)) 
-                : initialCreatorTime;
-            initialJoinerTime = 
-                (gameRoom.CreatedByUserColor != Color.White) 
-                ? initialJoinerTime.Add(TimeSpan.FromSeconds(5)) 
-                : initialJoinerTime;
-            */
-
             _timerService.InitializeTimer(gameRoom.GameKey, 
-                (initialCreatorTime.TotalSeconds, initialJoinerTime.TotalSeconds)
+                (initialTime.TotalSeconds, initialTime.TotalSeconds)
             );
 
             gameRoom.GameStartedAt = DateTime.Now;
@@ -160,6 +134,16 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
             await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync(RoomMethods.onReceiveMessages, gameRoom.ChatMessages);
 
             return Unit.Value;
+        }
+    
+        public void StartGame()
+        {
+
+        }
+        
+        public void ReconnectToGame()
+        {
+
         }
     }
 }

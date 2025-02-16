@@ -2,8 +2,8 @@ import moment from "moment";
 import { useCallback, useRef } from "react";
 import { MainGameScene } from "../scenes/MainGameScene";
 import { eventEmitter } from "../utilities/eventEmitter";
-import { IInitialGameInfo, IKingState, PromotionPrefence } from "../utilities/types";
-import { eventOn, Options as gameOptions, playPageInvokers } from "../utilities/constants";
+import { IBothKingsPosition, IInitialGameInfo, IKingState, IMoveHistory, PlayersPromotePreference, PromotionPrefence } from "../utilities/types";
+import pieces, { eventOn, Options as gameOptions, playPageInvokers } from "../utilities/constants";
 import useGameContext from "../../hooks/useGameContext";
 import useSignalRContext from "../../hooks/useSignalRContext";
 import useAuthContext from "../../hooks/useAuthContext";
@@ -16,8 +16,8 @@ export default function useOnInitializeGameInfo(
     const signalRContext = useSignalRContext();
     const { user } = useAuthContext();
     const gameStateRef = useRef(gameState);
-    const { data: board } = useLocalStorage("board", "green.png");
-    const { data: piece } = useLocalStorage("piece", "cburnett");
+    const { data: boardUI } = useLocalStorage("board", "green.png");
+    const { data: pieceUI } = useLocalStorage("piece", "cburnett");
 
     // https://stackoverflow.com/questions/57847594/accessing-up-to-date-state-from-within-a-callback
     // this contains the up to date version of our gamestate, 
@@ -28,6 +28,16 @@ export default function useOnInitializeGameInfo(
         const playerIsWhite = (initGameInfo.createdByUserInfo.userName === user?.userName)
             ? initGameInfo.createdByUserInfo.isColorWhite
             : initGameInfo.joinedByUserInfo.isColorWhite;
+
+        const moveHistory: IMoveHistory = { white: [], black: [] };
+        const bothKingsPosition: IBothKingsPosition = {
+            // if black orientation switch queen and king coords
+            white: { x: playerIsWhite ? 4 : 3, y: playerIsWhite ? 7 : 0 }
+            , black: { x: playerIsWhite ? 4 : 3, y: playerIsWhite ? 0 : 7 }
+        };
+        const promotePreference: PlayersPromotePreference = {
+            white: PromotionPrefence.Queen, black: PromotionPrefence.Queen
+        };
 
         // init phaser
         if (!gameRef.current){
@@ -41,7 +51,11 @@ export default function useOnInitializeGameInfo(
                     // mode: Phaser.Scale.RESIZE
                 },
                 scene: [
-                    new MainGameScene("mainChessboard", playerIsWhite, board, piece)
+                    new MainGameScene(
+                        "mainChessboard", playerIsWhite, boardUI
+                        , pieceUI, pieces, moveHistory
+                        , bothKingsPosition, promotePreference
+                    )
                 ],
             });
         }
