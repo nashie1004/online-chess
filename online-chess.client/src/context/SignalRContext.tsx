@@ -20,14 +20,20 @@ export default function SignalRContext(
     // let hubConnection: (HubConnection | undefined) = useMemo(() => undefined, [userConnectionId]);
 
     async function startConnection(){
+        // setNotificationState({ 
+        //     type: "SET_CUSTOMMESSAGE", payload: {
+        //         customMessage: "Connecting...", customMessageType: "INFO"
+        //     } 
+        // });
         let connected = false;
         const URL = import.meta.env.VITE_API_URL + "/hub"
 
         hubConnection = new HubConnectionBuilder()
             .configureLogging(LogLevel.Information) 
             .withUrl(URL, {
-                skipNegotiation: true,  // skipNegotiation as we specify WebSockets
-                transport: HttpTransportType.WebSockets  // force WebSocket transport
+                // force
+                skipNegotiation: true,  
+                transport: HttpTransportType.WebSockets
             })
             .build();
         
@@ -47,7 +53,12 @@ export default function SignalRContext(
             removeHandler(mainPageHandlers.onGetUserConnectionId);
             connected = false;
         }
-
+        
+        // setNotificationState({ 
+        //     type: "SET_CUSTOMMESSAGE", payload: {
+        //         customMessage: null, customMessageType: "INFO"
+        //     } 
+        // });
         setNotificationState({ type: "SET_SIGNALRCONNECTIONDISCONNECTED", payload: !connected });
         return connected;
     }
@@ -99,21 +110,6 @@ export default function SignalRContext(
         
         hubConnection.off(methodName);
     }
-
-    /*
-    useEffect(() => {
-        console.log("signalr context ", isAuthenticating, userConnectionId)
-
-        if (isAuthenticating) return;
-        if (userConnectionId) return;
-
-        startConnection();
-
-        return () => {
-            stopConnection();
-        }
-    }, [isAuthenticating])
-    */
 
   return (
     <signalRContext.Provider value={{

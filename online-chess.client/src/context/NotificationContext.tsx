@@ -10,12 +10,10 @@ function reducerFn(state: INotificationContextReducerState, action: INotificatio
             return { ...state, roomKey: action.payload };
         case "SET_ASOFDATE":
             return { ...state, asOfDate: action.payload };
-        case "SET_HASAGAMEQUEUINGROOMKEY":
-            return { ...state, hasAGameQueuing: action.payload };
-        case "SET_HASAGAMEDISCONNECTED":
-            return { ...state, hasAGameDisconnected: action.payload };
         case "SET_SIGNALRCONNECTIONDISCONNECTED":
             return { ...state, signalRConnectionDisconnected: action.payload };
+        case "SET_HASAGAMEQUEUINGROOMKEY":
+            return { ...state, hasAGameQueuing: action.payload };
         case "SET_HASAGAMEONGOING":
             return { ...state, hasAGameOnGoing: action.payload };
         case "SET_CUSTOMMESSAGE":

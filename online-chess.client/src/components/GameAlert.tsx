@@ -2,23 +2,24 @@ import { Spinner } from "react-bootstrap";
 import useNotificationContext from "../hooks/useNotificationContext"
 import useSignalRContext from "../hooks/useSignalRContext";
 import { mainPageInvokers } from "../game/utilities/constants";
-// import useGameContext from "../hooks/useGameContext";
 import useQueuingContext from "../hooks/useQueuingContext";
 import useInitializerContext from "../hooks/useInitializerContext";
+import { useNavigate } from "react-router";
+import useGameContext from "../hooks/useGameContext";
 
 export default function GameAlert(){
     const { notificationState, setNotificationState } = useNotificationContext();
     const { invoke } = useSignalRContext();
-    // const { gameState } = useGameContext();
     const { setQueuingRoomKey, queuingRoomKey } = useQueuingContext();
     const { setInitialize } = useInitializerContext();
+    const navigate = useNavigate();
+    const { gameState } = useGameContext();
 
     if (
         !notificationState.customMessage &&
         !notificationState.signalRConnectionDisconnected &&
         !notificationState.hasAGameQueuing &&
-        !notificationState.hasAGameOnGoing &&
-        !notificationState.hasAGameDisconnected
+        !notificationState.hasAGameOnGoing 
     ){
         return <></>;
     }
@@ -83,13 +84,17 @@ export default function GameAlert(){
         }
 
         if (notificationState.hasAGameOnGoing){
-            return <>TODO</>
-        }
-
-        if (notificationState.hasAGameDisconnected){
             return <>
                 <i className="bi bi-exclamation-circle-fill"></i>
-                <span className="ps-2">Disconnected from a game. TODO</span>
+                <span className="ps-2">
+                    You have a game in-progress.
+                    <a href="#" 
+                        className="ps-1 alert-link"
+                        onClick={() => {
+                            navigate(`/play/${gameState.gameRoomKey}`);
+                        }}
+                        >Resume.</a> 
+                </span>
             </>
         }
 

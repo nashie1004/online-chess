@@ -49,7 +49,7 @@ namespace online_chess.Server.Features.Auth.Commands.LogIn
                 if (alreadyLoggedIn)
                 {
                     retVal.ValidationErrors.Add(
-                        "Account is already signed-in in a different browser. Please logout your other sessions first.");
+                        "Account is already signed-in in a different browser. Please sign-out your other session first.");
                     return retVal;
                 }
 

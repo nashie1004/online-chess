@@ -7,6 +7,7 @@ import BaseApiService from '../services/BaseApiService';
 import { useLocation, useNavigate } from 'react-router';
 import { lobbyPageHandlers, mainPageHandlers, mainPageInvokers } from '../game/utilities/constants';
 import useQueuingContext from '../hooks/useQueuingContext';
+import useGameContext from '../hooks/useGameContext';
 
 export const initializerContext = createContext<IInitializerContext | null>(null);
 
@@ -27,6 +28,7 @@ export default function InitializerContext(
   const navigate = useNavigate();
   const [initialize, setInitialize] = useState<boolean>(true);
   const url = useLocation();
+  const { setGameState } = useGameContext();
 
   // if not signed in, allowed urls are these
   const unAuthenticatedAllowedPaths = useMemo(() => ["/", "/about", "/register", "/login"], []);
@@ -59,12 +61,11 @@ export default function InitializerContext(
     await addHandler(lobbyPageHandlers.onMatchFound, (roomKey: string) => {
       navigate(`/play/${roomKey}`);
     });
-    await addHandler(mainPageHandlers.onHasAGameInProgress, (roomKey: (string | null)) => {
-      console.log("TODO onHasAGameInProgress: ", roomKey)
-      
-      const test = url.pathname.startsWith("/play/")
-      console.log(test)
-
+    await addHandler(mainPageHandlers.onHasAGameInProgress, (roomKey: string) => {
+      // const inPlagePage = url.pathname.startsWith("/play/")
+      // console.log("TODO onHasAGameInProgress: ", roomKey, inPlagePage, url)
+      setGameState({ type: "SET_GAMEROOMKEY", payload: roomKey });
+      setNotificationState({ type: "SET_HASAGAMEONGOING", payload: true });
     });
     
     await invoke(mainPageInvokers.getConnectionId);
@@ -117,6 +118,8 @@ export default function InitializerContext(
       removeHandler(mainPageHandlers.onGetUserConnectionId);
       removeHandler(lobbyPageHandlers.onGetRoomKey);
       removeHandler(lobbyPageHandlers.onMatchFound);
+      removeHandler(mainPageHandlers.onHasAGameInProgress);
+      removeHandler(mainPageHandlers.onGenericError);
       stopConnection();
     }
   }, [initialize]);
