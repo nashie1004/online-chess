@@ -37,8 +37,8 @@ namespace online_chess.Server.Features.Lobby.Commands.AddToQueue
             await _hubContext.Clients.Client(request.UserConnectionId).SendAsync(RoomMethods.onGetRoomKey, roomKey);
 
             await _hubContext.Clients.All.SendAsync(RoomMethods.onRefreshRoomList,
-                _gameRoomService.GetPaginatedDictionary(1).ToArray()
-                );
+                _gameRoomService.GetPaginatedDictionary().ToArray()
+            );
 
             return Unit.Value;
         }

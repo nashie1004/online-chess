@@ -32,7 +32,10 @@ export default function GameAlert(){
                     <a 
                         href="#" 
                         className="ps-1 alert-link"
-                        onClick={() => setInitialize(true)}
+                        onClick={() => {
+                            setQueuingRoomKey(null);
+                            setInitialize(true);
+                        }}
                     >Reconnect and reauthenticate?</a>
                 </span>
             </> 

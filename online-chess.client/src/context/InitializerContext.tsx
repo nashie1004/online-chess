@@ -32,10 +32,8 @@ export default function InitializerContext(
   async function checkIfSignedIn() {
     const res = await authService.baseGet("/api/Auth/isSignedIn");
     
-    if (res.status === 404){
-        //navigate("/login");
-    } else {
-        setUser({ userName: res.data.userName, profileURL: "" });
+    if (res.status === 200){
+      setUser({ userName: res.data.userName, profileURL: "" });
     }
     
     setIsAuthenticating(false);
@@ -55,7 +53,10 @@ export default function InitializerContext(
       setNotificationState({ type: "SET_HASAGAMEQUEUINGROOMKEY", payload: true });
       setQueuingRoomKey(roomKey);
     });
-    await addHandler(lobbyPageHandlers.onMatchFound, (roomKey: string) => navigate(`/play/${roomKey}`));
+    await addHandler(lobbyPageHandlers.onMatchFound, (roomKey: string) => {
+      console.log("redirecting to play page")
+      navigate(`/play/${roomKey}`);
+    });
 
     await invoke(mainPageInvokers.getConnectionId);
   }
@@ -72,7 +73,6 @@ export default function InitializerContext(
 
       // 2. connect to signalr
       const connected = await startConnection();
-      setNotificationState({ type: "SET_SIGNALRCONNECTIONDISCONNECTED", payload: !connected });
       if (!connected) return;
 
       // 3. add handlers and invoke

@@ -7,6 +7,7 @@ import BaseApiService from "../services/BaseApiService";
 import useAuthContext from "../hooks/useAuthContext";
 import { useEffect } from "react";
 import useNotificationContext from "../hooks/useNotificationContext";
+import useSignalRContext from "../hooks/useSignalRContext";
 
 const schema = z.object({
   userName: z.string().min(8, "Username must contain at least 8 character(s)"),
@@ -21,6 +22,7 @@ export default function Register() {
   const navigate = useNavigate();
   const { user } = useAuthContext();
   const { setNotificationState } = useNotificationContext();
+  const { userConnectionId } = useSignalRContext();
 
   const {
     register, handleSubmit,
@@ -34,6 +36,8 @@ export default function Register() {
   })
 
   async function submitForm(data: FormFields){
+    if (!userConnectionId) return;
+
     const res = await registerService.basePost("/api/Auth/register", data);
     
     if (!res.isOk){

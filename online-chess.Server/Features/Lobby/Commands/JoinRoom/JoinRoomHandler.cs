@@ -57,14 +57,12 @@ namespace online_chess.Server.Features.Lobby.Commands.JoinRoom
                 _gameRoomService.GetPaginatedDictionary().ToArray().OrderByDescending(i => i.Value.CreateDate)
             );
 
+            var p1Connection = _authenticatedUserService.GetConnectionId(room.CreatedByUserId);
+            var p2Connection = _authenticatedUserService.GetConnectionId(room.JoinedByUserId);
+
             // redirect both users
-            await _hubContext.Clients.Client(
-                _authenticatedUserService.GetConnectionId(room.CreatedByUserId)
-            ).SendAsync(RoomMethods.onMatchFound, room.GameKey.ToString());
-            
-            await _hubContext.Clients.Client(
-                _authenticatedUserService.GetConnectionId(room.JoinedByUserId)
-            ).SendAsync(RoomMethods.onMatchFound, room.GameKey.ToString());
+            await _hubContext.Clients.Client(p1Connection).SendAsync(RoomMethods.onMatchFound, room.GameKey.ToString());
+            await _hubContext.Clients.Client(p2Connection).SendAsync(RoomMethods.onMatchFound, room.GameKey.ToString());
 
             return Unit.Value;
         }

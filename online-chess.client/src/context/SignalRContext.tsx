@@ -1,19 +1,23 @@
-import { createContext, ReactNode, useEffect, useState } from 'react'
+import { createContext, ReactNode, useMemo, useState } from 'react'
 import { ISignalRContext } from '../game/utilities/types';
-import { HttpTransportType, HubConnection, HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
+import { HubConnection, HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
 import { mainPageHandlers } from '../game/utilities/constants';
+import useNotificationContext from '../hooks/useNotificationContext';
 
 interface ISignalRContextProps{
     children: ReactNode
 }
 
 export const signalRContext = createContext<null | ISignalRContext>(null);
-let hubConnection: HubConnection;
+
+let hubConnection: HubConnection;       
 
 export default function SignalRContext(
     {children}: ISignalRContextProps
 ) {
     const [userConnectionId, setUserConnectionId] = useState<string | null>(null);
+    const { setNotificationState } = useNotificationContext();
+    // let hubConnection: (HubConnection | undefined) = useMemo(() => undefined, [userConnectionId]);
 
     async function startConnection(){
         let connected = false;
@@ -27,18 +31,14 @@ export default function SignalRContext(
             .build();
         
         try {
-
-            //console.log("Connection Starting");
-
             await hubConnection.start();
-            //hubConnection.onclose(closeEventCallback);
 
             hubConnection.onreconnected((e) => console.info(`Reconnected: ${e}`))
             hubConnection.onreconnecting((e) => console.info(`Reconnecting: ${e}`))
             hubConnection.onclose(() => {
+                setNotificationState({ type: "SET_SIGNALRCONNECTIONDISCONNECTED", payload: true });
                 setUserConnectionId(null);
             });
-            //console.log("Connection started");
 
             connected = true;
         } catch (error) {
@@ -48,6 +48,7 @@ export default function SignalRContext(
             connected = false;
         }
 
+        setNotificationState({ type: "SET_SIGNALRCONNECTIONDISCONNECTED", payload: !connected });
         return connected;
     }
 

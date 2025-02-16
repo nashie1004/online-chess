@@ -33,7 +33,7 @@ public class DeleteRoomHandler : IRequestHandler<DeleteRoomRequest, Unit>
 
         _gameRoomService.Remove(gameRoomKey);
         await _hubContext.Clients.All.SendAsync(RoomMethods.onRefreshRoomList,
-            _gameRoomService.GetPaginatedDictionary(1).ToArray()
+            _gameRoomService.GetPaginatedDictionary().ToArray()
         );
 
         return Unit.Value;
