@@ -9,13 +9,13 @@ namespace online_chess.Server.Features.Auth.Commands.LogOut
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signManager;
-        private readonly LogInTackerService _logInTackerService;
+        private readonly LogInTrackerService _logInTackerService;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
         public LogoutHandler(
             UserManager<User> userManager,
             SignInManager<User> signInManager,
-            LogInTackerService logInTackerService,
+            LogInTrackerService logInTackerService,
             IHttpContextAccessor httpContextAccessor
             )
         {

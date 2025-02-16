@@ -42,7 +42,7 @@ builder.Services.AddSingleton<GameQueueService>();
 builder.Services.AddSingleton<GameRoomService>();
 builder.Services.AddSingleton<AuthenticatedUserService>();
 builder.Services.AddSingleton<TimerService>();
-builder.Services.AddSingleton<LogInTackerService>();
+builder.Services.AddSingleton<LogInTrackerService>();
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 builder.Logging.AddDebug();
