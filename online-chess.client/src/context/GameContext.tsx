@@ -1,10 +1,7 @@
-import { createContext, ReactNode, useReducer } from 'react'
+import { createContext, useReducer } from 'react'
 import { IGameContext, IGameContextReducerActions, IGameContextReducerState, IMove } from '../game/utilities/types';
 import { baseGameState } from '../game/utilities/constants';
-
-interface GameContextProps{
-    children: ReactNode
-}
+import { IBaseContextProps } from '../types/global';
 
 export const gameContext = createContext<IGameContext | null>(null);
 
@@ -105,7 +102,7 @@ function reducerFn(state: IGameContextReducerState, action: IGameContextReducerA
 }
 
 export default function GameContext(
-    {children}: GameContextProps
+    {children}: IBaseContextProps
 ) {
     const [gameState, setGameState] = useReducer<React.Reducer<IGameContextReducerState, IGameContextReducerActions>>(reducerFn, baseGameState);
 

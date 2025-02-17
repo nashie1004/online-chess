@@ -1,26 +1,15 @@
 import { useState, createContext } from 'react'
 import BaseApiService from '../services/BaseApiService';
 import { IUser } from '../game/utilities/types';
-
-interface IAuthContext {
-    isAuthenticating: boolean;
-    setIsAuthenticating: React.Dispatch<React.SetStateAction<boolean>>;
-    user: IUser | null;
-    setUser: React.Dispatch<React.SetStateAction<IUser | null>>;
-    login: (user: IUser) => void;
-    logout: () => void;
-}
-
-interface IAuthContextProps {
-    children: React.ReactNode;
-}
+import { IAuthContext } from './AuthContext.types';
+import { IBaseContextProps } from '../types/global';
 
 export const authContext = createContext<IAuthContext | null>(null);
 
 const authService = new BaseApiService();
 
 export default function AuthContext(
-    { children }: IAuthContextProps
+    { children }: IBaseContextProps
 ) {
     const [isAuthenticating, setIsAuthenticating] = useState(true);
     const [user, setUser] = useState<null | IUser>(null);

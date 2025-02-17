@@ -200,24 +200,7 @@ export interface IPiecesCoordinates{
     black: IPiece[];
 }
 
-/**
- * Global state for both players
- * 
- * {
- * 
- *  name: "player1",
- *  kingsState: {
- *     isCheckMate: false, isInCheck: false, checkedBy: [], isInStalemate: false 
- *  },
- *  isPlayersTurn: false,
- *  timeInfo: {},
- *  playerIsWhite: false
- * 
- * }
- * 
- */
-
-type gameStat = "ONGOING" | "PAUSED" | "LOADING" | "FINISHED";
+export type gameStat = "ONGOING" | "PAUSED" | "LOADING" | "FINISHED";
 
 export interface IPlayerInfo{
     userName: string;

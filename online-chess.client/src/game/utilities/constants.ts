@@ -31,13 +31,6 @@ export const pieceNamesV2 = [
     { shortName: "bK", fullName: "bKing" },
 ];
 
-
-export const Options = {
-    tileSize: 100,
-    width: 800,
-    height: 800
-}
-
 export const baseKingState: IKingState = { 
     white: { isCheckMate: false, isInCheck: false, checkedBy: [], isInStalemate: false }
     , black: { isCheckMate: false, isInCheck: false, checkedBy: [],  isInStalemate: false } 

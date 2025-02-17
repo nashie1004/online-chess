@@ -4,7 +4,7 @@ import move from "../../assets/sounds/Move.ogg"
 import capture from "../../assets/sounds/Capture.ogg"
 import select from "../../assets/sounds/Select.ogg"
 import check from "../../assets/sounds/Check.mp3"
-import { Options as gameOptions, PieceNames, baseKingState, pieceNamesV2 } from "../utilities/constants";
+import { PieceNames, baseKingState, pieceNamesV2 } from "../utilities/constants";
 import { IBothKingsPosition, IKingState, IMoveHistory, IMoveInfo, IPiece, IPieceMove, IPiecesCoordinates, PlayersPromotePreference, PromotionPrefence } from "../utilities/types";
 import { eventEmitter } from "../utilities/eventEmitter";
 import KingCastled from "../logic/kingCastled";
@@ -61,7 +61,7 @@ export class MainGameScene extends Scene{
         this.isPlayersTurnToMove = isColorWhite;
         this.boardOrientationIsWhite = isColorWhite;
         this.selectedPiece = null;
-        this.tileSize = gameOptions.tileSize; // 100
+        this.tileSize = 100;
         this.board = Array.from({ length: 8 }).map(_ => new Array(8).fill(null)); // creates 8x8 grid
         this.previewBoard = Array.from({ length: 8 }).map(_ => new Array(8));
 
