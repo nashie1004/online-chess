@@ -44,13 +44,14 @@ All [board](https://github.com/lichess-org/lila/blob/master/public/images/board/
 1. fifty move rule
 2. show proper chess move notation
 3. 3 fold repetition
-5. responsive ui
-8. some framer motion?, more sounds and some phaser effects
-10. bug - if both player exited and a timer is running, cancel timer?
-11. bug - timer not found on resignation and draw
-12. use redis
-13. add board coordinates
-14. add profile image
+4. responsive ui
+5. some framer motion?, more sounds and some phaser effects
+6. bug - if both player exited and a timer is running, cancel timer?
+7. bug - timer not found on resignation and draw
+8. use redis
+9. add board coordinates
+10. add profile image
+11. fix types
 
 ### SQLite
 ```

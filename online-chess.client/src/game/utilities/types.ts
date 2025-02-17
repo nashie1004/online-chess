@@ -181,6 +181,7 @@ interface IInitialPlayerInfo{
     kingInCheck: boolean;
     kingInCheckMate: boolean;
     kingInStaleMate: boolean;
+    pawnPromotionPreference: PromotionPrefence;
 }
 
 export interface IInitialGameInfo{

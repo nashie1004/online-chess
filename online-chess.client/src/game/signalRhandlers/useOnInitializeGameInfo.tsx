@@ -29,14 +29,25 @@ export default function useOnInitializeGameInfo(
             ? initGameInfo.createdByUserInfo.isColorWhite
             : initGameInfo.joinedByUserInfo.isColorWhite;
 
+        const myInfo = (initGameInfo.createdByUserInfo.userName === user?.userName) 
+            ? initGameInfo.createdByUserInfo 
+            : initGameInfo.joinedByUserInfo;
+
+        const opponentInfo = (initGameInfo.createdByUserInfo.userName === user?.userName) 
+            ? initGameInfo.joinedByUserInfo 
+            : initGameInfo.createdByUserInfo;
+
         const moveHistory: IMoveHistory = { white: [], black: [] };
+
         const bothKingsPosition: IBothKingsPosition = {
             // if black orientation switch queen and king coords
             white: { x: playerIsWhite ? 4 : 3, y: playerIsWhite ? 7 : 0 }
             , black: { x: playerIsWhite ? 4 : 3, y: playerIsWhite ? 0 : 7 }
         };
+
         const promotePreference: PlayersPromotePreference = {
-            white: PromotionPrefence.Queen, black: PromotionPrefence.Queen
+            white: playerIsWhite ? myInfo.pawnPromotionPreference : opponentInfo.pawnPromotionPreference
+            , black: !playerIsWhite ? myInfo.pawnPromotionPreference : opponentInfo.pawnPromotionPreference
         };
 
         // init phaser
@@ -59,14 +70,6 @@ export default function useOnInitializeGameInfo(
                 ],
             });
         }
-
-        const myInfo = (initGameInfo.createdByUserInfo.userName === user?.userName) 
-            ? initGameInfo.createdByUserInfo 
-            : initGameInfo.joinedByUserInfo;
-
-        const opponentInfo = (initGameInfo.createdByUserInfo.userName === user?.userName) 
-            ? initGameInfo.joinedByUserInfo 
-            : initGameInfo.createdByUserInfo;
 
         setGameState({
             type: "SET_MYINFO",
