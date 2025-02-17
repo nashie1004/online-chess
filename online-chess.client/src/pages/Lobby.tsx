@@ -4,15 +4,14 @@ import { IGameRoomList } from "../game/utilities/types";
 import LobbyTable from "../components/lobby/LobbyTable";
 import useSignalRContext from "../hooks/useSignalRContext";
 import LobbyForm from "../components/lobby/LobbyForm";
-import { useNavigate } from "react-router";
-import { lobbyPageHandlers, lobbyPageInvokers, mainPageInvokers } from "../game/utilities/constants";
+import { lobbyPageInvokers, mainPageInvokers } from "../game/utilities/constants";
 import useNotificationContext from "../hooks/useNotificationContext";
 import useQueuingContext from "../hooks/useQueuingContext";
+import { lobbyPageHandlers } from "../constants/handlers";
 
 export default function Lobby() {
     const [gameRoomList, setGameRoomList] = useState<IGameRoomList>({ list: [], isLoading: true });
     const { userConnectionId, addHandler, removeHandler, invoke } = useSignalRContext();
-    const navigate = useNavigate();
     const { setNotificationState } = useNotificationContext();
     const { setQueuingRoomKey, queuingRoomKey } = useQueuingContext();
 

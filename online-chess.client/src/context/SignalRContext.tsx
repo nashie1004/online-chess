@@ -1,8 +1,8 @@
 import { createContext, ReactNode, useState } from 'react'
 import { ISignalRContext } from '../game/utilities/types';
 import { HttpTransportType, HubConnection, HubConnectionBuilder, HubConnectionState, LogLevel } from '@microsoft/signalr';
-import { mainPageHandlers } from '../game/utilities/constants';
 import useNotificationContext from '../hooks/useNotificationContext';
+import { mainPageHandlers } from '../constants/handlers';
 
 interface ISignalRContextProps{
     children: ReactNode

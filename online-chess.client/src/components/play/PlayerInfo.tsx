@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import useGameContext from '../../hooks/useGameContext';
 import { gameTypeToSeconds, secondsToMinuteDisplay2 } from '../../utils/helper';
 import useSignalRContext from '../../hooks/useSignalRContext';
-import { playPageHandlers } from '../../game/utilities/constants';
+import { playPageHandlers } from '../../constants/handlers';
 
 export default function PlayerInfo() {
     const { gameState } = useGameContext();

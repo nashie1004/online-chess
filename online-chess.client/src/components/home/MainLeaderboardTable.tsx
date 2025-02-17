@@ -4,8 +4,9 @@ import { Table, Spinner } from "react-bootstrap";
 import { ILeaderboardList } from "../../game/utilities/types";
 import { GenericReturnMessageList } from "../../services/BaseApiService";
 import useSignalRContext from "../../hooks/useSignalRContext";
-import { listHandlers, listInvokers } from "../../game/utilities/constants";
+import { listInvokers } from "../../game/utilities/constants";
 import useNotificationContext from "../../hooks/useNotificationContext";
+import { listHandlers } from "../../constants/handlers";
 
 export default function MainLeaderboardTable(){
     const [pageNo, setPageNo] = useState<number>(1);

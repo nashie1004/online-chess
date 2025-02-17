@@ -1,7 +1,8 @@
 import { Col, Form } from 'react-bootstrap'
 import useLocalStorage from '../../hooks/useLocalStorage';
-import { boardUIArray, pieceUIArray } from '../../game/utilities/constants';
 import { useMemo } from 'react';
+import boardUI from '../../constants/boardUI';
+import pieceUI from '../../constants/pieceUI';
 
 export default function UIChanger() {
   const { setValue: setBoard, data: board } = useLocalStorage("board", "green.png");
@@ -39,7 +40,7 @@ export default function UIChanger() {
               onChange={(e) => setBoard(e.target.value)}
               value={board}
               className='w-50'>
-                {boardUIArray.map((item, idx) => {
+                {boardUI.map((item, idx) => {
                   return <option key={idx} value={item.displayCode}>{item.displayName}</option>
                 })}
             </Form.Select>
@@ -52,7 +53,7 @@ export default function UIChanger() {
               onChange={(e) => setPiece(e.target.value)}
               value={piece}
               className='w-50'>
-              {pieceUIArray.map((item, idx) => {
+              {pieceUI.map((item, idx) => {
                 return <option key={idx} value={item.displayCode}>{item.displayName}</option>
               })}
             </Form.Select>

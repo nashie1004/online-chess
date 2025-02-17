@@ -170,27 +170,10 @@ export const baseNotificationState: INotificationContextReducerState = {
  * React to SignalR
  * SignalR to React
  */
-export const mainPageHandlers = {
-    onGetUserConnectionId: "onGetUserConnectionId"
-    ,onGenericError: "onGenericError"
-    ,onHasAGameInProgress: "onHasAGameInProgress"
-};
-
 export const mainPageInvokers = {
     deleteRoom: "DeleteRoom"
     , getConnectionId: "GetConnectionId"
     , getHasAGameInProgress: "GetHasAGameInProgress"
-};
-
-export const listHandlers = {
-    onGetGameHistory: "onGetGameHistory"
-    ,onGetLeaderboard: "onGetLeaderboard"
-    ,onGetGameTypeList: "onGetGameTypeList"
-    ,onGetGameTypeListClassical: "onGetGameTypeList_Classical"
-    ,onGetGameTypeListBlitz3Mins: "onGetGameTypeList_Blitz3Mins"
-    ,onGetGameTypeListBlitz5Mins: "onGetGameTypeList_Blitz5Mins"
-    ,onGetGameTypeListRapid10Mins: "onGetGameTypeList_Rapid10Mins"
-    ,onGetGameTypeListRapid25Mins: "onGetGameTypeList_Rapid25Mins"
 };
 
 export const listInvokers = {
@@ -199,28 +182,12 @@ export const listInvokers = {
     ,gameTypeList: "GameTypeList"
 };
 
-export const lobbyPageHandlers = {
-    onRefreshRoomList: "onRefreshRoomList"
-    ,onGetRoomKey: "onGetRoomKey"
-    ,onMatchFound: "onMatchFound"
-}
 
 export const lobbyPageInvokers = {
     getRoomList: "GetRoomList"
     ,getCreatedRoomKey: "GetCreatedRoomKey"
     ,addToQueue: "AddToQueue"
     ,joinRoom: "JoinRoom"
-}
-
-export const playPageHandlers = {
-    onInitializeGameInfo: "onInitializeGameInfo"
-    ,onGameOver: "onGameOver"
-    ,onReceiveMessages: "onReceiveMessages"
-    ,onUpdateBoard: "onUpdateBoard"
-    ,onOpponentDrawRequest: "onOpponentDrawRequest"
-    ,onDeclineDraw: "onDeclineDraw"
-    ,onUpdateTimer: "onUpdateTimer"
-    ,onSetPromotionPreference: "onSetPromotionPreference"
 }
 
 export const playPageInvokers = {
@@ -253,71 +220,6 @@ export const eventOn = {
     ,setMovePiece: "setMovePiece"
 }
 
-export const boardUIArray = [
-    { displayName: "Blue Marble", displayCode: "blue-marble.jpg" },
-    { displayName: "Blue", displayCode: "blue.png" },
-    { displayName: "Blue 2", displayCode: "blue2.jpg" },
-    { displayName: "Blue 3", displayCode: "blue3.jpg" },
-    { displayName: "Brown", displayCode: "brown.png" },
-    { displayName: "Canvas 2", displayCode: "canvas2.jpg" },
-    { displayName: "Green Plastic", displayCode: "green-plastic.png" },
-    { displayName: "Green", displayCode: "green.png" },
-    { displayName: "Grey", displayCode: "grey.jpg" },
-    { displayName: "Horsey", displayCode: "horsey.jpg" },
-    { displayName: "Ic", displayCode: "ic.png" },
-    { displayName: "Leather", displayCode: "leather.jpg" },
-    { displayName: "Maple", displayCode: "maple.jpg" },
-    { displayName: "Maple 2", displayCode: "maple2.jpg" },
-    { displayName: "Marble", displayCode: "marble.jpg" },
-    { displayName: "Metal", displayCode: "metal.jpg" },
-    { displayName: "Ncf", displayCode: "ncf-board.png" },
-    { displayName: "Olive", displayCode: "olive.jpg" },
-    { displayName: "Pink Pyramid", displayCode: "pink-pyramid.png" },
-    { displayName: "Purple Diag", displayCode: "purple-diag.png" },
-    { displayName: "Purple", displayCode: "purple.png" },
-    { displayName: "Wood", displayCode: "wood.jpg" },
-    { displayName: "Wood 2", displayCode: "wood2.jpg" },
-    { displayName: "Wood 3", displayCode: "wood3.jpg" },
-    { displayName: "Wood 4", displayCode: "wood4.jpg" }
-];
   
 
-export const pieceUIArray = [
-    { displayName: "Alpha", displayCode: "alpha" },
-    { displayName: "Anarcandy", displayCode: "anarcandy" },
-    { displayName: "Caliente", displayCode: "caliente" },
-    { displayName: "California", displayCode: "california" },
-    { displayName: "Cardinal", displayCode: "cardinal" },
-    { displayName: "Cburnett", displayCode: "cburnett" },
-    { displayName: "Celtic", displayCode: "celtic" },
-    { displayName: "Chess 7", displayCode: "chess7" },
-    { displayName: "Chessnut", displayCode: "chessnut" },
-    { displayName: "Companion", displayCode: "companion" },
-    { displayName: "Cooke", displayCode: "cooke" },
-    // { displayName: "Disguised", displayCode: "disguised" },
-    // { displayName: "Dubronovny", displayCode: "dubronovny" },
-    { displayName: "Fantasy", displayCode: "fantasy" },
-    { displayName: "Fresca", displayCode: "fresca" },
-    { displayName: "Gioco", displayCode: "gioco" },
-    { displayName: "Governor", displayCode: "governor" },
-    { displayName: "Horsey", displayCode: "horsey" },
-    { displayName: "Ic Pieces", displayCode: "icpieces" },
-    // { displayName: "Kiwensuwi", displayCode: "kiwenSuwi" },
-    { displayName: "Kosal", displayCode: "kosal" },
-    { displayName: "Leipzig", displayCode: "leipzig" },
-    { displayName: "Letter", displayCode: "letter" },
-    { displayName: "Maestro", displayCode: "maestro" },
-    { displayName: "Merida", displayCode: "merida" },
-    { displayName: "Monarchy", displayCode: "monarchy" },
-    // { displayName: "Mono", displayCode: "mono" },
-    { displayName: "Mpchess", displayCode: "mpchess" },
-    { displayName: "Pirouetti", displayCode: "pirouetti" },
-    { displayName: "Pixel", displayCode: "pixel" },
-    { displayName: "Reillycraig", displayCode: "reillycraig" },
-    { displayName: "Riohacha", displayCode: "riohacha" },
-    { displayName: "Shapes", displayCode: "shapes" },
-    { displayName: "Spatial", displayCode: "spatial" },
-    { displayName: "Staunty", displayCode: "staunty" },
-    { displayName: "Tatiana", displayCode: "tatiana" }
-  ];
   
