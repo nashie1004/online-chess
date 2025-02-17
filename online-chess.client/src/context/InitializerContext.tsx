@@ -7,8 +7,8 @@ import BaseApiService from '../services/BaseApiService';
 import { useLocation, useNavigate } from 'react-router';
 import useQueuingContext from '../hooks/useQueuingContext';
 import useGameContext from '../hooks/useGameContext';
-import { lobbyPageHandlers, mainPageHandlers } from '../constants/handlers';
 import { MAIN_PAGE_INVOKERS } from '../constants/invokers';
+import { LOBBY_PAGE_HANDLERS, MAIN_PAGE_HANDLERS } from '../constants/handlers';
 
 export const initializerContext = createContext<IInitializerContext | null>(null);
 
@@ -46,23 +46,23 @@ export default function InitializerContext(
   }
 
   async function addHandlers(){
-    await addHandler(mainPageHandlers.onGetUserConnectionId, (connectionId: string) => {
+    await addHandler(MAIN_PAGE_HANDLERS.ON_GET_USER_CONNECTION_ID, (connectionId: string) => {
       setUserConnectionId(connectionId);
     });
-    await addHandler(mainPageHandlers.onGenericError, (msg: string) => {
+    await addHandler(MAIN_PAGE_HANDLERS.ON_GENERIC_ERROR, (msg: string) => {
       setNotificationState({ 
         type: "SET_CUSTOMMESSAGE"
         , payload: { customMessage: msg, customMessageType: "DANGER" } 
       });
     });
-    await addHandler(lobbyPageHandlers.onGetRoomKey, (roomKey: string) => {
+    await addHandler(LOBBY_PAGE_HANDLERS.ON_GET_ROOM_KEY, (roomKey: string) => {
       setNotificationState({ type: "SET_HASAGAMEQUEUINGROOMKEY", payload: true });
       setQueuingRoomKey(roomKey);
     });
-    await addHandler(lobbyPageHandlers.onMatchFound, (roomKey: string) => {
+    await addHandler(LOBBY_PAGE_HANDLERS.ON_MATCH_FOUND, (roomKey: string) => {
       navigate(`/play/${roomKey}`);
     });
-    await addHandler(mainPageHandlers.onHasAGameInProgress, (roomKey: string) => {
+    await addHandler(MAIN_PAGE_HANDLERS.ON_HAS_A_GAME_IN_PROGRESS, (roomKey: string) => {
       // const inPlagePage = url.pathname.startsWith("/play/")
       // console.log("TODO onHasAGameInProgress: ", roomKey, inPlagePage, url)
       setGameState({ type: "SET_GAMEROOMKEY", payload: roomKey });
@@ -116,11 +116,11 @@ export default function InitializerContext(
     }
 
     return () => {
-      removeHandler(mainPageHandlers.onGetUserConnectionId);
-      removeHandler(lobbyPageHandlers.onGetRoomKey);
-      removeHandler(lobbyPageHandlers.onMatchFound);
-      removeHandler(mainPageHandlers.onHasAGameInProgress);
-      removeHandler(mainPageHandlers.onGenericError);
+      removeHandler(MAIN_PAGE_HANDLERS.ON_GET_USER_CONNECTION_ID);
+      removeHandler(LOBBY_PAGE_HANDLERS.ON_GET_ROOM_KEY);
+      removeHandler(LOBBY_PAGE_HANDLERS.ON_MATCH_FOUND);
+      removeHandler(MAIN_PAGE_HANDLERS.ON_HAS_A_GAME_IN_PROGRESS);
+      removeHandler(MAIN_PAGE_HANDLERS.ON_GENERIC_ERROR);
       stopConnection();
     }
   }, [initialize]);

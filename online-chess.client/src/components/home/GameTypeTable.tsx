@@ -6,7 +6,7 @@ import { GenericReturnMessageList } from "../../services/BaseApiService";
 import { GameType  } from "../../game/utilities/constants";
 import useSignalRContext from "../../hooks/useSignalRContext";
 import useNotificationContext from "../../hooks/useNotificationContext";
-import { listHandlers } from "../../constants/handlers";
+import { LIST_HANDLERS } from "../../constants/handlers";
 import { LIST_INVOKERS } from "../../constants/invokers";
 
 interface IGameTypeTable{
@@ -26,15 +26,15 @@ export default function GameTypeTable(
     const listHandler = useMemo(() => {
       switch(gameType){
         case GameType.Classical:
-          return listHandlers.onGetGameTypeListClassical;
+          return LIST_HANDLERS.ON_GET_GAME_TYPE_LIST_CLASSICAL;
         case GameType.Blitz3Mins:
-          return listHandlers.onGetGameTypeListBlitz3Mins;
+          return LIST_HANDLERS.ON_GET_GAME_TYPE_LIST_BLITZ_3_MINS;
         case GameType.Blitz5Mins:
-          return listHandlers.onGetGameTypeListBlitz5Mins;
+          return LIST_HANDLERS.ON_GET_GAME_TYPE_LIST_BLITZ_5_MINS;
         case GameType.Rapid10Mins:
-          return listHandlers.onGetGameTypeListRapid10Mins;
+          return LIST_HANDLERS.ON_GET_GAME_TYPE_LIST_RAPID_10_MINS;
         case GameType.Rapid25Mins:
-          return listHandlers.onGetGameTypeListRapid25Mins;
+          return LIST_HANDLERS.ON_GET_GAME_TYPE_LIST_RAPID_25_MINS;
         default: 
           return "";
       }

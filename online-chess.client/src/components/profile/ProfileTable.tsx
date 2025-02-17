@@ -6,8 +6,8 @@ import { GenericReturnMessageList } from "../../services/BaseApiService";
 import { gameStatusDisplay, gameTypeDisplay } from "../../utils/helper";
 import useSignalRContext from "../../hooks/useSignalRContext";
 import useNotificationContext from "../../hooks/useNotificationContext";
-import { listHandlers } from "../../constants/handlers";
 import { LIST_INVOKERS } from "../../constants/invokers";
+import { LIST_HANDLERS } from "../../constants/handlers";
 
 export default function ProfileTable(){
   const [pageNo, setPageNo] = useState<number>(1);
@@ -19,7 +19,7 @@ export default function ProfileTable(){
     if (!userConnectionId) return;
   
     async function init(){
-      await addHandler(listHandlers.onGetGameHistory, (res: GenericReturnMessageList) => {
+      await addHandler(LIST_HANDLERS.ON_GET_GAME_HISTORY, (res: GenericReturnMessageList) => {
         if (!res.isSuccess){
           setNotificationState({ 
             type: "SET_CUSTOMMESSAGE"
@@ -35,7 +35,7 @@ export default function ProfileTable(){
     init();
     
     return () => {
-      removeHandler(listHandlers.onGetGameHistory);
+      removeHandler(LIST_HANDLERS.ON_GET_GAME_HISTORY);
     };
   }, [userConnectionId]);
   

@@ -6,8 +6,8 @@ import useSignalRContext from "../hooks/useSignalRContext";
 import LobbyForm from "../components/lobby/LobbyForm";
 import useNotificationContext from "../hooks/useNotificationContext";
 import useQueuingContext from "../hooks/useQueuingContext";
-import { lobbyPageHandlers } from "../constants/handlers";
 import { LOBBY_PAGE_INVOKERS, MAIN_PAGE_INVOKERS } from "../constants/invokers";
+import { LOBBY_PAGE_HANDLERS } from "../constants/handlers";
 
 export default function Lobby() {
     const [gameRoomList, setGameRoomList] = useState<IGameRoomList>({ list: [], isLoading: true });
@@ -16,19 +16,19 @@ export default function Lobby() {
     const { setQueuingRoomKey, queuingRoomKey } = useQueuingContext();
 
     useEffect(() => {
+        if (!userConnectionId) return;
+
         async function start(){
-            await addHandler(lobbyPageHandlers.onRefreshRoomList, (roomList) => setGameRoomList({ isLoading: false, list: roomList }));
+            await addHandler(LOBBY_PAGE_HANDLERS.ON_REFRESH_ROOM_LIST, (roomList) => setGameRoomList({ isLoading: false, list: roomList }));
        
             await invoke(LOBBY_PAGE_INVOKERS.GET_ROOM_LIST, 1);
             await invoke(LOBBY_PAGE_INVOKERS.GET_CREATED_ROOM_KEY);
         }
 
-        if (userConnectionId){
-            start();
-        }
+        start();
         
         return () => {
-            removeHandler(lobbyPageHandlers.onRefreshRoomList);
+            removeHandler(LOBBY_PAGE_HANDLERS.ON_REFRESH_ROOM_LIST);
         }
     }, [userConnectionId])
 

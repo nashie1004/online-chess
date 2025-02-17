@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import useGameContext from '../../hooks/useGameContext';
 import { gameTypeToSeconds, secondsToMinuteDisplay2 } from '../../utils/helper';
 import useSignalRContext from '../../hooks/useSignalRContext';
-import { playPageHandlers } from '../../constants/handlers';
+import { PLAY_PAGE_HANDLERS } from '../../constants/handlers';
 
 export default function PlayerInfo() {
     const { gameState } = useGameContext();
@@ -24,7 +24,7 @@ export default function PlayerInfo() {
     useEffect(() => {
 
         async function startTimer(){
-            await addHandler(playPageHandlers.onUpdateTimer, (data: any) => {
+            await addHandler(PLAY_PAGE_HANDLERS.ON_UPDATE_TIMER, (data: any) => {
                 const white = data.white as number;
                 const black = data.black as number;
                 const whitesTurn = data.whitesTurn as boolean;
@@ -38,7 +38,7 @@ export default function PlayerInfo() {
         }
 
         return () => {
-            removeHandler(playPageHandlers.onUpdateTimer);
+            removeHandler(PLAY_PAGE_HANDLERS.ON_UPDATE_TIMER);
         };
 
     }, [gameState.gameStatus]);

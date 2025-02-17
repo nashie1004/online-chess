@@ -5,8 +5,8 @@ import { ILeaderboardList } from "../../game/utilities/types";
 import { GenericReturnMessageList } from "../../services/BaseApiService";
 import useSignalRContext from "../../hooks/useSignalRContext";
 import useNotificationContext from "../../hooks/useNotificationContext";
-import { listHandlers } from "../../constants/handlers";
 import { LIST_INVOKERS } from "../../constants/invokers";
+import { LIST_HANDLERS } from "../../constants/handlers";
 
 export default function MainLeaderboardTable(){
     const [pageNo, setPageNo] = useState<number>(1);
@@ -27,7 +27,7 @@ export default function MainLeaderboardTable(){
       if (!userConnectionId) return;
 
       async function init(){
-        await addHandler(listHandlers.onGetLeaderboard, (res: GenericReturnMessageList) => {
+        await addHandler(LIST_HANDLERS.ON_GET_LEADERBOARD, (res: GenericReturnMessageList) => {
           if (!res.isSuccess){
             setNotificationState({ 
               type: "SET_CUSTOMMESSAGE"
@@ -43,7 +43,7 @@ export default function MainLeaderboardTable(){
       init();
       
       return () => {
-        removeHandler(listHandlers.onGetLeaderboard);
+        removeHandler(LIST_HANDLERS.ON_GET_LEADERBOARD);
       };
     }, [userConnectionId]);
 

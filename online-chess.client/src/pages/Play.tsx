@@ -17,8 +17,8 @@ import PromotionPicker from "../components/play/PromotionPickerModal";
 import useOnSetPromotionPreference from "../game/signalRhandlers/useOnSetPromotionPreference";
 import useNotificationContext from "../hooks/useNotificationContext";
 import useQueuingContext from "../hooks/useQueuingContext";
-import { playPageHandlers } from "../constants/handlers";
 import { PLAY_PAGE_INVOKERS } from "../constants/invokers";
+import { PLAY_PAGE_HANDLERS } from "../constants/handlers";
 
 export default function Main(){
     const gameRef = useRef<Phaser.Game | null>();
@@ -42,21 +42,21 @@ export default function Main(){
         setGameState({ type: "SET_CLEARGAMESTATE" });
         setGameState({ type: "SET_GAMESTATUS", payload: "LOADING" });
 
+        if (!userConnectionId) return;
+
         async function start() {
-            await addHandler(playPageHandlers.onInitializeGameInfo, onInitializeGameInfo);
-            await addHandler(playPageHandlers.onGameOver, onGameOver);
-            await addHandler(playPageHandlers.onReceiveMessages, onReceiveMessages);
-            await addHandler(playPageHandlers.onUpdateBoard, onUpdateBoard)
-            await addHandler(playPageHandlers.onOpponentDrawRequest, onOpponentDrawRequest)
-            await addHandler(playPageHandlers.onDeclineDraw, onDeclineDraw)
-            await addHandler(playPageHandlers.onSetPromotionPreference, onSetPromotionPreference)
+            await addHandler(PLAY_PAGE_HANDLERS.ON_INITIALIZE_GAME_INFO, onInitializeGameInfo);
+            await addHandler(PLAY_PAGE_HANDLERS.ON_GAME_OVER, onGameOver);
+            await addHandler(PLAY_PAGE_HANDLERS.ON_RECEIVER_MESSAGES, onReceiveMessages);
+            await addHandler(PLAY_PAGE_HANDLERS.ON_UPDATE_BOARD, onUpdateBoard)
+            await addHandler(PLAY_PAGE_HANDLERS.ON_OPPONENT_DRAW_REQUEST, onOpponentDrawRequest)
+            await addHandler(PLAY_PAGE_HANDLERS.ON_DECLINE_DRAW, onDeclineDraw)
+            await addHandler(PLAY_PAGE_HANDLERS.ON_SET_PROMOTION_PREFERENCE, onSetPromotionPreference)
 
             await invoke(PLAY_PAGE_INVOKERS.GAME_START, url.gameRoomId);
         }
 
-        if (userConnectionId){
-            start();
-        }
+        start();
 
         return () => {
             setGameState({ type: "SET_CLEARGAMESTATE" });
@@ -67,13 +67,13 @@ export default function Main(){
                 gameRef.current = null;
             }
             
-            removeHandler(playPageHandlers.onInitializeGameInfo);
-            removeHandler(playPageHandlers.onGameOver);
-            removeHandler(playPageHandlers.onReceiveMessages);
-            removeHandler(playPageHandlers.onUpdateBoard);
-            removeHandler(playPageHandlers.onOpponentDrawRequest);
-            removeHandler(playPageHandlers.onDeclineDraw);
-            removeHandler(playPageHandlers.onSetPromotionPreference);
+            removeHandler(PLAY_PAGE_HANDLERS.ON_INITIALIZE_GAME_INFO);
+            removeHandler(PLAY_PAGE_HANDLERS.ON_GAME_OVER);
+            removeHandler(PLAY_PAGE_HANDLERS.ON_RECEIVER_MESSAGES);
+            removeHandler(PLAY_PAGE_HANDLERS.ON_UPDATE_BOARD);
+            removeHandler(PLAY_PAGE_HANDLERS.ON_OPPONENT_DRAW_REQUEST);
+            removeHandler(PLAY_PAGE_HANDLERS.ON_DECLINE_DRAW);
+            removeHandler(PLAY_PAGE_HANDLERS.ON_SET_PROMOTION_PREFERENCE);
         };
     }, [])
  

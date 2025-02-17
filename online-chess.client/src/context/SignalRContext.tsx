@@ -2,7 +2,7 @@ import { createContext, ReactNode, useState } from 'react'
 import { ISignalRContext } from '../game/utilities/types';
 import { HttpTransportType, HubConnection, HubConnectionBuilder, HubConnectionState, LogLevel } from '@microsoft/signalr';
 import useNotificationContext from '../hooks/useNotificationContext';
-import { mainPageHandlers } from '../constants/handlers';
+import { MAIN_PAGE_HANDLERS } from '../constants/handlers';
 
 interface ISignalRContextProps{
     children: ReactNode
@@ -50,7 +50,7 @@ export default function SignalRContext(
             connected = true;
         } catch (error) {
             setUserConnectionId(null);
-            removeHandler(mainPageHandlers.onGetUserConnectionId);
+            removeHandler(MAIN_PAGE_HANDLERS.ON_GET_USER_CONNECTION_ID);
             connected = false;
         }
         
@@ -69,7 +69,7 @@ export default function SignalRContext(
             return;
         }
 
-        removeHandler(mainPageHandlers.onGetUserConnectionId);
+        removeHandler(MAIN_PAGE_HANDLERS.ON_GET_USER_CONNECTION_ID);
 
         try{
             setUserConnectionId(null);
