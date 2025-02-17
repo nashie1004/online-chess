@@ -3,10 +3,11 @@ import { useState, useEffect, useMemo } from "react";
 import { Table, Spinner } from "react-bootstrap";
 import { IGameTypeList } from "../../game/utilities/types";
 import { GenericReturnMessageList } from "../../services/BaseApiService";
-import { GameType, listInvokers,  } from "../../game/utilities/constants";
+import { GameType  } from "../../game/utilities/constants";
 import useSignalRContext from "../../hooks/useSignalRContext";
 import useNotificationContext from "../../hooks/useNotificationContext";
 import { listHandlers } from "../../constants/handlers";
+import { listInvokers } from "../../constants/invokers";
 
 interface IGameTypeTable{
   gameTypeLabel: string;

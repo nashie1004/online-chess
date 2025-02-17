@@ -4,10 +4,10 @@ import { IGameRoomList } from "../game/utilities/types";
 import LobbyTable from "../components/lobby/LobbyTable";
 import useSignalRContext from "../hooks/useSignalRContext";
 import LobbyForm from "../components/lobby/LobbyForm";
-import { lobbyPageInvokers, mainPageInvokers } from "../game/utilities/constants";
 import useNotificationContext from "../hooks/useNotificationContext";
 import useQueuingContext from "../hooks/useQueuingContext";
 import { lobbyPageHandlers } from "../constants/handlers";
+import { lobbyPageInvokers, mainPageInvokers } from "../constants/invokers";
 
 export default function Lobby() {
     const [gameRoomList, setGameRoomList] = useState<IGameRoomList>({ list: [], isLoading: true });

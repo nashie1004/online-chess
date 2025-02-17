@@ -4,7 +4,7 @@ import { useCallback, useMemo, useState } from "react";
 import { PromoteOptions, PromotionPrefence } from "../../game/utilities/types";
 import useLocalStorage from "../../hooks/useLocalStorage";
 import useSignalRContext from "../../hooks/useSignalRContext";
-import { playPageInvokers } from "../../game/utilities/constants";
+import { playPageInvokers } from "../../constants/invokers";
 
 export default function PromotionPickerModal() {
   const { setGameState, gameState } = useGameContext();

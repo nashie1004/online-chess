@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import useSignalRContext from "../../hooks/useSignalRContext";
 import { colorOptionsDisplay, gameTypeDisplay } from "../../utils/helper";
 import useAuthContext from "../../hooks/useAuthContext";
-import { lobbyPageInvokers } from "../../game/utilities/constants";
+import { lobbyPageInvokers } from "../../constants/invokers";
 
 interface ILobbyTable{
     setGameRoomList: React.Dispatch<React.SetStateAction<IGameRoomList>>;

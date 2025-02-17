@@ -3,7 +3,7 @@ import moment from "moment";
 import useSignalRContext from "../../hooks/useSignalRContext";
 import { useEffect, useRef, useState } from "react";
 import useGameContext from "../../hooks/useGameContext";
-import { playPageInvokers } from "../../game/utilities/constants";
+import { playPageInvokers } from "../../constants/invokers";
 
 export default function Chatbar() {
   const { gameState } = useGameContext();

@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Modal } from 'react-bootstrap';
 import useSignalRContext from '../../hooks/useSignalRContext';
 import useGameContext from '../../hooks/useGameContext';
-import { playPageInvokers } from '../../game/utilities/constants';
+import { playPageInvokers } from '../../constants/invokers';
 
 export default function GameOutcome() {
     const [modalShow, setModalShow] = React.useState(false);

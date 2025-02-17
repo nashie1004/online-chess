@@ -5,10 +5,10 @@ import useSignalRContext from '../hooks/useSignalRContext';
 import useAuthContext from '../hooks/useAuthContext';
 import BaseApiService from '../services/BaseApiService';
 import { useLocation, useNavigate } from 'react-router';
-import { mainPageInvokers } from '../game/utilities/constants';
 import useQueuingContext from '../hooks/useQueuingContext';
 import useGameContext from '../hooks/useGameContext';
 import { lobbyPageHandlers, mainPageHandlers } from '../constants/handlers';
+import { mainPageInvokers } from '../constants/invokers';
 
 export const initializerContext = createContext<IInitializerContext | null>(null);
 

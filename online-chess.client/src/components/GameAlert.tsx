@@ -1,11 +1,11 @@
 import { Spinner } from "react-bootstrap";
 import useNotificationContext from "../hooks/useNotificationContext"
 import useSignalRContext from "../hooks/useSignalRContext";
-import { mainPageInvokers } from "../game/utilities/constants";
 import useQueuingContext from "../hooks/useQueuingContext";
 import useInitializerContext from "../hooks/useInitializerContext";
 import { useNavigate } from "react-router";
 import useGameContext from "../hooks/useGameContext";
+import { mainPageInvokers } from "../constants/invokers";
 
 export default function GameAlert(){
     const { notificationState, setNotificationState } = useNotificationContext();

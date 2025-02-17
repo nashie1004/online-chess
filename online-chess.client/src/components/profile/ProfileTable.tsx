@@ -5,9 +5,9 @@ import { IGameHistoryList } from "../../game/utilities/types";
 import { GenericReturnMessageList } from "../../services/BaseApiService";
 import { gameStatusDisplay, gameTypeDisplay } from "../../utils/helper";
 import useSignalRContext from "../../hooks/useSignalRContext";
-import { listInvokers } from "../../game/utilities/constants";
 import useNotificationContext from "../../hooks/useNotificationContext";
 import { listHandlers } from "../../constants/handlers";
+import { listInvokers } from "../../constants/invokers";
 
 export default function ProfileTable(){
   const [pageNo, setPageNo] = useState<number>(1);

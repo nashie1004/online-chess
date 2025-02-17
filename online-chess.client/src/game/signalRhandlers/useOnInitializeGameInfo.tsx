@@ -3,11 +3,12 @@ import { useCallback, useRef } from "react";
 import { MainGameScene } from "../scenes/MainGameScene";
 import { eventEmitter } from "../utilities/eventEmitter";
 import { IBothKingsPosition, IInitialGameInfo, IKingState, IMoveHistory, IPiece, PlayersPromotePreference, PromotionPrefence } from "../utilities/types";
-import { eventOn, Options as gameOptions, playPageInvokers } from "../utilities/constants";
+import { eventOn, Options as gameOptions } from "../utilities/constants";
 import useGameContext from "../../hooks/useGameContext";
 import useSignalRContext from "../../hooks/useSignalRContext";
 import useAuthContext from "../../hooks/useAuthContext";
 import useLocalStorage from "../../hooks/useLocalStorage";
+import { playPageInvokers } from "../../constants/invokers";
 
 export default function useOnInitializeGameInfo(
     gameRef: React.MutableRefObject<Phaser.Game | null | undefined>

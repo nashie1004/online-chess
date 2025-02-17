@@ -2,7 +2,7 @@ import { Modal } from "react-bootstrap";
 import useGameContext from "../../hooks/useGameContext";
 import { useState } from "react";
 import useSignalRContext from "../../hooks/useSignalRContext";
-import { playPageInvokers } from "../../game/utilities/constants";
+import { playPageInvokers } from "../../constants/invokers";
 
 export default function DrawRequestModal(){
     const { gameState, setGameState } = useGameContext();

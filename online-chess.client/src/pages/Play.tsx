@@ -14,11 +14,11 @@ import GameLoading from "../components/play/GameLoading";
 import DrawRequestModal from "../components/play/DrawRequestModal";
 import useOnDeclineDraw from "../game/signalRhandlers/useOnDeclineDraw";
 import PromotionPicker from "../components/play/PromotionPickerModal";
-import { playPageInvokers } from "../game/utilities/constants";
 import useOnSetPromotionPreference from "../game/signalRhandlers/useOnSetPromotionPreference";
 import useNotificationContext from "../hooks/useNotificationContext";
 import useQueuingContext from "../hooks/useQueuingContext";
 import { playPageHandlers } from "../constants/handlers";
+import { playPageInvokers } from "../constants/invokers";
 
 export default function Main(){
     const gameRef = useRef<Phaser.Game | null>();
