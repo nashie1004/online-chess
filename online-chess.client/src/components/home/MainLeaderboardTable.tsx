@@ -6,7 +6,7 @@ import { GenericReturnMessageList } from "../../services/BaseApiService";
 import useSignalRContext from "../../hooks/useSignalRContext";
 import useNotificationContext from "../../hooks/useNotificationContext";
 import { listHandlers } from "../../constants/handlers";
-import { listInvokers } from "../../constants/invokers";
+import { LIST_INVOKERS } from "../../constants/invokers";
 
 export default function MainLeaderboardTable(){
     const [pageNo, setPageNo] = useState<number>(1);
@@ -20,7 +20,7 @@ export default function MainLeaderboardTable(){
       if (!userConnectionId) return;
 
       setList({ isLoading: true, data: [] });
-      invoke(listInvokers.leaderboard, 10, pageNo);
+      invoke(LIST_INVOKERS.LEADEBOARD, 10, pageNo);
     }, [pageNo, userConnectionId]);
   
     useEffect(() => {

@@ -4,7 +4,7 @@ import { useCallback, useMemo, useState } from "react";
 import { PromoteOptions, PromotionPrefence } from "../../game/utilities/types";
 import useLocalStorage from "../../hooks/useLocalStorage";
 import useSignalRContext from "../../hooks/useSignalRContext";
-import { playPageInvokers } from "../../constants/invokers";
+import { PLAY_PAGE_INVOKERS } from "../../constants/invokers";
 
 export default function PromotionPickerModal() {
   const { setGameState, gameState } = useGameContext();
@@ -29,7 +29,7 @@ export default function PromotionPickerModal() {
   }, [gameState]);
 
   const submitPromotionPreference = () => {
-    invoke(playPageInvokers.setPromotionPreference, gameState.gameRoomKey, selectedOption);
+    invoke(PLAY_PAGE_INVOKERS.SET_PROMOTION_PREFERENCE, gameState.gameRoomKey, selectedOption);
     setGameState({ type: "SET_MYINFO_OPENPROMOTIONMODAL", payload: false });
   };
 

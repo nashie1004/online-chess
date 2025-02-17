@@ -8,7 +8,7 @@ import { useLocation, useNavigate } from 'react-router';
 import useQueuingContext from '../hooks/useQueuingContext';
 import useGameContext from '../hooks/useGameContext';
 import { lobbyPageHandlers, mainPageHandlers } from '../constants/handlers';
-import { mainPageInvokers } from '../constants/invokers';
+import { MAIN_PAGE_INVOKERS } from '../constants/invokers';
 
 export const initializerContext = createContext<IInitializerContext | null>(null);
 
@@ -69,8 +69,8 @@ export default function InitializerContext(
       setNotificationState({ type: "SET_HASAGAMEONGOING", payload: true });
     });
     
-    await invoke(mainPageInvokers.getConnectionId);
-    await invoke(mainPageInvokers.getHasAGameInProgress);
+    await invoke(MAIN_PAGE_INVOKERS.GET_CONNECTION_ID);
+    await invoke(MAIN_PAGE_INVOKERS.GET_HAS_A_GAME_IN_PROGRESS);
   }
 
   /**

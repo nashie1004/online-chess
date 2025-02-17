@@ -8,8 +8,8 @@ import useGameContext from "../../hooks/useGameContext";
 import useSignalRContext from "../../hooks/useSignalRContext";
 import useAuthContext from "../../hooks/useAuthContext";
 import useLocalStorage from "../../hooks/useLocalStorage";
-import { playPageInvokers } from "../../constants/invokers";
 import { EVENT_ON } from "../../constants/emitters";
+import { PLAY_PAGE_INVOKERS } from "../../constants/invokers";
 
 export default function useOnInitializeGameInfo(
     gameRef: React.MutableRefObject<Phaser.Game | null | undefined>
@@ -141,7 +141,7 @@ export default function useOnInitializeGameInfo(
         });
         
         eventEmitter.on(EVENT_ON.SET_MOVE_PIECE, (move: any) => {
-            signalRContext.invoke(playPageInvokers.movePiece, initGameInfo.gameRoomKey, move.oldMove, move.newMove, move.hasCapture);
+            signalRContext.invoke(PLAY_PAGE_INVOKERS.MOVE_PIECE, initGameInfo.gameRoomKey, move.oldMove, move.newMove, move.hasCapture);
         });
 
         setGameState({ type: "SET_GAMESTATUS", payload: "ONGOING" });

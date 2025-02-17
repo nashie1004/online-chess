@@ -4,7 +4,7 @@ import { colorOptionsDisplay, gameTypeDisplay } from '../../utils/helper';
 import { Form } from 'react-bootstrap';
 import useSignalRContext from '../../hooks/useSignalRContext';
 import { IGameRoomList } from '../../game/utilities/types';
-import { lobbyPageInvokers } from '../../constants/invokers';
+import { LOBBY_PAGE_INVOKERS } from '../../constants/invokers';
 
 interface ILobbyForm{
     setGameRoomList: React.Dispatch<React.SetStateAction<IGameRoomList>>;
@@ -28,7 +28,7 @@ export default function LobbyForm(
                 onSubmit={(e) => {
                     e.preventDefault();
                     setGameRoomList(prev => ({ ...prev, isLoading: true }));
-                    invoke(lobbyPageInvokers.addToQueue, gameType, colorOption)
+                    invoke(LOBBY_PAGE_INVOKERS.ADD_TO_QUEUE, gameType, colorOption)
                 }}
                 className='match-form'
             >

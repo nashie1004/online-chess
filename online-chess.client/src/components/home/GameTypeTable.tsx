@@ -7,7 +7,7 @@ import { GameType  } from "../../game/utilities/constants";
 import useSignalRContext from "../../hooks/useSignalRContext";
 import useNotificationContext from "../../hooks/useNotificationContext";
 import { listHandlers } from "../../constants/handlers";
-import { listInvokers } from "../../constants/invokers";
+import { LIST_INVOKERS } from "../../constants/invokers";
 
 interface IGameTypeTable{
   gameTypeLabel: string;
@@ -69,7 +69,7 @@ export default function GameTypeTable(
 
     useEffect(() => {
       setList({ isLoading: true, data: [] });
-      invoke(listInvokers.gameTypeList, 10, pageNo, gameType);
+      invoke(LIST_INVOKERS.GAME_TYPE_LIST, 10, pageNo, gameType);
     }, [pageNo, userConnectionId]);
 
     return <>

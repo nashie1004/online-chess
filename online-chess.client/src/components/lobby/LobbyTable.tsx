@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import useSignalRContext from "../../hooks/useSignalRContext";
 import { colorOptionsDisplay, gameTypeDisplay } from "../../utils/helper";
 import useAuthContext from "../../hooks/useAuthContext";
-import { lobbyPageInvokers } from "../../constants/invokers";
+import { LOBBY_PAGE_INVOKERS } from "../../constants/invokers";
 
 interface ILobbyTable{
     setGameRoomList: React.Dispatch<React.SetStateAction<IGameRoomList>>;
@@ -22,7 +22,7 @@ export default function LobbyTable({
     const { user } = useAuthContext();
 
     useEffect(() => {
-        invoke(lobbyPageInvokers.getRoomList, pageNo);
+        invoke(LOBBY_PAGE_INVOKERS.GET_ROOM_LIST, pageNo);
     }, [pageNo])
 
     return <>
@@ -133,7 +133,7 @@ export default function LobbyTable({
                         className="btn btn-1 w-25"
                         onClick={() => {
                             setModal(false);
-                            invoke(lobbyPageInvokers.joinRoom, selectedRoom?.key);
+                            invoke(LOBBY_PAGE_INVOKERS.JOIN_ROOM, selectedRoom?.key);
                         }}>Play</button>
                 </div>
             </Modal.Body>

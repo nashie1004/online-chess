@@ -2,7 +2,7 @@ import { Modal } from "react-bootstrap";
 import useGameContext from "../../hooks/useGameContext";
 import { useState } from "react";
 import useSignalRContext from "../../hooks/useSignalRContext";
-import { playPageInvokers } from "../../constants/invokers";
+import { PLAY_PAGE_INVOKERS } from "../../constants/invokers";
 
 export default function DrawRequestModal(){
     const { gameState, setGameState } = useGameContext();
@@ -14,7 +14,7 @@ export default function DrawRequestModal(){
       e.preventDefault();
       setModalShow(false);
       setGameState({ type: "SET_GAMESTATUS", payload: "LOADING" });
-      invoke(playPageInvokers.drawAgree, gameState.gameRoomKey, confirmValue === 1);
+      invoke(PLAY_PAGE_INVOKERS.DRAW_AGREE, gameState.gameRoomKey, confirmValue === 1);
     }
 
     return <>

@@ -7,7 +7,7 @@ import { gameStatusDisplay, gameTypeDisplay } from "../../utils/helper";
 import useSignalRContext from "../../hooks/useSignalRContext";
 import useNotificationContext from "../../hooks/useNotificationContext";
 import { listHandlers } from "../../constants/handlers";
-import { listInvokers } from "../../constants/invokers";
+import { LIST_INVOKERS } from "../../constants/invokers";
 
 export default function ProfileTable(){
   const [pageNo, setPageNo] = useState<number>(1);
@@ -43,7 +43,7 @@ export default function ProfileTable(){
     if (!userConnectionId) return;
 
     setList({ isLoading: true, data: [] });
-    invoke(listInvokers.gameHistory, 10, pageNo);
+    invoke(LIST_INVOKERS.GAME_HISTORY, 10, pageNo);
   }, [pageNo, userConnectionId]);
 
   return <>

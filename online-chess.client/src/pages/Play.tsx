@@ -18,7 +18,7 @@ import useOnSetPromotionPreference from "../game/signalRhandlers/useOnSetPromoti
 import useNotificationContext from "../hooks/useNotificationContext";
 import useQueuingContext from "../hooks/useQueuingContext";
 import { playPageHandlers } from "../constants/handlers";
-import { playPageInvokers } from "../constants/invokers";
+import { PLAY_PAGE_INVOKERS } from "../constants/invokers";
 
 export default function Main(){
     const gameRef = useRef<Phaser.Game | null>();
@@ -51,7 +51,7 @@ export default function Main(){
             await addHandler(playPageHandlers.onDeclineDraw, onDeclineDraw)
             await addHandler(playPageHandlers.onSetPromotionPreference, onSetPromotionPreference)
 
-            await invoke(playPageInvokers.gameStart, url.gameRoomId);
+            await invoke(PLAY_PAGE_INVOKERS.GAME_START, url.gameRoomId);
         }
 
         if (userConnectionId){

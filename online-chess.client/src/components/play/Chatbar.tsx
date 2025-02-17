@@ -3,7 +3,7 @@ import moment from "moment";
 import useSignalRContext from "../../hooks/useSignalRContext";
 import { useEffect, useRef, useState } from "react";
 import useGameContext from "../../hooks/useGameContext";
-import { playPageInvokers } from "../../constants/invokers";
+import { PLAY_PAGE_INVOKERS } from "../../constants/invokers";
 
 export default function Chatbar() {
   const { gameState } = useGameContext();
@@ -14,7 +14,7 @@ export default function Chatbar() {
   async function submitForm(e: React.FormEvent<HTMLFormElement>) {
     if (message === "") return;
     e.preventDefault();
-    invoke(playPageInvokers.addMessageToRoom, gameState.gameRoomKey, message);
+    invoke(PLAY_PAGE_INVOKERS.ADD_MESSAGE_TO_ROOM, gameState.gameRoomKey, message);
     setMessage("");
   }
 

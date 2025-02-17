@@ -5,7 +5,7 @@ import useQueuingContext from "../hooks/useQueuingContext";
 import useInitializerContext from "../hooks/useInitializerContext";
 import { useNavigate } from "react-router";
 import useGameContext from "../hooks/useGameContext";
-import { mainPageInvokers } from "../constants/invokers";
+import { MAIN_PAGE_INVOKERS } from "../constants/invokers";
 
 export default function GameAlert(){
     const { notificationState, setNotificationState } = useNotificationContext();
@@ -76,7 +76,7 @@ export default function GameAlert(){
                         onClick={() => {
                             setNotificationState({ type: "SET_HASAGAMEQUEUINGROOMKEY", payload: false });
                             setQueuingRoomKey(null);
-                            invoke(mainPageInvokers.deleteRoom, queuingRoomKey);
+                            invoke(MAIN_PAGE_INVOKERS.DELETE_ROOM, queuingRoomKey);
                         }}
                         >Stop queuing?</a> 
                 </span>
