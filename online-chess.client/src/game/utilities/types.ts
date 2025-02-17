@@ -191,7 +191,8 @@ export interface IInitialGameInfo{
     moveCount: number;
     createdByUserInfo: IInitialPlayerInfo;
     joinedByUserInfo: IInitialPlayerInfo;
-    gameType: GameType
+    gameType: GameType,
+    piecesCoordinatesInitial: IPiece[]
 }
 
 export interface IPiecesCoordinates{

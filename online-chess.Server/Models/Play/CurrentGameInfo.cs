@@ -11,5 +11,6 @@ namespace online_chess.Server.Models.Play
         public PlayerInfo CreatedByUserInfo { get; set; }
         public PlayerInfo JoinedByUserInfo { get; set; }
         public GameType GameType { get; set; }
+        public List<BaseMoveInfo> PiecesCoordinatesInitial { get; set; }
     }
 }

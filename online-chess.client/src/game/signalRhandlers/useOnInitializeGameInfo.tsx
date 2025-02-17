@@ -2,8 +2,8 @@ import moment from "moment";
 import { useCallback, useRef } from "react";
 import { MainGameScene } from "../scenes/MainGameScene";
 import { eventEmitter } from "../utilities/eventEmitter";
-import { IBothKingsPosition, IInitialGameInfo, IKingState, IMoveHistory, PlayersPromotePreference, PromotionPrefence } from "../utilities/types";
-import pieces, { eventOn, Options as gameOptions, playPageInvokers } from "../utilities/constants";
+import { IBothKingsPosition, IInitialGameInfo, IKingState, IMoveHistory, IPiece, PlayersPromotePreference, PromotionPrefence } from "../utilities/types";
+import { eventOn, Options as gameOptions, playPageInvokers } from "../utilities/constants";
 import useGameContext from "../../hooks/useGameContext";
 import useSignalRContext from "../../hooks/useSignalRContext";
 import useAuthContext from "../../hooks/useAuthContext";
@@ -50,6 +50,8 @@ export default function useOnInitializeGameInfo(
             , black: !playerIsWhite ? myInfo.pawnPromotionPreference : opponentInfo.pawnPromotionPreference
         };
 
+        const piecesCoordinatesInitial = initGameInfo.piecesCoordinatesInitial as IPiece[];
+
         // init phaser
         if (!gameRef.current){
             gameRef.current = new Phaser.Game({
@@ -64,7 +66,7 @@ export default function useOnInitializeGameInfo(
                 scene: [
                     new MainGameScene(
                         "mainChessboard", playerIsWhite, boardUI
-                        , pieceUI, pieces, moveHistory
+                        , pieceUI, piecesCoordinatesInitial, moveHistory
                         , bothKingsPosition, promotePreference
                     )
                 ],

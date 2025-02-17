@@ -127,7 +127,8 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
                 MoveCount = 0,
                 CreatedByUserInfo = gameRoom.CreatedByUserInfo,
                 JoinedByUserInfo = gameRoom.JoinByUserInfo,
-                GameType = gameRoom.GameType
+                GameType = gameRoom.GameType,
+                PiecesCoordinatesInitial = gameRoom.PiecesCoords
             };
 
             await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync(RoomMethods.onInitializeGameInfo, baseGameInfo);
