@@ -1,8 +1,8 @@
 import { useCallback, useRef } from "react";
 import useGameContext from "../../hooks/useGameContext";
-import { PlayersPromotePreference, PromotionPrefence } from "../utilities/types";
+import { PromotionPrefence } from "../utilities/types";
 import { eventEmitter } from "../utilities/eventEmitter";
-import { eventEmit } from "../utilities/constants";
+import { eventEmit } from "../../constants/emitters";
 
 export default function useOnSetPromotionPreference(){
     const { setGameState, gameState } = useGameContext();

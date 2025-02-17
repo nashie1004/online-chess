@@ -4,7 +4,7 @@ import { IPiecesCoordinates, IBothKingsPosition, IMoveHistory, IKingState } from
 import IsCheck from "./isCheck";
 import IsCheckMate from "./isCheckMate";
 import IsStalemate from "./IsStaleMate";
-import { eventEmit, eventEmitters } from "../utilities/constants";
+import { eventEmit } from "../../constants/emitters";
 
 export default class ValidateCheckOrCheckMateOrStalemate {
     

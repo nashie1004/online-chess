@@ -1,16 +1,3 @@
-import wPawn from "../../assets/pieces/cburnett/wP.svg?raw"
-import wRook from "../../assets/pieces/cburnett/wR.svg?raw"
-import wKnight from "../../assets/pieces/cburnett/wN.svg?raw"
-import wBishop from "../../assets/pieces/cburnett/wB.svg?raw"
-import wQueen from "../../assets/pieces/cburnett/wQ.svg?raw"
-import wKing from "../../assets/pieces/cburnett/wK.svg?raw"
-
-import bPawn from "../../assets/pieces/cburnett/bP.svg?raw"
-import bRook from "../../assets/pieces/cburnett/bR.svg?raw"
-import bKnight from "../../assets/pieces/cburnett/bN.svg?raw"
-import bBishop from "../../assets/pieces/cburnett/bB.svg?raw"
-import bQueen from "../../assets/pieces/cburnett/bQ.svg?raw"
-import bKing from "../../assets/pieces/cburnett/bK.svg?raw"
 import { IGameContextReducerState, IKingState, INotificationContextReducerState, IPiece, IPlayerInfo, PromotionPrefence } from "./types"
 
 export enum PieceNames{
@@ -50,22 +37,6 @@ export const Options = {
     width: 800,
     height: 800
 }
-
-export const pieceImages = {
-    [PieceNames.wPawn]: wPawn,
-    [PieceNames.wRook]: wRook,
-    [PieceNames.wKnight]: wKnight,
-    [PieceNames.wBishop]: wBishop,
-    [PieceNames.wQueen]: wQueen,
-    [PieceNames.wKing]: wKing,
-    [PieceNames.bPawn]: bPawn,
-    [PieceNames.bRook]: bRook,
-    [PieceNames.bKnight]: bKnight,
-    [PieceNames.bBishop]: bBishop,
-    [PieceNames.bQueen]: bQueen,
-    [PieceNames.bKing]: bKing,
-};
-
 
 const pieces: IPiece[] = [
     // 1.1. Black Officers
@@ -166,26 +137,5 @@ export const baseNotificationState: INotificationContextReducerState = {
     ,asOfDate: null 
 }
 
-/**
- * React to Phaser
- * Phaser to React
- */
-export const eventEmit = {
-    setKingsState: "setKingsState"
-    ,setMovePiece: "setMovePiece"
-    ,setEnemyMove: "setEnemyMove"
-    ,setMoveHistory: "setMoveHistory"
-    ,setPromoteTo: "setPromoteTo"
-}
-
-export const eventOn = {
-    setPromoteTo: "setPromoteTo"
-    ,setKingsState: "setKingsState"
-    ,setEnemyMove: "setEnemyMove"
-    ,setMoveHistory: "setMoveHistory"
-    ,setMovePiece: "setMovePiece"
-}
-
-  
 
   

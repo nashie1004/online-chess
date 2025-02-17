@@ -4,7 +4,7 @@ import move from "../../assets/sounds/Move.ogg"
 import capture from "../../assets/sounds/Capture.ogg"
 import select from "../../assets/sounds/Select.ogg"
 import check from "../../assets/sounds/Check.mp3"
-import { Options as gameOptions, PieceNames, baseKingState, eventEmit, eventOn, pieceNamesV2 } from "../utilities/constants";
+import { Options as gameOptions, PieceNames, baseKingState, pieceNamesV2 } from "../utilities/constants";
 import { IBothKingsPosition, IKingState, IMoveHistory, IMoveInfo, IPiece, IPieceMove, IPiecesCoordinates, PlayersPromotePreference, PromotionPrefence } from "../utilities/types";
 import { eventEmitter } from "../utilities/eventEmitter";
 import KingCastled from "../logic/kingCastled";
@@ -12,6 +12,7 @@ import PawnPromote from "../logic/pawnPromote";
 import PieceCapture from "../logic/pieceCapture";
 import ShowPossibleMoves from "../logic/showPossibleMoves";
 import ValidateCheckOrCheckMateOrStalemate from "../logic/validateCheckOrCheckmateOrStalemate";
+import { eventOn, eventEmit } from "../../constants/emitters";
 
 export class MainGameScene extends Scene{
     /**

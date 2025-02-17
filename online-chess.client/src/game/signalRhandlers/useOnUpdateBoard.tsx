@@ -2,7 +2,7 @@ import { useCallback, useRef } from "react";
 import useGameContext from "../../hooks/useGameContext";
 import { eventEmitter } from "../utilities/eventEmitter";
 import { IMoveInfo, IPiece, IPieceMove } from "../utilities/types";
-import { eventEmit } from "../utilities/constants";
+import { eventEmit } from "../../constants/emitters";
 
 export default function useOnUpdateBoard(){
     const { setGameState, gameState } = useGameContext();
