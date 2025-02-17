@@ -4,7 +4,7 @@ import { IPiecesCoordinates, IBothKingsPosition, IMoveHistory, IKingState } from
 import IsCheck from "./isCheck";
 import IsCheckMate from "./isCheckMate";
 import IsStalemate from "./IsStaleMate";
-import { eventEmit } from "../../constants/emitters";
+import { EVENT_EMIT } from "../../constants/emitters";
 
 export default class ValidateCheckOrCheckMateOrStalemate {
     
@@ -94,7 +94,7 @@ export default class ValidateCheckOrCheckMateOrStalemate {
 
         //console.log("End Validate Kings: ", JSON.stringify(this.bothKingsPosition))
 
-        eventEmitter.emit(eventEmit.setKingsState, this.kingsState);
+        eventEmitter.emit(EVENT_EMIT.SET_KINGS_STATE, this.kingsState);
         return (isCheckMate ? 2 : 1);
     }
 

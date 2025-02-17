@@ -9,7 +9,7 @@ import useSignalRContext from "../../hooks/useSignalRContext";
 import useAuthContext from "../../hooks/useAuthContext";
 import useLocalStorage from "../../hooks/useLocalStorage";
 import { playPageInvokers } from "../../constants/invokers";
-import { eventOn } from "../../constants/emitters";
+import { EVENT_ON } from "../../constants/emitters";
 
 export default function useOnInitializeGameInfo(
     gameRef: React.MutableRefObject<Phaser.Game | null | undefined>
@@ -115,7 +115,7 @@ export default function useOnInitializeGameInfo(
         setGameState({ type: "SET_GAMETYPE", payload: initGameInfo.gameType });
 
         // connect react and phaser
-        eventEmitter.on(eventOn.setKingsState, (data: IKingState) => {
+        eventEmitter.on(EVENT_ON.SET_KINGS_STATE, (data: IKingState) => {
             
             if (data.white.isInCheck || data.white.isCheckMate || data.white.isInStalemate)
             {
@@ -140,7 +140,7 @@ export default function useOnInitializeGameInfo(
 
         });
         
-        eventEmitter.on(eventOn.setMovePiece, (move: any) => {
+        eventEmitter.on(EVENT_ON.SET_MOVE_PIECE, (move: any) => {
             signalRContext.invoke(playPageInvokers.movePiece, initGameInfo.gameRoomKey, move.oldMove, move.newMove, move.hasCapture);
         });
 

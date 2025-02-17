@@ -12,7 +12,7 @@ import PawnPromote from "../logic/pawnPromote";
 import PieceCapture from "../logic/pieceCapture";
 import ShowPossibleMoves from "../logic/showPossibleMoves";
 import ValidateCheckOrCheckMateOrStalemate from "../logic/validateCheckOrCheckmateOrStalemate";
-import { eventOn, eventEmit } from "../../constants/emitters";
+import { EVENT_EMIT, EVENT_ON } from "../../constants/emitters";
 
 export class MainGameScene extends Scene{
     /**
@@ -234,14 +234,14 @@ export class MainGameScene extends Scene{
         })
 
         // sync / listen to upcoming react state changes
-        eventEmitter.on(eventOn.setPromoteTo, (data: any) => {
+        eventEmitter.on(EVENT_ON.SET_PROMOTE_TO, (data: any) => {
             const isWhite = data.isWhite as boolean;
             const preference = data.preference as PromotionPrefence;
             
             this.promotePreference[isWhite ? "white" : "black"] = preference;
         }); // TODO
-        eventEmitter.on(eventOn.setKingsState, (data: IKingState) => this.kingsState = data);
-        eventEmitter.on(eventOn.setEnemyMove, (data: IPieceMove) => {
+        eventEmitter.on(EVENT_ON.SET_KINGS_STATE, (data: IKingState) => this.kingsState = data);
+        eventEmitter.on(EVENT_ON.SET_ENEMY_MOVE, (data: IPieceMove) => {
             // console.log("enemy event emit: ", data)
 
             this.selectedPiece = {
@@ -254,7 +254,7 @@ export class MainGameScene extends Scene{
             this.move(data.new.x, data.new.y);
             this.isPlayersTurnToMove = true;
         });
-        eventEmitter.on(eventOn.setMoveHistory, (data: IMoveHistory) => {
+        eventEmitter.on(EVENT_ON.SET_MOVE_HISTORY, (data: IMoveHistory) => {
             this.moveHistory = data;
         });
     }
@@ -317,7 +317,7 @@ export class MainGameScene extends Scene{
         }
 
         // some special logic
-        const pawnPromoted = (new PawnPromote(
+        (new PawnPromote(
             this.boardOrientationIsWhite, this.promotePreference, this.piecesCoordinates_Actual // TODO dynamic promote
         )).pawnPromote(uniquePieceName, newX, newY, isWhite, sprite);
 
@@ -354,7 +354,7 @@ export class MainGameScene extends Scene{
             // console.log("move piece: ", oldMove, newMove)
             //console.log("sprite: ", sprite, this.selectedPiece, newX, newY)
 
-            eventEmitter.emit(eventEmit.setMovePiece, { oldMove, newMove, hasCapture });
+            eventEmitter.emit(EVENT_EMIT.SET_MOVE_PIECE, { oldMove, newMove, hasCapture });
         }
 
         // display move to the user
