@@ -1,19 +1,16 @@
-import { createContext, ReactNode, useState } from 'react'
-import { ISignalRContext } from '../game/utilities/types';
+import { createContext, useState } from 'react'
 import { HttpTransportType, HubConnection, HubConnectionBuilder, HubConnectionState, LogLevel } from '@microsoft/signalr';
 import useNotificationContext from '../hooks/useNotificationContext';
 import { MAIN_PAGE_HANDLERS } from '../constants/handlers';
-
-interface ISignalRContextProps{
-    children: ReactNode
-}
+import { IBaseContextProps } from '../types/global';
+import { ISignalRContext } from './SignalRContext.types';
 
 export const signalRContext = createContext<null | ISignalRContext>(null);
 
 let hubConnection: HubConnection;       
 
 export default function SignalRContext(
-    {children}: ISignalRContextProps
+    {children}: IBaseContextProps
 ) {
     const [userConnectionId, setUserConnectionId] = useState<string | null>(null);
     const { setNotificationState } = useNotificationContext();

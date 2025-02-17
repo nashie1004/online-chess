@@ -66,16 +66,6 @@ export interface ITimer{
     isWhitesTurn: boolean;
 }
 
-export interface ISignalRContext {
-    startConnection: () => Promise<boolean>;
-    stopConnection: () => void;
-    invoke: (methodName: string, ...args: any[]) => void;
-    addHandler: (methodName: string, method: (...args: any[]) => void) => void;
-    removeHandler: (methodName: string) => void;
-    userConnectionId: string | null;
-    setUserConnectionId: React.Dispatch<React.SetStateAction<string | null>>;
-}
-
 export interface IBothKingsPosition{
     white: IBaseCoordinates;
     black: IBaseCoordinates;
@@ -214,43 +204,6 @@ export interface IPlayerInfo{
     openPromotionModal: boolean
 }
 
-export interface IGameContextReducerState{
-    messages: IChat[];
-    gameRoomKey: string | null;
-    moveHistory: IMoveHistory;
-    captureHistory: IPiece[];
-    myInfo: IPlayerInfo;
-    opponentInfo: IPlayerInfo;
-    gameStatus: gameStat;
-    gameType: GameType;
-}
-
-export type IGameContextReducerActions = 
-| { type: "SET_MESSAGES"; payload: IChat[] }
-| { type: "SET_GAMEROOMKEY"; payload: string }
-| { type: "SET_MOVEHISTORY"; payload: any } 
-| { type: "SET_CAPTUREHISTORY"; payload: IPiece }
-
-| { type: "SET_MYINFO"; payload: IPlayerInfo }
-| { type: "SET_MYINFO_TIMELEFT"; payload: number }
-| { type: "SET_MYINFO_PROMOTEPAWNTO"; payload: PromotionPrefence }
-| { type: "SET_MYINFO_ISPLAYERSTURN"; payload: boolean } 
-| { type: "SET_MYINFO_OPENPROMOTIONMODAL"; payload: boolean } 
-| { type: "SET_OPPONENTINFO"; payload: IPlayerInfo }
-| { type: "SET_OPPONENTINFO_TIMELEFT"; payload: number }
-| { type: "SET_OPPONENTINFO_PROMOTEPAWNTO"; payload: PromotionPrefence } 
-| { type: "SET_OPPONENTINFO_ISPLAYERSTURN"; payload: boolean } 
-
-| { type: "SET_GAMESTATUS"; payload: gameStat }
-| { type: "SET_CLEARGAMESTATE"; }
-| { type: "SET_OPPONENTINFO_REQUESTDRAW"; payload: boolean }
-| { type: "SET_GAMETYPE"; payload: GameType };
-
-export interface IGameContext{
-    gameState: IGameContextReducerState;
-    setGameState: React.Dispatch<IGameContextReducerActions>;
-}
-
 export interface PromoteOptions{
     name: PromotionPrefence;
     assetURL: string;
@@ -261,39 +214,8 @@ export interface PlayersPromotePreference{
     black: PromotionPrefence;
 }
 
-export interface IInitializerContext{
-    setInitialize: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-export interface INotificationContext{
-    notificationState: INotificationContextReducerState;
-    setNotificationState: React.Dispatch<INotificationContextReducerActions>;
-}
-
 export type customMessageType = "INFO" | "SUCCESS" | "DANGER";
 export interface ICustomMesage {
     customMessage: string | null;
     customMessageType: customMessageType;
 };
-
-export interface INotificationContextReducerState{
-    customMessage: string | null;
-    customMessageType: customMessageType;
-    hasAGameQueuing: boolean;
-    hasAGameDisconnected: boolean;
-    signalRConnectionDisconnected: boolean;
-    hasAGameOnGoing: boolean;
-    roomKey: string | null;
-    asOfDate: Date | null;
-}
-
-export type INotificationContextReducerActions = 
-{ type: "SET_CUSTOMMESSAGE", payload: ICustomMesage }
-| { type: "SET_HASAGAMEQUEUINGROOMKEY", payload: boolean }
-| { type: "SET_HASAGAMEDISCONNECTED", payload: boolean }
-| { type: "SET_SIGNALRCONNECTIONDISCONNECTED", payload: boolean }
-| { type: "SET_HASAGAMEONGOING", payload: boolean }
-| { type: "SET_ROOMKEY", payload: string }
-| { type: "SET_ASOFDATE", payload: Date }
-| { type: "SET_RESETNOTIFICATIONS" }
-;

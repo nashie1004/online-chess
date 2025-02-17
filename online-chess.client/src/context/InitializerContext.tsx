@@ -1,5 +1,4 @@
-import React, { createContext, useEffect, useMemo, useState } from 'react'
-import { IInitializerContext } from '../game/utilities/types';
+import { createContext, useEffect, useMemo, useState } from 'react'
 import useNotificationContext from '../hooks/useNotificationContext';
 import useSignalRContext from '../hooks/useSignalRContext';
 import useAuthContext from '../hooks/useAuthContext';
@@ -9,15 +8,13 @@ import useQueuingContext from '../hooks/useQueuingContext';
 import useGameContext from '../hooks/useGameContext';
 import { MAIN_PAGE_INVOKERS } from '../constants/invokers';
 import { LOBBY_PAGE_HANDLERS, MAIN_PAGE_HANDLERS } from '../constants/handlers';
+import { IInitializerContext } from './InitializerContext.types';
+import { IBaseContextProps } from '../types/global';
 
 export const initializerContext = createContext<IInitializerContext | null>(null);
 
-interface IInitializerContextProps{
-  children: React.ReactNode;
-}
-
 export default function InitializerContext(
-  { children } : IInitializerContextProps
+  { children } : IBaseContextProps
 ) {
   const { setNotificationState, notificationState } = useNotificationContext();
   const { 

@@ -1,7 +1,8 @@
 import { createContext, useReducer } from 'react'
-import { IGameContext, IGameContextReducerActions, IGameContextReducerState, IMove } from '../game/utilities/types';
 import { baseGameState } from '../game/utilities/constants';
 import { IBaseContextProps } from '../types/global';
+import { IMove } from '../game/utilities/types';
+import { IGameContext, IGameContextReducerState, IGameContextReducerActions } from './GameContext.types';
 
 export const gameContext = createContext<IGameContext | null>(null);
 

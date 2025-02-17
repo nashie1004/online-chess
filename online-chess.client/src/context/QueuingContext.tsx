@@ -1,18 +1,11 @@
-import React, { createContext, useState } from 'react'
-
-interface IQueuingContext {
-    queuingRoomKey: string | null;
-    setQueuingRoomKey: React.Dispatch<React.SetStateAction<string | null>>;
-}
-
-interface IQueuingContextProps{
-    children: React.ReactNode;
-}
+import { createContext, useState } from 'react'
+import { IBaseContextProps } from '../types/global';
+import { IQueuingContext } from './QueuingContext.types';
 
 export const queuingContext = createContext<null | IQueuingContext>(null);
 
 export default function QueuingContext(
-    {children} : IQueuingContextProps
+    {children} : IBaseContextProps
 ) {
     const [queuingRoomKey, setQueuingRoomKey] = useState<null | string>(null);
 

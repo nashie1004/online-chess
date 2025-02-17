@@ -1,6 +1,7 @@
 import { createContext, useReducer } from "react"
-import { INotificationContext, INotificationContextReducerActions, INotificationContextReducerState } from "../game/utilities/types";
 import { baseNotificationState } from "../game/utilities/constants";
+import { INotificationContext, INotificationContextReducerState, INotificationContextReducerActions } from "./NotificationContext.types";
+import { IBaseContextProps } from "../types/global";
 
 export const notificationContext = createContext<INotificationContext | null>(null);
 
@@ -25,12 +26,8 @@ function reducerFn(state: INotificationContextReducerState, action: INotificatio
     }
 }
 
-interface INotificationContextProps {
-    children: React.ReactNode;
-}
-
 export default function NotificationContext(
-    { children }: INotificationContextProps
+    { children }: IBaseContextProps
 ){
     const [notificationState, setNotificationState] = useReducer<React.Reducer<INotificationContextReducerState, INotificationContextReducerActions>>(reducerFn, baseNotificationState);
 
