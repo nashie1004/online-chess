@@ -3,7 +3,6 @@ import { useCallback, useRef } from "react";
 import { MainGameScene } from "../scenes/MainGameScene";
 import { eventEmitter } from "../utilities/eventEmitter";
 import { IBothKingsPosition, IInitialGameInfo, IKingState, IMoveHistory, IPiece, PlayersPromotePreference, PromotionPrefence } from "../utilities/types";
-import { Options as gameOptions } from "../utilities/constants";
 import useGameContext from "../../hooks/useGameContext";
 import useSignalRContext from "../../hooks/useSignalRContext";
 import useAuthContext from "../../hooks/useAuthContext";

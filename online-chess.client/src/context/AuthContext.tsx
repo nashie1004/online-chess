@@ -1,8 +1,8 @@
 import { useState, createContext } from 'react'
 import BaseApiService from '../services/BaseApiService';
 import { IUser } from '../game/utilities/types';
-import { IAuthContext } from './AuthContext.types';
 import { IBaseContextProps } from '../types/global';
+import { IAuthContext } from './types';
 
 export const authContext = createContext<IAuthContext | null>(null);
 

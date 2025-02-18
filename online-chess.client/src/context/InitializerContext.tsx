@@ -8,8 +8,8 @@ import useQueuingContext from '../hooks/useQueuingContext';
 import useGameContext from '../hooks/useGameContext';
 import { MAIN_PAGE_INVOKERS } from '../constants/invokers';
 import { LOBBY_PAGE_HANDLERS, MAIN_PAGE_HANDLERS } from '../constants/handlers';
-import { IInitializerContext } from './InitializerContext.types';
 import { IBaseContextProps } from '../types/global';
+import { IInitializerContext } from './types';
 
 export const initializerContext = createContext<IInitializerContext | null>(null);
 

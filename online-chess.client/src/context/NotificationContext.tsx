@@ -1,7 +1,7 @@
 import { createContext, useReducer } from "react"
 import { baseNotificationState } from "../game/utilities/constants";
-import { INotificationContext, INotificationContextReducerState, INotificationContextReducerActions } from "./NotificationContext.types";
 import { IBaseContextProps } from "../types/global";
+import { INotificationContext, INotificationContextReducerState, INotificationContextReducerActions } from "./types";
 
 export const notificationContext = createContext<INotificationContext | null>(null);
 

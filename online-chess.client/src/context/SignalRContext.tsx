@@ -3,7 +3,7 @@ import { HttpTransportType, HubConnection, HubConnectionBuilder, HubConnectionSt
 import useNotificationContext from '../hooks/useNotificationContext';
 import { MAIN_PAGE_HANDLERS } from '../constants/handlers';
 import { IBaseContextProps } from '../types/global';
-import { ISignalRContext } from './SignalRContext.types';
+import { ISignalRContext } from './types';
 
 export const signalRContext = createContext<null | ISignalRContext>(null);
 

@@ -1,6 +1,6 @@
 import { createContext, useState } from 'react'
 import { IBaseContextProps } from '../types/global';
-import { IQueuingContext } from './QueuingContext.types';
+import { IQueuingContext } from './types';
 
 export const queuingContext = createContext<null | IQueuingContext>(null);
 
