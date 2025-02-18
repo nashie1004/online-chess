@@ -2,13 +2,14 @@ import moment from "moment";
 import { useCallback, useRef } from "react";
 import { MainGameScene } from "../scenes/MainGameScene";
 import { eventEmitter } from "../utilities/eventEmitter";
-import { IBothKingsPosition, IInitialGameInfo, IKingState, IMoveHistory, IPiece, PlayersPromotePreference, PromotionPrefence } from "../utilities/types";
+import { IBothKingsPosition, IKingState, IMoveHistory, IPiece, PlayersPromotePreference, PromotionPrefence } from "../utilities/types";
 import useGameContext from "../../hooks/useGameContext";
 import useSignalRContext from "../../hooks/useSignalRContext";
 import useAuthContext from "../../hooks/useAuthContext";
 import useLocalStorage from "../../hooks/useLocalStorage";
 import { EVENT_ON } from "../../constants/emitters";
 import { PLAY_PAGE_INVOKERS } from "../../constants/invokers";
+import { IUseOnInitializeGameInfo } from "./types";
 
 export default function useOnInitializeGameInfo(
     gameRef: React.MutableRefObject<Phaser.Game | null | undefined>
@@ -25,7 +26,7 @@ export default function useOnInitializeGameInfo(
     // since the old value is captured inside the callback fns
     gameStateRef.current = gameState; 
 
-    const onInitializeGameInfo = useCallback((initGameInfo: IInitialGameInfo) => {
+    const onInitializeGameInfo = useCallback((initGameInfo: IUseOnInitializeGameInfo) => {
         const playerIsWhite = (initGameInfo.createdByUserInfo.userName === user?.userName)
             ? initGameInfo.createdByUserInfo.isColorWhite
             : initGameInfo.joinedByUserInfo.isColorWhite;

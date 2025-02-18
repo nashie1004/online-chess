@@ -1,5 +1,6 @@
+import { IOnReceiveMessages } from "../game/signalRhandlers/types";
 import { GameType } from "../game/utilities/constants";
-import { customMessageType, gameStat, IChat, ICustomMesage, IMoveHistory, IPiece, IPlayerInfo, IUser, PromotionPrefence } from "../game/utilities/types";
+import { customMessageType, gameStat, ICustomMesage, IMoveHistory, IPiece, IPlayerInfo, IUser, PromotionPrefence } from "../game/utilities/types";
 
 export interface IAuthContext {
     isAuthenticating: boolean;
@@ -12,7 +13,7 @@ export interface IAuthContext {
 
 
 export interface IGameContextReducerState{
-    messages: IChat[];
+    messages: IOnReceiveMessages[];
     gameRoomKey: string | null;
     moveHistory: IMoveHistory;
     captureHistory: IPiece[];
@@ -23,7 +24,7 @@ export interface IGameContextReducerState{
 }
 
 export type IGameContextReducerActions = 
-| { type: "SET_MESSAGES"; payload: IChat[] }
+| { type: "SET_MESSAGES"; payload: IOnReceiveMessages[] }
 | { type: "SET_GAMEROOMKEY"; payload: string }
 | { type: "SET_MOVEHISTORY"; payload: any } 
 | { type: "SET_CAPTUREHISTORY"; payload: IPiece }

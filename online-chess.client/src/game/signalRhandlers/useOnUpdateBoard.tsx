@@ -1,8 +1,9 @@
 import { useCallback, useRef } from "react";
 import useGameContext from "../../hooks/useGameContext";
 import { eventEmitter } from "../utilities/eventEmitter";
-import { IMoveInfo, IPiece, IPieceMove } from "../utilities/types";
+import { IPieceMove } from "../utilities/types";
 import { EVENT_EMIT } from "../../constants/emitters";
+import { IOnUpdateBoard } from "./types";
 
 export default function useOnUpdateBoard(){
     const { setGameState, gameState } = useGameContext();
@@ -10,12 +11,9 @@ export default function useOnUpdateBoard(){
 
     gameStateRef.current = gameState;
 
-    const onUpdateBoard = useCallback((data: any) => {
-        const moveInfo = data.moveInfo as IMoveInfo;
+    const onUpdateBoard = useCallback((data: IOnUpdateBoard) => {
 
-        const moveIsWhite = data.moveIsWhite as boolean;
-      
-        const capturedPiece = data.capturedPiece as (IPiece | null);
+        const { moveInfo, moveIsWhite, capturedPiece } = data;
 
         const opponentsTurn = (!moveIsWhite && !gameStateRef.current.opponentInfo.playerIsWhite) ||
             (moveIsWhite && gameStateRef.current.opponentInfo.playerIsWhite);

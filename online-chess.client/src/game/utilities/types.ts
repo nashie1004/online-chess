@@ -104,12 +104,6 @@ export interface IGameRoom{
     value: IGameRoomValue
 }
 
-export interface IChat{
-    createdByUser: string;
-    createDate: Date;
-    message: string;
-}
-
 export interface IGameRoomList{
     list: IGameRoom[];
     isLoading: boolean;
@@ -161,28 +155,6 @@ export interface IGameHistory{
 export interface IGameHistoryList{
     isLoading: boolean;
     data: IGameHistory[];
-}
-
-interface IInitialPlayerInfo{
-    userName: string;
-    isPlayersTurnToMove: boolean;
-    timeLeft: string; 
-    isColorWhite: boolean;
-    kingInCheck: boolean;
-    kingInCheckMate: boolean;
-    kingInStaleMate: boolean;
-    pawnPromotionPreference: PromotionPrefence;
-}
-
-export interface IInitialGameInfo{
-    gameRoomKey: string;
-    lastMoveInfo: IPiece;
-    lastCapture: string | null;
-    moveCount: number;
-    createdByUserInfo: IInitialPlayerInfo;
-    joinedByUserInfo: IInitialPlayerInfo;
-    gameType: GameType,
-    piecesCoordinatesInitial: IPiece[]
 }
 
 export interface IPiecesCoordinates{
