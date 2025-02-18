@@ -4,8 +4,8 @@ import move from "../../assets/sounds/Move.ogg"
 import capture from "../../assets/sounds/Capture.ogg"
 import select from "../../assets/sounds/Select.ogg"
 import check from "../../assets/sounds/Check.mp3"
-import { PieceNames, baseKingState, pieceNamesV2 } from "../utilities/constants";
-import { IBothKingsPosition, IKingState, IMoveHistory, IMoveInfo, IPiece, IPieceMove, IPiecesCoordinates, PlayersPromotePreference, PromotionPrefence } from "../utilities/types";
+import { PieceNames, PromotionPrefence, baseKingState, pieceNamesV2 } from "../utilities/constants";
+import { IBothKingsPosition, IKingState, IMoveHistory, IMoveInfo, IPiece, IPieceMove, IPiecesCoordinates, PlayersPromotePreference } from "../utilities/types";
 import { eventEmitter } from "../utilities/eventEmitter";
 import KingCastled from "../logic/kingCastled";
 import PawnPromote from "../logic/pawnPromote";

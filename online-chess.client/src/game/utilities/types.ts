@@ -1,5 +1,9 @@
 import { GameObjects } from "phaser";
-import { ColorOptions, GameStatus, GameType, PieceNames } from "./constants";
+import { ColorOptions, GameStatus, GameType, PieceNames, PromotionPrefence } from "./constants";
+
+export type PromoteTo = "rook" | "knight" | "bishop" | "queen";
+export type gameStat = "ONGOING" | "PAUSED" | "LOADING" | "FINISHED";
+export type customMessageType = "INFO" | "SUCCESS" | "DANGER";
 
 export interface IBaseCoordinates{
     x: number;
@@ -13,15 +17,6 @@ export interface IPiece extends IBaseCoordinates{
 
 export interface IValidMove extends IBaseCoordinates{
     isCapture: boolean
-}
-
-export type PromoteTo = "rook" | "knight" | "bishop" | "queen";
-
-export enum PromotionPrefence{
-    Queen,
-    Rook,
-    Knight,
-    Bishop
 }
 
 export interface IMoveInfo extends IBaseCoordinates{
@@ -162,8 +157,6 @@ export interface IPiecesCoordinates{
     black: IPiece[];
 }
 
-export type gameStat = "ONGOING" | "PAUSED" | "LOADING" | "FINISHED";
-
 export interface IPlayerInfo{
     userName: string;
     kingsState: IKing;
@@ -186,7 +179,6 @@ export interface PlayersPromotePreference{
     black: PromotionPrefence;
 }
 
-export type customMessageType = "INFO" | "SUCCESS" | "DANGER";
 export interface ICustomMesage {
     customMessage: string | null;
     customMessageType: customMessageType;

@@ -1,10 +1,11 @@
 import { Modal } from "react-bootstrap";
 import useGameContext from "../../hooks/useGameContext"
 import { useCallback, useMemo, useState } from "react";
-import { PromoteOptions, PromotionPrefence } from "../../game/utilities/types";
+import { PromoteOptions } from "../../game/utilities/types";
 import useLocalStorage from "../../hooks/useLocalStorage";
 import useSignalRContext from "../../hooks/useSignalRContext";
 import { PLAY_PAGE_INVOKERS } from "../../constants/invokers";
+import { PromotionPrefence } from "../../game/utilities/constants";
 
 export default function PromotionPickerModal() {
   const { setGameState, gameState } = useGameContext();

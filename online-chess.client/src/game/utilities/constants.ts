@@ -1,4 +1,5 @@
-import { IGameContextReducerState, IKingState, INotificationContextReducerState, IPiece, IPlayerInfo, PromotionPrefence } from "./types"
+import { IGameContextReducerState, INotificationContextReducerState } from "../../context/types";
+import { IKingState, IPlayerInfo } from "./types"
 
 export enum PieceNames{
     wPawn = "wPawn",
@@ -13,6 +14,31 @@ export enum PieceNames{
     bBishop = "bBishop",
     bQueen = "bQueen",
     bKing = "bKing"
+}
+
+export enum GameType{
+    Classical = 1,
+    Blitz3Mins = 2,
+    Blitz5Mins = 3,
+    Rapid10Mins = 4,
+    Rapid25Mins = 5,
+}
+
+export enum GameStatus{
+    Won, Lose, Draw
+}
+
+export enum ColorOptions{
+    White = 1,
+    Black = 2,
+    Random = 3,
+}
+
+export enum PromotionPrefence{
+    Queen,
+    Rook,
+    Knight,
+    Bishop
 }
 
 export const pieceNamesV2 = [
@@ -35,24 +61,6 @@ export const baseKingState: IKingState = {
     white: { isCheckMate: false, isInCheck: false, checkedBy: [], isInStalemate: false }
     , black: { isCheckMate: false, isInCheck: false, checkedBy: [],  isInStalemate: false } 
 };
-
-export enum GameType{
-    Classical = 1,
-    Blitz3Mins = 2,
-    Blitz5Mins = 3,
-    Rapid10Mins = 4,
-    Rapid25Mins = 5,
-}
-
-export enum GameStatus{
-    Won, Lose, Draw
-}
-
-export enum ColorOptions{
-    White = 1,
-    Black = 2,
-    Random = 3,
-}
 
 export const basePlayerInfo: IPlayerInfo = {
     userName: ""

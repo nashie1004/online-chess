@@ -1,6 +1,6 @@
 import { IOnReceiveMessages } from "../game/signalRhandlers/types";
-import { GameType } from "../game/utilities/constants";
-import { customMessageType, gameStat, ICustomMesage, IMoveHistory, IPiece, IPlayerInfo, IUser, PromotionPrefence } from "../game/utilities/types";
+import { GameType, PromotionPrefence } from "../game/utilities/constants";
+import { customMessageType, gameStat, ICustomMesage, IMoveHistory, IPiece, IPlayerInfo, IUser } from "../game/utilities/types";
 
 export interface IAuthContext {
     isAuthenticating: boolean;

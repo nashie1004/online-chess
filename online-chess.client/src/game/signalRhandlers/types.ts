@@ -1,5 +1,5 @@
-import { GameType } from "../utilities/constants";
-import { PromotionPrefence, IPiece, IMoveInfo } from "../utilities/types";
+import { GameType, PromotionPrefence } from "../utilities/constants";
+import { IPiece, IMoveInfo } from "../utilities/types";
 
 export interface IInitialPlayerInfo{
     userName: string;

@@ -1,6 +1,6 @@
 import { GameObjects } from "phaser";
-import { PieceNames } from "../utilities/constants";
-import { IPiecesCoordinates, PlayersPromotePreference, PromotionPrefence } from "../utilities/types";
+import { PieceNames, PromotionPrefence } from "../utilities/constants";
+import { IPiecesCoordinates, PlayersPromotePreference } from "../utilities/types";
 
 export default class PawnPromote {
     private readonly boardOrientationIsWhite: boolean;
