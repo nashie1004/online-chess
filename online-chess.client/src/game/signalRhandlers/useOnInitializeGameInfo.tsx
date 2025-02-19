@@ -55,12 +55,16 @@ export default function useOnInitializeGameInfo(
 
         const piecesCoordinatesInitial = initGameInfo.piecesCoordinatesInitial as IPiece[];
 
+        const isPlayersTurnToMove = myInfo.isPlayersTurnToMove;
+
         // init phaser
+        console.log("init phaser", gameRef.current)
+
         if (!gameRef.current){
             gameRef.current = new Phaser.Game({
                 type: Phaser.AUTO,
-                width: gameOptions.width,
-                height: gameOptions.height,
+                width: 800,
+                height: 800,
                 parent: 'game-container',
                 backgroundColor: '#028af8',
                 scale: {
@@ -70,7 +74,7 @@ export default function useOnInitializeGameInfo(
                     new MainGameScene(
                         "mainChessboard", playerIsWhite, boardUI
                         , pieceUI, piecesCoordinatesInitial, moveHistory
-                        , bothKingsPosition, promotePreference
+                        , bothKingsPosition, promotePreference, isPlayersTurnToMove
                     )
                 ],
             });

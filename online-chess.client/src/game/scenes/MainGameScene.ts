@@ -44,6 +44,7 @@ export class MainGameScene extends Scene{
         key: string, isColorWhite: boolean, boardUI: string
         , piecesUI: string, piecesCoordinates_Initial: IPiece[], moveHistory: IMoveHistory
         , bothKingsPosition: IBothKingsPosition, promotePreference: PlayersPromotePreference
+        , isPlayersTurnToMove: boolean
     ) {
         super({ key });
 
@@ -58,7 +59,7 @@ export class MainGameScene extends Scene{
         this.bothKingsPosition = bothKingsPosition;
 
         // 2. internal state
-        this.isPlayersTurnToMove = isColorWhite;
+        this.isPlayersTurnToMove = isPlayersTurnToMove;
         this.boardOrientationIsWhite = isColorWhite;
         this.selectedPiece = null;
         this.tileSize = 100;

@@ -31,7 +31,8 @@ after that, the web application should now be running.
 ## Credits
 All [board](https://github.com/lichess-org/lila/blob/master/public/images/board/), [pieces](https://github.com/lichess-org/lila/blob/master/public/piece/), and [sound](https://github.com/lichess-org/lila/blob/master/public/sound/) assets are sourced from [Lichess](https://github.com/lichess-org/lila) Github repo. Custom assets were created using [Piskel](https://www.piskelapp.com/).
 
-## TODO Essential (Game) In Order as of 2/9/2025 9:35PM
+## TODO Essential (Game) In Order as of 2/9/2025
+
 1. display move turn, check, checkmate, stalemate
 2. bug on if king in check - cause of issue move() is called twice/ on isCheck()
 3. en passant bug

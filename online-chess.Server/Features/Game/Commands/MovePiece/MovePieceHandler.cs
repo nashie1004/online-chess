@@ -91,6 +91,9 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
                 }
             };
 
+            room.CreatedByUserInfo.IsPlayersTurnToMove = !isRoomCreator;
+            room.JoinByUserInfo.IsPlayersTurnToMove = isRoomCreator;
+
             if (
                 request.OldMove.UniqueName.ToLower().Contains("king")
                 || 

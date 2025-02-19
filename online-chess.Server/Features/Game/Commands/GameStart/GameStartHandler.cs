@@ -5,6 +5,7 @@ using online_chess.Server.Service;
 using online_chess.Server.Enums;
 using online_chess.Server.Models.Play;
 using online_chess.Server.Constants;
+using online_chess.Server.Models;
 
 namespace online_chess.Server.Features.Game.Commands.GameStart
 {
@@ -42,8 +43,6 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
                 return Unit.Value;
             }
 
-            // TODO: if user disconnects re apply new connectid as 
-            // it may cause null here _authenticatedUserService
             var player1 = _authenticatedUserService.GetConnectionId(gameRoom.CreatedByUserId);
             var player2 = _authenticatedUserService.GetConnectionId(gameRoom.JoinedByUserId);
 
@@ -52,8 +51,30 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
                 return Unit.Value;
             }
 
-            await _hubContext.Groups.AddToGroupAsync(player1, request.GameRoomKeyString);
-            await _hubContext.Groups.AddToGroupAsync(player2, request.GameRoomKeyString);
+            /* New Game */
+            if (gameRoom.GameStartedAt == DateTime.MinValue)
+            {
+                var baseGameInfo = await StartNewGame(gameRoom, request, player1, player2);
+
+                await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync(RoomMethods.onInitializeGameInfo, baseGameInfo);
+            } 
+            /* Player Reconnects */
+            else
+            {
+                var currentGameInfo = await ReconnectToGame(gameRoom, request, player1, player2);
+
+                await _hubContext.Clients.Client(request.UserConnectionId).SendAsync(RoomMethods.onInitializeGameInfo, currentGameInfo);
+            }
+
+            await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync(RoomMethods.onReceiveMessages, gameRoom.ChatMessages);
+
+            return Unit.Value;
+        }
+    
+        public async Task<CurrentGameInfo> StartNewGame(GameRoom gameRoom, GameStartRequest request, string player1Connection, string player2Connection)
+        {
+            await _hubContext.Groups.AddToGroupAsync(player1Connection, request.GameRoomKeyString);
+            await _hubContext.Groups.AddToGroupAsync(player2Connection, request.GameRoomKeyString);
 
             TimeSpan initialTime; 
 
@@ -131,20 +152,30 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
                 PiecesCoordinatesInitial = gameRoom.PiecesCoords
             };
 
-            await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync(RoomMethods.onInitializeGameInfo, baseGameInfo);
-            await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync(RoomMethods.onReceiveMessages, gameRoom.ChatMessages);
-
-            return Unit.Value;
-        }
-    
-        public void StartGame()
-        {
-
+            return baseGameInfo;
         }
         
-        public void ReconnectToGame()
+        public async Task<CurrentGameInfo> ReconnectToGame(GameRoom gameRoom, GameStartRequest request, string player1Connection, string player2Connection)
         {
+            gameRoom.ChatMessages.Add(new Chat(){
+                CreateDate = DateTime.Now
+                , CreatedByUser = "server"
+                , Message = $"{request.IdentityUserName} reconnected."
+            });
 
+            // TODO
+            var currentGameInfo = new CurrentGameInfo(){
+                GameRoomKey = gameRoom.GameKey,
+                LastMoveInfo = new BaseMoveInfo(),
+                LastCapture = null,
+                MoveCount = 0,
+                CreatedByUserInfo = gameRoom.CreatedByUserInfo,
+                JoinedByUserInfo = gameRoom.JoinByUserInfo,
+                GameType = gameRoom.GameType,
+                PiecesCoordinatesInitial = gameRoom.PiecesCoords
+            };
+
+            return currentGameInfo;
         }
     }
 }
