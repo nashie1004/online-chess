@@ -46,7 +46,7 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
             var player1 = _authenticatedUserService.GetConnectionId(gameRoom.CreatedByUserId);
             var player2 = _authenticatedUserService.GetConnectionId(gameRoom.JoinedByUserId);
 
-            if (string.IsNullOrEmpty(player1) || string.IsNullOrEmpty(player1))
+            if (string.IsNullOrEmpty(player1) || string.IsNullOrEmpty(player2))
             {
                 return Unit.Value;
             }
@@ -149,7 +149,8 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
                 CreatedByUserInfo = gameRoom.CreatedByUserInfo,
                 JoinedByUserInfo = gameRoom.JoinByUserInfo,
                 GameType = gameRoom.GameType,
-                PiecesCoordinatesInitial = gameRoom.PiecesCoords
+                PiecesCoordinatesInitial = gameRoom.PiecesCoords,
+                BothKingCoords = gameRoom.BothKingCoords
             };
 
             return baseGameInfo;
@@ -172,7 +173,8 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
                 CreatedByUserInfo = gameRoom.CreatedByUserInfo,
                 JoinedByUserInfo = gameRoom.JoinByUserInfo,
                 GameType = gameRoom.GameType,
-                PiecesCoordinatesInitial = gameRoom.PiecesCoords
+                PiecesCoordinatesInitial = gameRoom.PiecesCoords,
+                BothKingCoords = gameRoom.BothKingCoords
             };
 
             return currentGameInfo;

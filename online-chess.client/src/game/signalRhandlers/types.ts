@@ -1,5 +1,5 @@
 import { GameType, PromotionPrefence } from "../utilities/constants";
-import { IPiece, IMoveInfo } from "../utilities/types";
+import { IPiece, IMoveInfo, IBaseCoordinates } from "../utilities/types";
 
 export interface IInitialPlayerInfo{
     userName: string;
@@ -19,8 +19,9 @@ export interface IUseOnInitializeGameInfo{
     moveCount: number;
     createdByUserInfo: IInitialPlayerInfo;
     joinedByUserInfo: IInitialPlayerInfo;
-    gameType: GameType,
-    piecesCoordinatesInitial: IPiece[]
+    gameType: GameType;
+    piecesCoordinatesInitial: IPiece[];
+    bothKingsCoords: IBaseCoordinates;
 }
 
 export interface IOnSetPromotionPreference{

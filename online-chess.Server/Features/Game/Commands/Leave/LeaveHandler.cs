@@ -37,7 +37,6 @@ namespace online_chess.Server.Features.Game.Commands.LeaveRoom
             string identityUserName = request.IdentityUserName ?? "";
 
             _authenticatedUserService.RemoveWithConnectionId(request.UserConnectionId);
-            _authenticatedUserService.RemoveWithIdentityUsername(identityUserName);
             var aQueuedRoomIsRemoved = _gameQueueService.RemoveByCreator(identityUserName);
             
             if (aQueuedRoomIsRemoved){

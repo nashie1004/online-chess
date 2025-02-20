@@ -37,7 +37,6 @@ public class ConnectHandler : IRequestHandler<ConnectRequest, Unit>
         if (string.IsNullOrEmpty(req.IdentityUserName)) return Unit.Value;
 
         _authenticatedUserService.RemoveWithConnectionId(req.UserConnectionId);
-        _authenticatedUserService.RemoveWithIdentityUsername(req.IdentityUserName);
 
         _authenticatedUserService.Add(req.UserConnectionId, req.IdentityUserName);
 

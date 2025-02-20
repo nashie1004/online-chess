@@ -57,8 +57,10 @@ export default function useOnInitializeGameInfo(
 
         const isPlayersTurnToMove = myInfo.isPlayersTurnToMove;
 
+        const bothKingCoords = initGameInfo.bothKingsCoords;
+
         // init phaser
-        console.log("init phaser", gameRef.current)
+        //console.log("init phaser", gameRef.current)
 
         if (!gameRef.current){
             gameRef.current = new Phaser.Game({
