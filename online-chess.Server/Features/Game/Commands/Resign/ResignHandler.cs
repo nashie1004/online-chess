@@ -84,6 +84,8 @@ namespace online_chess.Server.Features.Game.Commands.Resign
 
             await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync(RoomMethods.onReceiveMessages, room.ChatMessages);
                 
+            _gameRoomService.Remove(room.GameKey);
+
             // lose
             await _hubContext.Clients.Client(request.UserConnectionId).SendAsync(RoomMethods.onGameOver, 1);
             // win

@@ -3,7 +3,7 @@ A simple real time 2-player chess web application created with Phaser, React, Ty
 You can view a demo [here](https://github.com/nashie1004/online-chess).
 
 ## ACTUAL TODOS
-1. reconnect to existing game should be smooth
+1. reconnect to existing game should be smooth, handle side effects
 2. display move turn, check, checkmate, stalemate
 
 ## Installation

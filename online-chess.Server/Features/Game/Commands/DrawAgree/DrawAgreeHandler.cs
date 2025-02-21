@@ -97,7 +97,9 @@ namespace online_chess.Server.Features.Game.Commands.DrawAgree
             _timerService.RemoveTimer(room.GameKey);
 
             await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync(RoomMethods.onReceiveMessages, room.ChatMessages);
-                
+        
+            _gameRoomService.Remove(room.GameKey);
+
             await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync(RoomMethods.onGameOver, 2);
 
             return Unit.Value;

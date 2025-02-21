@@ -5,6 +5,7 @@ namespace online_chess.Server.Service;
 
 public class AuthenticatedUserService
 {
+    // TODO as of 2/21/2025 8:52AM, may need to use a list?
     /* UserConnectionId, IdentityUserName */
     private static ConcurrentDictionary<string, string> _connectionIdToIdentityName = new();
     
@@ -28,16 +29,15 @@ public class AuthenticatedUserService
     }
 
     public bool RemoveWithConnectionId(string userConnectionId){
-        var removed = _connectionIdToIdentityName.TryRemove(userConnectionId, out string? identityUserName);
-        _identityNameToConnectionId.TryRemove(identityUserName ?? string.Empty, out string? _);
+        // var removed = _connectionIdToIdentityName.TryRemove(userConnectionId, out string? identityUserName);
+        // _identityNameToConnectionId.TryRemove(identityUserName ?? string.Empty, out string? _);
 
-        return removed;
+        return _connectionIdToIdentityName.TryRemove(userConnectionId, out string? _);
     }
     
-    // public bool RemoveWithIdentityUsername(string identityUserName){
-    //     string connectionId = this.GetConnectionId(identityUserName);
-    //     return _connectionIdToIdentityName.TryRemove(connectionId, out string? res);
-    // }
+    public bool RemoveWithIdentityUsername(string identityUserName){
+        return _identityNameToConnectionId.TryRemove(identityUserName, out string? __);
+    }
 
     public string? GetIdentityName(string userConnectionId){
         _connectionIdToIdentityName.TryGetValue(userConnectionId, out string? identityUserName);

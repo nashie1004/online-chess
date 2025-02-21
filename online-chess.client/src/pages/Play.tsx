@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react"
 import SidebarRight from "../components/play/SidebarRight";
 import CaptureHistory from "../components/play/CaptureHistory";
-import { useParams } from "react-router";
+import { useSearchParams } from "react-router";
 import useSignalRContext from "../hooks/useSignalRContext";
 import OutcomeModal from "../components/play/OutcomeModal";
 import useOnInitializeGameInfo from "../game/signalRhandlers/useOnInitializeGameInfo";
@@ -23,10 +23,10 @@ import { PLAY_PAGE_HANDLERS } from "../constants/handlers";
 export default function Main(){
     const gameRef = useRef<Phaser.Game | null>();
     const { userConnectionId, addHandler, invoke, removeHandler } = useSignalRContext();
-    const url = useParams();
     const { setGameState } = useGameContext();
     const { setNotificationState } = useNotificationContext();
     const { setQueuingRoomKey } = useQueuingContext();
+    const [searchParams] = useSearchParams();
     
     const onInitializeGameInfo = useOnInitializeGameInfo(gameRef);
     const onUpdateBoard = useOnUpdateBoard();
@@ -53,7 +53,7 @@ export default function Main(){
             await addHandler(PLAY_PAGE_HANDLERS.ON_DECLINE_DRAW, onDeclineDraw)
             await addHandler(PLAY_PAGE_HANDLERS.ON_SET_PROMOTION_PREFERENCE, onSetPromotionPreference)
 
-            await invoke(PLAY_PAGE_INVOKERS.GAME_START, url.gameRoomId);
+            await invoke(PLAY_PAGE_INVOKERS.GAME_START, searchParams.get("gameRoomKey"), searchParams.get("reconnect") === "true");
         }
 
         start();

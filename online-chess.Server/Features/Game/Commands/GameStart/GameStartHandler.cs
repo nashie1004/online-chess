@@ -34,7 +34,6 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
 
         public async Task<Unit> Handle(GameStartRequest request, CancellationToken cancellationToken)
         {
-            // not a valid guid
             var gameRoom = _gameRoomService.GetOne(request.GameRoomKeyString);
 
             if (gameRoom == null)
@@ -52,7 +51,7 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
             }
 
             /* New Game */
-            if (gameRoom.GameStartedAt == DateTime.MinValue)
+            if (!request.Reconnect)
             {
                 var baseGameInfo = await StartNewGame(gameRoom, request, player1, player2);
 
@@ -71,7 +70,7 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
             return Unit.Value;
         }
     
-        public async Task<CurrentGameInfo> StartNewGame(GameRoom gameRoom, GameStartRequest request, string player1Connection, string player2Connection)
+        public async Task<CurrentGameInfo?> StartNewGame(GameRoom gameRoom, GameStartRequest request, string player1Connection, string player2Connection)
         {
             await _hubContext.Groups.AddToGroupAsync(player1Connection, request.GameRoomKeyString);
             await _hubContext.Groups.AddToGroupAsync(player2Connection, request.GameRoomKeyString);

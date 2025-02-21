@@ -53,7 +53,6 @@ namespace online_chess.Server.Features.Lobby.Commands.JoinRoom
                 return Unit.Value;
             }
 
-
             var val = new Random().Next(0, 2);  // Generates either 0 or 1
             var randomColor = val == 0 ? Color.White : Color.Black;
             var newColor = room.CreatedByUserColor == Color.Random ? randomColor : room.CreatedByUserColor;

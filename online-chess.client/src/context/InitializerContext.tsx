@@ -57,7 +57,7 @@ export default function InitializerContext(
       setQueuingRoomKey(roomKey);
     });
     await addHandler(LOBBY_PAGE_HANDLERS.ON_MATCH_FOUND, (roomKey: string) => {
-      navigate(`/play/${roomKey}`);
+      navigate(`/play?gameRoomKey=${roomKey}&reconnect=false`);
     });
     await addHandler(MAIN_PAGE_HANDLERS.ON_HAS_A_GAME_IN_PROGRESS, (roomKey: string) => {
       // const inPlagePage = url.pathname.startsWith("/play/")

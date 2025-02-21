@@ -5,5 +5,6 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
 {
     public class GameStartRequest : BaseGameRequest, IRequest<Unit>
     {
+        public bool Reconnect { get; set; }
     }
 }

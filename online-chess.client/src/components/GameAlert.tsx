@@ -91,7 +91,7 @@ export default function GameAlert(){
                     <a href="#" 
                         className="ps-1 alert-link"
                         onClick={() => {
-                            navigate(`/play/${gameState.gameRoomKey}`);
+                            navigate(`/play?gameRoomKey=${gameState.gameRoomKey}&reconnect=true`);
                         }}
                         >Resume.</a> 
                 </span>

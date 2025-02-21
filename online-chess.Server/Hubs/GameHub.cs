@@ -127,13 +127,14 @@ namespace online_chess.Server.Hubs
 
         #region PlayPage
         [Authorize]
-        public async Task GameStart(string gameRoomKey)
+        public async Task GameStart(string gameRoomKey, bool reconnect)
         {
             await _mediator.Send(new GameStartRequest()
             {
                 UserConnectionId = Context.ConnectionId,
                 IdentityUserName = Context.User?.Identity?.Name,
-                GameRoomKeyString = gameRoomKey
+                GameRoomKeyString = gameRoomKey,
+                Reconnect = reconnect
             });
         }
 
