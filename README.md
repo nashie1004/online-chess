@@ -50,6 +50,11 @@ cd /online-chess.Server/SQLiteDB
 C:/Users/Nash/Downloads/sqlite-tools-win-x64-3480000/sqlite3.exe app.db
 ```
 
+## MAIN TODOS
+1. handle disconnect / leave logic
+2. game is properly saved on resign or draw
+3. no main chess move bugs
+
 ## ALL TODOS Essential In Order 
 1. display move turn, check, checkmate, stalemate
 2. bug on if king in check - cause of issue move() is called twice/ on isCheck()
