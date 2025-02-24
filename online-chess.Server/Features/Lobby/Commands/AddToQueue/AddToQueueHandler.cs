@@ -34,7 +34,9 @@ namespace online_chess.Server.Features.Lobby.Commands.AddToQueue
                 JoinedByUserId = string.Empty
             });
 
-            await _hubContext.Clients.Client(request.UserConnectionId).SendAsync(RoomMethods.onGetRoomKey, roomKey);
+            await _hubContext.Groups.AddToGroupAsync(request.UserConnectionId, roomKey.ToString());
+            
+            await _hubContext.Clients.Group(roomKey.ToString()).SendAsync(RoomMethods.onGetRoomKey, roomKey);
 
             await _hubContext.Clients.All.SendAsync(RoomMethods.onRefreshRoomList,
                 _gameRoomService.GetPaginatedDictionary().ToArray()

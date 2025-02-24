@@ -34,9 +34,11 @@ namespace online_chess.Server.Features.Game.Commands.LeaveRoom
 
         public async Task<Unit> Handle(LeaveRequest request, CancellationToken cancellationToken)
         {
-            string identityUserName = request.IdentityUserName ?? "";
+            string? identityUserName = request.IdentityUserName;
 
-            _authenticatedUserService.RemoveWithIdentityUsername(request.IdentityUserName);
+            if (string.IsNullOrEmpty(identityUserName)) return Unit.Value;
+
+            _authenticatedUserService.RemoveWithIdentityUsername(identityUserName);
             
             var aQueuedRoomIsRemoved = _gameQueueService.RemoveByCreator(identityUserName);
             
@@ -47,39 +49,12 @@ namespace online_chess.Server.Features.Game.Commands.LeaveRoom
             }
 
             bool currentLogIn = _httpContextAccessor.HttpContext?.User?.Identity?.IsAuthenticated ?? false;
-            //bool alreadyLogInDiffBrowser = _logInTrackerService.AlreadyExists(identityUserName);
 
-            //if (currentLogIn && alreadyLogInDiffBrowser){
             if (currentLogIn){
                 _logInTrackerService.Remove(identityUserName);
             }
 
             return Unit.Value;
-
-            /*
-            foreach (var item in gameRooms)
-            {
-                // if either the user who created the room or a user who joined the room leaves
-                // remove from group and broadcast to group
-                if (
-                    item.Value.CreatedByUserId == request.IdentityUserName ||
-                    item.Value.JoinedByUserId == request.IdentityUserName
-                    )
-                {
-
-                    // if (item.Value.CreatedByUserId == request.IdentityUserName){
-                    //     item.Value.CreatedByUserId = string.Empty;
-                    // } else {
-                    //     item.Value.JoinedByUserId = string.Empty;
-                    // }
-
-                    // remove user from group
-                    await _hubContext.Groups.RemoveFromGroupAsync(request.UserConnectionId, item.Key.ToString());
-                    // broadcast user has left the group
-                    await _hubContext.Clients.Group(item.Key.ToString()).SendAsync(RoomMethods.onLeaveRoom, $"{request.IdentityUserName} has left the room");
-                }
-            }
-            */
         }
     }
 }

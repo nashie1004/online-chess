@@ -3,7 +3,7 @@ import useNotificationContext from '../hooks/useNotificationContext';
 import useSignalRContext from '../hooks/useSignalRContext';
 import useAuthContext from '../hooks/useAuthContext';
 import BaseApiService from '../services/BaseApiService';
-import { useLocation, useNavigate } from 'react-router';
+import { useLocation, useNavigate, useParams } from 'react-router';
 import useQueuingContext from '../hooks/useQueuingContext';
 import useGameContext from '../hooks/useGameContext';
 import { MAIN_PAGE_INVOKERS } from '../constants/invokers';
@@ -25,21 +25,25 @@ export default function InitializerContext(
   const { setQueuingRoomKey } = useQueuingContext();
   const navigate = useNavigate();
   const [initialize, setInitialize] = useState<boolean>(true);
-  const url = useLocation();
-  const { setGameState } = useGameContext();
+  const { setGameState, gameState } = useGameContext();
+  const urlLocation = useLocation();
+  //const urlParams = useParams();
 
   // if not signed in, allowed urls are these
   const unAuthenticatedAllowedPaths = useMemo(() => ["/", "/about", "/register", "/login"], []);
   const authService = useMemo(() => new BaseApiService(), []);
 
   async function checkIfSignedIn() {
+    let signedIn = false;
     const res = await authService.baseGet("/api/Auth/isSignedIn");
     
     if (res.status === 200){
       setUser({ userName: res.data.userName, profileURL: "" });
+      signedIn = true;
     }
     
     setIsAuthenticating(false);
+    return signedIn;
   }
 
   async function addHandlers(){
@@ -60,8 +64,6 @@ export default function InitializerContext(
       navigate(`/play?gameRoomKey=${roomKey}&reconnect=false`);
     });
     await addHandler(MAIN_PAGE_HANDLERS.ON_HAS_A_GAME_IN_PROGRESS, (roomKey: string) => {
-      // const inPlagePage = url.pathname.startsWith("/play/")
-      // console.log("TODO onHasAGameInProgress: ", roomKey, inPlagePage, url)
       setGameState({ type: "SET_GAMEROOMKEY", payload: roomKey });
       setNotificationState({ type: "SET_HASAGAMEONGOING", payload: true });
     });
@@ -74,18 +76,25 @@ export default function InitializerContext(
    * Handles on page change event
    */
   useEffect(() => {
+    // if the user has a game ongoing and the url is not the play page
+    // prompt user of ongoing game
+    if (gameState.gameRoomKey && urlLocation.pathname !== "play"){
+      // DOING
+      setNotificationState({ type: "SET_HASAGAMEONGOING", payload: true });
+    }
+
     if (user) return;
 
     if (notificationState.customMessage){
       setNotificationState({ type: "SET_RESETNOTIFICATIONS" });
     }
 
-    if (!unAuthenticatedAllowedPaths.includes(url.pathname)) {
+    if (!unAuthenticatedAllowedPaths.includes(urlLocation.pathname)) {
       navigate('/login');
       return;
     }
 
-  }, [user, url.pathname]);
+  }, [user, urlLocation.pathname]);
 
   /**
    * This is the actual initializer of our app

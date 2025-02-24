@@ -72,9 +72,6 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
     
         public async Task<CurrentGameInfo?> StartNewGame(GameRoom gameRoom, GameStartRequest request, string player1Connection, string player2Connection)
         {
-            await _hubContext.Groups.AddToGroupAsync(player1Connection, request.GameRoomKeyString);
-            await _hubContext.Groups.AddToGroupAsync(player2Connection, request.GameRoomKeyString);
-
             TimeSpan initialTime; 
 
             switch(gameRoom.GameType){
