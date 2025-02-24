@@ -22,6 +22,8 @@ using online_chess.Server.Features.Auth.Queries.GetGameHistory;
 using online_chess.Server.Features.Leaderboard.Queries.GetDefaultLeaderboard;
 using online_chess.Server.Features.Leaderboard.Queries.GetGameTypeList;
 using online_chess.Server.Features.Game.Queries.HasAGameInProgress;
+using online_chess.Server.Features.Game.Commands.Checkmate;
+using online_chess.Server.Features.Game.Commands.Stalemate;
 
 namespace online_chess.Server.Hubs
 {
@@ -214,6 +216,30 @@ namespace online_chess.Server.Hubs
         public async Task GetHasAGameInProgress()
         {
             await _mediator.Send(new HasAGameInProgressRequest()
+            {
+                UserConnectionId = Context.ConnectionId,
+                IdentityUserName = Context.User?.Identity?.Name,
+            });
+        }
+
+        /*
+        TODO AS OF 2/24/2025 8:04PM
+        - Checkmate and Stalemate
+        */
+        [Authorize]
+        public async Task Checkmate()
+        {
+            await _mediator.Send(new CheckmateRequest()
+            {
+                UserConnectionId = Context.ConnectionId,
+                IdentityUserName = Context.User?.Identity?.Name,
+            });
+        }
+
+        [Authorize]
+        public async Task Stalemate()
+        {
+            await _mediator.Send(new StalemateRequest()
             {
                 UserConnectionId = Context.ConnectionId,
                 IdentityUserName = Context.User?.Identity?.Name,

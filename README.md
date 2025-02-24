@@ -10,6 +10,8 @@ You can view a demo [here](https://github.com/nashie1004/online-chess).
         1.1.3 handle the ongoing timer
 
     1.2 when a game is finished, update game room, stop timer
+        1.2.1 handle checkmate
+        1.2.2 handle stalemate
     1.3 a user can play games consecutively without any errors or rebuilding app
 
 2. display move turn, check, checkmate, stalemate
