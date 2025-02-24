@@ -145,6 +145,8 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
         public async void UpdateTimer(object? state)
         {
             var timerState = (TimerState)state;
+            if (timerState == null) return;
+
             var room = timerState.GameRoom;
             var creatorsTurn = timerState.CreatorsTurn;
             var timer = _timerService.GetTimer(room.GameKey); 
@@ -178,9 +180,9 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
 
             _timerService.UpdateTimer(room.GameKey, (creatorSecondsLeft, joinerSecondsLeft));
 
-            // _logger.LogInformation(
-            // "Running, Creator time: {0}, Joiner time: {1}, Curr Player: {0}"
-            // , creatorSecondsLeft, joinerSecondsLeft, playerSecondsLeft);
+            _logger.LogInformation(
+            "Running - Creator: {0}, Joiner: {1}, Current Player: {0}"
+            , creatorSecondsLeft, joinerSecondsLeft, playerSecondsLeft);
 
             // for every 30 seconds check if the game is finished
             bool gameFinished = false;

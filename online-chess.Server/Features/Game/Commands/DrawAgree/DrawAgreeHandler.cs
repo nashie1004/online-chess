@@ -71,6 +71,10 @@ namespace online_chess.Server.Features.Game.Commands.DrawAgree
                 return Unit.Value;
             }
 
+            if (room.TimerId != null){
+                room.TimerId.Dispose();
+            }
+            
             await _mainContext.GameHistories.AddAsync(new GameHistory()
             {
                 GameStartDate = room.GameStartedAt

@@ -44,14 +44,24 @@ namespace online_chess.Server.Features.Game.Commands.Resign
                 return Unit.Value;
             }
 
+            string opponentConnectionId = _authenticatedUserService.GetConnectionId(
+                request.IdentityUserName == room.CreatedByUserId ? room.JoinedByUserId : room.CreatedByUserId
+            );
+
+            if (string.IsNullOrEmpty(opponentConnectionId)) return Unit.Value;
+
             // retrieve ids
             var creator = await _userManager.FindByNameAsync(room.CreatedByUserId);
             var joiner = await _userManager.FindByNameAsync(room.JoinedByUserId);
 
             if (creator == null || joiner == null)
             {
-                await _hubContext.Clients.Client(request.UserConnectionId).SendAsync(RoomMethods.onGenericError, "404 Room Not Found");
+                await _hubContext.Clients.Client(request.UserConnectionId).SendAsync(RoomMethods.onGenericError, "Creator or Joiner Name Not Found");
                 return Unit.Value;
+            }
+
+            if (room.TimerId != null){
+                room.TimerId.Dispose();
             }
 
             await _mainContext.GameHistories.AddAsync(new GameHistory(){
@@ -69,10 +79,6 @@ namespace online_chess.Server.Features.Game.Commands.Resign
             }, cancellationToken);
 
             await _mainContext.SaveChangesAsync(cancellationToken);
-
-            string opponentConnectionId = _authenticatedUserService.GetConnectionId(
-                request.IdentityUserName == room.CreatedByUserId ? room.JoinedByUserId : room.CreatedByUserId
-            );
 
             room.ChatMessages.Add(new Models.Play.Chat(){
                 CreateDate = DateTime.Now,

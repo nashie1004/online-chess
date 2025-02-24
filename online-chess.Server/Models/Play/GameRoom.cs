@@ -15,8 +15,6 @@ namespace online_chess.Server.Models
         public PlayerInfo CreatedByUserInfo { get; set; }
         public PlayerInfo JoinByUserInfo { get; set; }
         public List<Play.Chat> ChatMessages { get; set; }
-        [JsonIgnore]
-        public CancellationTokenSource TimerDetector { get; set; }
         public Timer TimerId { get; set; }
         
         // for handling disconnect state
@@ -30,7 +28,6 @@ namespace online_chess.Server.Models
             CreatedByUserInfo = new PlayerInfo();
             JoinByUserInfo = new PlayerInfo();
             ChatMessages = new List<Play.Chat>();
-            TimerDetector = new CancellationTokenSource();
 
             PiecesCoords = new List<BaseMoveInfo>()
             {
