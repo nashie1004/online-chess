@@ -47,7 +47,8 @@ namespace online_chess.Server.Features.Game.Commands.UserDisconnectedFromGame
                 Message = $"{request.IdentityUserName} disconnected from the game."
             });
 
-            await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync(RoomMethods.onReceiveMessages, ongoingGameRoom.ChatMessages);
+            await _hubContext.Clients.Group(ongoingGameRoom.GameKey.ToString())
+                .SendAsync(RoomMethods.onReceiveMessages, ongoingGameRoom.ChatMessages);
 
             await _hubContext.Clients.Group(ongoingGameRoom.GameKey.ToString())
                 .SendAsync(RoomMethods.onUserDisconnectedFromGame, "TODO");

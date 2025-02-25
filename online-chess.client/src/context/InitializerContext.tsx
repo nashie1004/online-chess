@@ -78,27 +78,22 @@ export default function InitializerContext(
   useEffect(() => {
     const controller = new AbortController();
     const signal = controller.signal;
+    
+    // will just check if a player has an ongoing game
+    if (urlLocation.pathname !== "/play")
+    {
+      function handleDisconnect(){
+        if (!gameState.gameRoomKey) return;
 
-    /**
-     * This function will be trigger on:
-     * 1. url/location change
-     * 2. beforeunload
-     * 
-     * - this will handle if the user has an ongoing game and the url is not the play page
-     */
-    function handleDisconnect(){
-
-      console.log("handleDisconnect TODO", gameState.gameRoomKey, urlLocation)
-      if (gameState.gameRoomKey && urlLocation.pathname !== "play")
-      {
         setNotificationState({ type: "SET_HASAGAMEONGOING", payload: true });
         invoke(PLAY_PAGE_INVOKERS.USER_DISCONNECT_FROM_ONGOING_GAME);
       }
 
-    }
+      window.addEventListener("beforeunload", handleDisconnect, { signal });
+      handleDisconnect();
 
-    window.addEventListener("beforeunload", handleDisconnect, { signal });
-    handleDisconnect();
+      invoke(MAIN_PAGE_INVOKERS.GET_HAS_A_GAME_IN_PROGRESS);
+    }
 
     if (user) return;
 
