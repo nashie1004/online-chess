@@ -23,9 +23,9 @@ export default function LobbyForm(
     const [colorOption, setColorOption] = useState<ColorOptions>(1);
     const { gameState } = useGameContext();
 
-    const disableQueueBtn = (roomKey ? true : false) // || 
-        // (gameState.gameRoomKey === null ? true : false) || 
-        // (userConnectionId === null ? true : false);
+    const disableQueueBtn = (roomKey ? true : false) || 
+        (gameState.gameRoomKey !== null ? true : false) || 
+        (userConnectionId === null ? true : false);
 
     // console.log(roomKey, gameState.gameRoomKey, userConnectionId)
 

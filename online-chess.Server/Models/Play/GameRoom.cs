@@ -66,6 +66,19 @@ namespace online_chess.Server.Models
             var piece = PiecesCoords.Find(i => i.X == whitesOrientationMoveInfo.Old.X && i.Y == whitesOrientationMoveInfo.Old.Y);
             if (piece == null) return capture;
 
+            // this just updates the king position if the piece moved is king
+            if (piece.UniqueName.Contains("king", StringComparison.OrdinalIgnoreCase)){
+                
+                if (piece.UniqueName[0] == 'w'){
+                    this.BothKingCoords.Item1.X = whitesOrientationMoveInfo.New.X;
+                    this.BothKingCoords.Item1.Y = whitesOrientationMoveInfo.New.Y;
+                } else {
+                    this.BothKingCoords.Item2.X = whitesOrientationMoveInfo.New.X;
+                    this.BothKingCoords.Item2.Y = whitesOrientationMoveInfo.New.Y;
+                }
+
+            }
+
             // check if tile is capturable
             // TODO PIECE CAPTURE
             // the coords saved on PiecesCoords is on white's orientation

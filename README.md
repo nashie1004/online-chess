@@ -5,8 +5,9 @@ You can view a demo [here](https://github.com/nashie1004/online-chess).
 ## ACTUAL TODOS
 1. reconnect to existing game should be smooth, handle side effects
     1.1 when one player disconnects
-        1.1.2 allow disconnected player to reconnect (full grace period) - DOING
-        1.1.3 handle the ongoing timer
+        1.1.2 allow disconnected player to reconnect (full grace period) 
+            - DOING
+            - check: move some piece > disconnect > move > capture
 
     1.2 game is finished
         1.2.1 handle checkmate

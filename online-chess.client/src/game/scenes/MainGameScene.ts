@@ -132,7 +132,6 @@ export class MainGameScene extends Scene{
                     .on("pointerover", () => { previewMove.setTint(0x98DEC7) })
                     .on("pointerout", () => { previewMove.clearTint() })
                     .on("pointerdown", () => {
-                        console.log("players turn: ", this.isPlayersTurnToMove)
                         this.move(colIdx, rowIdx);
                     }, this)
                     .setAlpha(.5)
@@ -347,7 +346,6 @@ export class MainGameScene extends Scene{
             
             this.isPlayersTurnToMove = false;
 
-            console.log("move: ", { oldMove, newMove, hasCapture })
             eventEmitter.emit(EVENT_EMIT.SET_MOVE_PIECE, { oldMove, newMove, hasCapture });
         }
 
@@ -417,9 +415,6 @@ export class MainGameScene extends Scene{
             });
         })
         
-        // console.clear();
-        // console.table(this.piecesCoordinates_Initial) //.filter(i => i.name.toLowerCase().indexOf("bishop") >= 0));
-        // console.table(this.piecesCoordinates_Actual) //.white.filter(i => i.name.toLowerCase().indexOf("bishop") >= 0));
-        console.log("player's turn: ", this.isPlayersTurnToMove)
+        //console.log("player's turn: ", this.isPlayersTurnToMove)
     }
 }

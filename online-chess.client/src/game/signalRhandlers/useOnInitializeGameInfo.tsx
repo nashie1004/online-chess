@@ -60,7 +60,7 @@ export default function useOnInitializeGameInfo(
         const bothKingCoords = initGameInfo.bothKingsCoords;
 
         // init phaser
-        //console.log("init phaser", gameRef.current)
+        console.log("start phaser, players turn: ", isPlayersTurnToMove)
 
         if (!gameRef.current){
             gameRef.current = new Phaser.Game({
@@ -74,7 +74,7 @@ export default function useOnInitializeGameInfo(
                 },
                 scene: [
                     new MainGameScene(
-                        "mainChessboard", playerIsWhite, boardUI
+                        "mainChessboard", myInfo.isColorWhite, boardUI
                         , pieceUI, piecesCoordinatesInitial, moveHistory
                         , bothKingsPosition, promotePreference, isPlayersTurnToMove
                     )
