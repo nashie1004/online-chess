@@ -34,13 +34,12 @@ namespace online_chess.Server.Features.Others.Commands.Disconnect
 
         public async Task<Unit> Handle(DisconnectRequest request, CancellationToken cancellationToken)
         {
-            string? identityUserName = request.IdentityUserName;
+            if (string.IsNullOrEmpty(request.IdentityUserName)) return Unit.Value;
 
-            if (string.IsNullOrEmpty(identityUserName)) return Unit.Value;
+            _authenticatedUserService.RemoveWithIdentityUsername(request.IdentityUserName);
 
-            _authenticatedUserService.RemoveWithIdentityUsername(identityUserName);
-
-            var aQueuedRoomIsRemoved = _gameQueueService.RemoveByCreator(identityUserName);
+            // 1. has a queuing room
+            var aQueuedRoomIsRemoved = _gameQueueService.RemoveByCreator(request.IdentityUserName);
 
             if (aQueuedRoomIsRemoved)
             {
@@ -49,11 +48,35 @@ namespace online_chess.Server.Features.Others.Commands.Disconnect
                 );
             }
 
+            // 2. has an ongoing game
+            var ongoingGameRoom = _gameRoomService.GetRoomByEitherPlayer(request.IdentityUserName);
+
+            if (ongoingGameRoom != null && ongoingGameRoom.GamePlayStatus == GamePlayStatus.Ongoing){
+                
+                if (ongoingGameRoom.CreatedByUserId == request.IdentityUserName)
+                {
+                    ongoingGameRoom.GamePlayStatus = GamePlayStatus.CreatorDisconnected;
+                } 
+                else
+                {
+                    ongoingGameRoom.GamePlayStatus = GamePlayStatus.JoinerDisconnected;
+                }
+
+                ongoingGameRoom.ChatMessages.Add(new Models.Play.Chat(){
+                    CreateDate = DateTime.Now,
+                    CreatedByUser = "server",
+                    Message = $"{request.IdentityUserName} disconnected from the game."
+                });
+
+                await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync(RoomMethods.onReceiveMessages, ongoingGameRoom.ChatMessages);
+            }
+
+            // 3. is logged in
             bool currentLogIn = _httpContextAccessor.HttpContext?.User?.Identity?.IsAuthenticated ?? false;
 
             if (currentLogIn)
             {
-                _logInTrackerService.Remove(identityUserName);
+                _logInTrackerService.Remove(request.IdentityUserName);
             }
 
             return Unit.Value;

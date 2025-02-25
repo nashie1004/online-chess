@@ -31,7 +31,8 @@ namespace online_chess.Server.Features.Lobby.Commands.AddToQueue
                 CreateDate = DateTime.Now,
                 GameType = request.GameType,
                 CreatedByUserColor = request.ColorOption,
-                JoinedByUserId = string.Empty
+                JoinedByUserId = string.Empty,
+                GamePlayStatus = GamePlayStatus.WaitingForPlayers
             });
 
             await _hubContext.Groups.AddToGroupAsync(request.UserConnectionId, roomKey.ToString());

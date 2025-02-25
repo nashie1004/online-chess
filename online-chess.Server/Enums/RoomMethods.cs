@@ -29,6 +29,7 @@ public class RoomMethods
     public const string onDeclineDraw = "onDeclineDraw";
     public const string onUpdateTimer = "onUpdateTimer";
     public const string onSetPromotionPreference = "onSetPromotionPreference";
+    public const string onUserDisconnectedFromGame = "onUserDisconnectedFromGame";
     #endregion
 
     #region Connection

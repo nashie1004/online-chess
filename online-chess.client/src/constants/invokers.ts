@@ -25,4 +25,5 @@ export const PLAY_PAGE_INVOKERS = {
     ,REQUEST_A_DRAW: "RequestADraw"
     ,MOVE_PIECE: "MovePiece"
     ,SET_PROMOTION_PREFERENCE: "SetPromotionPreference"
+    ,USER_DISCONNECT_FROM_ONGOING_GAME: "UserDisconnectedFromGame"
 }

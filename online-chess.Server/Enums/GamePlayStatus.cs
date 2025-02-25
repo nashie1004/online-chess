@@ -2,8 +2,10 @@
 {
     public enum GamePlayStatus : short
     {
-        WaitingForPlayers = 1,
-        Ongoing = 2,
-        Finished = 3,
+        WaitingForPlayers,
+        Ongoing,
+        Finished,
+        CreatorDisconnected,
+        JoinerDisconnected,
     }
 }

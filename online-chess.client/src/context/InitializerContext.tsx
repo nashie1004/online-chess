@@ -6,7 +6,7 @@ import BaseApiService from '../services/BaseApiService';
 import { useLocation, useNavigate, useParams } from 'react-router';
 import useQueuingContext from '../hooks/useQueuingContext';
 import useGameContext from '../hooks/useGameContext';
-import { MAIN_PAGE_INVOKERS } from '../constants/invokers';
+import { MAIN_PAGE_INVOKERS, PLAY_PAGE_INVOKERS } from '../constants/invokers';
 import { LOBBY_PAGE_HANDLERS, MAIN_PAGE_HANDLERS } from '../constants/handlers';
 import { IBaseContextProps } from '../types/global';
 import { IInitializerContext } from './types';
@@ -79,18 +79,26 @@ export default function InitializerContext(
     const controller = new AbortController();
     const signal = controller.signal;
 
-    // if the user has an ongoing game and the url is not the play page
-    // prompt user of ongoing game
-    window.addEventListener("beforeunload", (e: BeforeUnloadEvent) => {
+    /**
+     * This function will be trigger on:
+     * 1. url/location change
+     * 2. beforeunload
+     * 
+     * - this will handle if the user has an ongoing game and the url is not the play page
+     */
+    function handleDisconnect(){
 
+      console.log("handleDisconnect TODO", gameState.gameRoomKey, urlLocation)
       if (gameState.gameRoomKey && urlLocation.pathname !== "play")
       {
-        // DOING
         setNotificationState({ type: "SET_HASAGAMEONGOING", payload: true });
+        invoke(PLAY_PAGE_INVOKERS.USER_DISCONNECT_FROM_ONGOING_GAME);
       }
 
-    }, { signal })
+    }
 
+    window.addEventListener("beforeunload", handleDisconnect, { signal });
+    handleDisconnect();
 
     if (user) return;
 
