@@ -76,12 +76,21 @@ export default function InitializerContext(
    * Handles on page change event
    */
   useEffect(() => {
-    // if the user has a game ongoing and the url is not the play page
+    const controller = new AbortController();
+    const signal = controller.signal;
+
+    // if the user has an ongoing game and the url is not the play page
     // prompt user of ongoing game
-    if (gameState.gameRoomKey && urlLocation.pathname !== "play"){
-      // DOING
-      setNotificationState({ type: "SET_HASAGAMEONGOING", payload: true });
-    }
+    window.addEventListener("beforeunload", (e: BeforeUnloadEvent) => {
+
+      if (gameState.gameRoomKey && urlLocation.pathname !== "play")
+      {
+        // DOING
+        setNotificationState({ type: "SET_HASAGAMEONGOING", payload: true });
+      }
+
+    }, { signal })
+
 
     if (user) return;
 
@@ -94,6 +103,9 @@ export default function InitializerContext(
       return;
     }
 
+    return () => {
+      controller.abort();
+    };
   }, [user, urlLocation.pathname]);
 
   /**

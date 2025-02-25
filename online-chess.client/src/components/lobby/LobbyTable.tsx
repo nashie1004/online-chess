@@ -17,7 +17,7 @@ export default function LobbyTable({
 }: ILobbyTable){
     const [selectedRoom, setSelectedRoom] = useState<IGameRoom | null>(null);
     const [modal, setModal] = useState<boolean>(false);
-    const { invoke } = useSignalRContext();
+    const { invoke, userConnectionId } = useSignalRContext();
     const [pageNo, setPageNo] = useState<number>(1);
     const { user } = useAuthContext();
 
@@ -130,6 +130,7 @@ export default function LobbyTable({
                 </div>
                 <div className="m-footer">
                     <button 
+                        disabled={!userConnectionId}
                         className="btn btn-1 w-25"
                         onClick={() => {
                             setModal(false);

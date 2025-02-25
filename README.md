@@ -14,10 +14,9 @@ You can view a demo [here](https://github.com/nashie1004/online-chess).
         1.2.2 handle stalemate
         1.2.3 handle times up
         1.2.4 handle draw agree
-        
-    1.3 a user can play games consecutively without any errors or rebuilding app - DOING
-
+    
 2. display move turn, check, checkmate, stalemate
+3. handle en passant capture on GameRoom.cs
 
 ## Installation
 
@@ -67,7 +66,6 @@ C:/Users/Nash/Downloads/sqlite-tools-win-x64-3480000/sqlite3.exe app.db
 4. disconnect or leave logic + sync all state
 5. long castling bug
 6. promotion pawn check if king pin
-7. multiple games in a row without rebuilding
 8. fifty move rule
 9. show proper chess move notation
 10. 3 fold repetition

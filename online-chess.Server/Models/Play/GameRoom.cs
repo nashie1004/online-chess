@@ -69,6 +69,7 @@ namespace online_chess.Server.Models
             // check if tile is capturable
             // TODO PIECE CAPTURE
             // the coords saved on PiecesCoords is on white's orientation
+            // capture should also handle en passant
             var capturePiece = PiecesCoords.Find(i => i.X == whitesOrientationMoveInfo.New.X && i.Y == whitesOrientationMoveInfo.New.Y);
             if (hasCapture && capturePiece != null)
             {

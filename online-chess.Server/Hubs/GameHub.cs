@@ -5,11 +5,9 @@ using online_chess.Server.Constants;
 using online_chess.Server.Enums;
 using online_chess.Server.Features.Game.Commands.AddMessageToRoom;
 using online_chess.Server.Features.Lobby.Commands.AddToQueue;
-using online_chess.Server.Features.Lobby.Commands.Connect;
 using online_chess.Server.Features.Lobby.Commands.DeleteRoom;
 using online_chess.Server.Features.Lobby.Queries.GetCreatedRoomKey;
 using online_chess.Server.Features.Lobby.Commands.JoinRoom;
-using online_chess.Server.Features.Game.Commands.LeaveRoom;
 using online_chess.Server.Features.Lobby.Queries.GetRoomList;
 using online_chess.Server.Features.Game.Commands.GameStart;
 using online_chess.Server.Features.Game.Commands.MovePiece;
@@ -24,6 +22,9 @@ using online_chess.Server.Features.Leaderboard.Queries.GetGameTypeList;
 using online_chess.Server.Features.Game.Queries.HasAGameInProgress;
 using online_chess.Server.Features.Game.Commands.Checkmate;
 using online_chess.Server.Features.Game.Commands.Stalemate;
+using online_chess.Server.Features.Game.Commands.UserDisconnectedFromGame;
+using online_chess.Server.Features.Others.Commands.Connect;
+using online_chess.Server.Features.Others.Commands.Disconnect;
 
 namespace online_chess.Server.Hubs
 {
@@ -246,6 +247,16 @@ namespace online_chess.Server.Hubs
             });
         }
 
+        [Authorize]
+        public async Task UserDisconnectedFromGame()
+        {
+            await _mediator.Send(new UserDisconnectedFromGameRequest()
+            {
+                UserConnectionId = Context.ConnectionId,
+                IdentityUserName = Context.User?.Identity?.Name,
+            });
+        }
+
         #endregion
 
         #region Connection
@@ -269,7 +280,7 @@ namespace online_chess.Server.Hubs
         [AllowAnonymous]
         public override async Task OnDisconnectedAsync(Exception? ex)
         {
-            await _mediator.Send(new LeaveRequest()
+            await _mediator.Send(new DisconnectRequest()
             {
                 UserConnectionId = Context.ConnectionId,
                 IdentityUserName = Context.User?.Identity?.Name
