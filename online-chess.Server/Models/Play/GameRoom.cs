@@ -15,7 +15,7 @@ namespace online_chess.Server.Models
         public PlayerInfo CreatedByUserInfo { get; set; }
         public PlayerInfo JoinByUserInfo { get; set; }
         public List<Play.Chat> ChatMessages { get; set; }
-        public Timer TimerId { get; set; }
+        public Timer? TimerId { get; set; }
         
         // for handling disconnect state
         public List<BaseMoveInfo> PiecesCoords { get; set; }
@@ -29,28 +29,31 @@ namespace online_chess.Server.Models
             JoinByUserInfo = new PlayerInfo();
             ChatMessages = new List<Play.Chat>();
 
+            var black = new PiecesInitialPositionBlack();
+            var white = new PiecesInitialPositionWhite();
+
             PiecesCoords = new List<BaseMoveInfo>()
             {
-                PiecesInitialPositionBlack.bRook1, PiecesInitialPositionBlack.bKnight1
-                ,PiecesInitialPositionBlack.bBishop1, PiecesInitialPositionBlack.bQueen
-                ,PiecesInitialPositionBlack.bKing, PiecesInitialPositionBlack.bBishop2
-                ,PiecesInitialPositionBlack.bKnight2, PiecesInitialPositionBlack.bRook2
-                ,PiecesInitialPositionBlack.bPawn1, PiecesInitialPositionBlack.bPawn2
-                ,PiecesInitialPositionBlack.bPawn3, PiecesInitialPositionBlack.bPawn4
-                ,PiecesInitialPositionBlack.bPawn5, PiecesInitialPositionBlack.bPawn6
-                ,PiecesInitialPositionBlack.bPawn7, PiecesInitialPositionBlack.bPawn8
+                black.bRook1, black.bKnight1
+                ,black.bBishop1, black.bQueen
+                ,black.bKing, black.bBishop2
+                ,black.bKnight2, black.bRook2
+                ,black.bPawn1, black.bPawn2
+                ,black.bPawn3, black.bPawn4
+                ,black.bPawn5, black.bPawn6
+                ,black.bPawn7, black.bPawn8
 
-                ,PiecesInitialPositionWhite.wRook1, PiecesInitialPositionWhite.wKnight1
-                ,PiecesInitialPositionWhite.wBishop1, PiecesInitialPositionWhite.wQueen
-                ,PiecesInitialPositionWhite.wKing, PiecesInitialPositionWhite.wBishop2
-                ,PiecesInitialPositionWhite.wKnight2, PiecesInitialPositionWhite.wRook2
-                ,PiecesInitialPositionWhite.wPawn1, PiecesInitialPositionWhite.wPawn2
-                ,PiecesInitialPositionWhite.wPawn3, PiecesInitialPositionWhite.wPawn4
-                ,PiecesInitialPositionWhite.wPawn5, PiecesInitialPositionWhite.wPawn6
-                ,PiecesInitialPositionWhite.wPawn7, PiecesInitialPositionWhite.wPawn8
+                ,white.wRook1, white.wKnight1
+                ,white.wBishop1, white.wQueen
+                ,white.wKing, white.wBishop2
+                ,white.wKnight2, white.wRook2
+                ,white.wPawn1, white.wPawn2
+                ,white.wPawn3, white.wPawn4
+                ,white.wPawn5, white.wPawn6
+                ,white.wPawn7, white.wPawn8
             };
 
-            BothKingCoords = (PiecesInitialPositionWhite.wKing, PiecesInitialPositionBlack.bKing);
+            BothKingCoords = (white.wKing, black.bKing);
             MoveHistory = new MoveHistory();
             CaptureHistory = new List<BaseMoveInfo>();
         }

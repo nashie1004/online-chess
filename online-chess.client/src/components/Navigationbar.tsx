@@ -24,7 +24,7 @@ export default function NavigationBar() {
       <Container>
         <Navbar.Brand id="page-title">
           {/* {userConnectionId} */}
-          <i className="bi bi-app-indicator" style={{color: "#FFFFFF"}}></i> ONLINE-CHESS.COM
+          <i className="bi bi-app-indicator" style={{color: "#FFFFFF"}}></i> ONLINE-CHESS.XYZ
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">

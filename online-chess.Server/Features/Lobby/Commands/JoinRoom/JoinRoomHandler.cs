@@ -24,34 +24,36 @@ namespace online_chess.Server.Features.Lobby.Commands.JoinRoom
 
         public async Task<Unit> Handle(JoinRoomRequest request, CancellationToken cancellationToken)
         {
-            var room = _gameQueueService.GetOne(request.GameRoomKeyString);
+            var queue = _gameQueueService.GetOne(request.GameRoomKeyString);
 
-            if (room == null || string.IsNullOrEmpty(request.IdentityUserName))
+            if (queue == null || string.IsNullOrEmpty(request.IdentityUserName))
             {
                 await _hubContext.Clients.Client(request.UserConnectionId).SendAsync(RoomMethods.onGenericError, "404 Room Not Found");
                 return Unit.Value;
             }
 
-            room.JoinedByUserId = request.IdentityUserName;
+            queue.JoinedByUserId = request.IdentityUserName;
 
             // add joiner user to the group
             await _hubContext.Groups.AddToGroupAsync(request.UserConnectionId, request.GameRoomKeyString);
             
             var val = new Random().Next(0, 2);  // Generates either 0 or 1
             var randomColor = val == 0 ? Color.White : Color.Black;
-            var newColor = room.CreatedByUserColor == Color.Random ? randomColor : room.CreatedByUserColor;
+            var newColor = queue.CreatedByUserColor == Color.Random ? randomColor : queue.CreatedByUserColor;
 
             // remove from game queue and add to game room
-            _gameRoomService.Add(room.GameKey, new GameRoom(){
-                GameKey = room.GameKey,
-                CreatedByUserId = room.CreatedByUserId,
-                CreateDate = room.CreateDate,
-                GameType = room.GameType,
+            var room = new GameRoom(){
+                GameKey = queue.GameKey,
+                CreatedByUserId = queue.CreatedByUserId,
+                CreateDate = queue.CreateDate,
+                GameType = queue.GameType,
                 CreatedByUserColor = newColor, 
-                JoinedByUserId = room.JoinedByUserId,
+                JoinedByUserId = queue.JoinedByUserId,
                 GamePlayStatus = GamePlayStatus.Ongoing,
                 GameStartedAt = DateTime.Now,
-            });
+            };
+
+            _gameRoomService.Add(room.GameKey, room);
 
             // remove both player queuing rooms
             _gameQueueService.RemoveByCreator(room.CreatedByUserId);

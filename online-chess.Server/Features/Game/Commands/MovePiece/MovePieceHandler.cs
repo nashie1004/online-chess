@@ -220,12 +220,15 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
                 // await _hubContext.Clients.Group(room.GameKey.ToString()).SendAsync("", "");
             }
 
+            // TODO
+            /*
             if (playerSecondsLeft == -1)
             {
                 _logger.LogInformation("0 seconds left Game Ended: {0}", playerSecondsLeft);
                 await TimeIsUp(room, creatorsTurn, scope);
                 room.TimerId.Dispose();
             }
+            */
         }
 
 
