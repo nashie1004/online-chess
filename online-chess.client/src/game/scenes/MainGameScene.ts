@@ -21,10 +21,10 @@ export class MainGameScene extends Scene{
     // 1.1 server state - always changing
     private moveHistory: IMoveHistory;
     private kingsState: IKingState;
-    private piecesCoordinates_Actual: IPiecesCoordinates;
+    private piecesCoordinates_Initial: IPiece[];
     
     // 1.2 server state - not always changing
-    private piecesCoordinates_Initial: IPiece[];
+    private piecesCoordinates_Actual: IPiecesCoordinates;
     private promotePreference: PlayersPromotePreference; 
     private bothKingsPosition: IBothKingsPosition;
 
@@ -132,8 +132,8 @@ export class MainGameScene extends Scene{
                     .on("pointerover", () => { previewMove.setTint(0x98DEC7) })
                     .on("pointerout", () => { previewMove.clearTint() })
                     .on("pointerdown", () => {
-                        console.log("TODO CALL MOVE FUNC 1", {x: colIdx, y: rowIdx}, this.selectedPiece)
-                        this.move(colIdx, rowIdx)
+                        console.log("players turn: ", this.isPlayersTurnToMove)
+                        this.move(colIdx, rowIdx);
                     }, this)
                     .setAlpha(.5)
                     ;
@@ -190,6 +190,8 @@ export class MainGameScene extends Scene{
                  })
                 .on("pointerdown", () => {
 
+                    console.log("players turn: ", this.isPlayersTurnToMove)
+
                     // not allowed to move
                     if (
                         !this.isPlayersTurnToMove || (
@@ -243,15 +245,12 @@ export class MainGameScene extends Scene{
         }); // TODO
         eventEmitter.on(EVENT_ON.SET_KINGS_STATE, (data: IKingState) => this.kingsState = data);
         eventEmitter.on(EVENT_ON.SET_ENEMY_MOVE, (data: IPieceMove) => {
-            // console.log("enemy event emit: ", data)
-
             this.selectedPiece = {
                 x: data.old.x,
                 y: data.old.y,
                 pieceName: data.old.uniqueName ?? ``
             }
 
-            console.log("TODO CALL MOVE FUNC 2", { x: data.new.x, y: data.new.y }, this.selectedPiece)
             this.move(data.new.x, data.new.y);
             this.isPlayersTurnToMove = true;
         });
@@ -282,11 +281,7 @@ export class MainGameScene extends Scene{
         // current piece to move
         const sprite = this.board[this.selectedPiece.x][this.selectedPiece.y];
 
-        console.log("TODO selected piece: ", this.selectedPiece, { newX, newY }, sprite?.name)
-
         if (!sprite) return false;
-
-        // console.log("main move: ", this.selectedPiece, { newX, newY })
 
         const isWhite = sprite.name[0] === "w"
         const uniquePieceName = sprite.name;
@@ -341,7 +336,6 @@ export class MainGameScene extends Scene{
 
         // if the move is a king, update private king pos state - this is used by the this.validateCheckOrCheckMateOrStalemate() function
         if (sprite.name.toLowerCase().indexOf("king") >= 0){
-            // console.log("king move", newX, newY, sprite.name, this.selectedPiece)
             this.bothKingsPosition[isWhite ? "white" : "black"].x = newX;
             this.bothKingsPosition[isWhite ? "white" : "black"].y = newY;
         }
@@ -352,9 +346,8 @@ export class MainGameScene extends Scene{
             const newMove: IPiece = { x: newX, y: newY, uniqueName: uniquePieceName, name: pieceName };
             
             this.isPlayersTurnToMove = false;
-            // console.log("move piece: ", oldMove, newMove)
-            //console.log("sprite: ", sprite, this.selectedPiece, newX, newY)
 
+            console.log("move: ", { oldMove, newMove, hasCapture })
             eventEmitter.emit(EVENT_EMIT.SET_MOVE_PIECE, { oldMove, newMove, hasCapture });
         }
 
@@ -391,17 +384,7 @@ export class MainGameScene extends Scene{
             kingSprite?.postFX?.addGlow(0xE44C6A, 10, 2);
         }
 
-        // For testing only
-        // console.info(" === TEST === ");
-        if (kingSafety !== 0){
-            // console.log(this.piecesCoordinates_Actual.white.filter(i => i.name.toLowerCase().indexOf("king") >= 0));
-            // console.log(this.piecesCoordinates_Actual.black.filter(i => i.name.toLowerCase().indexOf("queen") >= 0));
-            // console.log(this.bothKingsPosition)
-            // console.log(this.selectedPiece)
-            // console.log(pieceCoordinate)
-        }
-        // console.table(this.piecesCoordinates_Actual.black);
-        // this.debugHelper();
+        //this.debugHelper();
     }
 
     update(){
@@ -434,8 +417,9 @@ export class MainGameScene extends Scene{
             });
         })
         
-        //console.log(nonEmptyWhiteTiles)
-        // console.table([...nonEmptyWhiteTiles, ...nonEmptyBlackTiles]);
-        // console.table(nonEmptyWhiteTiles.filter(i => i.uniqueName.toLowerCase().indexOf("pawn") >= 0));
+        // console.clear();
+        // console.table(this.piecesCoordinates_Initial) //.filter(i => i.name.toLowerCase().indexOf("bishop") >= 0));
+        // console.table(this.piecesCoordinates_Actual) //.white.filter(i => i.name.toLowerCase().indexOf("bishop") >= 0));
+        console.log("player's turn: ", this.isPlayersTurnToMove)
     }
 }

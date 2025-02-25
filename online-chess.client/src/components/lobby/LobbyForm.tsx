@@ -5,6 +5,7 @@ import { Form } from 'react-bootstrap';
 import useSignalRContext from '../../hooks/useSignalRContext';
 import { IGameRoomList } from '../../game/utilities/types';
 import { LOBBY_PAGE_INVOKERS } from '../../constants/invokers';
+import useGameContext from '../../hooks/useGameContext';
 
 interface ILobbyForm{
     setGameRoomList: React.Dispatch<React.SetStateAction<IGameRoomList>>;
@@ -17,9 +18,16 @@ const colorOptions = [ ColorOptions.White, ColorOptions.Black, ColorOptions.Rand
 export default function LobbyForm(
     { setGameRoomList, roomKey }: ILobbyForm
 ) {
-    const { invoke } = useSignalRContext();
+    const { invoke, userConnectionId } = useSignalRContext();
     const [gameType, setGameType] = useState<GameType>(1);
     const [colorOption, setColorOption] = useState<ColorOptions>(1);
+    const { gameState } = useGameContext();
+
+    const disableQueueBtn = (roomKey ? true : false) // || 
+        // (gameState.gameRoomKey === null ? true : false) || 
+        // (userConnectionId === null ? true : false);
+
+    // console.log(roomKey, gameState.gameRoomKey, userConnectionId)
 
   return (
     <>
@@ -40,7 +48,7 @@ export default function LobbyForm(
                 <div className="match-form-body pb-4">
                     <Form.Group className="mb-3">
                         <Form.Select 
-                            disabled={roomKey ? true : false} 
+                            disabled={disableQueueBtn} 
                             onChange={(e) => {
                                 const val = Number(e.target.value) as GameType;
                                 setGameType(val);
@@ -56,7 +64,7 @@ export default function LobbyForm(
                     </Form.Group>
                     <Form.Group className='mb-3'>
                         <Form.Select
-                            disabled={roomKey ? true : false} 
+                            disabled={disableQueueBtn} 
                             onChange={(e) => {
                                 const val = Number(e.target.value) as ColorOptions;
                                 setColorOption(val);
@@ -70,7 +78,7 @@ export default function LobbyForm(
                         </Form.Select>
                     </Form.Group>
                     <button
-                        disabled={roomKey ? true : false} 
+                        disabled={disableQueueBtn} 
                         type="submit" className="btn btn-1 w-100">Queue</button>
                 </div>
             </Form>

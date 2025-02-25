@@ -36,7 +36,7 @@ namespace online_chess.Server.Controllers
             return Ok(await _mediator.Send(req));
         }
 
-        [HttpGet("isSignedIn")]
+        [HttpGet("is-signed-in")]
         public async Task<IActionResult> IsSignedIn([FromQuery] GetPlayerInfoRequest req)
         {
             return Ok(await _mediator.Send(req));
