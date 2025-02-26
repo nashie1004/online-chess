@@ -19,6 +19,8 @@ import useNotificationContext from "../hooks/useNotificationContext";
 import useQueuingContext from "../hooks/useQueuingContext";
 import { PLAY_PAGE_INVOKERS } from "../constants/invokers";
 import { PLAY_PAGE_HANDLERS } from "../constants/handlers";
+import useOnReceiveMoveHistory from "../game/signalRhandlers/useOnReceiveMoveHistory";
+import useOnReceiveCaptureHistory from "../game/signalRhandlers/useOnReceiveCaptureHistory";
 
 export default function Main(){
     const gameRef = useRef<Phaser.Game | null>();
@@ -35,6 +37,8 @@ export default function Main(){
     const onGameOver = useOnGameOver();
     const onDeclineDraw = useOnDeclineDraw();
     const onSetPromotionPreference = useOnSetPromotionPreference();
+    const onReceiveMoveHistory = useOnReceiveMoveHistory();
+    const onReceiveCaptureHistory = useOnReceiveCaptureHistory();
 
     useEffect(() => {
         setQueuingRoomKey(null);
@@ -49,9 +53,11 @@ export default function Main(){
             await addHandler(PLAY_PAGE_HANDLERS.ON_GAME_OVER, onGameOver);
             await addHandler(PLAY_PAGE_HANDLERS.ON_RECEIVER_MESSAGES, onReceiveMessages);
             await addHandler(PLAY_PAGE_HANDLERS.ON_UPDATE_BOARD, onUpdateBoard)
-            await addHandler(PLAY_PAGE_HANDLERS.ON_OPPONENT_DRAW_REQUEST, onOpponentDrawRequest)
-            await addHandler(PLAY_PAGE_HANDLERS.ON_DECLINE_DRAW, onDeclineDraw)
-            await addHandler(PLAY_PAGE_HANDLERS.ON_SET_PROMOTION_PREFERENCE, onSetPromotionPreference)
+            await addHandler(PLAY_PAGE_HANDLERS.ON_OPPONENT_DRAW_REQUEST, onOpponentDrawRequest);
+            await addHandler(PLAY_PAGE_HANDLERS.ON_DECLINE_DRAW, onDeclineDraw);
+            await addHandler(PLAY_PAGE_HANDLERS.ON_SET_PROMOTION_PREFERENCE, onSetPromotionPreference);
+            await addHandler(PLAY_PAGE_HANDLERS.ON_RECEIVE_MOVE_HISTORY, onReceiveMoveHistory);
+            await addHandler(PLAY_PAGE_HANDLERS.ON_RECEIVE_CAPTURE_HISTORY, onReceiveCaptureHistory);
 
             await invoke(PLAY_PAGE_INVOKERS.GAME_START, searchParams.get("gameRoomKey"), searchParams.get("reconnect") === "true");
         }
@@ -74,6 +80,8 @@ export default function Main(){
             removeHandler(PLAY_PAGE_HANDLERS.ON_OPPONENT_DRAW_REQUEST);
             removeHandler(PLAY_PAGE_HANDLERS.ON_DECLINE_DRAW);
             removeHandler(PLAY_PAGE_HANDLERS.ON_SET_PROMOTION_PREFERENCE);
+            removeHandler(PLAY_PAGE_HANDLERS.ON_RECEIVE_MOVE_HISTORY);
+            removeHandler(PLAY_PAGE_HANDLERS.ON_RECEIVE_CAPTURE_HISTORY);
         };
     }, [])
  

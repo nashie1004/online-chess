@@ -25,6 +25,8 @@ export const PLAY_PAGE_HANDLERS = {
     ON_INITIALIZE_GAME_INFO: "onInitializeGameInfo"
     ,ON_GAME_OVER: "onGameOver"
     ,ON_RECEIVER_MESSAGES: "onReceiveMessages"
+    ,ON_RECEIVE_MOVE_HISTORY: "onReceiveMoveHistory"
+    ,ON_RECEIVE_CAPTURE_HISTORY: "onReceiveCaptureHistory"
     ,ON_UPDATE_BOARD: "onUpdateBoard"
     ,ON_OPPONENT_DRAW_REQUEST: "onOpponentDrawRequest"
     ,ON_DECLINE_DRAW: "onDeclineDraw"

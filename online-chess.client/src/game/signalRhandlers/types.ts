@@ -1,5 +1,5 @@
 import { GameType, PromotionPrefence } from "../utilities/constants";
-import { IPiece, IMoveInfo, IBaseCoordinates } from "../utilities/types";
+import { IPiece, IMoveInfo, IBaseCoordinates, IPieceMove } from "../utilities/types";
 
 export interface IInitialPlayerInfo{
     userName: string;
@@ -30,7 +30,7 @@ export interface IOnSetPromotionPreference{
 }
 
 export interface IOnUpdateBoard{
-    moveInfo: IMoveInfo;
+    moveInfo: IPieceMove;
     moveIsWhite: boolean;
     capturedPiece: IPiece | null;
 }

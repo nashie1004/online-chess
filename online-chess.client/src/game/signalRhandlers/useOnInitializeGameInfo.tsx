@@ -60,7 +60,7 @@ export default function useOnInitializeGameInfo(
         const bothKingCoords = initGameInfo.bothKingsCoords;
 
         // init phaser
-        console.log("start phaser, players turn: ", isPlayersTurnToMove)
+        console.log("start phaser, players turn: ", isPlayersTurnToMove, " pieces coords count: ", piecesCoordinatesInitial.length)
 
         if (!gameRef.current){
             gameRef.current = new Phaser.Game({

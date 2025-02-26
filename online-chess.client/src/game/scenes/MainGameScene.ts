@@ -189,7 +189,7 @@ export class MainGameScene extends Scene{
                  })
                 .on("pointerdown", () => {
 
-                    console.log("players turn: ", this.isPlayersTurnToMove)
+                    //console.log("pointerdown: ", this.isPlayersTurnToMove)
 
                     // not allowed to move
                     if (
@@ -249,8 +249,10 @@ export class MainGameScene extends Scene{
                 y: data.old.y,
                 pieceName: data.old.uniqueName ?? ``
             }
+            this.isPlayersTurnToMove = false;
 
             this.move(data.new.x, data.new.y);
+
             this.isPlayersTurnToMove = true;
         });
         eventEmitter.on(EVENT_ON.SET_MOVE_HISTORY, (data: IMoveHistory) => {
@@ -276,6 +278,8 @@ export class MainGameScene extends Scene{
         let hasCapture = false;
 
         if (!this.selectedPiece) return hasCapture;
+
+        // doing 2/25/2025
 
         // current piece to move
         const sprite = this.board[this.selectedPiece.x][this.selectedPiece.y];
@@ -313,7 +317,7 @@ export class MainGameScene extends Scene{
 
         // some special logic
         (new PawnPromote(
-            this.boardOrientationIsWhite, this.promotePreference, this.piecesCoordinates_Actual // TODO dynamic promote
+            this.boardOrientationIsWhite, this.promotePreference, this.piecesCoordinates_Actual 
         )).pawnPromote(uniquePieceName, newX, newY, isWhite, sprite);
 
         const kingCastled = (new KingCastled(
@@ -382,7 +386,7 @@ export class MainGameScene extends Scene{
             kingSprite?.postFX?.addGlow(0xE44C6A, 10, 2);
         }
 
-        //this.debugHelper();
+        this.debugHelper();
     }
 
     update(){
@@ -413,8 +417,8 @@ export class MainGameScene extends Scene{
                     y: rowIdx
                 });
             });
-        })
-        
-        //console.log("player's turn: ", this.isPlayersTurnToMove)
+        });
+
+        console.log(this.piecesCoordinates_Actual)
     }
 }
