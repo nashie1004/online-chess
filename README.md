@@ -11,6 +11,7 @@ You can view a demo [here](https://github.com/nashie1004/online-chess).
         - check: capture some piece > disconnect > log > pieces coords count 
         - check: disconnect > try to move quickly 
         - DOING
+        1.1.3 on reconnect of black piece user - the orientation is incorrect
 
     1.2 game is finished
         1.2.1 handle checkmate

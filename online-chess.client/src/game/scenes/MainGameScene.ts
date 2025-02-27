@@ -18,13 +18,13 @@ export class MainGameScene extends Scene{
     /**
      * unique name = piecename + x + y, example: 'wPawn-0-6'
      */
-    // 1.1 server state - always changing
+    // 1.1 server state - server has these states
     private moveHistory: IMoveHistory;
     private kingsState: IKingState;
-    private piecesCoordinates_Initial: IPiece[];
+    private piecesCoordinates_Server: IPiece[];
     
-    // 1.2 server state - not always changing
-    private piecesCoordinates_Actual: IPiecesCoordinates;
+    // 1.2 server and internal state integrated
+    private piecesCoordinates_Internal: IPiecesCoordinates;
     private promotePreference: PlayersPromotePreference; 
     private bothKingsPosition: IBothKingsPosition;
 
@@ -42,19 +42,19 @@ export class MainGameScene extends Scene{
 
     constructor(
         key: string, isColorWhite: boolean, boardUI: string
-        , piecesUI: string, piecesCoordinates_Initial: IPiece[], moveHistory: IMoveHistory
+        , piecesUI: string, piecesCoordinates_Server: IPiece[], moveHistory: IMoveHistory
         , bothKingsPosition: IBothKingsPosition, promotePreference: PlayersPromotePreference
         , isPlayersTurnToMove: boolean
     ) {
         super({ key });
 
-        // 1.1 server state - always changing
+        // 1.1 server state - server has these states
         this.moveHistory = moveHistory; 
         this.kingsState = baseKingState;
-        this.piecesCoordinates_Actual = { white: [], black: [] };
+        this.piecesCoordinates_Internal = { white: [], black: [] };
 
-        // 1.2 server state - not always changing
-        this.piecesCoordinates_Initial = piecesCoordinates_Initial;
+        // 1.2 server and internal state integrated
+        this.piecesCoordinates_Server = piecesCoordinates_Server;
         this.promotePreference = promotePreference;
         this.bothKingsPosition = bothKingsPosition;
 
@@ -69,6 +69,8 @@ export class MainGameScene extends Scene{
         // 3. user prefernce
         this.boardUI = boardUI;
         this.piecesUI = piecesUI;
+
+        //console.log("player is white: ", this.boardOrientationIsWhite)
     }
 
     preload(){
@@ -103,7 +105,6 @@ export class MainGameScene extends Scene{
     }
 
     create(){
-
         const board = this.add
             .image(this.scale.width / 2, this.scale.height / 2, "bg")
             .setOrigin(0.5) // Center the image
@@ -132,7 +133,7 @@ export class MainGameScene extends Scene{
                     .on("pointerover", () => { previewMove.setTint(0x98DEC7) })
                     .on("pointerout", () => { previewMove.clearTint() })
                     .on("pointerdown", () => {
-                        console.log("call move func - my move")
+                        //console.log("call move func - my move")
                         this.move(colIdx, rowIdx);
                         //this.debugHelper();
                     }, this)
@@ -144,7 +145,7 @@ export class MainGameScene extends Scene{
         })
 
         // 2. actual pieces
-        this.piecesCoordinates_Initial.forEach(piece => {
+        this.piecesCoordinates_Server.forEach(piece => {
             let { name, x, y } = piece;
             const pieceIsWhite = name[0] === "w";
 
@@ -163,7 +164,7 @@ export class MainGameScene extends Scene{
             }
 
             const uniqueName = `${name}-${x}-${y}`;
-            this.piecesCoordinates_Actual[pieceIsWhite ? "white" : "black"].push({
+            this.piecesCoordinates_Internal[pieceIsWhite ? "white" : "black"].push({
                 name, x, y, uniqueName
             });
 
@@ -214,7 +215,7 @@ export class MainGameScene extends Scene{
                     this.resetMoves();
                     this.selectedPiece = (new ShowPossibleMoves(
                         this.board, this.previewBoard
-                        ,this.boardOrientationIsWhite, this.piecesCoordinates_Actual
+                        ,this.boardOrientationIsWhite, this.piecesCoordinates_Internal
                         ,this.selectedPiece
                         ,this.bothKingsPosition, this.moveHistory
                         ,this.kingsState
@@ -253,7 +254,7 @@ export class MainGameScene extends Scene{
             }
             this.isPlayersTurnToMove = false;
             
-            console.log("call move func enemy move")
+            //console.log("call move func enemy move")
             this.move(data.new.x, data.new.y);
 
             this.isPlayersTurnToMove = true;
@@ -298,7 +299,7 @@ export class MainGameScene extends Scene{
 
         // capture
         const pieceCapture = new PieceCapture(
-            this.board, this.boardOrientationIsWhite, this.piecesCoordinates_Actual
+            this.board, this.boardOrientationIsWhite, this.piecesCoordinates_Internal
             , this.bothKingsPosition
             ,this.moveHistory
         );
@@ -310,7 +311,7 @@ export class MainGameScene extends Scene{
         this.board[newX][newY] = sprite;
 
         // Set new coordinate
-        const pieceCoordinate = this.piecesCoordinates_Actual[isWhite ? "white" : "black"]
+        const pieceCoordinate = this.piecesCoordinates_Internal[isWhite ? "white" : "black"]
             .find(i => i.x === this.selectedPiece?.x && i.y === this.selectedPiece?.y);
 
         if (pieceCoordinate){
@@ -320,13 +321,13 @@ export class MainGameScene extends Scene{
 
         // some special logic
         (new PawnPromote(
-            this.boardOrientationIsWhite, this.promotePreference, this.piecesCoordinates_Actual 
+            this.boardOrientationIsWhite, this.promotePreference, this.piecesCoordinates_Internal 
         )).pawnPromote(uniquePieceName, newX, newY, isWhite, sprite);
 
         const kingCastled = (new KingCastled(
             this.board
             , this.bothKingsPosition, this.boardOrientationIsWhite
-            , this.moveHistory, this.piecesCoordinates_Actual
+            , this.moveHistory, this.piecesCoordinates_Internal
         )).kingCastled(uniquePieceName, this.selectedPiece, isWhite, newX, newY);
 
         if (kingCastled){
@@ -374,7 +375,7 @@ export class MainGameScene extends Scene{
 
         const kingSafety = (new ValidateCheckOrCheckMateOrStalemate(
             this.board, this.boardOrientationIsWhite
-            , this.piecesCoordinates_Actual
+            , this.piecesCoordinates_Internal
             , this.bothKingsPosition, this.moveHistory
             , this.kingsState
         )).validate(isWhite);
@@ -389,7 +390,7 @@ export class MainGameScene extends Scene{
             kingSprite?.postFX?.addGlow(0xE44C6A, 10, 2);
         }
 
-        //this.debugHelper();
+        this.debugHelper();
     }
 
     update(){
@@ -423,7 +424,7 @@ export class MainGameScene extends Scene{
         });
         
         // Debug helper by using white's orientation
-        const copy = structuredClone(this.piecesCoordinates_Actual);
+        const copy = structuredClone(this.piecesCoordinates_Internal);
         
         if (!this.boardOrientationIsWhite){
             copy.black.forEach(i => {
@@ -433,5 +434,9 @@ export class MainGameScene extends Scene{
                 i.y = Math.abs(i.y - 7);
             });
         }
+
+        
+        console.table(this.piecesCoordinates_Internal);
+        console.log('this.boardOrientationIsWhite: ', this.boardOrientationIsWhite);
     }
 }

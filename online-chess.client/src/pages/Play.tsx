@@ -65,16 +65,15 @@ export default function Main(){
 
         start();
 
+        // cleanup game state, phaser, signalr, event emitter to avoid side effects and bugs
         return () => {
             setGameState({ type: "SET_CLEARGAMESTATE" });
 
-            // cleanup phaser
             if (gameRef.current){
                 gameRef.current.destroy(true);
                 gameRef.current = null;
             }
             
-            // cleanup signalr
             removeHandler(PLAY_PAGE_HANDLERS.ON_INITIALIZE_GAME_INFO);
             removeHandler(PLAY_PAGE_HANDLERS.ON_GAME_OVER);
             removeHandler(PLAY_PAGE_HANDLERS.ON_RECEIVER_MESSAGES);

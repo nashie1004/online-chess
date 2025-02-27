@@ -61,6 +61,7 @@ export default function LobbyTable({
                         <td>
                             {user?.userName !== item.value.createdByUserId ? <>
                                 <button 
+                                    disabled={!userConnectionId}
                                     onClick={() => {
                                         setSelectedRoom(item)
                                         setModal(true)
