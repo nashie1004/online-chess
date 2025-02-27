@@ -185,7 +185,7 @@ export class MainGameScene extends Scene{
                         return;
                     }
 
-                    sprite.setTint(0x98DEC7)
+                    sprite.setTint(0x98DEC7);
                 })
                 .on("pointerout", () => {
                     sprite.clearTint()

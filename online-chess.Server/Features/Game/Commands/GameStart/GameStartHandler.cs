@@ -103,22 +103,12 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
             gameRoom.CreatedByUserInfo = new PlayerInfo(){
                 UserName = gameRoom.CreatedByUserId
                 , IsPlayersTurnToMove = gameRoom.CreatedByUserColor == Color.White
-                //, TimeLeft = initialCreatorTime.TotalSeconds
-                , LastMoveDate = DateTime.Now
                 , IsColorWhite = gameRoom.CreatedByUserColor == Color.White
-                , KingInCheck = false
-                , KingInCheckMate = false
-                , KingInStaleMate = false
             };
             gameRoom.JoinByUserInfo = new PlayerInfo(){
                 UserName = gameRoom.JoinedByUserId
                 , IsPlayersTurnToMove = gameRoom.CreatedByUserColor != Color.White
-               // , TimeLeft = initialJoinerTime.TotalSeconds
-                , LastMoveDate = DateTime.Now
                 , IsColorWhite = gameRoom.CreatedByUserColor != Color.White
-                , KingInCheck = false
-                , KingInCheckMate = false
-                , KingInStaleMate = false
             };
             gameRoom.ChatMessages = new List<Models.Play.Chat>()
             {

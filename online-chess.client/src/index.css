@@ -38,6 +38,9 @@ nav #page-title{
   color: var(--text-1);
   font-weight: 500;
 }
+nav .nav-link-active{
+  color: var(--text-5) !important;
+}
 body{
   background-color: var(--bg-1)  !important;
 }

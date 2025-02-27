@@ -4,14 +4,12 @@ import { Container, Nav } from 'react-bootstrap';
 import useAuthContext from '../hooks/useAuthContext';
 import useNotificationContext from '../hooks/useNotificationContext';
 import useQueuingContext from '../hooks/useQueuingContext';
-import useSignalRContext from '../hooks/useSignalRContext';
   
 export default function NavigationBar() {
   const url = useLocation();
   const {logout, user} = useAuthContext();
   const { setNotificationState } = useNotificationContext();
   const { setQueuingRoomKey } = useQueuingContext();
-  const { userConnectionId } = useSignalRContext();
 
   function logoutHandler(){
     setQueuingRoomKey(null);
@@ -39,7 +37,7 @@ export default function NavigationBar() {
                 { url: "/about", name: "About",  },
               ].map((item, idx) => {
                 return  (
-                  <NavLink key={idx} to={item.url} className={url.pathname === item.url ? "nav-link active" : "nav-link"}>
+                  <NavLink key={idx} to={item.url} className={url.pathname === item.url ? "nav-link nav-link-active" : "nav-link"}>
                     {item.name}
                   </NavLink>
                 )
@@ -53,7 +51,7 @@ export default function NavigationBar() {
                 { url: "/about", name: "About",  },
               ].map((item, idx) => {
                 return  (
-                  <NavLink key={idx} to={item.url} className={url.pathname === item.url ? "nav-link active" : "nav-link"}>
+                  <NavLink key={idx} to={item.url} className={url.pathname === item.url ? "nav-link nav-link-active" : "nav-link"}>
                     {item.name}
                   </NavLink>
                 )

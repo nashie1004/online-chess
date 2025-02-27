@@ -1,7 +1,6 @@
 ﻿using online_chess.Server.Enums;
 using online_chess.Server.Models.Lobby;
 using online_chess.Server.Models.Play;
-using System.Text.Json.Serialization;
 
 namespace online_chess.Server.Models
 {
@@ -11,15 +10,16 @@ namespace online_chess.Server.Models
      */
     public class GameRoom : GameQueue
     {
+        // 1. misc game info
         public DateTime GameStartedAt { get; set; }
         public PlayerInfo CreatedByUserInfo { get; set; }
         public PlayerInfo JoinByUserInfo { get; set; }
         public List<Play.Chat> ChatMessages { get; set; }
+
+        // 2. The server will hold these main chess game state
         public Timer? TimerId { get; set; }
-        
-        // for handling disconnect state
         public List<BaseMoveInfo> PiecesCoords { get; set; }
-        public (BaseMoveInfo, BaseMoveInfo) BothKingCoords { get; set; }
+        public BothKingsState BothKingsState { get; set; }
         public MoveHistory MoveHistory { get; set; }
         public List<BaseMoveInfo> CaptureHistory { get; set; }
 
@@ -53,7 +53,29 @@ namespace online_chess.Server.Models
                 ,white.wPawn7, white.wPawn8
             };
 
-            BothKingCoords = (white.wKing, black.bKing);
+            BothKingsState = new BothKingsState()
+            {
+                WhiteKing = new KingInfo()
+                {
+                    X = white.wKing.X,
+                    Y = white.wKing.Y,
+                    IsInCheck = false,
+                    IsCheckmate = false,
+                    IsInStalemate = false,
+                    CheckedBy = Enumerable.Empty<BaseMoveInfo>().ToList()
+                },
+
+                BlackKing = new KingInfo()
+                {
+                    X = black.bKing.X,
+                    Y = black.bKing.Y,
+                    IsInCheck = false,
+                    IsCheckmate = false,
+                    IsInStalemate = false,
+                    CheckedBy = Enumerable.Empty<BaseMoveInfo>().ToList()
+                },
+            };
+
             MoveHistory = new MoveHistory();
             CaptureHistory = new List<BaseMoveInfo>();
         }
@@ -69,12 +91,15 @@ namespace online_chess.Server.Models
             // this just updates the king position if the piece moved is king
             if (piece.UniqueName.Contains("king", StringComparison.OrdinalIgnoreCase)){
                 
-                if (piece.UniqueName[0] == 'w'){
-                    this.BothKingCoords.Item1.X = whitesOrientationMoveInfo.New.X;
-                    this.BothKingCoords.Item1.Y = whitesOrientationMoveInfo.New.Y;
-                } else {
-                    this.BothKingCoords.Item2.X = whitesOrientationMoveInfo.New.X;
-                    this.BothKingCoords.Item2.Y = whitesOrientationMoveInfo.New.Y;
+                if (piece.UniqueName[0] == 'w')
+                {
+                    this.BothKingsState.WhiteKing.X = whitesOrientationMoveInfo.New.X;
+                    this.BothKingsState.WhiteKing.Y = whitesOrientationMoveInfo.New.Y;
+                } 
+                else
+                {
+                    this.BothKingsState.BlackKing.X = whitesOrientationMoveInfo.New.X;
+                    this.BothKingsState.BlackKing.Y = whitesOrientationMoveInfo.New.Y;
                 }
 
             }
