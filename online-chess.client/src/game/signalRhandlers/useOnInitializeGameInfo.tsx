@@ -53,15 +53,16 @@ export default function useOnInitializeGameInfo(
             , black: !playerIsWhite ? myInfo.pawnPromotionPreference : opponentInfo.pawnPromotionPreference
         };
 
-        const piecesCoordinatesInitial = initGameInfo.piecesCoordinatesInitial as IPiece[];
+        const piecesCoordinatesInitial = initGameInfo.piecesCoordinatesInitial;
 
         const isPlayersTurnToMove = myInfo.isPlayersTurnToMove;
 
-        const bothKingCoords = initGameInfo.bothKingsCoords;
+        const bothKingCoords = initGameInfo.bothKingCoords;
 
         // init phaser
-        console.log("start phaser, players turn: ", isPlayersTurnToMove, " pieces coords count: ", piecesCoordinatesInitial.length)
+        //console.log("start phaser, players turn: ", isPlayersTurnToMove, " pieces coords count: ", piecesCoordinatesInitial.length, "bothKingCoords: ", initGameInfo, bothKingCoords)
 
+        /** To ensure that phaser and eventemitter listeners are only created once */
         if (!gameRef.current){
             gameRef.current = new Phaser.Game({
                 type: Phaser.AUTO,
@@ -80,6 +81,37 @@ export default function useOnInitializeGameInfo(
                     )
                 ],
             });
+            
+            // connect react and phaser
+            eventEmitter.on(EVENT_ON.SET_KINGS_STATE, (data: IKingState) => {
+                
+                if (data.white.isInCheck || data.white.isCheckMate || data.white.isInStalemate)
+                {
+                    setGameState({ 
+                        type: gameState.myInfo.playerIsWhite ? "SET_MYINFO" : "SET_OPPONENTINFO",
+                        payload: {
+                            ...gameState[gameState.myInfo.playerIsWhite ? "myInfo" : "opponentInfo"],
+                            kingsState: data.white
+                        }
+                    });
+                } 
+                else if (data.black.isInCheck || data.black.isCheckMate || data.black.isInStalemate) 
+                {
+                    setGameState({ 
+                        type: !gameState.myInfo.playerIsWhite ? "SET_MYINFO" : "SET_OPPONENTINFO",
+                        payload: {
+                            ...gameState[!gameState.myInfo.playerIsWhite ? "myInfo" : "opponentInfo"],
+                            kingsState: data.black
+                        }
+                    });
+                }
+
+            });
+            
+            eventEmitter.on(EVENT_ON.SET_MOVE_PIECE, (move: any) => {
+                signalRContext.invoke(PLAY_PAGE_INVOKERS.MOVE_PIECE, initGameInfo.gameRoomKey, move.oldMove, move.newMove, move.hasCapture);
+            });
+
         }
 
         setGameState({
@@ -119,37 +151,8 @@ export default function useOnInitializeGameInfo(
         });
 
         setGameState({ type: "SET_GAMEROOMKEY", payload: initGameInfo.gameRoomKey });
+
         setGameState({ type: "SET_GAMETYPE", payload: initGameInfo.gameType });
-
-        // connect react and phaser
-        eventEmitter.on(EVENT_ON.SET_KINGS_STATE, (data: IKingState) => {
-            
-            if (data.white.isInCheck || data.white.isCheckMate || data.white.isInStalemate)
-            {
-                setGameState({ 
-                    type: gameState.myInfo.playerIsWhite ? "SET_MYINFO" : "SET_OPPONENTINFO",
-                    payload: {
-                        ...gameState[gameState.myInfo.playerIsWhite ? "myInfo" : "opponentInfo"],
-                        kingsState: data.white
-                    }
-                });
-            } 
-            else if (data.black.isInCheck || data.black.isCheckMate || data.black.isInStalemate) 
-            {
-                setGameState({ 
-                    type: !gameState.myInfo.playerIsWhite ? "SET_MYINFO" : "SET_OPPONENTINFO",
-                    payload: {
-                        ...gameState[!gameState.myInfo.playerIsWhite ? "myInfo" : "opponentInfo"],
-                        kingsState: data.black
-                    }
-                });
-            }
-
-        });
-        
-        eventEmitter.on(EVENT_ON.SET_MOVE_PIECE, (move: any) => {
-            signalRContext.invoke(PLAY_PAGE_INVOKERS.MOVE_PIECE, initGameInfo.gameRoomKey, move.oldMove, move.newMove, move.hasCapture);
-        });
 
         setGameState({ type: "SET_GAMESTATUS", payload: "ONGOING" });
     }, []);

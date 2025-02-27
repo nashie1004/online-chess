@@ -21,7 +21,7 @@ export interface IUseOnInitializeGameInfo{
     joinedByUserInfo: IInitialPlayerInfo;
     gameType: GameType;
     piecesCoordinatesInitial: IPiece[];
-    bothKingsCoords: IBaseCoordinates;
+    bothKingCoords: [IBaseCoordinates, IBaseCoordinates]; // TODO
 }
 
 export interface IOnSetPromotionPreference{

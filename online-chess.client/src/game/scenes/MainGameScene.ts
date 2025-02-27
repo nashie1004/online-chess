@@ -132,7 +132,9 @@ export class MainGameScene extends Scene{
                     .on("pointerover", () => { previewMove.setTint(0x98DEC7) })
                     .on("pointerout", () => { previewMove.clearTint() })
                     .on("pointerdown", () => {
+                        console.log("call move func - my move")
                         this.move(colIdx, rowIdx);
+                        //this.debugHelper();
                     }, this)
                     .setAlpha(.5)
                     ;
@@ -250,7 +252,8 @@ export class MainGameScene extends Scene{
                 pieceName: data.old.uniqueName ?? ``
             }
             this.isPlayersTurnToMove = false;
-
+            
+            console.log("call move func enemy move")
             this.move(data.new.x, data.new.y);
 
             this.isPlayersTurnToMove = true;
@@ -386,7 +389,7 @@ export class MainGameScene extends Scene{
             kingSprite?.postFX?.addGlow(0xE44C6A, 10, 2);
         }
 
-        this.debugHelper();
+        //this.debugHelper();
     }
 
     update(){
@@ -418,7 +421,17 @@ export class MainGameScene extends Scene{
                 });
             });
         });
-
-        console.log(this.piecesCoordinates_Actual)
+        
+        // Debug helper by using white's orientation
+        const copy = structuredClone(this.piecesCoordinates_Actual);
+        
+        if (!this.boardOrientationIsWhite){
+            copy.black.forEach(i => {
+                i.y = Math.abs(i.y - 7);
+            });
+            copy.white.forEach(i => {
+                i.y = Math.abs(i.y - 7);
+            });
+        }
     }
 }

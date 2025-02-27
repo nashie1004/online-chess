@@ -21,6 +21,7 @@ import { PLAY_PAGE_INVOKERS } from "../constants/invokers";
 import { PLAY_PAGE_HANDLERS } from "../constants/handlers";
 import useOnReceiveMoveHistory from "../game/signalRhandlers/useOnReceiveMoveHistory";
 import useOnReceiveCaptureHistory from "../game/signalRhandlers/useOnReceiveCaptureHistory";
+import { eventEmitter } from "../game/utilities/eventEmitter";
 
 export default function Main(){
     const gameRef = useRef<Phaser.Game | null>();
@@ -73,6 +74,7 @@ export default function Main(){
                 gameRef.current = null;
             }
             
+            // cleanup signalr
             removeHandler(PLAY_PAGE_HANDLERS.ON_INITIALIZE_GAME_INFO);
             removeHandler(PLAY_PAGE_HANDLERS.ON_GAME_OVER);
             removeHandler(PLAY_PAGE_HANDLERS.ON_RECEIVER_MESSAGES);
@@ -82,6 +84,8 @@ export default function Main(){
             removeHandler(PLAY_PAGE_HANDLERS.ON_SET_PROMOTION_PREFERENCE);
             removeHandler(PLAY_PAGE_HANDLERS.ON_RECEIVE_MOVE_HISTORY);
             removeHandler(PLAY_PAGE_HANDLERS.ON_RECEIVE_CAPTURE_HISTORY);
+
+            eventEmitter.removeAllListeners();
         };
     }, [])
  

@@ -23,7 +23,7 @@ export default function useOnUpdateBoard(){
             eventEmitter.emit(EVENT_EMIT.SET_ENEMY_MOVE, moveInfo);
         } 
 
-        console.log("opponents turn: ", opponentsTurn)
+        //console.log("opponents turn: ", opponentsTurn)
         
         setGameState({ type: "SET_OPPONENTINFO_ISPLAYERSTURN", payload: opponentsTurn });
         
