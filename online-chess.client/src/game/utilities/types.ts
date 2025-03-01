@@ -43,7 +43,7 @@ export interface ICaptureHistory{
     black: IMoveInfo[]
 }
 
-export interface IKing{
+export interface IKing extends IBaseCoordinates{
     isInCheck: boolean;
     checkedBy: IBaseCoordinates[];
     isCheckMate: boolean;

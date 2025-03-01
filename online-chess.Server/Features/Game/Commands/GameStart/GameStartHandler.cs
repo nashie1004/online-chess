@@ -53,14 +53,14 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
             /* New Game */
             if (!request.Reconnect)
             {
-                var baseGameInfo = await StartNewGame(gameRoom, request, player1, player2);
+                var baseGameInfo = StartNewGame(gameRoom, request, player1, player2);
 
                 await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync(RoomMethods.onInitializeGameInfo, baseGameInfo);
             } 
             /* Player Reconnects */
             else
             {
-                var currentGameInfo = await ReconnectToGame(gameRoom, request, player1, player2);
+                var currentGameInfo = ReconnectToGame(gameRoom, request, player1, player2);
 
                 await _hubContext.Clients.Client(request.UserConnectionId).SendAsync(RoomMethods.onInitializeGameInfo, currentGameInfo);
             }
@@ -70,7 +70,7 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
             return Unit.Value;
         }
     
-        public async Task<CurrentGameInfo?> StartNewGame(GameRoom gameRoom, GameStartRequest request, string player1Connection, string player2Connection)
+        public CurrentGameInfo StartNewGame(GameRoom gameRoom, GameStartRequest request, string player1Connection, string player2Connection)
         {
             TimeSpan initialTime; 
 
@@ -100,35 +100,26 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
             );
 
             gameRoom.GameStartedAt = DateTime.Now;
+            gameRoom.GamePlayStatus = GamePlayStatus.Ongoing;
             gameRoom.CreatedByUserInfo = new PlayerInfo(){
                 UserName = gameRoom.CreatedByUserId
                 , IsPlayersTurnToMove = gameRoom.CreatedByUserColor == Color.White
-                //, TimeLeft = initialCreatorTime.TotalSeconds
-                , LastMoveDate = DateTime.Now
                 , IsColorWhite = gameRoom.CreatedByUserColor == Color.White
-                , KingInCheck = false
-                , KingInCheckMate = false
-                , KingInStaleMate = false
             };
             gameRoom.JoinByUserInfo = new PlayerInfo(){
                 UserName = gameRoom.JoinedByUserId
                 , IsPlayersTurnToMove = gameRoom.CreatedByUserColor != Color.White
-               // , TimeLeft = initialJoinerTime.TotalSeconds
-                , LastMoveDate = DateTime.Now
                 , IsColorWhite = gameRoom.CreatedByUserColor != Color.White
-                , KingInCheck = false
-                , KingInCheckMate = false
-                , KingInStaleMate = false
             };
-            gameRoom.ChatMessages = new List<Models.Play.Chat>()
+            gameRoom.ChatMessages = new List<Chat>()
             {
-                new Models.Play.Chat()
+                new Chat()
                 {
                     CreateDate = DateTime.Now
                     , CreatedByUser = gameRoom.CreatedByUserId
                     , Message = $"{gameRoom.CreatedByUserId} has joined the game."
                 }
-                ,new Models.Play.Chat()
+                ,new Chat()
                 {
                     CreateDate = DateTime.Now
                     , CreatedByUser = gameRoom.JoinedByUserId
@@ -139,38 +130,55 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
             var baseGameInfo = new CurrentGameInfo()
             {
                 GameRoomKey = gameRoom.GameKey,
-                LastMoveInfo = new BaseMoveInfo(),
-                LastCapture = null,
-                MoveCount = 0,
+                MoveCountSinceLastCapture = 0,
                 CreatedByUserInfo = gameRoom.CreatedByUserInfo,
                 JoinedByUserInfo = gameRoom.JoinByUserInfo,
                 GameType = gameRoom.GameType,
                 PiecesCoordinatesInitial = gameRoom.PiecesCoords,
-                BothKingCoords = gameRoom.BothKingCoords
+                BothKingsState = gameRoom.BothKingsState,
+                Reconnect = request.Reconnect,
+                WhiteKingHasMoved = false,
+                BlackKingHasMoved = false,
             };
 
             return baseGameInfo;
         }
         
-        public async Task<CurrentGameInfo> ReconnectToGame(GameRoom gameRoom, GameStartRequest request, string player1Connection, string player2Connection)
+        public CurrentGameInfo ReconnectToGame(GameRoom onGoingGameRoom, GameStartRequest request, string player1Connection, string player2Connection)
         {
-            gameRoom.ChatMessages.Add(new Chat(){
+            onGoingGameRoom.GamePlayStatus = GamePlayStatus.Ongoing;
+
+            onGoingGameRoom.ChatMessages.Add(new Chat(){
                 CreateDate = DateTime.Now
                 , CreatedByUser = "server"
                 , Message = $"{request.IdentityUserName} reconnected."
             });
 
-            // TODO
-            var currentGameInfo = new CurrentGameInfo(){
-                GameRoomKey = gameRoom.GameKey,
-                LastMoveInfo = new BaseMoveInfo(),
-                LastCapture = null,
-                MoveCount = 0,
-                CreatedByUserInfo = gameRoom.CreatedByUserInfo,
-                JoinedByUserInfo = gameRoom.JoinByUserInfo,
-                GameType = gameRoom.GameType,
-                PiecesCoordinatesInitial = gameRoom.PiecesCoords,
-                BothKingCoords = gameRoom.BothKingCoords
+            var initialWhite = new PiecesInitialPositionWhite();
+            var initialBlack = new PiecesInitialPositionBlack();
+
+            bool whiteKingHasMoved = (
+                onGoingGameRoom.BothKingsState.White.X != initialWhite.wKing.X &&
+                onGoingGameRoom.BothKingsState.White.Y != initialWhite.wKing.Y
+            );
+
+            bool blackKingHasMoved = (
+                onGoingGameRoom.BothKingsState.Black.X != initialBlack.bKing.X &&
+                onGoingGameRoom.BothKingsState.Black.Y != initialBlack.bKing.Y
+            );
+
+            var currentGameInfo = new CurrentGameInfo()
+            {
+                GameRoomKey = onGoingGameRoom.GameKey,
+                MoveCountSinceLastCapture = onGoingGameRoom.MoveCountSinceLastCapture,
+                CreatedByUserInfo = onGoingGameRoom.CreatedByUserInfo,
+                JoinedByUserInfo = onGoingGameRoom.JoinByUserInfo,
+                GameType = onGoingGameRoom.GameType,
+                PiecesCoordinatesInitial = onGoingGameRoom.PiecesCoords,
+                BothKingsState = onGoingGameRoom.BothKingsState,
+                Reconnect = request.Reconnect,
+                WhiteKingHasMoved = whiteKingHasMoved,
+                BlackKingHasMoved = blackKingHasMoved
             };
 
             return currentGameInfo;

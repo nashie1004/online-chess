@@ -27,40 +27,55 @@ export default function useOnInitializeGameInfo(
     // since the old value is captured inside the callback fns
     gameStateRef.current = gameState; 
 
-    const onInitializeGameInfo = useCallback((initGameInfo: IUseOnInitializeGameInfo) => {
-        const playerIsWhite = (initGameInfo.createdByUserInfo.userName === user?.userName)
-            ? initGameInfo.createdByUserInfo.isColorWhite
-            : initGameInfo.joinedByUserInfo.isColorWhite;
+    const onInitializeGameInfo = useCallback((currentGameInfo: IUseOnInitializeGameInfo) => {
+        const playerIsWhite = (currentGameInfo.createdByUserInfo.userName === user?.userName)
+            ? currentGameInfo.createdByUserInfo.isColorWhite
+            : currentGameInfo.joinedByUserInfo.isColorWhite;
 
-        const myInfo = (initGameInfo.createdByUserInfo.userName === user?.userName) 
-            ? initGameInfo.createdByUserInfo 
-            : initGameInfo.joinedByUserInfo;
+        const myInfo = (currentGameInfo.createdByUserInfo.userName === user?.userName) 
+            ? currentGameInfo.createdByUserInfo 
+            : currentGameInfo.joinedByUserInfo;
 
-        const opponentInfo = (initGameInfo.createdByUserInfo.userName === user?.userName) 
-            ? initGameInfo.joinedByUserInfo 
-            : initGameInfo.createdByUserInfo;
+        const opponentInfo = (currentGameInfo.createdByUserInfo.userName === user?.userName) 
+            ? currentGameInfo.joinedByUserInfo 
+            : currentGameInfo.createdByUserInfo;
 
         const moveHistory: IMoveHistory = { white: [], black: [] };
-
-        const bothKingsPosition: IBothKingsPosition = {
-            // if black orientation switch queen and king coords
-            white: { x: playerIsWhite ? 4 : 3, y: playerIsWhite ? 7 : 0 }
-            , black: { x: playerIsWhite ? 4 : 3, y: playerIsWhite ? 0 : 7 }
-        };
 
         const promotePreference: PlayersPromotePreference = {
             white: playerIsWhite ? myInfo.pawnPromotionPreference : opponentInfo.pawnPromotionPreference
             , black: !playerIsWhite ? myInfo.pawnPromotionPreference : opponentInfo.pawnPromotionPreference
         };
 
-        const piecesCoordinatesInitial = initGameInfo.piecesCoordinatesInitial;
+        const piecesCoordinatesInitial = currentGameInfo.piecesCoordinatesInitial;
 
         const isPlayersTurnToMove = myInfo.isPlayersTurnToMove;
 
-        const bothKingCoords = initGameInfo.bothKingCoords;
+        if (!myInfo.isColorWhite)
+        {
+            
+            if (!currentGameInfo.whiteKingHasMoved){
+                currentGameInfo.bothKingsState.white.x = 3;   
+                currentGameInfo.bothKingsState.white.y = 0;   
+            }
 
-        // init phaser
-        //console.log("start phaser, players turn: ", isPlayersTurnToMove, " pieces coords count: ", piecesCoordinatesInitial.length, "bothKingCoords: ", initGameInfo, bothKingCoords)
+            if (!currentGameInfo.blackKingHasMoved){
+                currentGameInfo.bothKingsState.black.x = 3;   
+                currentGameInfo.bothKingsState.black.y = 7;
+            }
+
+        }
+
+        const bothKingsPosition: IBothKingsPosition = {
+            white: { 
+                x: currentGameInfo.bothKingsState.white.x
+                , y: currentGameInfo.bothKingsState.white.y 
+            }
+            , black: { 
+                x: currentGameInfo.bothKingsState.black.x
+                , y: currentGameInfo.bothKingsState.black.y 
+            }
+        };
 
         /** To ensure that phaser and eventemitter listeners are only created once */
         if (!gameRef.current){
@@ -112,7 +127,7 @@ export default function useOnInitializeGameInfo(
             */
             
             eventEmitter.on(EVENT_ON.SET_MOVE_PIECE, (move: any) => {
-                signalRContext.invoke(PLAY_PAGE_INVOKERS.MOVE_PIECE, initGameInfo.gameRoomKey, move.oldMove, move.newMove, move.hasCapture);
+                signalRContext.invoke(PLAY_PAGE_INVOKERS.MOVE_PIECE, currentGameInfo.gameRoomKey, move.oldMove, move.newMove, move.hasCapture);
             });
 
         }
@@ -121,10 +136,7 @@ export default function useOnInitializeGameInfo(
             type: "SET_MYINFO",
             payload: {
                 userName: myInfo.userName,
-                kingsState: {
-                    isInCheck: false, checkedBy: [],
-                    isInStalemate: false, isCheckMate: false,
-                },
+                kingsState: (myInfo.isColorWhite ? currentGameInfo.bothKingsState.white : currentGameInfo.bothKingsState.black),
                 isPlayersTurn: myInfo.isPlayersTurnToMove,
                 timeLeft: moment.duration(myInfo.timeLeft).asMilliseconds(),
                 playerIsWhite: myInfo.isColorWhite,
@@ -139,10 +151,7 @@ export default function useOnInitializeGameInfo(
             type: "SET_OPPONENTINFO",
             payload: {
                 userName: opponentInfo.userName,
-                kingsState: {
-                    isInCheck: false, checkedBy: [],
-                    isInStalemate: false, isCheckMate: false,
-                },
+                kingsState: (opponentInfo.isColorWhite ? currentGameInfo.bothKingsState.white : currentGameInfo.bothKingsState.black),
                 isPlayersTurn: opponentInfo.isPlayersTurnToMove,
                 timeLeft: moment.duration(opponentInfo.timeLeft).asMilliseconds(),
                 playerIsWhite: opponentInfo.isColorWhite,
@@ -153,9 +162,9 @@ export default function useOnInitializeGameInfo(
             }
         });
 
-        setGameState({ type: "SET_GAMEROOMKEY", payload: initGameInfo.gameRoomKey });
+        setGameState({ type: "SET_GAMEROOMKEY", payload: currentGameInfo.gameRoomKey });
 
-        setGameState({ type: "SET_GAMETYPE", payload: initGameInfo.gameType });
+        setGameState({ type: "SET_GAMETYPE", payload: currentGameInfo.gameType });
 
         setGameState({ type: "SET_GAMESTATUS", payload: "ONGOING" });
     }, []);

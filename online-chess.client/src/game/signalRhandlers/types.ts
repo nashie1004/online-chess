@@ -1,5 +1,5 @@
 import { GameType, PromotionPrefence } from "../utilities/constants";
-import { IPiece, IMoveInfo, IBaseCoordinates, IPieceMove } from "../utilities/types";
+import { IPiece, IPieceMove, IKingState } from "../utilities/types";
 
 export interface IInitialPlayerInfo{
     userName: string;
@@ -14,14 +14,15 @@ export interface IInitialPlayerInfo{
 
 export interface IUseOnInitializeGameInfo{
     gameRoomKey: string;
-    lastMoveInfo: IPiece;
-    lastCapture: string | null;
-    moveCount: number;
+    moveCountSinceLastCapture: number;
     createdByUserInfo: IInitialPlayerInfo;
     joinedByUserInfo: IInitialPlayerInfo;
     gameType: GameType;
     piecesCoordinatesInitial: IPiece[];
-    bothKingCoords: [IBaseCoordinates, IBaseCoordinates]; // TODO
+    bothKingsState: IKingState;
+    reconnect: boolean;
+    whiteKingHasMoved: boolean;
+    blackKingHasMoved: boolean;
 }
 
 export interface IOnSetPromotionPreference{
