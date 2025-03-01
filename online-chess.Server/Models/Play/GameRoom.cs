@@ -14,7 +14,7 @@ namespace online_chess.Server.Models
         public DateTime GameStartedAt { get; set; }
         public PlayerInfo CreatedByUserInfo { get; set; }
         public PlayerInfo JoinByUserInfo { get; set; }
-        public List<Play.Chat> ChatMessages { get; set; }
+        public List<Chat> ChatMessages { get; set; }
 
         // 2. The server will hold these main chess game state
         public Timer? TimerId { get; set; }
@@ -55,7 +55,7 @@ namespace online_chess.Server.Models
 
             BothKingsState = new BothKingsState()
             {
-                WhiteKing = new KingInfo()
+                White = new KingInfo()
                 {
                     X = white.wKing.X,
                     Y = white.wKing.Y,
@@ -65,7 +65,7 @@ namespace online_chess.Server.Models
                     CheckedBy = Enumerable.Empty<BaseMoveInfo>().ToList()
                 },
 
-                BlackKing = new KingInfo()
+                Black = new KingInfo()
                 {
                     X = black.bKing.X,
                     Y = black.bKing.Y,
@@ -93,13 +93,13 @@ namespace online_chess.Server.Models
                 
                 if (piece.UniqueName[0] == 'w')
                 {
-                    this.BothKingsState.WhiteKing.X = whitesOrientationMoveInfo.New.X;
-                    this.BothKingsState.WhiteKing.Y = whitesOrientationMoveInfo.New.Y;
+                    this.BothKingsState.White.X = whitesOrientationMoveInfo.New.X;
+                    this.BothKingsState.White.Y = whitesOrientationMoveInfo.New.Y;
                 } 
                 else
                 {
-                    this.BothKingsState.BlackKing.X = whitesOrientationMoveInfo.New.X;
-                    this.BothKingsState.BlackKing.Y = whitesOrientationMoveInfo.New.Y;
+                    this.BothKingsState.Black.X = whitesOrientationMoveInfo.New.X;
+                    this.BothKingsState.Black.Y = whitesOrientationMoveInfo.New.Y;
                 }
 
             }

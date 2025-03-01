@@ -100,6 +100,8 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
             );
 
             gameRoom.GameStartedAt = DateTime.Now;
+            gameRoom.GamePlayStatus = GamePlayStatus.Ongoing;
+
             gameRoom.CreatedByUserInfo = new PlayerInfo(){
                 UserName = gameRoom.CreatedByUserId
                 , IsPlayersTurnToMove = gameRoom.CreatedByUserColor == Color.White
@@ -110,15 +112,15 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
                 , IsPlayersTurnToMove = gameRoom.CreatedByUserColor != Color.White
                 , IsColorWhite = gameRoom.CreatedByUserColor != Color.White
             };
-            gameRoom.ChatMessages = new List<Models.Play.Chat>()
+            gameRoom.ChatMessages = new List<Chat>()
             {
-                new Models.Play.Chat()
+                new Chat()
                 {
                     CreateDate = DateTime.Now
                     , CreatedByUser = gameRoom.CreatedByUserId
                     , Message = $"{gameRoom.CreatedByUserId} has joined the game."
                 }
-                ,new Models.Play.Chat()
+                ,new Chat()
                 {
                     CreateDate = DateTime.Now
                     , CreatedByUser = gameRoom.JoinedByUserId
@@ -136,31 +138,52 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
                 JoinedByUserInfo = gameRoom.JoinByUserInfo,
                 GameType = gameRoom.GameType,
                 PiecesCoordinatesInitial = gameRoom.PiecesCoords,
-                BothKingCoords = gameRoom.BothKingCoords
+                BothKingsState = gameRoom.BothKingsState,
+                Reconnect = request.Reconnect,
+                WhiteKingHasMoved = false,
+                BlackKingHasMoved = false,
             };
 
             return baseGameInfo;
         }
         
-        public async Task<CurrentGameInfo> ReconnectToGame(GameRoom gameRoom, GameStartRequest request, string player1Connection, string player2Connection)
+        public async Task<CurrentGameInfo> ReconnectToGame(GameRoom onGoingGameRoom, GameStartRequest request, string player1Connection, string player2Connection)
         {
-            gameRoom.ChatMessages.Add(new Chat(){
+            onGoingGameRoom.GamePlayStatus = GamePlayStatus.Ongoing;
+
+            onGoingGameRoom.ChatMessages.Add(new Chat(){
                 CreateDate = DateTime.Now
                 , CreatedByUser = "server"
                 , Message = $"{request.IdentityUserName} reconnected."
             });
+            
+            // checks if any of the two king has moved
+            var initialWhite = new PiecesInitialPositionWhite();
+            var initialBlack = new PiecesInitialPositionBlack();
 
-            // TODO
+            bool whiteKingHasMoved = (
+                onGoingGameRoom.BothKingsState.White.X != initialWhite.wKing.X &&
+                onGoingGameRoom.BothKingsState.White.Y != initialWhite.wKing.Y
+                );
+
+            bool blackKingHasMoved = (
+                onGoingGameRoom.BothKingsState.Black.X != initialBlack.bKing.X &&
+                onGoingGameRoom.BothKingsState.Black.Y != initialBlack.bKing.Y
+                );
+
             var currentGameInfo = new CurrentGameInfo(){
-                GameRoomKey = gameRoom.GameKey,
+                GameRoomKey = onGoingGameRoom.GameKey,
                 LastMoveInfo = new BaseMoveInfo(),
                 LastCapture = null,
                 MoveCount = 0,
-                CreatedByUserInfo = gameRoom.CreatedByUserInfo,
-                JoinedByUserInfo = gameRoom.JoinByUserInfo,
-                GameType = gameRoom.GameType,
-                PiecesCoordinatesInitial = gameRoom.PiecesCoords,
-                BothKingCoords = gameRoom.BothKingCoords
+                CreatedByUserInfo = onGoingGameRoom.CreatedByUserInfo,
+                JoinedByUserInfo = onGoingGameRoom.JoinByUserInfo,
+                GameType = onGoingGameRoom.GameType,
+                PiecesCoordinatesInitial = onGoingGameRoom.PiecesCoords,
+                BothKingsState = onGoingGameRoom.BothKingsState,
+                Reconnect = request.Reconnect,
+                WhiteKingHasMoved = whiteKingHasMoved,
+                BlackKingHasMoved = blackKingHasMoved,
             };
 
             return currentGameInfo;

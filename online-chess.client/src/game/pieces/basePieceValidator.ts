@@ -1,5 +1,5 @@
 import { GameObjects } from "phaser";
-import { IBothKingsPosition, IMoveHistory, IPiece, IPinInfo, IPinMove, IValidMove } from "../utilities/types";
+import { IKingState, IMoveHistory, IPiece, IPinInfo, IPinMove, IValidMove } from "../utilities/types";
 
 export default class BasePieceValidator{
     /**
@@ -8,13 +8,13 @@ export default class BasePieceValidator{
     protected readonly board: (GameObjects.Sprite | null)[][] = []
     protected readonly moveHistory: IMoveHistory;
     protected readonly piece: IPiece;
-    protected readonly bothKingsPosition: IBothKingsPosition;
+    protected readonly bothKingsState: IKingState;
 
-    constructor(piece: IPiece, board: (GameObjects.Sprite | null)[][], moveHistory: IMoveHistory, bothKingsPosition: IBothKingsPosition) {
+    constructor(piece: IPiece, board: (GameObjects.Sprite | null)[][], moveHistory: IMoveHistory, bothKingsState: IKingState) {
         this.piece = piece;
         this.board = board;
         this.moveHistory = moveHistory;
-        this.bothKingsPosition = bothKingsPosition;
+        this.bothKingsState = bothKingsState;
     }
 
     protected isAFriendPiece(name: string): boolean{
@@ -60,7 +60,7 @@ export default class BasePieceValidator{
         const pieceIsWhite = this.piece.name[0] === "w";
 
         // get friend king, simulate rook, and bishop moves
-        const friendKingCoords = pieceIsWhite ? this.bothKingsPosition.white : this.bothKingsPosition.black;
+        const friendKingCoords = pieceIsWhite ? this.bothKingsState.white : this.bothKingsState.black;
 
         /** ==== 1. ROOK MOVES === */
         const rookDirections = [

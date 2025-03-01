@@ -48,9 +48,7 @@ namespace online_chess.Server.Features.Lobby.Commands.JoinRoom
                 CreateDate = queue.CreateDate,
                 GameType = queue.GameType,
                 CreatedByUserColor = newColor, 
-                JoinedByUserId = queue.JoinedByUserId,
-                GamePlayStatus = GamePlayStatus.Ongoing,
-                GameStartedAt = DateTime.Now,
+                JoinedByUserId = queue.JoinedByUserId
             };
 
             _gameRoomService.Add(room.GameKey, room);

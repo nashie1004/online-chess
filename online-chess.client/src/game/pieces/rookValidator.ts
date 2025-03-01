@@ -1,5 +1,5 @@
 import { GameObjects } from "phaser";
-import { IBothKingsPosition, IMoveHistory, IPiece, IValidMove } from "../utilities/types";
+import { IKingState, IMoveHistory, IPiece, IValidMove } from "../utilities/types";
 import BasePieceValidator from "./basePieceValidator";
 
 export default class RookValidator extends BasePieceValidator{
@@ -8,9 +8,9 @@ export default class RookValidator extends BasePieceValidator{
      */
     private readonly allowXRayOpponentKing: boolean;
 
-    constructor(piece: IPiece, board: (GameObjects.Sprite | null)[][], moveHistory: IMoveHistory, allowXRayOpponentKing: boolean = false, bothKingsPosition: IBothKingsPosition) {
+    constructor(piece: IPiece, board: (GameObjects.Sprite | null)[][], moveHistory: IMoveHistory, allowXRayOpponentKing: boolean = false, bothKingsState: IKingState) {
 
-        super(piece, board, moveHistory, bothKingsPosition);
+        super(piece, board, moveHistory, bothKingsState);
         
         this.allowXRayOpponentKing = allowXRayOpponentKing;
     }

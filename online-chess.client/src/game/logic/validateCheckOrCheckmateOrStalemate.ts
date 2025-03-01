@@ -1,6 +1,6 @@
 import { GameObjects } from "phaser";
 import { eventEmitter } from "../utilities/eventEmitter";
-import { IPiecesCoordinates, IBothKingsPosition, IMoveHistory, IKingState } from "../utilities/types";
+import { IPiecesCoordinates, IMoveHistory, IKingState } from "../utilities/types";
 import IsCheck from "./isCheck";
 import IsCheckMate from "./isCheckMate";
 import IsStalemate from "./IsStaleMate";
@@ -11,24 +11,21 @@ export default class ValidateCheckOrCheckMateOrStalemate {
     private readonly board: (null | GameObjects.Sprite)[][]
     private readonly boardOrientationIsWhite: boolean;
     private readonly pieceCoordinates: IPiecesCoordinates;
-    private readonly bothKingsPosition: IBothKingsPosition;
+    private readonly bothKingsState: IKingState;
     private readonly moveHistory: IMoveHistory;
-    private readonly kingsState: IKingState;
     
     constructor(
         board: (null | GameObjects.Sprite)[][],
         boardOrientationIsWhite: boolean,
         pieceCoordinates: IPiecesCoordinates,
-        bothKingsPosition: IBothKingsPosition,
+        bothKingsState: IKingState,
         moveHistory: IMoveHistory,
-        kingsState: IKingState
     ) {
         this.board = board;   
         this.boardOrientationIsWhite = boardOrientationIsWhite;   
         this.pieceCoordinates = pieceCoordinates;   
-        this.bothKingsPosition = bothKingsPosition;   
+        this.bothKingsState = bothKingsState;   
         this.moveHistory = moveHistory;
-        this.kingsState = kingsState;
     }
 
     /**
@@ -41,35 +38,31 @@ export default class ValidateCheckOrCheckMateOrStalemate {
      */
     validate(isWhite: boolean) : 0 | 1 | 2 {
         // reset all check or checkmate properties
-        this.kingsState.black.checkedBy = [];
-        this.kingsState.white.checkedBy = [];
-        this.kingsState.white.isInCheck = false;
-        this.kingsState.black.isInCheck = false;
-        this.kingsState.white.isCheckMate = false;
-        this.kingsState.black.isCheckMate = false;
-        this.kingsState.white.isInStalemate = false;
-        this.kingsState.black.isInStalemate = false;
-
-        //console.log("Start Validate Kings: ", JSON.stringify(this.bothKingsPosition))
+        this.bothKingsState.black.checkedBy = [];
+        this.bothKingsState.white.checkedBy = [];
+        this.bothKingsState.white.isInCheck = false;
+        this.bothKingsState.black.isInCheck = false;
+        this.bothKingsState.white.isCheckMate = false;
+        this.bothKingsState.black.isCheckMate = false;
+        this.bothKingsState.white.isInStalemate = false;
+        this.bothKingsState.black.isInStalemate = false;
 
         // 1. check
         const isCheck = (new IsCheck(
-            this.board 
-            ,this.bothKingsPosition, this.boardOrientationIsWhite
-            ,this.moveHistory, this.kingsState
+            this.board, this.boardOrientationIsWhite
+            ,this.moveHistory, this.bothKingsState
         )).validateCheck(isWhite);
 
         // 2. stalemate
         if (!isCheck){
             let isStalemate = (new IsStalemate(
                 this.board, this.boardOrientationIsWhite
-                ,this.pieceCoordinates 
-                ,this.bothKingsPosition, this.moveHistory
-                ,this.kingsState
+                ,this.pieceCoordinates, this.moveHistory
+                ,this.bothKingsState
             )).isStalemate(!isWhite);
 
             if (isStalemate){
-                this.kingsState[isWhite ? "black" : "white"].isInStalemate = true;
+                this.bothKingsState[isWhite ? "black" : "white"].isInStalemate = true;
                 return 0;
             }
 
@@ -78,23 +71,20 @@ export default class ValidateCheckOrCheckMateOrStalemate {
 
         // 3. checkmate 
         let isCheckMate = (new IsCheckMate(
-            this.board
-            ,this.bothKingsPosition, this.boardOrientationIsWhite
+            this.board, this.boardOrientationIsWhite
             ,this.pieceCoordinates, this.moveHistory
-            ,this.kingsState
+            ,this.bothKingsState
         )).isCheckmate();
 
         if (isCheckMate){
-            if (this.kingsState.white.isInCheck){
-                this.kingsState.white.isCheckMate = true;
+            if (this.bothKingsState.white.isInCheck){
+                this.bothKingsState.white.isCheckMate = true;
             } else {
-                this.kingsState.black.isCheckMate = true;
+                this.bothKingsState.black.isCheckMate = true;
             }
         }
 
-        //console.log("End Validate Kings: ", JSON.stringify(this.bothKingsPosition))
-
-        eventEmitter.emit(EVENT_EMIT.SET_KINGS_STATE, this.kingsState);
+        eventEmitter.emit(EVENT_EMIT.SET_KINGS_STATE, this.bothKingsState);
         return (isCheckMate ? 2 : 1);
     }
 

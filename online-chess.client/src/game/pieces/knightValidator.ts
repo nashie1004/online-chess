@@ -1,13 +1,13 @@
 import { GameObjects } from "phaser";
 import BasePieceValidator from "./basePieceValidator";
-import { IPiece, IMoveHistory, IBothKingsPosition, IValidMove } from "../utilities/types";
+import { IPiece, IMoveHistory, IValidMove, IKingState } from "../utilities/types";
 
 export default class KnightValidator extends BasePieceValidator{
     /**
      *
      */
-    constructor(piece: IPiece, board: (GameObjects.Sprite | null)[][], moveHistory: IMoveHistory, bothKingsPosition: IBothKingsPosition) {
-        super(piece, board, moveHistory, bothKingsPosition);
+    constructor(piece: IPiece, board: (GameObjects.Sprite | null)[][], moveHistory: IMoveHistory, bothKingsState: IKingState) {
+        super(piece, board, moveHistory, bothKingsState);
     }
     
     public override validMoves(): IValidMove[]{

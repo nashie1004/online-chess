@@ -1,30 +1,29 @@
 import { GameObjects } from "phaser";
 import KingValidator from "../pieces/kingValidator";
 import { PieceNames } from "../utilities/constants";
-import { IBothKingsPosition, IMoveInfo, IMoveHistory, IPiecesCoordinates } from "../utilities/types";
+import { IMoveInfo, IMoveHistory, IPiecesCoordinates, IKingState } from "../utilities/types";
 
 export default class KingCastled {
     
     private readonly board: (null | GameObjects.Sprite)[][]
-    private readonly bothKingsPosition: IBothKingsPosition;
+    private readonly bothKingsState: IKingState;
     private readonly boardOrientationIsWhite: boolean;
     private readonly moveHistory: IMoveHistory;
     private readonly pieceCoordinates: IPiecesCoordinates;
 
     constructor(
         board: (null | GameObjects.Sprite)[][],
-        bothKingsPosition: IBothKingsPosition,
+        bothKingsState: IKingState,
         boardOrientationIsWhite: boolean,
         moveHistory: IMoveHistory,
         pieceCoordinates: IPiecesCoordinates
     ) {
         this.board = board;
-        this.bothKingsPosition = bothKingsPosition;
+        this.bothKingsState = bothKingsState;
         this.boardOrientationIsWhite = boardOrientationIsWhite;
         this.moveHistory = moveHistory;
         this.pieceCoordinates = pieceCoordinates;
     }
-
     
     public kingCastled(pieceName: string, selectedPiece: IMoveInfo, isWhite: boolean, newX: number, newY: number){
         // check if king piece
@@ -36,7 +35,7 @@ export default class KingCastled {
                     , uniqueName: pieceName
                 }
                     , this.board, this.moveHistory, false
-                    , this.bothKingsPosition
+                    , this.bothKingsState
                     , this.boardOrientationIsWhite
                     , this.pieceCoordinates
             );

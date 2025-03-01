@@ -19,6 +19,8 @@ You can view a demo [here](https://github.com/nashie1004/online-chess).
         1.2.3 handle times up
         1.2.4 handle draw agree
     
+    1.3 also check if the state pass to the maingamescene phaser movehistory since its used for algos
+
 2. display move turn, check, checkmate, stalemate
 3. handle en passant capture on GameRoom.cs
 

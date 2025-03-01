@@ -1,32 +1,29 @@
 import { GameObjects } from "phaser";
 import KingValidator from "../pieces/kingValidator";
 import { PieceNames } from "../utilities/constants";
-import { IBothKingsPosition, IPiecesCoordinates, IBaseCoordinates, IMoveHistory, IKingState } from "../utilities/types";
+import { IPiecesCoordinates, IBaseCoordinates, IMoveHistory, IKingState } from "../utilities/types";
 import GetInitialMoves from "./getInitialMoves";
 
 export default class IsCheckMate {
 
     private readonly board: (null | GameObjects.Sprite)[][]
-    private readonly bothKingsPosition: IBothKingsPosition;
     private readonly boardOrientationIsWhite: boolean;
     private readonly pieceCoordinates: IPiecesCoordinates;
     private readonly moveHistory: IMoveHistory;
-    private readonly kingsState: IKingState;
+    private readonly bothKingsState: IKingState;
 
     constructor(
         board: (null | GameObjects.Sprite)[][],
-        bothKingsPosition: IBothKingsPosition,
         boardOrientationIsWhite: boolean,
         pieceCoordinates: IPiecesCoordinates,
         moveHistory: IMoveHistory,
-        kingsState: IKingState
+        bothKingsState: IKingState
     ) {
         this.board = board;
-        this.bothKingsPosition = bothKingsPosition;
         this.boardOrientationIsWhite = boardOrientationIsWhite;
         this.pieceCoordinates = pieceCoordinates;
         this.moveHistory = moveHistory;
-        this.kingsState = kingsState;
+        this.bothKingsState = bothKingsState;
     }
 
     /**
@@ -37,12 +34,12 @@ export default class IsCheckMate {
      * @returns
      */
     isCheckmate(){
-        const colorInCheckIsWhite = this.kingsState.white.isInCheck;
+        const colorInCheckIsWhite = this.bothKingsState.white.isInCheck;
         const friendPieces = this.pieceCoordinates[colorInCheckIsWhite ? "white" : "black"];
-        const attackersCoords = colorInCheckIsWhite ? this.kingsState.white.checkedBy
-            : this.kingsState.black.checkedBy;
+        const attackersCoords = colorInCheckIsWhite ? this.bothKingsState.white.checkedBy
+            : this.bothKingsState.black.checkedBy;
         const validMoves = { capturable: 0, movableKing: 0, blockable: 0 }; // for debug purposes
-        const kingInCheckCoords = colorInCheckIsWhite ? this.bothKingsPosition.white : this.bothKingsPosition.black;
+        const kingInCheckCoords = colorInCheckIsWhite ? this.bothKingsState.white : this.bothKingsState.black;
 
         if (attackersCoords.length < 0) return; // no attacker/checker
 
@@ -52,9 +49,8 @@ export default class IsCheckMate {
             const friendPieceName = friendPiece.uniqueName.split("-")[0] as PieceNames;
 
             const friendPieceMoves = (new GetInitialMoves(
-                this.board
-                , this.bothKingsPosition, this.boardOrientationIsWhite
-                , this.moveHistory, this.kingsState
+                this.board, this.boardOrientationIsWhite
+                , this.moveHistory, this.bothKingsState
                 , this.pieceCoordinates
             )).getInitialMoves(
                 friendPieceName, friendPiece.x, friendPiece.y
@@ -74,9 +70,8 @@ export default class IsCheckMate {
                     if (!attackerSprite) return null; // this is actually invalid
                     const attackerSpriteName = attackerSprite.name.split("-")[0] as PieceNames;
                     const attackerSquares = (new GetInitialMoves(
-                        this.board, 
-                        this.bothKingsPosition, this.boardOrientationIsWhite,
-                        this.moveHistory, this.kingsState, this.pieceCoordinates
+                        this.board, this.boardOrientationIsWhite,
+                        this.moveHistory, this.bothKingsState, this.pieceCoordinates
                     )).getInitialMoves(attackerSpriteName, attacker.x, attacker.y, attackerSprite.name, true);
 
                     // 1. Capture attacker
@@ -95,7 +90,7 @@ export default class IsCheckMate {
                     // 3. Block the line of attack
                     const kingTracer = new KingValidator({
                         x: kingInCheckCoords.x, y: kingInCheckCoords.y, name: colorInCheckIsWhite ? PieceNames.wKing : PieceNames.bKing
-                    }, this.board, this.moveHistory, false, this.bothKingsPosition, this.boardOrientationIsWhite, this.pieceCoordinates);
+                    }, this.board, this.moveHistory, false, this.bothKingsState, this.boardOrientationIsWhite, this.pieceCoordinates);
 
                     let attackersLineOfPath: IBaseCoordinates[] = [];
 

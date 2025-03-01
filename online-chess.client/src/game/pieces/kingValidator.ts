@@ -1,5 +1,5 @@
 import { GameObjects } from "phaser";
-import { IBaseCoordinates, IBothKingsPosition, IMoveHistory, IPiece, IPiecesCoordinates, IValidMove } from "../utilities/types";
+import { IBaseCoordinates, IKingState, IMoveHistory, IPiece, IPiecesCoordinates, IValidMove } from "../utilities/types";
 import BasePieceValidator from "./basePieceValidator";
 import QueenValidator from "./queenValidator";
 import KnightValidator from "./knightValidator";
@@ -16,9 +16,9 @@ export default class KingValidator extends BasePieceValidator{
     private readonly boardOrientationIsWhite: boolean;
     private readonly pieceCoordinates: IPiecesCoordinates;
 
-    constructor(piece: IPiece, board: (GameObjects.Sprite | null)[][], moveHistory: IMoveHistory, isInCheck: boolean, bothKingsPosition: IBothKingsPosition, boardOrientationIsWhite: boolean, pieceCoordinates: IPiecesCoordinates) {
+    constructor(piece: IPiece, board: (GameObjects.Sprite | null)[][], moveHistory: IMoveHistory, isInCheck: boolean, bothKingsState: IKingState, boardOrientationIsWhite: boolean, pieceCoordinates: IPiecesCoordinates) {
 
-        super(piece, board, moveHistory, bothKingsPosition);
+        super(piece, board, moveHistory, bothKingsState);
         this.isInCheck = isInCheck;
         this.boardOrientationIsWhite = boardOrientationIsWhite;
         this.pieceCoordinates = pieceCoordinates;
@@ -96,7 +96,7 @@ export default class KingValidator extends BasePieceValidator{
             // 1. rook
             const rookSquares = (new RookValidator(
                 { x: initialValidMove.x, y: initialValidMove.y, name: (kingIsWhite ? PieceNames.wRook : PieceNames.bRook) }
-                , _this.board, _this.moveHistory, false, this.bothKingsPosition)).validMoves();
+                , _this.board, _this.moveHistory, false, this.bothKingsState)).validMoves();
 
             rookSquares.forEach(square => {
                 const currTile = _this.board[square.x][square.y];
@@ -115,7 +115,7 @@ export default class KingValidator extends BasePieceValidator{
             // 2. bishop
             const bishopSquares = (new BishopValidator(
                 { x: initialValidMove.x, y: initialValidMove.y, name: (kingIsWhite ? PieceNames.wRook : PieceNames.bRook) }
-                , _this.board, _this.moveHistory, false, this.bothKingsPosition)).validMoves();
+                , _this.board, _this.moveHistory, false, this.bothKingsState)).validMoves();
 
             bishopSquares.forEach(square => {
                 const currTile = _this.board[square.x][square.y];
@@ -134,7 +134,7 @@ export default class KingValidator extends BasePieceValidator{
             // 3. knight
             const knightSquares = (new KnightValidator(
                 { x: initialValidMove.x, y: initialValidMove.y, name: (kingIsWhite ? PieceNames.wRook : PieceNames.bRook) }
-                , _this.board, _this.moveHistory, this.bothKingsPosition)).validMoves();
+                , _this.board, _this.moveHistory, this.bothKingsState)).validMoves();
 
             knightSquares.forEach(square => {
                 const currTile = _this.board[square.x][square.y];
@@ -154,7 +154,7 @@ export default class KingValidator extends BasePieceValidator{
                 { x: initialValidMove.x, y: initialValidMove.y, name: (kingIsWhite ? PieceNames.wPawn : PieceNames.bPawn) }
                 , _this.board,
                 _this.moveHistory
-                , true, this.bothKingsPosition, this.boardOrientationIsWhite
+                , true, this.bothKingsState, this.boardOrientationIsWhite
             )).validMoves();
 
             pawnSquares.forEach(square => {
@@ -231,7 +231,7 @@ export default class KingValidator extends BasePieceValidator{
         // 4.1. enemy rook and queen attacks that castling tile
         const rookMoves = (new RookValidator({
             x: isUnderAttack.x, y: isUnderAttack.y, name: isWhite ? PieceNames.wRook : PieceNames.bRook 
-        }, this.board, this.moveHistory, false, this.bothKingsPosition)).validMoves();
+        }, this.board, this.moveHistory, false, this.bothKingsState)).validMoves();
         
         rookMoves.forEach(rookMove => {
             const currTile = _this.board[rookMove.x][rookMove.y];
@@ -252,7 +252,7 @@ export default class KingValidator extends BasePieceValidator{
         // 4.2. enemy bishop and queen attacks that castling tile
         const bishopMoves = (new BishopValidator({
             x: isUnderAttack.x, y: isUnderAttack.y, name: isWhite ? PieceNames.wRook : PieceNames.bRook 
-        }, this.board, this.moveHistory, false, this.bothKingsPosition)).validMoves();
+        }, this.board, this.moveHistory, false, this.bothKingsState)).validMoves();
         
         bishopMoves.forEach(bishopMove => {
             const currTile = _this.board[bishopMove.x][bishopMove.y];
@@ -273,7 +273,7 @@ export default class KingValidator extends BasePieceValidator{
         // 4.3. enemy knight attacks that castling tile
         const knightMoves = (new KnightValidator({
             x: isUnderAttack.x, y: isUnderAttack.y, name: isWhite ? PieceNames.wRook : PieceNames.bRook 
-        }, this.board, this.moveHistory, this.bothKingsPosition)).validMoves();
+        }, this.board, this.moveHistory, this.bothKingsState)).validMoves();
         
         knightMoves.forEach(knightMove => {
             const currTile = _this.board[knightMove.x][knightMove.y];
@@ -336,7 +336,7 @@ export default class KingValidator extends BasePieceValidator{
         // 4.1. enemy rook and queen attacks that castling tile
         const rookMoves = (new RookValidator({
             x: isUnderAttack.x, y: isUnderAttack.y, name: isWhite ? PieceNames.wRook : PieceNames.bRook 
-        }, this.board, this.moveHistory, false, this.bothKingsPosition)).validMoves();
+        }, this.board, this.moveHistory, false, this.bothKingsState)).validMoves();
         
         rookMoves.forEach(rookMove => {
             const currTile = _this.board[rookMove.x][rookMove.y];
@@ -357,7 +357,7 @@ export default class KingValidator extends BasePieceValidator{
         // 4.2. enemy bishop and queen attacks that castling tile
         const bishopMoves = (new BishopValidator({
             x: isUnderAttack.x, y: isUnderAttack.y, name: isWhite ? PieceNames.wRook : PieceNames.bRook 
-        }, this.board, this.moveHistory, false, this.bothKingsPosition)).validMoves();
+        }, this.board, this.moveHistory, false, this.bothKingsState)).validMoves();
         
         bishopMoves.forEach(bishopMove => {
             const currTile = _this.board[bishopMove.x][bishopMove.y];
@@ -378,7 +378,7 @@ export default class KingValidator extends BasePieceValidator{
         // 4.3. enemy knight attacks that castling tile
         const knightMoves = (new KnightValidator({
             x: isUnderAttack.x, y: isUnderAttack.y, name: isWhite ? PieceNames.wRook : PieceNames.bRook 
-        }, this.board, this.moveHistory, this.bothKingsPosition)).validMoves();
+        }, this.board, this.moveHistory, this.bothKingsState)).validMoves();
         
         knightMoves.forEach(knightMove => {
             const currTile = _this.board[knightMove.x][knightMove.y];
@@ -436,19 +436,19 @@ export default class KingValidator extends BasePieceValidator{
         switch(enemyName){
             case PieceNames.bPawn:
             case PieceNames.wPawn:
-                return (new PawnValidator(piece, this.board, this.moveHistory, false, this.bothKingsPosition, this.boardOrientationIsWhite )).validMoves();
+                return (new PawnValidator(piece, this.board, this.moveHistory, false, this.bothKingsState, this.boardOrientationIsWhite )).validMoves();
             case PieceNames.bRook:
             case PieceNames.wRook:
-                return (new RookValidator(piece, this.board, this.moveHistory, false, this.bothKingsPosition)).validMoves();
+                return (new RookValidator(piece, this.board, this.moveHistory, false, this.bothKingsState)).validMoves();
             case PieceNames.bKnight:
             case PieceNames.wKnight:
-                return (new KnightValidator(piece, this.board, this.moveHistory, this.bothKingsPosition)).validMoves();
+                return (new KnightValidator(piece, this.board, this.moveHistory, this.bothKingsState)).validMoves();
             case PieceNames.bBishop:
             case PieceNames.wBishop:
-                return (new BishopValidator(piece, this.board, this.moveHistory, false, this.bothKingsPosition)).validMoves();
+                return (new BishopValidator(piece, this.board, this.moveHistory, false, this.bothKingsState)).validMoves();
             case PieceNames.bQueen:
             case PieceNames.wQueen:
-                return (new QueenValidator(piece, this.board, this.moveHistory, false, this.bothKingsPosition)).validMoves();
+                return (new QueenValidator(piece, this.board, this.moveHistory, false, this.bothKingsState)).validMoves();
             default:  
                 return [];
         }
@@ -527,7 +527,7 @@ export default class KingValidator extends BasePieceValidator{
     private enemyKingMoves(): IBaseCoordinates[] {
         const enemyKingMoves: IBaseCoordinates[] = []; 
         const kingIsWhite = this.piece.name[0] === "w";
-        const enemyKingCoords = kingIsWhite ? this.bothKingsPosition.black : this.bothKingsPosition.white;
+        const enemyKingCoords = kingIsWhite ? this.bothKingsState.black : this.bothKingsState.white;
 
         const directions = [
             { x: -1, y: -1 }

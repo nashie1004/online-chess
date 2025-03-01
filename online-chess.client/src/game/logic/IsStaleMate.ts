@@ -1,29 +1,26 @@
 import { GameObjects } from "phaser";
-import { IBothKingsPosition, IKingState, IMoveHistory, IPiecesCoordinates } from "../utilities/types";
+import { IKingState, IMoveHistory, IPiecesCoordinates } from "../utilities/types";
 import GetInitialMoves from "./getInitialMoves";
 
 export default class IsStalemate {
     private readonly pieceCoordinates: IPiecesCoordinates;
     private readonly board: (null | GameObjects.Sprite)[][]
     private readonly boardOrientationIsWhite: boolean;
-    private readonly bothKingsPosition: IBothKingsPosition;
     private readonly moveHistory: IMoveHistory;
-    private readonly kingsState: IKingState;
+    private readonly bothKingsState: IKingState;
     
     constructor(
         board: (null | GameObjects.Sprite)[][],
         boardOrientationIsWhite: boolean,
         pieceCoordinates: IPiecesCoordinates,
-        bothKingsPosition: IBothKingsPosition,
         moveHistory: IMoveHistory,
-        kingsState: IKingState,
+        bothKingsState: IKingState,
     ) {
         this.board = board;
         this.boardOrientationIsWhite = boardOrientationIsWhite;
         this.pieceCoordinates = pieceCoordinates;
-        this.bothKingsPosition = bothKingsPosition;
         this.moveHistory = moveHistory;
-        this.kingsState = kingsState;
+        this.bothKingsState = bothKingsState;
     }
 
     /**
@@ -38,9 +35,8 @@ export default class IsStalemate {
             const {x, y, name, uniqueName} = friendPiece;
 
             const pieceMoves = (new GetInitialMoves(
-                this.board
-                , this.bothKingsPosition, this.boardOrientationIsWhite
-                , this.moveHistory, this.kingsState, this.pieceCoordinates
+                this.board, this.boardOrientationIsWhite
+                , this.moveHistory, this.bothKingsState, this.pieceCoordinates
             )).getInitialMoves(name, x, y, uniqueName ?? `${name}-${x}-${y}`, false);
 
             if (pieceMoves.length > 0){

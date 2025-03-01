@@ -4,29 +4,24 @@ import KnightValidator from "../pieces/knightValidator";
 import PawnValidator from "../pieces/pawnValidator";
 import RookValidator from "../pieces/rookValidator";
 import { PieceNames } from "../utilities/constants";
-import { IBothKingsPosition, IMoveHistory, IKingState } from "../utilities/types";
+import { IMoveHistory, IKingState } from "../utilities/types";
 
 export default class IsCheck {
     private readonly board: (null | GameObjects.Sprite)[][]
-    private readonly bothKingsPosition: IBothKingsPosition;
     private readonly boardOrientationIsWhite: boolean;
     private readonly moveHistory: IMoveHistory;
-    private readonly kingsState: IKingState;
+    private readonly bothKingsState: IKingState;
 
     constructor(
         board: (null | GameObjects.Sprite)[][], 
-        bothKingsPosition: IBothKingsPosition, 
         boardOrientationIsWhite: boolean, 
         moveHistory: IMoveHistory,
-        kingsState: IKingState
+        bothKingsState: IKingState
     ) {
-        const bothKingsPositionDeepCopy = JSON.parse(JSON.stringify(bothKingsPosition)) as IBothKingsPosition;
-
         this.board = board;
-        this.bothKingsPosition = bothKingsPositionDeepCopy;
         this.boardOrientationIsWhite = boardOrientationIsWhite;
         this.moveHistory = moveHistory;
-        this.kingsState = kingsState;
+        this.bothKingsState = bothKingsState;
     }
     
     /**
@@ -36,10 +31,10 @@ export default class IsCheck {
      * @returns
      */
     validateCheck(isWhite: boolean){
-        let king = isWhite ? this.bothKingsPosition.black : this.bothKingsPosition.white;
+        let king = isWhite ? this.bothKingsState.black : this.bothKingsState.white;
         //king = JSON.parse(JSON.stringify(king)) as IBaseCoordinates; W
         const kingPiece = isWhite ? PieceNames.bKing : PieceNames.wKing;
-        const kingUpdate = (kingPiece === PieceNames.wKing) ? this.kingsState.white : this.kingsState.black;
+        const kingUpdate = (kingPiece === PieceNames.wKing) ? this.bothKingsState.white : this.bothKingsState.black;
         const _this = this;
 
 
@@ -53,16 +48,16 @@ export default class IsCheck {
 
         const rookMoves = (new RookValidator(
             { x: king.x, y: king.y, name: kingPiece === PieceNames.wKing ? PieceNames.wRook : PieceNames.bRook }
-            , this.board, this.moveHistory, false, this.bothKingsPosition)).validMoves();
+            , this.board, this.moveHistory, false, this.bothKingsState)).validMoves();
         const bishopMoves = (new BishopValidator(
             { x: king.x, y: king.y, name: kingPiece === PieceNames.wKing ? PieceNames.wBishop : PieceNames.bBishop }
-            , this.board, this.moveHistory, false, this.bothKingsPosition)).validMoves();
+            , this.board, this.moveHistory, false, this.bothKingsState)).validMoves();
         const knightMoves = (new KnightValidator(
             { x: king.x, y: king.y, name: kingPiece === PieceNames.wKing ? PieceNames.wKnight : PieceNames.bKnight }
-            , this.board, this.moveHistory, this.bothKingsPosition)).validMoves();
+            , this.board, this.moveHistory, this.bothKingsState)).validMoves();
         const pawnMoves = (new PawnValidator(
                 { x: king.x, y: king.y, name: kingPiece === PieceNames.wKing ? PieceNames.wPawn : PieceNames.bPawn },
-                this.board, this.moveHistory, false, this.bothKingsPosition, this.boardOrientationIsWhite
+                this.board, this.moveHistory, false, this.bothKingsState, this.boardOrientationIsWhite
             )).validMoves();
 
         // 1. rook
@@ -155,6 +150,8 @@ export default class IsCheck {
 
             //console.log("after: ", JSON.parse(JSON.stringify(kingUpdate)))
         }
+
+        console.log(kingUpdate)
 
         return kingUpdate.checkedBy.length > 0;
     }

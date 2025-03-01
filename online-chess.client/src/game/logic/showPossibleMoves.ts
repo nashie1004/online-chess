@@ -10,10 +10,9 @@ export default class ShowPossibleMoves {
     private readonly previewBoard: (GameObjects.Sprite)[][] // has a visible property
     private readonly boardOrientationIsWhite: boolean;
     private readonly pieceCoordinates: IPiecesCoordinates;
-    private readonly bothKingsPosition: IBothKingsPosition;
     private readonly moveHistory: IMoveHistory;
     private selectedPiece: IMoveInfo | null;
-    private readonly kingsState: IKingState;
+    private readonly bothKingsState: IKingState;
 
     constructor(
         board: (null | GameObjects.Sprite)[][],
@@ -21,18 +20,16 @@ export default class ShowPossibleMoves {
         boardOrientationIsWhite: boolean,
         pieceCoordinates: IPiecesCoordinates,
         selectedPiece: IMoveInfo | null,
-        bothKingsPosition: IBothKingsPosition,
         moveHistory: IMoveHistory,
-        kingsState: IKingState
+        bothKingsState: IKingState
     ) {
         this.board = board;        
         this.previewBoard = previewBoard;        
         this.boardOrientationIsWhite = boardOrientationIsWhite;        
         this.pieceCoordinates = pieceCoordinates;        
         this.selectedPiece = selectedPiece;        
-        this.bothKingsPosition = bothKingsPosition;      
         this.moveHistory = moveHistory;  
-        this.kingsState = kingsState;
+        this.bothKingsState = bothKingsState;
     }
     
     /**
@@ -55,9 +52,8 @@ export default class ShowPossibleMoves {
 
         // validate
         let initialValidMoves: IValidMove[] = (new GetInitialMoves(
-            this.board,
-            this.bothKingsPosition, this.boardOrientationIsWhite,
-            this.moveHistory, this.kingsState, this.pieceCoordinates
+            this.board, this.boardOrientationIsWhite,
+            this.moveHistory, this.bothKingsState, this.pieceCoordinates
         )).getInitialMoves(name, x, y, uniqueName);
 
         // set selected piece
@@ -66,9 +62,8 @@ export default class ShowPossibleMoves {
         // this returns null if the king isnt in check
         const actualValidMoves = (new PossibleMovesIfKingInCheck(
             this.board, this.selectedPiece
-            , this.bothKingsPosition
             ,this.boardOrientationIsWhite
-            ,this.moveHistory, this.kingsState
+            ,this.moveHistory, this.bothKingsState
             ,this.pieceCoordinates
         )).possibleMovesIfKingInCheck(name, initialValidMoves);
 

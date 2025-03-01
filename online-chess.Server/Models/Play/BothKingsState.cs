@@ -2,7 +2,7 @@
 {
     public class BothKingsState
     {
-        public KingInfo WhiteKing { get; set; }
-        public KingInfo BlackKing { get; set; }
+        public KingInfo White { get; set; }
+        public KingInfo Black { get; set; }
     }
 }

@@ -57,6 +57,7 @@ export default function NavigationBar() {
                 )
               })
             }
+            {url.pathname === "/play" && <a className='nav-link nav-link-active'>Play</a>}
             <NavLink to="https://github.com/nashie1004/online-chess" style={{  }} className="nav-link">
               <i className="bi bi-github mr-2" style={{  }}></i> Source Code
             </NavLink>

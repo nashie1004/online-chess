@@ -12,6 +12,9 @@ namespace online_chess.Server.Models.Play
         public PlayerInfo JoinedByUserInfo { get; set; }
         public GameType GameType { get; set; }
         public List<BaseMoveInfo> PiecesCoordinatesInitial { get; set; }
-        public (BaseMoveInfo, BaseMoveInfo) BothKingCoords { get; set; }
+        public BothKingsState BothKingsState { get; set; }
+        public bool Reconnect { get; set; }
+        public bool WhiteKingHasMoved { get; set; }
+        public bool BlackKingHasMoved { get; set; }
     }
 }
