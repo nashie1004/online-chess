@@ -11,7 +11,7 @@ export default function useOnUpdateBoard(){
 
     gameStateRef.current = gameState;
 
-    const onUpdateBoard = useCallback((data: IOnUpdateBoard) => {
+    const onUpdateBoard = (data: IOnUpdateBoard) => {
 
         const { moveInfo, moveIsWhite, capturedPiece } = data;
 
@@ -20,8 +20,10 @@ export default function useOnUpdateBoard(){
 
         if (opponentsTurn)
         {
-            eventEmitter.emit(EVENT_EMIT.SET_ENEMY_MOVE, data.moveInfo as IPieceMove);
+            eventEmitter.emit(EVENT_EMIT.SET_ENEMY_MOVE, moveInfo);
         } 
+
+        //console.log("opponents turn: ", opponentsTurn)
         
         setGameState({ type: "SET_OPPONENTINFO_ISPLAYERSTURN", payload: opponentsTurn });
         
@@ -29,12 +31,13 @@ export default function useOnUpdateBoard(){
 
         setGameState({ type: "SET_MOVEHISTORY", payload: { moveInfo, moveIsWhite } });
 
-        if (capturedPiece){
-            setGameState({ type: "SET_CAPTUREHISTORY", payload: capturedPiece });
-        }
+        // TODO 2/26/2025 - Replcae this with signalr capture history
+        //if (capturedPiece){
+            //setGameState({ type: "SET_CAPTUREHISTORY", payload: capturedPiece });
+        //}
 
         eventEmitter.emit(EVENT_EMIT.SET_MOVE_HISTORY, gameState.moveHistory);
-    }, [])
+    }
     
     return onUpdateBoard; 
 }

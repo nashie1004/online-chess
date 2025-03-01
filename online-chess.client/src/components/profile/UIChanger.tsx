@@ -3,10 +3,12 @@ import useLocalStorage from '../../hooks/useLocalStorage';
 import { useMemo } from 'react';
 import boardUI from '../../constants/boardUI';
 import pieceUI from '../../constants/pieceUI';
+import useSignalRContext from '../../hooks/useSignalRContext';
 
 export default function UIChanger() {
   const { setValue: setBoard, data: board } = useLocalStorage("board", "green.png");
   const { setValue: setPiece, data: piece } = useLocalStorage("piece", "cburnett");
+  const { userConnectionId } = useSignalRContext();
 
   const boardPath = `/src/assets/boards/${board}`;
   const piecePath = `/src/assets/pieces/${piece}/`;
@@ -37,6 +39,7 @@ export default function UIChanger() {
               Board
             </Form.Label>
             <Form.Select 
+              disabled={!userConnectionId}
               onChange={(e) => setBoard(e.target.value)}
               value={board}
               className='w-50'>
@@ -50,6 +53,7 @@ export default function UIChanger() {
               Piece
             </Form.Label>
             <Form.Select  
+              disabled={!userConnectionId}
               onChange={(e) => setPiece(e.target.value)}
               value={piece}
               className='w-50'>

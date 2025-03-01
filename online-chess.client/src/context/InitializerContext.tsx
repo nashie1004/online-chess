@@ -35,7 +35,7 @@ export default function InitializerContext(
 
   async function checkIfSignedIn() {
     let signedIn = false;
-    const res = await authService.baseGet("/api/Auth/isSignedIn");
+    const res = await authService.baseGet("/api/Auth/is-signed-in");
     
     if (res.status === 200){
       setUser({ userName: res.data.userName, profileURL: "" });

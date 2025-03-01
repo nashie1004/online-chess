@@ -18,13 +18,13 @@ export class MainGameScene extends Scene{
     /**
      * unique name = piecename + x + y, example: 'wPawn-0-6'
      */
-    // 1.1 server state - always changing
+    // 1.1 server state - server has these states
     private moveHistory: IMoveHistory;
     private kingsState: IKingState;
-    private piecesCoordinates_Actual: IPiecesCoordinates;
+    private piecesCoordinates_Server: IPiece[];
     
-    // 1.2 server state - not always changing
-    private piecesCoordinates_Initial: IPiece[];
+    // 1.2 server and internal state integrated
+    private piecesCoordinates_Internal: IPiecesCoordinates;
     private promotePreference: PlayersPromotePreference; 
     private bothKingsPosition: IBothKingsPosition;
 
@@ -42,19 +42,19 @@ export class MainGameScene extends Scene{
 
     constructor(
         key: string, isColorWhite: boolean, boardUI: string
-        , piecesUI: string, piecesCoordinates_Initial: IPiece[], moveHistory: IMoveHistory
+        , piecesUI: string, piecesCoordinates_Server: IPiece[], moveHistory: IMoveHistory
         , bothKingsPosition: IBothKingsPosition, promotePreference: PlayersPromotePreference
         , isPlayersTurnToMove: boolean
     ) {
         super({ key });
 
-        // 1.1 server state - always changing
+        // 1.1 server state - server has these states
         this.moveHistory = moveHistory; 
         this.kingsState = baseKingState;
-        this.piecesCoordinates_Actual = { white: [], black: [] };
+        this.piecesCoordinates_Internal = { white: [], black: [] };
 
-        // 1.2 server state - not always changing
-        this.piecesCoordinates_Initial = piecesCoordinates_Initial;
+        // 1.2 server and internal state integrated
+        this.piecesCoordinates_Server = piecesCoordinates_Server;
         this.promotePreference = promotePreference;
         this.bothKingsPosition = bothKingsPosition;
 
@@ -103,7 +103,6 @@ export class MainGameScene extends Scene{
     }
 
     create(){
-
         const board = this.add
             .image(this.scale.width / 2, this.scale.height / 2, "bg")
             .setOrigin(0.5) // Center the image
@@ -132,8 +131,8 @@ export class MainGameScene extends Scene{
                     .on("pointerover", () => { previewMove.setTint(0x98DEC7) })
                     .on("pointerout", () => { previewMove.clearTint() })
                     .on("pointerdown", () => {
-                        console.log("TODO CALL MOVE FUNC 1", {x: colIdx, y: rowIdx}, this.selectedPiece)
-                        this.move(colIdx, rowIdx)
+                        this.move(colIdx, rowIdx);
+                        //this.debugHelper();
                     }, this)
                     .setAlpha(.5)
                     ;
@@ -143,7 +142,7 @@ export class MainGameScene extends Scene{
         })
 
         // 2. actual pieces
-        this.piecesCoordinates_Initial.forEach(piece => {
+        this.piecesCoordinates_Server.forEach(piece => {
             let { name, x, y } = piece;
             const pieceIsWhite = name[0] === "w";
 
@@ -162,7 +161,7 @@ export class MainGameScene extends Scene{
             }
 
             const uniqueName = `${name}-${x}-${y}`;
-            this.piecesCoordinates_Actual[pieceIsWhite ? "white" : "black"].push({
+            this.piecesCoordinates_Internal[pieceIsWhite ? "white" : "black"].push({
                 name, x, y, uniqueName
             });
 
@@ -211,7 +210,7 @@ export class MainGameScene extends Scene{
                     this.resetMoves();
                     this.selectedPiece = (new ShowPossibleMoves(
                         this.board, this.previewBoard
-                        ,this.boardOrientationIsWhite, this.piecesCoordinates_Actual
+                        ,this.boardOrientationIsWhite, this.piecesCoordinates_Internal
                         ,this.selectedPiece
                         ,this.bothKingsPosition, this.moveHistory
                         ,this.kingsState
@@ -240,19 +239,17 @@ export class MainGameScene extends Scene{
             const preference = data.preference as PromotionPrefence;
             
             this.promotePreference[isWhite ? "white" : "black"] = preference;
-        }); // TODO
-        eventEmitter.on(EVENT_ON.SET_KINGS_STATE, (data: IKingState) => this.kingsState = data);
+        });
         eventEmitter.on(EVENT_ON.SET_ENEMY_MOVE, (data: IPieceMove) => {
-            // console.log("enemy event emit: ", data)
-
             this.selectedPiece = {
                 x: data.old.x,
                 y: data.old.y,
                 pieceName: data.old.uniqueName ?? ``
             }
-
-            console.log("TODO CALL MOVE FUNC 2", { x: data.new.x, y: data.new.y }, this.selectedPiece)
+            this.isPlayersTurnToMove = false;
+            
             this.move(data.new.x, data.new.y);
+
             this.isPlayersTurnToMove = true;
         });
         eventEmitter.on(EVENT_ON.SET_MOVE_HISTORY, (data: IMoveHistory) => {
@@ -279,14 +276,12 @@ export class MainGameScene extends Scene{
 
         if (!this.selectedPiece) return hasCapture;
 
+        // doing 2/25/2025
+
         // current piece to move
         const sprite = this.board[this.selectedPiece.x][this.selectedPiece.y];
 
-        console.log("TODO selected piece: ", this.selectedPiece, { newX, newY }, sprite?.name)
-
         if (!sprite) return false;
-
-        // console.log("main move: ", this.selectedPiece, { newX, newY })
 
         const isWhite = sprite.name[0] === "w"
         const uniquePieceName = sprite.name;
@@ -297,7 +292,7 @@ export class MainGameScene extends Scene{
 
         // capture
         const pieceCapture = new PieceCapture(
-            this.board, this.boardOrientationIsWhite, this.piecesCoordinates_Actual
+            this.board, this.boardOrientationIsWhite, this.piecesCoordinates_Internal
             , this.bothKingsPosition
             ,this.moveHistory
         );
@@ -309,7 +304,7 @@ export class MainGameScene extends Scene{
         this.board[newX][newY] = sprite;
 
         // Set new coordinate
-        const pieceCoordinate = this.piecesCoordinates_Actual[isWhite ? "white" : "black"]
+        const pieceCoordinate = this.piecesCoordinates_Internal[isWhite ? "white" : "black"]
             .find(i => i.x === this.selectedPiece?.x && i.y === this.selectedPiece?.y);
 
         if (pieceCoordinate){
@@ -319,13 +314,13 @@ export class MainGameScene extends Scene{
 
         // some special logic
         (new PawnPromote(
-            this.boardOrientationIsWhite, this.promotePreference, this.piecesCoordinates_Actual // TODO dynamic promote
+            this.boardOrientationIsWhite, this.promotePreference, this.piecesCoordinates_Internal 
         )).pawnPromote(uniquePieceName, newX, newY, isWhite, sprite);
 
         const kingCastled = (new KingCastled(
             this.board
             , this.bothKingsPosition, this.boardOrientationIsWhite
-            , this.moveHistory, this.piecesCoordinates_Actual
+            , this.moveHistory, this.piecesCoordinates_Internal
         )).kingCastled(uniquePieceName, this.selectedPiece, isWhite, newX, newY);
 
         if (kingCastled){
@@ -341,7 +336,6 @@ export class MainGameScene extends Scene{
 
         // if the move is a king, update private king pos state - this is used by the this.validateCheckOrCheckMateOrStalemate() function
         if (sprite.name.toLowerCase().indexOf("king") >= 0){
-            // console.log("king move", newX, newY, sprite.name, this.selectedPiece)
             this.bothKingsPosition[isWhite ? "white" : "black"].x = newX;
             this.bothKingsPosition[isWhite ? "white" : "black"].y = newY;
         }
@@ -352,8 +346,6 @@ export class MainGameScene extends Scene{
             const newMove: IPiece = { x: newX, y: newY, uniqueName: uniquePieceName, name: pieceName };
             
             this.isPlayersTurnToMove = false;
-            // console.log("move piece: ", oldMove, newMove)
-            //console.log("sprite: ", sprite, this.selectedPiece, newX, newY)
 
             eventEmitter.emit(EVENT_EMIT.SET_MOVE_PIECE, { oldMove, newMove, hasCapture });
         }
@@ -376,7 +368,7 @@ export class MainGameScene extends Scene{
 
         const kingSafety = (new ValidateCheckOrCheckMateOrStalemate(
             this.board, this.boardOrientationIsWhite
-            , this.piecesCoordinates_Actual
+            , this.piecesCoordinates_Internal
             , this.bothKingsPosition, this.moveHistory
             , this.kingsState
         )).validate(isWhite);
@@ -391,17 +383,7 @@ export class MainGameScene extends Scene{
             kingSprite?.postFX?.addGlow(0xE44C6A, 10, 2);
         }
 
-        // For testing only
-        // console.info(" === TEST === ");
-        if (kingSafety !== 0){
-            // console.log(this.piecesCoordinates_Actual.white.filter(i => i.name.toLowerCase().indexOf("king") >= 0));
-            // console.log(this.piecesCoordinates_Actual.black.filter(i => i.name.toLowerCase().indexOf("queen") >= 0));
-            // console.log(this.bothKingsPosition)
-            // console.log(this.selectedPiece)
-            // console.log(pieceCoordinate)
-        }
-        // console.table(this.piecesCoordinates_Actual.black);
-        // this.debugHelper();
+        //this.debugHelper();
     }
 
     update(){
@@ -432,10 +414,21 @@ export class MainGameScene extends Scene{
                     y: rowIdx
                 });
             });
-        })
+        });
         
-        //console.log(nonEmptyWhiteTiles)
-        // console.table([...nonEmptyWhiteTiles, ...nonEmptyBlackTiles]);
-        // console.table(nonEmptyWhiteTiles.filter(i => i.uniqueName.toLowerCase().indexOf("pawn") >= 0));
+        // Debug helper by using white's orientation
+        const copy = structuredClone(this.piecesCoordinates_Internal);
+        
+        if (!this.boardOrientationIsWhite){
+            copy.black.forEach(i => {
+                i.y = Math.abs(i.y - 7);
+            });
+            copy.white.forEach(i => {
+                i.y = Math.abs(i.y - 7);
+            });
+        }
+
+        
+        console.table(this.piecesCoordinates_Internal);
     }
 }

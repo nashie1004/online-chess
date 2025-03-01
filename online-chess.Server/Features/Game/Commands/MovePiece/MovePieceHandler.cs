@@ -121,6 +121,7 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
             if (room.TimerId != null)
             {
                 room.TimerId.Dispose();
+                room.TimerId = null;
             }
 
             room.TimerId = new Timer(UpdateTimer, new TimerState(){

@@ -4,10 +4,14 @@ You can view a demo [here](https://github.com/nashie1004/online-chess).
 
 ## ACTUAL TODOS
 1. reconnect to existing game should be smooth, handle side effects
-    1.1 when one player disconnects
-        1.1.1 other player is notified
-        1.1.2 allow disconnected player to reconnect (full grace period)
-        1.1.3 handle the ongoing timer
+    1.1 allow disconnected player to reconnect (full grace period)
+        1.1.1 correct player's turn - check (player's turn): move some piece > disconnect > move > capture
+        1.1.2 correct piece coords - check (piece coords): move some piece > capture some piece > disconnect > move
+
+        - check: capture some piece > disconnect > log > pieces coords count 
+        - check: disconnect > try to move quickly 
+        - DOING
+        1.1.3 on reconnect of black piece user - the orientation is incorrect
 
     1.2 game is finished
         1.2.1 handle checkmate
@@ -15,7 +19,7 @@ You can view a demo [here](https://github.com/nashie1004/online-chess).
         1.2.3 handle times up
         1.2.4 handle draw agree
     
-2. display move turn, check, checkmate, stalemate
+2. display move turn, check, checkmate, stalemate (revamp)
 3. handle en passant capture on GameRoom.cs
 
 ## Installation
