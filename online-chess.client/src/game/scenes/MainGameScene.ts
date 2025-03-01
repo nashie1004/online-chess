@@ -132,7 +132,6 @@ export class MainGameScene extends Scene{
                     .on("pointerout", () => { previewMove.clearTint() })
                     .on("pointerdown", () => {
                         this.move(colIdx, rowIdx);
-                        //this.debugHelper();
                     }, this)
                     .setAlpha(.5)
                     ;
@@ -151,13 +150,15 @@ export class MainGameScene extends Scene{
 
                 // flip y
                 y = Math.abs(y - 7);
+                x = Math.abs(x - 7);
 
                 // if king and or queen
                 if (name.toLowerCase().indexOf("king") >= 0) {
-                    x = 3;
-                } else if (name.toLowerCase().indexOf("queen") >= 0) {
-                    x = 4;
-                }
+                    x = this.bothKingsPosition.black.x;
+                } 
+                // else if (name.toLowerCase().indexOf("queen") >= 0) {
+                //     x = 4;
+                // }
             }
 
             const uniqueName = `${name}-${x}-${y}`;
@@ -255,6 +256,8 @@ export class MainGameScene extends Scene{
         eventEmitter.on(EVENT_ON.SET_MOVE_HISTORY, (data: IMoveHistory) => {
             this.moveHistory = data;
         });
+
+        //this.debugHelper();
     }
 
     resetMoves(){
@@ -275,8 +278,6 @@ export class MainGameScene extends Scene{
         let hasCapture = false;
 
         if (!this.selectedPiece) return hasCapture;
-
-        // doing 2/25/2025
 
         // current piece to move
         const sprite = this.board[this.selectedPiece.x][this.selectedPiece.y];
@@ -383,7 +384,7 @@ export class MainGameScene extends Scene{
             kingSprite?.postFX?.addGlow(0xE44C6A, 10, 2);
         }
 
-        //this.debugHelper();
+        // this.debugHelper();
     }
 
     update(){
@@ -429,6 +430,9 @@ export class MainGameScene extends Scene{
         }
 
         
-        console.table(this.piecesCoordinates_Internal);
+        console.log(this.piecesCoordinates_Server);
+        console.log(this.board);
+        console.log("this.boardOrientationIsWhite: ", this.boardOrientationIsWhite)
+
     }
 }
