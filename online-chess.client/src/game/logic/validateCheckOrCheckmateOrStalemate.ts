@@ -1,10 +1,8 @@
 import { GameObjects } from "phaser";
-import { eventEmitter } from "../utilities/eventEmitter";
 import { IPiecesCoordinates, IBothKingsPosition, IMoveHistory, IKingState } from "../utilities/types";
 import IsCheck from "./isCheck";
 import IsCheckMate from "./isCheckMate";
 import IsStalemate from "./IsStaleMate";
-import { EVENT_EMIT } from "../../constants/emitters";
 
 export default class ValidateCheckOrCheckMateOrStalemate {
     
@@ -50,8 +48,6 @@ export default class ValidateCheckOrCheckMateOrStalemate {
         this.kingsState.white.isInStalemate = false;
         this.kingsState.black.isInStalemate = false;
 
-        //console.log("Start Validate Kings: ", JSON.stringify(this.bothKingsPosition))
-
         // 1. check
         const isCheck = (new IsCheck(
             this.board 
@@ -92,9 +88,6 @@ export default class ValidateCheckOrCheckMateOrStalemate {
             }
         }
 
-        //console.log("End Validate Kings: ", JSON.stringify(this.bothKingsPosition))
-
-        eventEmitter.emit(EVENT_EMIT.SET_KINGS_STATE, this.kingsState);
         return (isCheckMate ? 2 : 1);
     }
 

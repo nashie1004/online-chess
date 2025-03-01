@@ -83,8 +83,10 @@ export default function useOnInitializeGameInfo(
             });
             
             // connect react and phaser
+            /*
             eventEmitter.on(EVENT_ON.SET_KINGS_STATE, (data: IKingState) => {
-                
+                console.log(data)
+
                 if (data.white.isInCheck || data.white.isCheckMate || data.white.isInStalemate)
                 {
                     setGameState({ 
@@ -107,6 +109,7 @@ export default function useOnInitializeGameInfo(
                 }
 
             });
+            */
             
             eventEmitter.on(EVENT_ON.SET_MOVE_PIECE, (move: any) => {
                 signalRContext.invoke(PLAY_PAGE_INVOKERS.MOVE_PIECE, initGameInfo.gameRoomKey, move.oldMove, move.newMove, move.hasCapture);

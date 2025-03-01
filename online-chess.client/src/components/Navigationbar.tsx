@@ -39,7 +39,7 @@ export default function NavigationBar() {
                 { url: "/about", name: "About",  },
               ].map((item, idx) => {
                 return  (
-                  <NavLink key={idx} to={item.url} className={url.pathname === item.url ? "nav-link active" : "nav-link"}>
+                  <NavLink key={idx} to={item.url} className={url.pathname === item.url ? "nav-link nav-link-active" : "nav-link"}>
                     {item.name}
                   </NavLink>
                 )
@@ -53,9 +53,12 @@ export default function NavigationBar() {
                 { url: "/about", name: "About",  },
               ].map((item, idx) => {
                 return  (
-                  <NavLink key={idx} to={item.url} className={url.pathname === item.url ? "nav-link active" : "nav-link"}>
+                  <>
+                    {item.url === "/about" && url.pathname === "/play" && <span className="nav-link nav-link-active">Play</span>}
+                    <NavLink key={idx} to={item.url} className={url.pathname === item.url ? "nav-link nav-link-active" : "nav-link"}>
                     {item.name}
-                  </NavLink>
+                    </NavLink>
+                  </>
                 )
               })
             }

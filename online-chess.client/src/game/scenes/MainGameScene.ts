@@ -69,8 +69,6 @@ export class MainGameScene extends Scene{
         // 3. user prefernce
         this.boardUI = boardUI;
         this.piecesUI = piecesUI;
-
-        //console.log("player is white: ", this.boardOrientationIsWhite)
     }
 
     preload(){
@@ -133,7 +131,6 @@ export class MainGameScene extends Scene{
                     .on("pointerover", () => { previewMove.setTint(0x98DEC7) })
                     .on("pointerout", () => { previewMove.clearTint() })
                     .on("pointerdown", () => {
-                        //console.log("call move func - my move")
                         this.move(colIdx, rowIdx);
                         //this.debugHelper();
                     }, this)
@@ -192,8 +189,6 @@ export class MainGameScene extends Scene{
                  })
                 .on("pointerdown", () => {
 
-                    //console.log("pointerdown: ", this.isPlayersTurnToMove)
-
                     // not allowed to move
                     if (
                         !this.isPlayersTurnToMove || (
@@ -244,8 +239,7 @@ export class MainGameScene extends Scene{
             const preference = data.preference as PromotionPrefence;
             
             this.promotePreference[isWhite ? "white" : "black"] = preference;
-        }); // TODO
-        eventEmitter.on(EVENT_ON.SET_KINGS_STATE, (data: IKingState) => this.kingsState = data);
+        });
         eventEmitter.on(EVENT_ON.SET_ENEMY_MOVE, (data: IPieceMove) => {
             this.selectedPiece = {
                 x: data.old.x,
@@ -254,7 +248,6 @@ export class MainGameScene extends Scene{
             }
             this.isPlayersTurnToMove = false;
             
-            //console.log("call move func enemy move")
             this.move(data.new.x, data.new.y);
 
             this.isPlayersTurnToMove = true;
@@ -390,7 +383,7 @@ export class MainGameScene extends Scene{
             kingSprite?.postFX?.addGlow(0xE44C6A, 10, 2);
         }
 
-        this.debugHelper();
+        //this.debugHelper();
     }
 
     update(){
@@ -437,6 +430,5 @@ export class MainGameScene extends Scene{
 
         
         console.table(this.piecesCoordinates_Internal);
-        console.log('this.boardOrientationIsWhite: ', this.boardOrientationIsWhite);
     }
 }
