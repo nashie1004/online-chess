@@ -4,12 +4,12 @@ You can view a demo [here](https://github.com/nashie1004/online-chess).
 
 ## Installation
 
-Update the .env.development file by pointing it to our server:
+Update the .env.development file in `./online-chess.client` by pointing it to our server:
 ```
 VITE_API_URL=https://localhost:44332
 ```
 
-Run the following commands:
+Run the following commands on `./online-chess.Server`:
 ```
 Update-Database -Context MainDbContext
 Update-Database -Context UserIdentityDbContext
@@ -19,16 +19,16 @@ or
 dotnet ef database update --context MainDbContext
 dotnet ef database update --context UserIdentityDbContext
 ```
-This should create a directory named `/SQLiteDB` where our SQLite Database resides.
+This should create a directory named `./SQLiteDB` where our SQLite Database resides.
 
 Then
 ```
-cd .\online-chess.client\
+cd ./online-chess.client/
 npm run dev
 ```
 and open a new terminal and finally
 ```
-cd .\online-chess.Server\
+cd ./online-chess.Server/
 dotnet watch
 ```
 after that, the web application should now be running.
