@@ -1,4 +1,4 @@
-# (In Progress) Online-Chess
+# Online-Chess
 A simple real time 2-player chess web application created with Phaser, React, Typescript, Bootstrap, ASP.NET Core SignalR and Identity, and SQLite. Uses .NET 9 and React 18.
 You can view a demo [here](https://github.com/nashie1004/online-chess).
 

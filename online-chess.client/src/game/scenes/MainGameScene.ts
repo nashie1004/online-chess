@@ -280,14 +280,13 @@ export class MainGameScene extends Scene{
         let capture: Capture = Capture.None; 
         let castle: Castle = Castle.None;
 
-        if (!this.selectedPiece) return capture;
+        if (!this.selectedPiece) return;
 
         // current piece to move
         const sprite = this.board[this.selectedPiece.x][this.selectedPiece.y];
+        if (!sprite) return;
 
-        if (!sprite) return capture;
-
-        const isWhite = sprite.name[0] === "w"
+        const isWhite = sprite.name[0] === "w";
         const uniquePieceName = sprite.name;
         const pieceName = sprite.name.split("-")[0] as PieceNames;
 
@@ -392,7 +391,7 @@ export class MainGameScene extends Scene{
         }
 
         this.resetMoves();
-        // this.debugHelper();
+        //this.debugHelper();
     }
 
     update(){
@@ -400,6 +399,9 @@ export class MainGameScene extends Scene{
     }
 
     debugHelper(){
+        console.log(this.moveHistory);
+        
+        return;
         const nonEmptyWhiteTiles: (any)[] = []
         const nonEmptyBlackTiles: (any)[] = []
 
@@ -437,7 +439,5 @@ export class MainGameScene extends Scene{
             });
         }
 
-        console.log(this.piecesCoordinates_Internal.white.filter(i => i.name.toLowerCase().indexOf("king") >= 0))
-        console.log(this.piecesCoordinates_Internal.black.filter(i => i.name.toLowerCase().indexOf("king") >= 0))
     }
 }

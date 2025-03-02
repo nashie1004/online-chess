@@ -23,6 +23,7 @@ export default function InitializerContext(
   } = useSignalRContext();
   const { setUser, setIsAuthenticating, user } = useAuthContext();
   const { setQueuingRoomKey } = useQueuingContext();
+  const { userConnectionId } = useSignalRContext();
   const navigate = useNavigate();
   const [initialize, setInitialize] = useState<boolean>(true);
   const { setGameState, gameState } = useGameContext();
@@ -64,6 +65,7 @@ export default function InitializerContext(
       navigate(`/play?gameRoomKey=${roomKey}&reconnect=false`);
     });
     await addHandler(MAIN_PAGE_HANDLERS.ON_HAS_A_GAME_IN_PROGRESS, (roomKey: string) => {
+      if (!roomKey) return;
       setGameState({ type: "SET_GAMEROOMKEY", payload: roomKey });
       setNotificationState({ type: "SET_HASAGAMEONGOING", payload: true });
     });
@@ -109,7 +111,7 @@ export default function InitializerContext(
     return () => {
       controller.abort();
     };
-  }, [user, urlLocation.pathname]);
+  }, [user, urlLocation.pathname, userConnectionId]);
 
   /**
    * This is the actual initializer of our app

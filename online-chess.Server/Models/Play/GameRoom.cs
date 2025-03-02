@@ -131,6 +131,28 @@ namespace online_chess.Server.Models
 
                     break;
                 case Capture.EnPassant:
+                    Move enemyLatestPawnMove;
+
+                    if (pieceIsWhite){
+                        enemyLatestPawnMove = MoveHistory.Black.Last();
+                    } else {
+                        enemyLatestPawnMove = MoveHistory.White.Last();
+                    }
+
+                    if (enemyLatestPawnMove == null) break;
+
+                    var enPassantCapturedPiece = enemyLatestPawnMove.New;
+
+                    if (!enPassantCapturedPiece.UniqueName.Contains("pawn", StringComparison.OrdinalIgnoreCase)) break;
+
+                    returnCapturedPiece = enPassantCapturedPiece;
+                    
+                    CaptureHistory.Add(enPassantCapturedPiece);
+                    
+                    PiecesCoords.RemoveAll(i => i.X == enPassantCapturedPiece.X && i.Y == enPassantCapturedPiece.Y);
+
+                    MoveCountSinceLastCapture = 0;
+
                     break;
                 case Capture.None:
                 default:
