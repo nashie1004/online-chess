@@ -42,50 +42,18 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
         public async Task<Unit> Handle(MovePieceRequest request, CancellationToken cancellationToken)
         {
             var room = _gameRoomService.GetOne(request.GameRoomKeyString);
-
-            if (room == null)
-            {
-                return Unit.Value;
-            }
+            if (room == null) return Unit.Value;
 
             bool isRoomCreator = room.CreatedByUserId == request.IdentityUserName;
-
-            bool pieceMoveIsWhite = isRoomCreator 
-                ? room.CreatedByUserColor == Color.White 
+            bool pieceMoveIsWhite = isRoomCreator ? room.CreatedByUserColor == Color.White 
                 : room.CreatedByUserColor == Color.Black;
 
-            // invert orientation (for phaser)
-            Move invertedMoveInfo = new Move(){
-                Old = new BaseMoveInfo(){
-                    X = 7 - request.OldMove.X,
-                    Y = 7 - request.OldMove.Y,
-                    Name = request.OldMove.Name,
-                    UniqueName = request.OldMove.UniqueName
-                },
-                New = new BaseMoveInfo(){
-                    X = 7 - request.NewMove.X,
-                    Y = 7 - request.NewMove.Y,
-                    Name = request.OldMove.Name,
-                    UniqueName = request.OldMove.UniqueName
-                }
-            };
-
-            // move info on whites orientation
-            Move whitesOrientationMoveInfo = new Move(){
-                Old = new BaseMoveInfo(){
-                    X = (pieceMoveIsWhite ? request.OldMove.X : 7 - request.OldMove.X),
-                    Y = (pieceMoveIsWhite ? request.OldMove.Y : 7 - request.OldMove.Y),
-                },
-                New = new BaseMoveInfo(){
-                    X = (pieceMoveIsWhite ? request.NewMove.X : 7 - request.NewMove.X),
-                    Y = (pieceMoveIsWhite ? request.NewMove.Y : 7 - request.NewMove.Y),
-                }
-            };
+            var (invertedMoveInfo, whitesOrientationMoveInfo) = GenerateMoveInfo(request, pieceMoveIsWhite);
 
             room.CreatedByUserInfo.IsPlayersTurnToMove = !isRoomCreator;
             room.JoinByUserInfo.IsPlayersTurnToMove = isRoomCreator;
 
-            var hasCapture = room.UpdatePieceCoords(whitesOrientationMoveInfo, request.Capture, request.Castle, pieceMoveIsWhite);
+            var capturedPiece = room.UpdatePieceCoords(whitesOrientationMoveInfo, request.Capture, request.Castle, pieceMoveIsWhite);
 
             if (room.TimerId != null)
             {
@@ -99,21 +67,62 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
                 ServiceScope = _serviceProvider.CreateScope()
             }, 0, 1000);
             
-            var retVal = new{
-                moveInfo = invertedMoveInfo
-                , moveIsWhite = pieceMoveIsWhite
-                , creatorColorIsWhite = room.CreatedByUserColor == Enums.Color.White
-                , capturedPiece = hasCapture == null ? null : hasCapture
+            var retVal = new UpdateBoardInfo(){
+                MoveInfo = invertedMoveInfo
+                , MoveIsWhite = pieceMoveIsWhite
+                , CreatorColorIsWhite = room.CreatedByUserColor == Enums.Color.White
+                , CapturedPiece = capturedPiece
+                , MoveHistoryLatestMove = whitesOrientationMoveInfo
             };
 
             await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync(RoomMethods.onUpdateBoard, retVal);
-            await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync(RoomMethods.onReceiveCaptureHistory, room.CaptureHistory);
-            await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync(RoomMethods.onReceiveMoveHistory, room.MoveHistory);
             
             return Unit.Value;
-         }
+        }
 
-        
+        private (Move, Move) GenerateMoveInfo(MovePieceRequest request, bool pieceMoveIsWhite)
+        {
+            // invert orientation (for phaser)
+            Move invertedMoveInfo = new Move()
+            {
+                Old = new BaseMoveInfo()
+                {
+                    X = 7 - request.OldMove.X,
+                    Y = 7 - request.OldMove.Y,
+                    Name = request.OldMove.Name,
+                    UniqueName = request.OldMove.UniqueName
+                },
+                New = new BaseMoveInfo()
+                {
+                    X = 7 - request.NewMove.X,
+                    Y = 7 - request.NewMove.Y,
+                    Name = request.OldMove.Name,
+                    UniqueName = request.OldMove.UniqueName
+                }
+            };
+
+            // move info on whites orientation (saved here in the server)
+            Move whitesOrientationMoveInfo = new Move()
+            {
+                Old = new BaseMoveInfo()
+                {
+                    X = (pieceMoveIsWhite ? request.OldMove.X : 7 - request.OldMove.X),
+                    Y = (pieceMoveIsWhite ? request.OldMove.Y : 7 - request.OldMove.Y),
+                    Name = request.OldMove.Name,
+                    UniqueName = request.OldMove.UniqueName
+                },
+                New = new BaseMoveInfo()
+                {
+                    X = (pieceMoveIsWhite ? request.NewMove.X : 7 - request.NewMove.X),
+                    Y = (pieceMoveIsWhite ? request.NewMove.Y : 7 - request.NewMove.Y),
+                    Name = request.OldMove.Name,
+                    UniqueName = request.OldMove.UniqueName
+                }
+            };
+
+            return (invertedMoveInfo, whitesOrientationMoveInfo);
+        }
+
         public async void UpdateTimer(object? state)
         {
             var timerState = (TimerState)state;

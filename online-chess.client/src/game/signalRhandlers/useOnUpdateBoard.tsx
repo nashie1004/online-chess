@@ -1,7 +1,6 @@
-import { useCallback, useRef } from "react";
+import { useRef } from "react";
 import useGameContext from "../../hooks/useGameContext";
 import { eventEmitter } from "../utilities/eventEmitter";
-import { IPieceMove } from "../utilities/types";
 import { EVENT_EMIT } from "../../constants/emitters";
 import { IOnUpdateBoard } from "./types";
 
@@ -23,18 +22,15 @@ export default function useOnUpdateBoard(){
             eventEmitter.emit(EVENT_EMIT.SET_ENEMY_MOVE, moveInfo);
         } 
 
-        //console.log("opponents turn: ", opponentsTurn)
-        
         setGameState({ type: "SET_OPPONENTINFO_ISPLAYERSTURN", payload: opponentsTurn });
         
         setGameState({ type: "SET_MYINFO_ISPLAYERSTURN", payload: !opponentsTurn });
 
         setGameState({ type: "SET_MOVEHISTORY", payload: { moveInfo, moveIsWhite } });
 
-        // TODO 2/26/2025 - Replcae this with signalr capture history
-        //if (capturedPiece){
-            //setGameState({ type: "SET_CAPTUREHISTORY", payload: capturedPiece });
-        //}
+        if (capturedPiece){
+            setGameState({ type: "SET_CAPTUREHISTORY_APPEND", payload: capturedPiece });
+        }
 
         eventEmitter.emit(EVENT_EMIT.SET_MOVE_HISTORY, gameState.moveHistory);
     }

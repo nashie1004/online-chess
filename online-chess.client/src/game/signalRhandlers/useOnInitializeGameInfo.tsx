@@ -174,6 +174,8 @@ export default function useOnInitializeGameInfo(
 
         setGameState({ type: "SET_GAMETYPE", payload: currentGameInfo.gameType });
 
+        // setGameState({ type: "SET_MOVEHISTORY", payload: currentGameInfo.moveHistory });
+
         setGameState({ type: "SET_CAPTUREHISTORY", payload: currentGameInfo.captureHistory });
 
         setGameState({ type: "SET_GAMESTATUS", payload: "ONGOING" });

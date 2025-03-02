@@ -35,7 +35,9 @@ export interface IOnSetPromotionPreference{
 export interface IOnUpdateBoard{
     moveInfo: IPieceMove;
     moveIsWhite: boolean;
+    creatorColorIsWhite: boolean;
     capturedPiece: IPiece | null;
+    moveHistoryLatestMove: IPieceMove;
 }
 
 export interface IOnReceiveMessages{

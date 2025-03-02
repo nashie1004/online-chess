@@ -27,7 +27,9 @@ export type IGameContextReducerActions =
 | { type: "SET_MESSAGES"; payload: IOnReceiveMessages[] }
 | { type: "SET_GAMEROOMKEY"; payload: string }
 | { type: "SET_MOVEHISTORY"; payload: any } 
+| { type: "SET_MOVEHISTORY_APPEND"; payload: any } 
 | { type: "SET_CAPTUREHISTORY"; payload: IPiece[] }
+| { type: "SET_CAPTUREHISTORY_APPEND"; payload: IPiece }
 
 | { type: "SET_MYINFO"; payload: IPlayerInfo }
 | { type: "SET_MYINFO_TIMELEFT"; payload: number }

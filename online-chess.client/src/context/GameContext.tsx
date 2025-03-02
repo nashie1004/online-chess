@@ -13,6 +13,8 @@ function reducerFn(state: IGameContextReducerState, action: IGameContextReducerA
             return {  ...state, messages: action.payload }
         case "SET_GAMEROOMKEY":
             return {  ...state, gameRoomKey: action.payload }
+        // case "SET_MOVEHISTORY_APPEND":
+        //     return { ...state, moveHistory: [ ] };
         case "SET_MOVEHISTORY":
             const moveInfo: IMove = {
                 old: {
@@ -47,6 +49,8 @@ function reducerFn(state: IGameContextReducerState, action: IGameContextReducerA
 
         case "SET_CAPTUREHISTORY":
             return {  ...state, captureHistory: action.payload }
+        case "SET_CAPTUREHISTORY_APPEND":
+            return { ...state, captureHistory: [...state.captureHistory, action.payload] };
         case "SET_MYINFO":
             return {  ...state, myInfo: action.payload }
         case "SET_MYINFO_TIMELEFT":
