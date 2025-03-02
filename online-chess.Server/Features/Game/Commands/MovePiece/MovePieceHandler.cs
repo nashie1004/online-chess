@@ -94,20 +94,6 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
             room.CreatedByUserInfo.IsPlayersTurnToMove = !isRoomCreator;
             room.JoinByUserInfo.IsPlayersTurnToMove = isRoomCreator;
 
-            if (
-                request.OldMove.UniqueName.ToLower().Contains("king")
-                || 
-                request.OldMove.UniqueName.ToLower().Contains("queen")
-                )
-            {
-                string json1 = JsonSerializer.Serialize(request.OldMove, new JsonSerializerOptions { WriteIndented = true });
-                string json2 = JsonSerializer.Serialize(request.NewMove, new JsonSerializerOptions { WriteIndented = true });
-                //string json2 = JsonSerializer.Serialize(invertedMoveInfo, new JsonSerializerOptions { WriteIndented = true });
-                _logger.LogInformation("requestOldMove: {0}\n", json1);
-                _logger.LogInformation("requestNewMove: {0}\n", json2);
-                //_logger.LogInformation("SaveMoveInfo: {0}\n", json2);
-            }
-
             // add to move history
             var moveHistory = room.MoveHistory;
             if (pieceMoveIsWhite){
@@ -116,7 +102,7 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
                 moveHistory?.Black.Add(whitesOrientationMoveInfo);
             }
 
-            var hasCapture = room.UpdatePieceCoords(whitesOrientationMoveInfo, request.HasCapture, pieceMoveIsWhite);
+            var hasCapture = room.UpdatePieceCoords(whitesOrientationMoveInfo, request.Capture, request.Castle);
 
             if (room.TimerId != null)
             {

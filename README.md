@@ -2,26 +2,6 @@
 A simple real time 2-player chess web application created with Phaser, React, Typescript, Bootstrap, ASP.NET Core SignalR and Identity, and SQLite. Uses .NET 9 and React 18.
 You can view a demo [here](https://github.com/nashie1004/online-chess).
 
-## ACTUAL TODOS
-1. reconnect to existing game should be smooth, handle side effects
-    1.1 allow disconnected player to reconnect (full grace period)
-        1.1.1 correct player's turn - check (player's turn): move some piece > disconnect > move > capture
-        1.1.2 correct piece coords - check (piece coords): move some piece > capture some piece > disconnect > move
-
-        - check: capture some piece > disconnect > log > pieces coords count 
-        - check: disconnect > try to move quickly 
-        - DOING
-        1.1.3 on reconnect of black piece user - the orientation is incorrect
-
-    1.2 game is finished
-        1.2.1 handle checkmate
-        1.2.2 handle stalemate
-        1.2.3 handle times up
-        1.2.4 handle draw agree
-    
-2. display move turn, check, checkmate, stalemate (revamp)
-3. handle en passant capture on GameRoom.cs
-
 ## Installation
 
 Run the following commands:
@@ -58,27 +38,30 @@ cd /online-chess.Server/SQLiteDB
 C:/Users/Nash/Downloads/sqlite-tools-win-x64-3480000/sqlite3.exe app.db
 ```
 
+# TODOS (BUGS)
+1. en passant - reconnect false and true - DOING
+2. castle  - reconnect false and true - DOING
+3. display move turn, check, checkmate, stalemate, draw agree - revamp, reconnect false and true
+4. recheck time is up - no side effects
+5. recheck pawn promotion - reconnect false and true, check if king pin
+6. bug - timer not found on resignation and draw
+
+7. check this.kingsState on constructor
+8. check constants
+
+## TODOS (FEATURES)
+1. fifty move rule
+2. show proper chess move notation
+3. 3 fold repetition
+4. responsive ui / resizeable board
+5. some framer motion?, more sounds and some phaser effects
+6. use redis
+7. add board coordinates
+8. add profile image
+9. fix types
+10. clean code
+
 ## MAIN TODOS
 1. handle disconnect / leave logic
 2. game is properly saved on resign or draw
 3. no main chess move bugs
-
-## ALL TODOS Essential In Order 
-1. display move turn, check, checkmate, stalemate
-2. bug on if king in check - cause of issue move() is called twice/ on isCheck()
-3. en passant bug
-4. disconnect or leave logic + sync all state
-5. long castling bug
-6. promotion pawn check if king pin
-8. fifty move rule
-9. show proper chess move notation
-10. 3 fold repetition
-11. responsive ui
-12. some framer motion?, more sounds and some phaser effects
-13. bug - if both player exited and a timer is running, cancel timer?
-14. bug - timer not found on resignation and draw
-15. use redis
-16. add board coordinates
-17. add profile image
-18. fix types
-19. clean code

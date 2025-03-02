@@ -154,16 +154,22 @@ namespace online_chess.Server.Hubs
         }
 
         [Authorize]
-        public async Task MovePiece(string gameRoomKey, BaseMoveInfo oldMove, BaseMoveInfo newMove, bool hasCapture)
+        // TODO 3/1/2025
+        public async Task MovePiece(
+            string gameRoomKey, BaseMoveInfo oldMove, BaseMoveInfo newMove
+            , Capture capture, Castle castle
+        )
         {
             await _mediator.Send(new MovePieceRequest()
             {
                 UserConnectionId = Context.ConnectionId,
                 IdentityUserName = Context.User?.Identity?.Name,
                 GameRoomKeyString = gameRoomKey,
+                
                 OldMove = oldMove,
                 NewMove = newMove,
-                HasCapture = hasCapture
+                Capture = capture,
+                Castle = castle
             });
         }
         

@@ -1,4 +1,4 @@
-import { GameType, PromotionPrefence } from "../utilities/constants";
+import { Capture, Castle, GameType, PromotionPrefence } from "../utilities/constants";
 import { IPiece, IPieceMove, IKingState } from "../utilities/types";
 
 export interface IInitialPlayerInfo{
@@ -40,4 +40,13 @@ export interface IOnReceiveMessages{
     createdByUser: string;
     createDate: Date;
     message: string;
+}
+
+// TODO
+export interface IMovePiece{
+    gameRoomKey: string | null;
+    oldMove: IPiece;
+    newMove: IPiece;
+    capture: Capture;
+    castle: Castle;
 }

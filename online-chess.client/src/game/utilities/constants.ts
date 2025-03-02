@@ -96,5 +96,15 @@ export const baseNotificationState: INotificationContextReducerState = {
     ,asOfDate: null 
 }
 
+export enum Castle{
+    None,
+    KingSide,
+    QueenSide
+}
 
-  
+export enum Capture{
+    None,
+    Normal,
+    EnPassant
+}
+

@@ -42,6 +42,12 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
                 return Unit.Value;
             }
 
+            if (request.IdentityUserName != gameRoom.CreatedByUserId && request.IdentityUserName != gameRoom.JoinedByUserId)
+            {
+                await _hubContext.Clients.Client(request.UserConnectionId).SendAsync(RoomMethods.onGenericError, "404 Room Not Found");
+                return Unit.Value;
+            }
+
             var player1 = _authenticatedUserService.GetConnectionId(gameRoom.CreatedByUserId);
             var player2 = _authenticatedUserService.GetConnectionId(gameRoom.JoinedByUserId);
 

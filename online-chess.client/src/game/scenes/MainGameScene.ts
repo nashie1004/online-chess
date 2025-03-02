@@ -4,7 +4,7 @@ import move from "../../assets/sounds/Move.ogg"
 import capture from "../../assets/sounds/Capture.ogg"
 import select from "../../assets/sounds/Select.ogg"
 import check from "../../assets/sounds/Check.mp3"
-import { PieceNames, PromotionPrefence, baseKingState, pieceNamesV2 } from "../utilities/constants";
+import { Capture, Castle, PieceNames, PromotionPrefence, baseKingState, pieceNamesV2 } from "../utilities/constants";
 import { IBothKingsPosition, IKingState, IMoveHistory, IMoveInfo, IPiece, IPieceMove, IPiecesCoordinates, PlayersPromotePreference } from "../utilities/types";
 import { eventEmitter } from "../utilities/eventEmitter";
 import KingCastled from "../logic/kingCastled";
@@ -13,6 +13,7 @@ import PieceCapture from "../logic/pieceCapture";
 import ShowPossibleMoves from "../logic/showPossibleMoves";
 import ValidateCheckOrCheckMateOrStalemate from "../logic/validateCheckOrCheckmateOrStalemate";
 import { EVENT_EMIT, EVENT_ON } from "../../constants/emitters";
+import { IMovePiece } from "../signalRhandlers/types";
 
 export class MainGameScene extends Scene{
     /**
@@ -50,7 +51,7 @@ export class MainGameScene extends Scene{
 
         // 1.1 server state - server has these states
         this.moveHistory = moveHistory; 
-        this.kingsState = baseKingState;
+        this.kingsState = baseKingState; // TODO 
         this.piecesCoordinates_Internal = { white: [], black: [] };
 
         // 1.2 server and internal state integrated
@@ -275,14 +276,15 @@ export class MainGameScene extends Scene{
     }
 
     move(newX: number, newY: number){
-        let hasCapture = false;
+        let capture: Capture = Capture.None; 
+        let castle: Castle = Castle.None;
 
-        if (!this.selectedPiece) return hasCapture;
+        if (!this.selectedPiece) return capture;
 
         // current piece to move
         const sprite = this.board[this.selectedPiece.x][this.selectedPiece.y];
 
-        if (!sprite) return false;
+        if (!sprite) return capture;
 
         const isWhite = sprite.name[0] === "w"
         const uniquePieceName = sprite.name;
@@ -298,8 +300,8 @@ export class MainGameScene extends Scene{
             ,this.moveHistory
         );
 
-        if (pieceCapture.normalCapture(newX, newY, isWhite)) hasCapture = true;
-        if (pieceCapture.enPassantCapture(uniquePieceName, this.selectedPiece, isWhite, newX, newY)) hasCapture = true;
+        if (pieceCapture.normalCapture(newX, newY, isWhite)) capture = Capture.Normal;
+        if (pieceCapture.enPassantCapture(uniquePieceName, this.selectedPiece, isWhite, newX, newY)) capture = Capture.EnPassant;
 
         // new coordinate
         this.board[newX][newY] = sprite;
@@ -325,6 +327,8 @@ export class MainGameScene extends Scene{
         )).kingCastled(uniquePieceName, this.selectedPiece, isWhite, newX, newY);
 
         if (kingCastled){
+            castle = kingCastled.castle;
+
             // display rook move to the user 
             this.tweens.add({
                 targets: [kingCastled.rookSprite],
@@ -341,18 +345,7 @@ export class MainGameScene extends Scene{
             this.bothKingsPosition[isWhite ? "white" : "black"].y = newY;
         }
 
-        // transfer data from phaser to react
-        if (this.isPlayersTurnToMove){
-            const oldMove: IPiece = { x: this.selectedPiece.x, y: this.selectedPiece.y, uniqueName: uniquePieceName, name: pieceName };
-            const newMove: IPiece = { x: newX, y: newY, uniqueName: uniquePieceName, name: pieceName };
-            
-            this.isPlayersTurnToMove = false;
-
-            eventEmitter.emit(EVENT_EMIT.SET_MOVE_PIECE, { oldMove, newMove, hasCapture });
-        }
-
         // display move to the user
-
         this.tweens.add({
             targets: [sprite],
             x: newX * this.tileSize,
@@ -360,8 +353,6 @@ export class MainGameScene extends Scene{
             ease: "Expo.easeInOuts",
             duration: 100,
         });
-
-        this.resetMoves();
 
         // check for check or checkmate
         this.board[this.bothKingsPosition.black.x][this.bothKingsPosition.black.y]?.resetPostPipeline();
@@ -375,7 +366,8 @@ export class MainGameScene extends Scene{
         )).validate(isWhite);
 
         // play sound
-        hasCapture ? this.sound.play("capture") : this.sound.play("move");
+        capture != Capture.None ? this.sound.play("capture") : this.sound.play("move");
+
         if (kingSafety !== 0){
             this.sound.play("check");
             // check
@@ -383,7 +375,22 @@ export class MainGameScene extends Scene{
             const kingSprite = this.board[king.x][king.y];
             kingSprite?.postFX?.addGlow(0xE44C6A, 10, 2);
         }
+        
+        // transfer data from phaser to react
+        if (this.isPlayersTurnToMove){
+            const oldMove: IPiece = { x: this.selectedPiece.x, y: this.selectedPiece.y, uniqueName: uniquePieceName, name: pieceName };
+            const newMove: IPiece = { x: newX, y: newY, uniqueName: uniquePieceName, name: pieceName };
+            
+            this.isPlayersTurnToMove = false;
 
+            const movePiece: IMovePiece = {
+                gameRoomKey: null, oldMove, newMove, capture, castle
+            }
+
+            eventEmitter.emit(EVENT_EMIT.SET_MOVE_PIECE, movePiece);
+        }
+
+        this.resetMoves();
         // this.debugHelper();
     }
 

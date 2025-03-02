@@ -83,12 +83,12 @@ namespace online_chess.Server.Models
         }
 
         
-        public BaseMoveInfo? UpdatePieceCoords(Move whitesOrientationMoveInfo, bool hasCapture, bool pieceMovedIsWhite)
+        public BaseMoveInfo? UpdatePieceCoords(Move whitesOrientationMoveInfo, Capture capture, Castle castle)
         {
-            BaseMoveInfo? capture = null;
+            BaseMoveInfo? capturedPiece = null;
 
             var piece = PiecesCoords.Find(i => i.X == whitesOrientationMoveInfo.Old.X && i.Y == whitesOrientationMoveInfo.Old.Y);
-            if (piece == null) return capture;
+            if (piece == null) return capturedPiece;
 
             MoveCountSinceLastCapture++;
 
@@ -109,23 +109,43 @@ namespace online_chess.Server.Models
             }
 
             // TODO: capture should also handle en passant
-            var capturePiece = PiecesCoords.Find(i => i.X == whitesOrientationMoveInfo.New.X && i.Y == whitesOrientationMoveInfo.New.Y);
-            if (hasCapture && capturePiece != null)
-            {
-                capture = capturePiece;
-                
-                CaptureHistory.Add(capturePiece);
-                
-                PiecesCoords.RemoveAll(i => i.X == capturePiece.X && i.Y == capturePiece.Y);
+            switch(capture){
+                case Capture.Normal:
+                    var normalCapturedPiece = PiecesCoords.Find(i => i.X == whitesOrientationMoveInfo.New.X && i.Y == whitesOrientationMoveInfo.New.Y);
+                    
+                    if (normalCapturedPiece != null)
+                    {
+                        capturedPiece = normalCapturedPiece;
+                        
+                        CaptureHistory.Add(normalCapturedPiece);
+                        
+                        PiecesCoords.RemoveAll(i => i.X == normalCapturedPiece.X && i.Y == normalCapturedPiece.Y);
 
-                MoveCountSinceLastCapture = 0;
+                        MoveCountSinceLastCapture = 0;
+                    }
+                    break;
+                case Capture.EnPassant:
+                    break;
+                case Capture.None:
+                default:
+                    break;
+            }
+
+            switch(castle){
+                case Castle.KingSide:
+                    break;
+                case Castle.QueenSide:
+                    break;
+                case Castle.None:
+                default:
+                    break;
             }
 
             // update coords
             piece.X = whitesOrientationMoveInfo.New.X;
             piece.Y = whitesOrientationMoveInfo.New.Y;
 
-            return capture;
+            return capturedPiece;
         }
 
         public void RemoveRoomInfo(){

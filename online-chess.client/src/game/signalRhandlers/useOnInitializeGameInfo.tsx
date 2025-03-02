@@ -9,7 +9,7 @@ import useAuthContext from "../../hooks/useAuthContext";
 import useLocalStorage from "../../hooks/useLocalStorage";
 import { EVENT_ON } from "../../constants/emitters";
 import { PLAY_PAGE_INVOKERS } from "../../constants/invokers";
-import { IUseOnInitializeGameInfo } from "./types";
+import { IMovePiece, IUseOnInitializeGameInfo } from "./types";
 import { PromotionPrefence } from "../utilities/constants";
 
 export default function useOnInitializeGameInfo(
@@ -126,8 +126,13 @@ export default function useOnInitializeGameInfo(
             });
             */
             
-            eventEmitter.on(EVENT_ON.SET_MOVE_PIECE, (move: any) => {
-                signalRContext.invoke(PLAY_PAGE_INVOKERS.MOVE_PIECE, currentGameInfo.gameRoomKey, move.oldMove, move.newMove, move.hasCapture);
+            eventEmitter.on(EVENT_ON.SET_MOVE_PIECE, (move: IMovePiece) => {
+                
+                signalRContext.invoke(PLAY_PAGE_INVOKERS.MOVE_PIECE
+                    , currentGameInfo.gameRoomKey, move.oldMove, move.newMove
+                    , move.capture, move.castle
+                );
+
             });
 
         }

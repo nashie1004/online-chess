@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using online_chess.Server.Common;
+using online_chess.Server.Enums;
 using online_chess.Server.Models.Play;
 
 namespace online_chess.Server.Features.Game.Commands.MovePiece
@@ -8,6 +9,7 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
     {
         public BaseMoveInfo OldMove { get; set; }
         public BaseMoveInfo NewMove { get; set; }
-        public bool HasCapture { get; set; }
+        public Capture Capture { get; set; }
+        public Castle Castle { get; set; }
     }
 }
