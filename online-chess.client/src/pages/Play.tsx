@@ -20,6 +20,7 @@ import useQueuingContext from "../hooks/useQueuingContext";
 import { PLAY_PAGE_INVOKERS } from "../constants/invokers";
 import { PLAY_PAGE_HANDLERS } from "../constants/handlers";
 import { eventEmitter } from "../game/utilities/eventEmitter";
+import useOnUserIsConnected from "../game/signalRhandlers/useOnUserIsConnected";
 
 export default function Main(){
     const gameRef = useRef<Phaser.Game | null>();
@@ -36,6 +37,7 @@ export default function Main(){
     const onGameOver = useOnGameOver();
     const onDeclineDraw = useOnDeclineDraw();
     const onSetPromotionPreference = useOnSetPromotionPreference();
+    const {} = useOnUserIsConnected();
 
     useEffect(() => {
         setQueuingRoomKey(null);

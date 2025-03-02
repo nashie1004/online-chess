@@ -38,6 +38,8 @@ export class MainGameScene extends Scene{
     private selectedPiece: IMoveInfo | null;
     private isPlayersTurnToMove: boolean;
 
+    private userIsConnected: boolean;
+
     // 3. user preference
     private readonly boardUI: string;
     private readonly piecesUI: string;
@@ -46,7 +48,7 @@ export class MainGameScene extends Scene{
         key: string, isColorWhite: boolean, boardUI: string
         , piecesUI: string, piecesCoordinates_Server: IPiece[], moveHistory: IMoveHistory
         , bothKingsPosition: IBothKingsPosition, promotePreference: PlayersPromotePreference
-        , isPlayersTurnToMove: boolean, kingsState: IKingState
+        , isPlayersTurnToMove: boolean, kingsState: IKingState, userIsConnected: boolean
     ) {
         super({ key });
 
@@ -67,6 +69,8 @@ export class MainGameScene extends Scene{
         this.tileSize = 100;
         this.board = Array.from({ length: 8 }).map(_ => new Array(8).fill(null)); // creates 8x8 grid
         this.previewBoard = Array.from({ length: 8 }).map(_ => new Array(8));
+
+        this.userIsConnected = userIsConnected;
 
         // 3. user prefernce
         this.boardUI = boardUI;
@@ -176,6 +180,7 @@ export class MainGameScene extends Scene{
                             (this.boardOrientationIsWhite && name[0] !== "w") ||
                             (!this.boardOrientationIsWhite && name[0] !== "b")
                         ) 
+                        || !this.userIsConnected
                     ){
                         return;
                     }
@@ -193,6 +198,7 @@ export class MainGameScene extends Scene{
                             (this.boardOrientationIsWhite && name[0] !== "w") ||
                             (!this.boardOrientationIsWhite && name[0] !== "b")
                         ) 
+                        || !this.userIsConnected
                     ){
                         return;
                     }
@@ -232,6 +238,9 @@ export class MainGameScene extends Scene{
         })
 
         // sync / listen to upcoming react state changes
+        eventEmitter.on(EVENT_ON.SET_USER_IS_CONNECTED, (data: boolean) => {
+            this.userIsConnected = data;
+        });
         eventEmitter.on(EVENT_ON.SET_PROMOTE_TO, (data: any) => {
             const isWhite = data.isWhite as boolean;
             const preference = data.preference as PromotionPrefence;

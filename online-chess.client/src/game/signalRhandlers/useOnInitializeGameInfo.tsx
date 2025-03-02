@@ -16,7 +16,7 @@ export default function useOnInitializeGameInfo(
     gameRef: React.MutableRefObject<Phaser.Game | null | undefined>
 ){
     const { setGameState, gameState } = useGameContext();
-    const signalRContext = useSignalRContext();
+    const { invoke, userConnectionId } = useSignalRContext();
     const { user } = useAuthContext();
     const gameStateRef = useRef(gameState);
     const { data: boardUI } = useLocalStorage("board", "green.png");
@@ -96,7 +96,7 @@ export default function useOnInitializeGameInfo(
                         "mainChessboard", myInfo.isColorWhite, boardUI
                         , pieceUI, currentGameInfo.piecesCoordinatesInitial, currentGameInfo.moveHistory
                         , bothKingsPosition, promotePreference, myInfo.isPlayersTurnToMove
-                        , currentGameInfo.bothKingsState
+                        , currentGameInfo.bothKingsState, userConnectionId !== null
                     )
                 ],
             });
@@ -132,7 +132,7 @@ export default function useOnInitializeGameInfo(
             
             eventEmitter.on(EVENT_ON.SET_MOVE_PIECE, (move: IMovePiece) => {
                 
-                signalRContext.invoke(PLAY_PAGE_INVOKERS.MOVE_PIECE
+                invoke(PLAY_PAGE_INVOKERS.MOVE_PIECE
                     , currentGameInfo.gameRoomKey, move.oldMove, move.newMove
                     , move.capture, move.castle
                 );
