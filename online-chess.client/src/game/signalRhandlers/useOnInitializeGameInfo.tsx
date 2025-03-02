@@ -96,6 +96,7 @@ export default function useOnInitializeGameInfo(
                         "mainChessboard", myInfo.isColorWhite, boardUI
                         , pieceUI, currentGameInfo.piecesCoordinatesInitial, currentGameInfo.moveHistory
                         , bothKingsPosition, promotePreference, myInfo.isPlayersTurnToMove
+                        , currentGameInfo.bothKingsState
                     )
                 ],
             });

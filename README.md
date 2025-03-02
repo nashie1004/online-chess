@@ -29,7 +29,7 @@ dotnet watch
 after that, the web application should now be running.
 
 ## Credits
-All [board](https://github.com/lichess-org/lila/blob/master/public/images/board/), [pieces](https://github.com/lichess-org/lila/blob/master/public/piece/), and [sound](https://github.com/lichess-org/lila/blob/master/public/sound/) assets are sourced from [Lichess](https://github.com/lichess-org/lila) Github repo. Custom assets were created using [Piskel](https://www.piskelapp.com/).
+All [board](https://github.com/lichess-org/lila/blob/master/public/images/board/), [pieces](https://github.com/lichess-org/lila/blob/master/public/piece/), and [sound](https://github.com/lichess-org/lila/blob/master/public/sound/) assets are sourced from [Lichess](https://github.com/lichess-org/lila) Github repo. Custom asset(s) and logo(s) were created using [Piskel](https://www.piskelapp.com/) and [SVGRepo](https://www.svgrepo.com/svg/509810/chess-board).
 
 
 ### SQLite
@@ -44,9 +44,6 @@ C:/Users/Nash/Downloads/sqlite-tools-win-x64-3480000/sqlite3.exe app.db
 3. recheck time is up - no side effects
 4. recheck pawn promotion - reconnect false and true, check if king pin
 5. bug - timer not found on resignation and draw
-
-7. check this.kingsState on constructor
-8. check constants
 
 ## TODOS (FEATURES)
 1. fifty move rule

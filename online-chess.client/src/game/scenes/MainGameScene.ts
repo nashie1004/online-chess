@@ -4,7 +4,7 @@ import move from "../../assets/sounds/Move.ogg"
 import capture from "../../assets/sounds/Capture.ogg"
 import select from "../../assets/sounds/Select.ogg"
 import check from "../../assets/sounds/Check.mp3"
-import { Capture, Castle, PieceNames, PromotionPrefence, baseKingState, pieceNamesV2 } from "../utilities/constants";
+import { Capture, Castle, PieceNames, PromotionPrefence, pieceNamesV2 } from "../utilities/constants";
 import { IBothKingsPosition, IKingState, IMoveHistory, IMoveInfo, IPiece, IPieceMove, IPiecesCoordinates, PlayersPromotePreference } from "../utilities/types";
 import { eventEmitter } from "../utilities/eventEmitter";
 import KingCastled from "../logic/kingCastled";
@@ -46,13 +46,13 @@ export class MainGameScene extends Scene{
         key: string, isColorWhite: boolean, boardUI: string
         , piecesUI: string, piecesCoordinates_Server: IPiece[], moveHistory: IMoveHistory
         , bothKingsPosition: IBothKingsPosition, promotePreference: PlayersPromotePreference
-        , isPlayersTurnToMove: boolean
+        , isPlayersTurnToMove: boolean, kingsState: IKingState
     ) {
         super({ key });
 
         // 1.1 server state - server has these states
         this.moveHistory = moveHistory; 
-        this.kingsState = baseKingState; // TODO 
+        this.kingsState = kingsState;
         this.piecesCoordinates_Internal = { white: [], black: [] };
 
         // 1.2 server and internal state integrated
@@ -400,44 +400,5 @@ export class MainGameScene extends Scene{
 
     debugHelper(){
         console.log(this.moveHistory);
-        
-        return;
-        const nonEmptyWhiteTiles: (any)[] = []
-        const nonEmptyBlackTiles: (any)[] = []
-
-        this.board.forEach((row, rowIdx) => {
-            row.forEach((col, colIdx) => {
-                if (!col) return;
-
-                if (col.name[0] === "w"){
-                    nonEmptyWhiteTiles.push({
-                        uniqueName: col.name,
-                        x: colIdx,
-                        y: rowIdx
-                    });
-
-                    return;
-                }
-
-                nonEmptyBlackTiles.push({
-                    uniqueName: col.name,
-                    x: colIdx,
-                    y: rowIdx
-                });
-            });
-        });
-        
-        // Debug helper by using white's orientation
-        const copy = structuredClone(this.piecesCoordinates_Internal);
-        
-        if (!this.boardOrientationIsWhite){
-            copy.black.forEach(i => {
-                i.y = Math.abs(i.y - 7);
-            });
-            copy.white.forEach(i => {
-                i.y = Math.abs(i.y - 7);
-            });
-        }
-
     }
 }

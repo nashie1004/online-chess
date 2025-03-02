@@ -4,14 +4,13 @@ import { Container, Nav } from 'react-bootstrap';
 import useAuthContext from '../hooks/useAuthContext';
 import useNotificationContext from '../hooks/useNotificationContext';
 import useQueuingContext from '../hooks/useQueuingContext';
-import useSignalRContext from '../hooks/useSignalRContext';
-  
+import logo from "../../public/logo-white.svg"  
+
 export default function NavigationBar() {
   const url = useLocation();
   const {logout, user} = useAuthContext();
   const { setNotificationState } = useNotificationContext();
   const { setQueuingRoomKey } = useQueuingContext();
-  const { userConnectionId } = useSignalRContext();
 
   function logoutHandler(){
     setQueuingRoomKey(null);
@@ -22,9 +21,11 @@ export default function NavigationBar() {
   return (
     <Navbar collapseOnSelect expand="lg" id="navbar">
       <Container>
-        <Navbar.Brand id="page-title">
-          {/* {userConnectionId} */}
-          <i className="bi bi-app-indicator" style={{color: "#FFFFFF"}}></i> ONLINE-CHESS.XYZ
+        <Navbar.Brand id="page-title" className='d-flex align-items-center'>
+          <img src={logo} alt="logo"  width={20} height={20} />
+          <span className='ps-2'>
+            ONLINE-CHESS.XYZ
+          </span>
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">

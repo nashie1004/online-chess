@@ -28,31 +28,20 @@ export default class PieceCapture {
         // if there is an opponent piece in the desired square, capture it
         const opponentPiece = this.board[newX][newY];
 
-        if (opponentPiece){
+        if (!opponentPiece) return false;
 
-            // TODO as of 1/28/2025 - Reimplement capture history logic
-            // save to capture history
-            if (isWhite){
-                //this.reactState.captureHistory.white.push({ x: newX, y: newY, pieceName: opponentPiece.name })
-            } else {
-                //this.reactState.captureHistory.black.push({ x: newX, y: newY, pieceName: opponentPiece.name })
-            }
+        this.pieceCoordinates[isWhite ? "black" : "white"] = 
+            this.pieceCoordinates[isWhite ? "black" : "white"].filter(i => i.x !== newX || i.y !== newY);
 
-            this.pieceCoordinates[isWhite ? "black" : "white"] = 
-                this.pieceCoordinates[isWhite ? "black" : "white"].filter(i => i.x !== newX || i.y !== newY);
-
-            opponentPiece.destroy();
-            return true;
-        }
-
-        return false;
+        opponentPiece.destroy();
+        return true;
     }
 
     enPassantCapture(pieceName: string, selectedPiece: IMoveInfo, isWhite: boolean, newX: number, newY: number): boolean{
 
-        if (pieceName.toLowerCase().indexOf("pawn") < 0){
-            return false;
-        }
+        // console.log(selectedPiece, { newX, newY }, this.moveHistory)
+
+        if (pieceName.toLowerCase().indexOf("pawn") < 0) return false;
 
         // get the previous pawn' square before moving diagonally
         const pawnValidator = new PawnValidator(
@@ -60,7 +49,7 @@ export default class PieceCapture {
             , this.board, this.moveHistory, false, this.bothKingsPosition, this.boardOrientationIsWhite);
 
         const validCapture = pawnValidator.validEnPassantCapture();
-
+        
         if (!validCapture) return false;
 
         // since our current moved pawn is in the same y square value as the opponent

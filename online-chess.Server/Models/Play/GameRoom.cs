@@ -23,7 +23,7 @@ namespace online_chess.Server.Models
         public BothKingsState BothKingsState { get; set; }
         public MoveHistory MoveHistory { get; set; }
         public List<BaseMoveInfo> CaptureHistory { get; set; }
-        public int MoveCountSinceLastCapture { get; set; } // TODO: For 50 move rule
+        public int MoveCountSinceLastCapture { get; set; } // For 50 move rule
 
         public GameRoom()
         {

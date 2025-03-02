@@ -1,5 +1,5 @@
 import { IGameContextReducerState, INotificationContextReducerState } from "../../context/types";
-import { IKingState, IPlayerInfo } from "./types"
+import { IKing, IPlayerInfo } from "./types"
 
 export enum PieceNames{
     wPawn = "wPawn",
@@ -57,14 +57,14 @@ export const pieceNamesV2 = [
     { shortName: "bK", fullName: "bKing" },
 ];
 
-export const baseKingState: IKingState = { 
-    white: { isCheckMate: false, isInCheck: false, checkedBy: [], isInStalemate: false }
-    , black: { isCheckMate: false, isInCheck: false, checkedBy: [],  isInStalemate: false } 
+const baseKing: IKing = { 
+    isCheckMate: false, isInCheck: false, checkedBy: []
+    , isInStalemate: false, x: -1, y: -1 
 };
 
 export const basePlayerInfo: IPlayerInfo = {
     userName: ""
-    ,kingsState: { isCheckMate: false, isInCheck: false, checkedBy: [], isInStalemate: false }
+    ,kingsState: baseKing
     ,isPlayersTurn: false
     ,timeLeft: 0
     ,playerIsWhite: false
