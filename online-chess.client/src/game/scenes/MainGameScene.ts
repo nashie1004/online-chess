@@ -146,21 +146,16 @@ export class MainGameScene extends Scene{
             let { name, x, y } = piece;
             const pieceIsWhite = name[0] === "w";
 
-            // if black orientation
+            // if black orientation, flip
             if (!this.boardOrientationIsWhite) {
-
-                // flip y
                 y = Math.abs(y - 7);
                 x = Math.abs(x - 7);
-
-                // if king and or queen
-                if (name.toLowerCase().indexOf("king") >= 0) {
-                    x = this.bothKingsPosition.black.x;
-                } 
-                // else if (name.toLowerCase().indexOf("queen") >= 0) {
-                //     x = 4;
-                // }
             }
+
+            if (name.toLowerCase().indexOf("king") >= 0) {
+                x = this.bothKingsPosition[pieceIsWhite ? "white" : "black"].x;
+                y = this.bothKingsPosition[pieceIsWhite ? "white" : "black"].y;
+            } 
 
             const uniqueName = `${name}-${x}-${y}`;
             this.piecesCoordinates_Internal[pieceIsWhite ? "white" : "black"].push({
@@ -436,10 +431,7 @@ export class MainGameScene extends Scene{
             });
         }
 
-        
-        console.log(this.piecesCoordinates_Server);
-        console.log(this.board);
-        console.log("this.boardOrientationIsWhite: ", this.boardOrientationIsWhite)
-
+        console.log(this.piecesCoordinates_Internal.white.filter(i => i.name.toLowerCase().indexOf("king") >= 0))
+        console.log(this.piecesCoordinates_Internal.black.filter(i => i.name.toLowerCase().indexOf("king") >= 0))
     }
 }

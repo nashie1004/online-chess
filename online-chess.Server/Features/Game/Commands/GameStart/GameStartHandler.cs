@@ -149,12 +149,12 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
 
             return baseGameInfo;
         }
-        
+
         public CurrentGameInfo ReconnectToGame(GameRoom onGoingGameRoom, GameStartRequest request, string player1Connection, string player2Connection)
         {
             onGoingGameRoom.GamePlayStatus = GamePlayStatus.Ongoing;
 
-            onGoingGameRoom.ChatMessages.Add(new Chat(){
+            onGoingGameRoom.ChatMessages.Add(new Chat() {
                 CreateDate = DateTime.Now
                 , CreatedByUser = "server"
                 , Message = $"{request.IdentityUserName} reconnected."
@@ -164,12 +164,12 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
             var initialBlack = new PiecesInitialPositionBlack();
 
             bool whiteKingHasMoved = (
-                onGoingGameRoom.BothKingsState.White.X != initialWhite.wKing.X &&
+                onGoingGameRoom.BothKingsState.White.X != initialWhite.wKing.X ||
                 onGoingGameRoom.BothKingsState.White.Y != initialWhite.wKing.Y
             );
 
             bool blackKingHasMoved = (
-                onGoingGameRoom.BothKingsState.Black.X != initialBlack.bKing.X &&
+                onGoingGameRoom.BothKingsState.Black.X != initialBlack.bKing.X ||
                 onGoingGameRoom.BothKingsState.Black.Y != initialBlack.bKing.Y
             );
 

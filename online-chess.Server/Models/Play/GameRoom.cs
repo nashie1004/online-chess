@@ -83,7 +83,7 @@ namespace online_chess.Server.Models
         }
 
         
-        public BaseMoveInfo? UpdatePieceCoords(Move whitesOrientationMoveInfo, Capture capture, Castle castle)
+        public BaseMoveInfo? UpdatePieceCoords(Move whitesOrientationMoveInfo, Capture capture, Castle castle, bool pieceIsWhite)
         {
             BaseMoveInfo? capturedPiece = null;
 
@@ -95,7 +95,7 @@ namespace online_chess.Server.Models
             // this just updates the king position if the piece moved is king
             if (piece.UniqueName.Contains("king", StringComparison.OrdinalIgnoreCase)){
                 
-                if (piece.UniqueName[0] == 'w')
+                if (pieceIsWhite)
                 {
                     BothKingsState.White.X = whitesOrientationMoveInfo.New.X;
                     BothKingsState.White.Y = whitesOrientationMoveInfo.New.Y;
@@ -113,16 +113,16 @@ namespace online_chess.Server.Models
                 case Capture.Normal:
                     var normalCapturedPiece = PiecesCoords.Find(i => i.X == whitesOrientationMoveInfo.New.X && i.Y == whitesOrientationMoveInfo.New.Y);
                     
-                    if (normalCapturedPiece != null)
-                    {
-                        capturedPiece = normalCapturedPiece;
-                        
-                        CaptureHistory.Add(normalCapturedPiece);
-                        
-                        PiecesCoords.RemoveAll(i => i.X == normalCapturedPiece.X && i.Y == normalCapturedPiece.Y);
+                    if (normalCapturedPiece == null) break;
 
-                        MoveCountSinceLastCapture = 0;
-                    }
+                    capturedPiece = normalCapturedPiece;
+                    
+                    CaptureHistory.Add(normalCapturedPiece);
+                    
+                    PiecesCoords.RemoveAll(i => i.X == normalCapturedPiece.X && i.Y == normalCapturedPiece.Y);
+
+                    MoveCountSinceLastCapture = 0;
+
                     break;
                 case Capture.EnPassant:
                     break;
@@ -131,10 +131,39 @@ namespace online_chess.Server.Models
                     break;
             }
 
+            int rookX = -1;
+            int rookY = -1;
+
             switch(castle){
                 case Castle.KingSide:
+                    if (pieceIsWhite){
+                        rookX = 7;
+                        rookY = 7;
+                    } else {
+                        rookX = 7;
+                        rookY = 0;
+                    }
+
+                    var kingRook = PiecesCoords.Find(i => i.X == rookX && i.Y == rookY);
+                    if (kingRook == null) break;
+
+                    kingRook.X = 5;
+
                     break;
                 case Castle.QueenSide:
+                    if (pieceIsWhite){
+                        rookX = 0;
+                        rookY = 7;
+                    } else {
+                        rookX = 0;
+                        rookY = 0;
+                    }
+
+                    var queenRook = PiecesCoords.Find(i => i.X == rookX && i.Y == rookY);
+                    if (queenRook == null) break;
+
+                    queenRook.X = 3;
+
                     break;
                 case Castle.None:
                 default:

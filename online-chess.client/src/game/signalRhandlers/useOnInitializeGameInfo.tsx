@@ -51,6 +51,7 @@ export default function useOnInitializeGameInfo(
 
         const isPlayersTurnToMove = myInfo.isPlayersTurnToMove;
 
+        // just reorrient king coords if player is black
         if (!myInfo.isColorWhite)
         {
             
@@ -58,10 +59,18 @@ export default function useOnInitializeGameInfo(
                 currentGameInfo.bothKingsState.white.x = 3;   
                 currentGameInfo.bothKingsState.white.y = 0;   
             }
+            else {
+                currentGameInfo.bothKingsState.white.x = Math.abs(currentGameInfo.bothKingsState.white.x - 7);   
+                currentGameInfo.bothKingsState.white.y = Math.abs(currentGameInfo.bothKingsState.white.y - 7);   
+            }
 
             if (!currentGameInfo.blackKingHasMoved){
                 currentGameInfo.bothKingsState.black.x = 3;   
                 currentGameInfo.bothKingsState.black.y = 7;
+            }
+            else {
+                currentGameInfo.bothKingsState.black.x = Math.abs(currentGameInfo.bothKingsState.black.x - 7);   
+                currentGameInfo.bothKingsState.black.y = Math.abs(currentGameInfo.bothKingsState.black.y - 7);   
             }
 
         }

@@ -102,7 +102,7 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
                 moveHistory?.Black.Add(whitesOrientationMoveInfo);
             }
 
-            var hasCapture = room.UpdatePieceCoords(whitesOrientationMoveInfo, request.Capture, request.Castle);
+            var hasCapture = room.UpdatePieceCoords(whitesOrientationMoveInfo, request.Capture, request.Castle, pieceMoveIsWhite);
 
             if (room.TimerId != null)
             {
