@@ -4,6 +4,11 @@ You can view a demo [here](https://github.com/nashie1004/online-chess).
 
 ## Installation
 
+Update the .env.development file by pointing it to our server:
+```
+VITE_API_URL=https://localhost:44332
+```
+
 Run the following commands:
 ```
 Update-Database -Context MainDbContext

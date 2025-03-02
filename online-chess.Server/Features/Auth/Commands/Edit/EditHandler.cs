@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Identity;
 using online_chess.Server.Models.Entities;
 using online_chess.Server.Persistence;
+using online_chess.Server.Service.FileStorageService;
 
 namespace online_chess.Server.Features.Auth.Commands.Edit;
 
@@ -11,16 +12,22 @@ public class EditHandler : IRequestHandler<EditRequest, EditResponse>
     private readonly UserIdentityDbContext _userIdentityDbContext;
     private readonly UserManager<User> _userManager;
     private readonly SignInManager<User> _signInManager;
+    private readonly IFileStorageService _fileStorageService;
+    private readonly MainDbContext _mainDbContext;
 
     public EditHandler(
         UserIdentityDbContext userIdentityDbContext
         , UserManager<User> userManager
         , SignInManager<User> signInManager
+        , IFileStorageService fileStorageService
+        , MainDbContext mainDbContext
         )
     {
         _userIdentityDbContext = userIdentityDbContext;
         _userManager = userManager;
         _signInManager = signInManager;
+        _fileStorageService = fileStorageService;
+        _mainDbContext = mainDbContext;
     }
 
     public async Task<EditResponse> Handle(EditRequest req, CancellationToken ct){

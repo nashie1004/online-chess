@@ -7,6 +7,7 @@ using online_chess.Server.Models.Entities;
 using online_chess.Server.Models.Play;
 using online_chess.Server.Persistence;
 using online_chess.Server.Service;
+using online_chess.Server.Service.FileStorageService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -43,6 +44,7 @@ builder.Services.AddSingleton<GameRoomService>();
 builder.Services.AddSingleton<AuthenticatedUserService>();
 builder.Services.AddSingleton<TimerService>();
 builder.Services.AddSingleton<LogInTrackerService>();
+builder.Services.AddScoped<IFileStorageService, LocalFileStorageService>();
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 builder.Logging.AddDebug();
