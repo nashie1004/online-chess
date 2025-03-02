@@ -1,6 +1,6 @@
 import { IOnReceiveMessages } from "../game/signalRhandlers/types";
 import { GameType, PromotionPrefence } from "../game/utilities/constants";
-import { customMessageType, gameStat, ICustomMesage, IMoveHistory, IPiece, IPlayerInfo, IUser } from "../game/utilities/types";
+import { customMessageType, gameStat, ICustomMesage, IMoveHistory, IPiece, IPieceMove, IPlayerInfo, IUser } from "../game/utilities/types";
 
 export interface IAuthContext {
     isAuthenticating: boolean;
@@ -23,11 +23,16 @@ export interface IGameContextReducerState{
     gameType: GameType;
 }
 
+export interface IMoveHistoryAppend{
+    moveInfo: IPieceMove;
+    moveIsWhite: boolean;
+}
+
 export type IGameContextReducerActions = 
 | { type: "SET_MESSAGES"; payload: IOnReceiveMessages[] }
 | { type: "SET_GAMEROOMKEY"; payload: string }
-| { type: "SET_MOVEHISTORY"; payload: any } 
-| { type: "SET_MOVEHISTORY_APPEND"; payload: any } 
+| { type: "SET_MOVEHISTORY"; payload: IMoveHistory } 
+| { type: "SET_MOVEHISTORY_APPEND"; payload: IMoveHistoryAppend } 
 | { type: "SET_CAPTUREHISTORY"; payload: IPiece[] }
 | { type: "SET_CAPTUREHISTORY_APPEND"; payload: IPiece }
 

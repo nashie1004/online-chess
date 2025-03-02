@@ -1,7 +1,6 @@
 import { createContext, useReducer } from 'react'
 import { baseGameState } from '../game/utilities/constants';
 import { IBaseContextProps } from '../types/global';
-import { IMove } from '../game/utilities/types';
 import { IGameContext, IGameContextReducerActions, IGameContextReducerState } from './types';
 
 export const gameContext = createContext<IGameContext | null>(null);
@@ -13,37 +12,17 @@ function reducerFn(state: IGameContextReducerState, action: IGameContextReducerA
             return {  ...state, messages: action.payload }
         case "SET_GAMEROOMKEY":
             return {  ...state, gameRoomKey: action.payload }
-        // case "SET_MOVEHISTORY_APPEND":
-        //     return { ...state, moveHistory: [ ] };
         case "SET_MOVEHISTORY":
-            const moveInfo: IMove = {
-                old: {
-                    x: action.payload.moveInfo.old.x,
-                    y: action.payload.moveInfo.old.y,
-                    pieceName: action.payload.moveInfo.old.uniqueName
-                },
-                new: {
-                    x: action.payload.moveInfo.new.x,
-                    y: action.payload.moveInfo.new.y,
-                    pieceName: action.payload.moveInfo.new.uniqueName
-                }
-            };
-
-            const moveIsWhite = action.payload.moveIsWhite as boolean;
-
-            if (moveIsWhite){
-                return {  
-                    ...state, moveHistory: { 
-                        black: state.moveHistory.black
-                        , white: [ ...state.moveHistory.white, moveInfo ] 
+            return { ...state, moveHistory: action.payload };
+        case "SET_MOVEHISTORY_APPEND":
+            if (action.payload.moveIsWhite){
+                return {  ...state, moveHistory: { 
+                        black: state.moveHistory.black, white: [ ...state.moveHistory.white, action.payload.moveInfo ] 
                     }  
                 };
             } 
-
-            return {  
-                ...state, moveHistory: { 
-                    white: state.moveHistory.white
-                    , black: [ ...state.moveHistory.black, moveInfo ] 
+            return {  ...state, moveHistory: { 
+                    white: state.moveHistory.white , black: [ ...state.moveHistory.black, action.payload.moveInfo ] 
                 }  
             };
 

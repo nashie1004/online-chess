@@ -34,8 +34,8 @@ export interface IMove{
 }
 
 export interface IMoveHistory{
-    white: IMove[];
-    black: IMove[];
+    white: IPieceMove[];
+    black: IPieceMove[];
 }   
 
 export interface ICaptureHistory{

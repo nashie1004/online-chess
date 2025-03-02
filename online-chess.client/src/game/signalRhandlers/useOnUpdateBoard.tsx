@@ -3,6 +3,7 @@ import useGameContext from "../../hooks/useGameContext";
 import { eventEmitter } from "../utilities/eventEmitter";
 import { EVENT_EMIT } from "../../constants/emitters";
 import { IOnUpdateBoard } from "./types";
+import { IMoveHistoryAppend } from "../../context/types";
 
 export default function useOnUpdateBoard(){
     const { setGameState, gameState } = useGameContext();
@@ -25,14 +26,16 @@ export default function useOnUpdateBoard(){
         setGameState({ type: "SET_OPPONENTINFO_ISPLAYERSTURN", payload: opponentsTurn });
         
         setGameState({ type: "SET_MYINFO_ISPLAYERSTURN", payload: !opponentsTurn });
-
-        setGameState({ type: "SET_MOVEHISTORY", payload: { moveInfo, moveIsWhite } });
-
+        
         if (capturedPiece){
             setGameState({ type: "SET_CAPTUREHISTORY_APPEND", payload: capturedPiece });
         }
 
-        eventEmitter.emit(EVENT_EMIT.SET_MOVE_HISTORY, gameState.moveHistory);
+        const newMoveHistoryRecord: IMoveHistoryAppend = { moveInfo: data.moveHistoryLatestMove, moveIsWhite };
+
+        setGameState({ type: "SET_MOVEHISTORY_APPEND", payload: newMoveHistoryRecord });
+
+        eventEmitter.emit(EVENT_EMIT.SET_MOVE_HISTORY_APPEND, newMoveHistoryRecord);
     }
     
     return onUpdateBoard; 

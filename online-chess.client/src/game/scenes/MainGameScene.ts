@@ -14,6 +14,7 @@ import ShowPossibleMoves from "../logic/showPossibleMoves";
 import ValidateCheckOrCheckMateOrStalemate from "../logic/validateCheckOrCheckmateOrStalemate";
 import { EVENT_EMIT, EVENT_ON } from "../../constants/emitters";
 import { IMovePiece } from "../signalRhandlers/types";
+import { IMoveHistoryAppend } from "../../context/types";
 
 export class MainGameScene extends Scene{
     /**
@@ -249,8 +250,13 @@ export class MainGameScene extends Scene{
 
             this.isPlayersTurnToMove = true;
         });
-        eventEmitter.on(EVENT_ON.SET_MOVE_HISTORY, (data: IMoveHistory) => {
-            this.moveHistory = data;
+        eventEmitter.on(EVENT_ON.SET_MOVE_HISTORY_APPEND, (data: IMoveHistoryAppend) => {
+            if (data.moveIsWhite){
+                this.moveHistory.white.push(data.moveInfo);
+                return;
+            }
+
+            this.moveHistory.black.push(data.moveInfo);
         });
 
         //this.debugHelper();

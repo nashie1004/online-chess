@@ -85,10 +85,10 @@ namespace online_chess.Server.Models
         
         public BaseMoveInfo? UpdatePieceCoords(Move whitesOrientationMoveInfo, Capture capture, Castle castle, bool pieceIsWhite)
         {
-            BaseMoveInfo? capturedPiece = null;
+            BaseMoveInfo? returnCapturedPiece = null;
 
             var piece = PiecesCoords.Find(i => i.X == whitesOrientationMoveInfo.Old.X && i.Y == whitesOrientationMoveInfo.Old.Y);
-            if (piece == null) return capturedPiece;
+            if (piece == null) return returnCapturedPiece;
 
             if (pieceIsWhite){
                 MoveHistory.White.Add(whitesOrientationMoveInfo);
@@ -119,10 +119,9 @@ namespace online_chess.Server.Models
             switch(capture){
                 case Capture.Normal:
                     var normalCapturedPiece = PiecesCoords.Find(i => i.X == whitesOrientationMoveInfo.New.X && i.Y == whitesOrientationMoveInfo.New.Y);
-                    
                     if (normalCapturedPiece == null) break;
 
-                    capturedPiece = normalCapturedPiece;
+                    returnCapturedPiece = normalCapturedPiece;
                     
                     CaptureHistory.Add(normalCapturedPiece);
                     
@@ -181,7 +180,7 @@ namespace online_chess.Server.Models
             piece.X = whitesOrientationMoveInfo.New.X;
             piece.Y = whitesOrientationMoveInfo.New.Y;
 
-            return capturedPiece;
+            return returnCapturedPiece;
         }
 
         public void RemoveRoomInfo(){
