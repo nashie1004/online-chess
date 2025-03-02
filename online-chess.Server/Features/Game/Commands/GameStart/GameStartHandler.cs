@@ -145,6 +145,8 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
                 Reconnect = request.Reconnect,
                 WhiteKingHasMoved = false,
                 BlackKingHasMoved = false,
+                MoveHistory = gameRoom.MoveHistory,
+                CaptureHistory = gameRoom.CaptureHistory
             };
 
             return baseGameInfo;
@@ -184,7 +186,9 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
                 BothKingsState = onGoingGameRoom.BothKingsState,
                 Reconnect = request.Reconnect,
                 WhiteKingHasMoved = whiteKingHasMoved,
-                BlackKingHasMoved = blackKingHasMoved
+                BlackKingHasMoved = blackKingHasMoved,
+                MoveHistory = onGoingGameRoom.MoveHistory,
+                CaptureHistory = onGoingGameRoom.CaptureHistory
             };
 
             return currentGameInfo;

@@ -2,7 +2,7 @@ import moment from "moment";
 import { useCallback, useRef } from "react";
 import { MainGameScene } from "../scenes/MainGameScene";
 import { eventEmitter } from "../utilities/eventEmitter";
-import { IBothKingsPosition, IKingState, IMoveHistory, IPiece, PlayersPromotePreference } from "../utilities/types";
+import { IBothKingsPosition, PlayersPromotePreference } from "../utilities/types";
 import useGameContext from "../../hooks/useGameContext";
 import useSignalRContext from "../../hooks/useSignalRContext";
 import useAuthContext from "../../hooks/useAuthContext";
@@ -40,16 +40,10 @@ export default function useOnInitializeGameInfo(
             ? currentGameInfo.joinedByUserInfo 
             : currentGameInfo.createdByUserInfo;
 
-        const moveHistory: IMoveHistory = { white: [], black: [] };
-
         const promotePreference: PlayersPromotePreference = {
             white: playerIsWhite ? myInfo.pawnPromotionPreference : opponentInfo.pawnPromotionPreference
             , black: !playerIsWhite ? myInfo.pawnPromotionPreference : opponentInfo.pawnPromotionPreference
         };
-
-        const piecesCoordinatesInitial = currentGameInfo.piecesCoordinatesInitial;
-
-        const isPlayersTurnToMove = myInfo.isPlayersTurnToMove;
 
         // just reorrient king coords if player is black
         if (!myInfo.isColorWhite)
@@ -100,8 +94,8 @@ export default function useOnInitializeGameInfo(
                 scene: [
                     new MainGameScene(
                         "mainChessboard", myInfo.isColorWhite, boardUI
-                        , pieceUI, piecesCoordinatesInitial, moveHistory
-                        , bothKingsPosition, promotePreference, isPlayersTurnToMove
+                        , pieceUI, currentGameInfo.piecesCoordinatesInitial, currentGameInfo.moveHistory
+                        , bothKingsPosition, promotePreference, myInfo.isPlayersTurnToMove
                     )
                 ],
             });
@@ -179,6 +173,8 @@ export default function useOnInitializeGameInfo(
         setGameState({ type: "SET_GAMEROOMKEY", payload: currentGameInfo.gameRoomKey });
 
         setGameState({ type: "SET_GAMETYPE", payload: currentGameInfo.gameType });
+
+        setGameState({ type: "SET_CAPTUREHISTORY", payload: currentGameInfo.captureHistory });
 
         setGameState({ type: "SET_GAMESTATUS", payload: "ONGOING" });
     }, []);

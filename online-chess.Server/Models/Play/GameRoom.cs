@@ -90,6 +90,13 @@ namespace online_chess.Server.Models
             var piece = PiecesCoords.Find(i => i.X == whitesOrientationMoveInfo.Old.X && i.Y == whitesOrientationMoveInfo.Old.Y);
             if (piece == null) return capturedPiece;
 
+            if (pieceIsWhite){
+                MoveHistory.White.Add(whitesOrientationMoveInfo);
+            } 
+            else {
+                MoveHistory.Black.Add(whitesOrientationMoveInfo);
+            }
+
             MoveCountSinceLastCapture++;
 
             // this just updates the king position if the piece moved is king

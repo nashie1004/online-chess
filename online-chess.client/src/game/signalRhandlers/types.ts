@@ -1,5 +1,5 @@
 import { Capture, Castle, GameType, PromotionPrefence } from "../utilities/constants";
-import { IPiece, IPieceMove, IKingState } from "../utilities/types";
+import { IPiece, IPieceMove, IKingState, IMoveHistory } from "../utilities/types";
 
 export interface IInitialPlayerInfo{
     userName: string;
@@ -23,6 +23,8 @@ export interface IUseOnInitializeGameInfo{
     reconnect: boolean;
     whiteKingHasMoved: boolean;
     blackKingHasMoved: boolean;
+    moveHistory: IMoveHistory;
+    captureHistory: IPiece[];
 }
 
 export interface IOnSetPromotionPreference{
@@ -42,7 +44,6 @@ export interface IOnReceiveMessages{
     message: string;
 }
 
-// TODO
 export interface IMovePiece{
     gameRoomKey: string | null;
     oldMove: IPiece;

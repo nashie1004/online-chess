@@ -48,20 +48,11 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
                 return Unit.Value;
             }
 
-            /*
-             * TODO
-             * - save to move history
-             * - save to capture history (if any)
-             * - update king state (check, checkmate, stalemate)
-             * - update timer
-             */
-
-            // set the color of the piece moved
             bool isRoomCreator = room.CreatedByUserId == request.IdentityUserName;
 
             bool pieceMoveIsWhite = isRoomCreator 
-                ? room.CreatedByUserColor == Enums.Color.White 
-                : room.CreatedByUserColor == Enums.Color.Black;
+                ? room.CreatedByUserColor == Color.White 
+                : room.CreatedByUserColor == Color.Black;
 
             // invert orientation (for phaser)
             Move invertedMoveInfo = new Move(){
@@ -94,14 +85,6 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
             room.CreatedByUserInfo.IsPlayersTurnToMove = !isRoomCreator;
             room.JoinByUserInfo.IsPlayersTurnToMove = isRoomCreator;
 
-            // add to move history
-            var moveHistory = room.MoveHistory;
-            if (pieceMoveIsWhite){
-                moveHistory?.White.Add(whitesOrientationMoveInfo);
-            } else {
-                moveHistory?.Black.Add(whitesOrientationMoveInfo);
-            }
-
             var hasCapture = room.UpdatePieceCoords(whitesOrientationMoveInfo, request.Capture, request.Castle, pieceMoveIsWhite);
 
             if (room.TimerId != null)
@@ -124,6 +107,8 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
             };
 
             await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync(RoomMethods.onUpdateBoard, retVal);
+            await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync(RoomMethods.onReceiveCaptureHistory, room.CaptureHistory);
+            await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync(RoomMethods.onReceiveMoveHistory, room.MoveHistory);
             
             return Unit.Value;
          }

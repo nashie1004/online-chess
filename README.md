@@ -40,11 +40,10 @@ C:/Users/Nash/Downloads/sqlite-tools-win-x64-3480000/sqlite3.exe app.db
 
 # TODOS (BUGS)
 1. en passant - reconnect false and true - DOING
-2. castle  - reconnect false and true - DOING
-3. display move turn, check, checkmate, stalemate, draw agree - revamp, reconnect false and true
-4. recheck time is up - no side effects
-5. recheck pawn promotion - reconnect false and true, check if king pin
-6. bug - timer not found on resignation and draw
+2. display move turn, check, checkmate, stalemate, draw agree - revamp, reconnect false and true
+3. recheck time is up - no side effects
+4. recheck pawn promotion - reconnect false and true, check if king pin
+5. bug - timer not found on resignation and draw
 
 7. check this.kingsState on constructor
 8. check constants

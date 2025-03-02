@@ -14,6 +14,7 @@ namespace online_chess.Server.Models.Play
         public bool Reconnect { get; set; }
         public bool WhiteKingHasMoved { get; set; }
         public bool BlackKingHasMoved { get; set; }
-        public MoveHistory MoveHistory { get; set; } // TODO
+        public MoveHistory MoveHistory { get; set; }
+        public List<BaseMoveInfo> CaptureHistory { get; set; }
     }
 }

@@ -46,7 +46,7 @@ function reducerFn(state: IGameContextReducerState, action: IGameContextReducerA
             };
 
         case "SET_CAPTUREHISTORY":
-            return {  ...state, captureHistory: [...state.captureHistory, action.payload] }
+            return {  ...state, captureHistory: action.payload }
         case "SET_MYINFO":
             return {  ...state, myInfo: action.payload }
         case "SET_MYINFO_TIMELEFT":

@@ -30,6 +30,8 @@ public class RoomMethods
     public const string onUpdateTimer = "onUpdateTimer";
     public const string onSetPromotionPreference = "onSetPromotionPreference";
     public const string onUserDisconnectedFromGame = "onUserDisconnectedFromGame";
+    public const string onReceiveMoveHistory = "onReceiveMoveHistory";
+    public const string onReceiveCaptureHistory = "onReceiveCaptureHistory";
     #endregion
 
     #region Connection

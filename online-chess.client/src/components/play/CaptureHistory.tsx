@@ -21,6 +21,8 @@ export default function CaptureHistory() {
         return `${piecePath}${firstTwoChars}.svg`;
     }, []);
 
+    console.log(gameState.captureHistory)
+
     return (
     <>
         <div className='hstack'>
