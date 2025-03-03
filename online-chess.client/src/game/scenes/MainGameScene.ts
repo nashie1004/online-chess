@@ -288,6 +288,7 @@ export class MainGameScene extends Scene{
     move(newX: number, newY: number){
         let capture: Capture = Capture.None; 
         let castle: Castle = Castle.None;
+        let promote: boolean = false;
 
         if (!this.selectedPiece) return;
 
@@ -325,7 +326,7 @@ export class MainGameScene extends Scene{
         }
 
         // some special logic
-        (new PawnPromote(
+        promote = (new PawnPromote(
             this.boardOrientationIsWhite, this.promotePreference, this.piecesCoordinates_Internal 
         )).pawnPromote(uniquePieceName, newX, newY, isWhite, sprite);
 
@@ -393,7 +394,9 @@ export class MainGameScene extends Scene{
             this.isPlayersTurnToMove = false;
 
             const movePiece: IMovePiece = {
-                gameRoomKey: null, oldMove, newMove, capture, castle
+                gameRoomKey: null, oldMove, newMove
+                , capture, castle, kingsState: this.kingsState
+                , promote
             }
 
             eventEmitter.emit(EVENT_EMIT.SET_MOVE_PIECE, movePiece);

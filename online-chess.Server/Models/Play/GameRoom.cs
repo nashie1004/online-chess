@@ -83,7 +83,7 @@ namespace online_chess.Server.Models
         }
 
         
-        public BaseMoveInfo? UpdatePieceCoords(Move whitesOrientationMoveInfo, Capture capture, Castle castle, bool pieceIsWhite)
+        public BaseMoveInfo? UpdatePieceCoords(Move whitesOrientationMoveInfo, Capture capture, Castle castle, bool promote, bool pieceIsWhite)
         {
             BaseMoveInfo? returnCapturedPiece = null;
 
@@ -198,6 +198,11 @@ namespace online_chess.Server.Models
                     break;
             }
 
+            if (piece.UniqueName.Contains("pawn", StringComparison.OrdinalIgnoreCase) && promote)
+            {
+                // TODO: update piece type on promote 
+            }
+
             // update coords
             piece.X = whitesOrientationMoveInfo.New.X;
             piece.Y = whitesOrientationMoveInfo.New.Y;
@@ -205,7 +210,8 @@ namespace online_chess.Server.Models
             return returnCapturedPiece;
         }
 
-        public void RemoveRoomInfo(){
+        private void CaptureMove(){
+
         }
     }
 }

@@ -59,7 +59,7 @@ export default function Login() {
     if (user){
       navigate("/")
     }
-  }, []);
+  }, [userConnectionId]);
 
   const loading = isSubmitting;
 

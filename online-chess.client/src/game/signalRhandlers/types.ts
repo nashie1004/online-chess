@@ -52,4 +52,6 @@ export interface IMovePiece{
     newMove: IPiece;
     capture: Capture;
     castle: Castle;
+    kingsState: IKingState;
+    promote: boolean;
 }

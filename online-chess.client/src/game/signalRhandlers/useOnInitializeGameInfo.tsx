@@ -134,7 +134,8 @@ export default function useOnInitializeGameInfo(
                 
                 invoke(PLAY_PAGE_INVOKERS.MOVE_PIECE
                     , currentGameInfo.gameRoomKey, move.oldMove, move.newMove
-                    , move.capture, move.castle
+                    , move.capture, move.castle, move.kingsState
+                    , move.promote
                 );
 
             });

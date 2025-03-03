@@ -11,5 +11,7 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
         public BaseMoveInfo NewMove { get; set; }
         public Capture Capture { get; set; }
         public Castle Castle { get; set; }
+        public BothKingsState BothKingsState { get; set; }
+        public bool Promote { get; set; }
     }
 }

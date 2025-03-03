@@ -45,6 +45,7 @@ builder.Services.AddSingleton<AuthenticatedUserService>();
 builder.Services.AddSingleton<TimerService>();
 builder.Services.AddSingleton<LogInTrackerService>();
 builder.Services.AddScoped<IFileStorageService, LocalFileStorageService>();
+//builder.Services.AddAWS
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 builder.Logging.AddDebug();

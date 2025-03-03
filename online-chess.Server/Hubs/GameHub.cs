@@ -154,10 +154,10 @@ namespace online_chess.Server.Hubs
         }
 
         [Authorize]
-        // TODO 3/1/2025
         public async Task MovePiece(
             string gameRoomKey, BaseMoveInfo oldMove, BaseMoveInfo newMove
-            , Capture capture, Castle castle
+            , Capture capture, Castle castle, BothKingsState bothKingsState
+            , bool promote
         )
         {
             await _mediator.Send(new MovePieceRequest()
@@ -169,7 +169,9 @@ namespace online_chess.Server.Hubs
                 OldMove = oldMove,
                 NewMove = newMove,
                 Capture = capture,
-                Castle = castle
+                Castle = castle,
+                BothKingsState = bothKingsState,
+                Promote = promote
             });
         }
         
