@@ -55,6 +55,7 @@ export class MainGameScene extends Scene{
         // 1.1 server state - server has these states
         this.moveHistory = moveHistory; 
         this.kingsState = kingsState;
+        
         this.piecesCoordinates_Internal = { white: [], black: [] };
 
         // 1.2 server and internal state integrated
@@ -269,6 +270,7 @@ export class MainGameScene extends Scene{
         });
         eventEmitter.on(EVENT_ON.SET_BOTH_KINGS_STATE, (data: IKingState) => {
             this.kingsState = data;
+            console.log(this.kingsState) // TODO 3/3/2025 9PM
         });
     }
 
@@ -396,7 +398,7 @@ export class MainGameScene extends Scene{
 
             const movePiece: IMovePiece = {
                 gameRoomKey: null, oldMove, newMove
-                , capture, castle, kingsState: this.kingsState
+                , capture, castle, kingsState: newKingsState
                 , promote
             }
 

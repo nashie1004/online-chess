@@ -16,7 +16,7 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
     public class MovePieceHandler : IRequestHandler<MovePieceRequest, Unit>
     {
         private readonly GameRoomService _gameRoomService;
-        private readonly AuthenticatedUserService _authenticatedUserService;
+        private readonly UserConnectionService _authenticatedUserService;
         private readonly IHubContext<GameHub> _hubContext;
         private readonly ILogger<MovePieceHandler> _logger;
         private readonly TimerService _timerService;
@@ -24,7 +24,7 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
 
         public MovePieceHandler(
             GameRoomService gameRoomService
-            , AuthenticatedUserService authenticatedUserService
+            , UserConnectionService authenticatedUserService
             , IHubContext<GameHub> hubContext
             , ILogger<MovePieceHandler> logger
             , TimerService timerService

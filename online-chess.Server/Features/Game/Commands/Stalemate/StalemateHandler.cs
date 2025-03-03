@@ -8,12 +8,12 @@ namespace online_chess.Server.Features.Game.Commands.Stalemate
     public class StalemateHandler : IRequestHandler<StalemateRequest, Unit>
     {
         private readonly IHubContext<GameHub> _hubContext;
-        private readonly AuthenticatedUserService _authenticatedUserService;
+        private readonly UserConnectionService _authenticatedUserService;
         private readonly GameRoomService _gameRoomService;
 
         public StalemateHandler(
             IHubContext<GameHub> hubContext            
-            ,AuthenticatedUserService authenticatedUserService
+            ,UserConnectionService authenticatedUserService
             ,GameRoomService gameRoomService
         )
         {

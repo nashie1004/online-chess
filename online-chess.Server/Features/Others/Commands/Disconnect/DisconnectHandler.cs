@@ -11,14 +11,14 @@ namespace online_chess.Server.Features.Others.Commands.Disconnect
         private readonly IHubContext<GameHub> _hubContext;
         private readonly GameQueueService _gameQueueService;
         private readonly GameRoomService _gameRoomService;
-        private readonly AuthenticatedUserService _authenticatedUserService;
+        private readonly UserConnectionService _authenticatedUserService;
         private readonly LogInTrackerService _logInTrackerService;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
         public DisconnectHandler(
             IHubContext<GameHub> hubContext
             , GameQueueService gameQueueService
-            , AuthenticatedUserService authenticatedUserService
+            , UserConnectionService authenticatedUserService
             , GameRoomService gameRoomService
             , LogInTrackerService logInTrackerService
             , IHttpContextAccessor httpContextAccessor

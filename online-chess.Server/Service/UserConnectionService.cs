@@ -3,11 +3,11 @@ using System.Collections.Concurrent;
 
 namespace online_chess.Server.Service;
 
-public class AuthenticatedUserService
+public class UserConnectionService
 {
     private static ConcurrentDictionary<string, string> _identityNameToConnectionId = new();
 
-    public AuthenticatedUserService()
+    public UserConnectionService()
     {
         
     }

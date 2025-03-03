@@ -11,12 +11,12 @@ namespace online_chess.Server.Features.Game.Commands.UserDisconnectedFromGame
     public class UserDisconnectedFromGameHandler : IRequestHandler<UserDisconnectedFromGameRequest, Unit>
     {
         private readonly GameRoomService _gameRoomService;
-        private readonly AuthenticatedUserService _authenticatedUserService;
+        private readonly UserConnectionService _authenticatedUserService;
         private readonly IHubContext<GameHub> _hubContext;
 
         public UserDisconnectedFromGameHandler(
             GameRoomService gameRoomService
-            , AuthenticatedUserService authenticatedUserService
+            , UserConnectionService authenticatedUserService
             , IHubContext<GameHub> hubContext
             )
         {

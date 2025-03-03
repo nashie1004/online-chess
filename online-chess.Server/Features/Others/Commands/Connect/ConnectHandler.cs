@@ -10,14 +10,14 @@ namespace online_chess.Server.Features.Others.Commands.Connect
 {
     public class ConnectHandler : IRequestHandler<ConnectRequest, Unit>
     {
-        private readonly AuthenticatedUserService _authenticatedUserService;
+        private readonly UserConnectionService _authenticatedUserService;
         private readonly IHubContext<GameHub> _hubContext;
         private readonly SignInManager<User> _signInManager;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly LogInTrackerService _logInTrackerService;
 
         public ConnectHandler(
-            AuthenticatedUserService authenticatedUserService
+            UserConnectionService authenticatedUserService
             , IHubContext<GameHub> hubContext
             , SignInManager<User> signInManager
             , IHttpContextAccessor httpContextAccessor

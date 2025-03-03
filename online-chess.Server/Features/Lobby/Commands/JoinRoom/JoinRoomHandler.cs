@@ -12,9 +12,9 @@ namespace online_chess.Server.Features.Lobby.Commands.JoinRoom
         private readonly IHubContext<GameHub> _hubContext;
         private readonly GameQueueService _gameQueueService;
         private readonly GameRoomService _gameRoomService; 
-        private readonly AuthenticatedUserService _authenticatedUserService;
+        private readonly UserConnectionService _authenticatedUserService;
 
-        public JoinRoomHandler(IHubContext<GameHub> hubContext, GameQueueService gameQueueService, AuthenticatedUserService authenticatedUserService, GameRoomService gameRoomService)
+        public JoinRoomHandler(IHubContext<GameHub> hubContext, GameQueueService gameQueueService, UserConnectionService authenticatedUserService, GameRoomService gameRoomService)
         {
             _hubContext = hubContext;
             _gameQueueService = gameQueueService;

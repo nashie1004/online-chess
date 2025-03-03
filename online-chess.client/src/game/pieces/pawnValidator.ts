@@ -1,5 +1,5 @@
 import { GameObjects } from "phaser";
-import { IBothKingsPosition, IMoveHistory, IMoveInfo, IPiece, IValidMove } from "../utilities/types";
+import { IBothKingsPosition, IMoveHistory, IPiece, IValidMove } from "../utilities/types";
 import BasePieceValidator from "./basePieceValidator";
 
 export default class PawnValidator extends BasePieceValidator{
@@ -20,13 +20,13 @@ export default class PawnValidator extends BasePieceValidator{
         this.captureYDirection = this.isWhite ? (this.boardOrientationIsWhite ? -1 : 1) : (!this.boardOrientationIsWhite ? -1 : 1);
         this.showCaptureSquares = showCaptureSquares;
     }
-    
+
     public override validMoves(): IValidMove[]{
         const x = this.piece.x;
         const y = this.piece.y;
-        
+
         let validMoves: IValidMove[] = [];
-        
+
         // 1. normal 1 square forward
         if (y <= 7 || y >= 0){
             const col = x;
@@ -35,7 +35,7 @@ export default class PawnValidator extends BasePieceValidator{
             // block pawn from moving
             if (!this.isOutOfBounds(col, row)) {
                 if (!this.board[col][row]) validMoves.push({ x: col, y: row, isCapture: false });
-            } 
+            }
 
         }
 
@@ -66,9 +66,9 @@ export default class PawnValidator extends BasePieceValidator{
         captureDirection.forEach(direction => {
             const row = y + direction.y;
             const col = x + direction.x;
-            
+
             if (
-                col >= 0 && col >= 0 
+                col >= 0 && col >= 0
                 &&
                 row <= 7 && row <= 7
             ){
@@ -83,7 +83,7 @@ export default class PawnValidator extends BasePieceValidator{
                     return;
                 }
 
-                if (currTile && !this.isAFriendPiece(currTile.name)) 
+                if (currTile && !this.isAFriendPiece(currTile.name))
                 {
                     validMoves.push({ x: col, y: row, isCapture: true });
                 }
@@ -97,15 +97,62 @@ export default class PawnValidator extends BasePieceValidator{
         }
 
         validMoves = this.filterLegalMovesWhenPinned(validMoves);
-        
+
         return validMoves;
     }
 
     /**
      * - checks this.piece coordinates and validates against opponent's latest move
-     * @returns 
+     * @returns
      */
     public validEnPassantCapture(): IValidMove | null{
+        let retVal = null;
+
+        if (this.moveHistory.black.length < 1 || this.moveHistory.white.length < 1) return retVal;
+
+        let enemyLatestMove: IPiece;
+
+        if (this.isWhite){
+            enemyLatestMove = this.moveHistory.black[this.moveHistory.black.length - 1].new
+        } else {
+            enemyLatestMove = this.moveHistory.white[this.moveHistory.white.length - 1].new
+        }
+
+        // if the latest move is a pawn, and the row is 3 (for white) or 5 (for black)
+        // allow capture
+        if (enemyLatestMove.name.toLowerCase().indexOf("pawn") < 0) return retVal;
+
+        let enemyPawnY = enemyLatestMove.y;
+        let enemyPawnX = enemyLatestMove.x;
+        let thisPawnX = this.piece.x;
+        let thisPawnY = this.piece.y;
+
+        if (!this.boardOrientationIsWhite){
+            enemyPawnX = Math.abs(7 - enemyLatestMove.x);
+            enemyPawnY = Math.abs(7 - enemyLatestMove.y);
+            
+            thisPawnX = Math.abs(7 - thisPawnX);
+            thisPawnY = Math.abs(7 - thisPawnY);
+        }
+
+        // console.log({ thisPawnX, thisPawnY }, enemyLatestMove) // TODO 3/3/2025 9:30PM
+
+        if (
+            (
+                (enemyPawnY === 3 && thisPawnY === 3) ||
+                (enemyPawnY === 4 && thisPawnY === 4)
+            )
+            &&
+            (enemyPawnX - 1 === thisPawnX || enemyPawnX + 1 === thisPawnX)
+        ){
+            retVal = { x: enemyPawnX, y: thisPawnY + this.captureYDirection, isCapture: true };
+        }
+
+        return retVal;
+    }
+
+    /*
+    public validEnPassantCapture_OLD(): IValidMove | null{
         // get the opponent's latest move and
         // if both sides already have 1 move
         if (
@@ -140,4 +187,5 @@ export default class PawnValidator extends BasePieceValidator{
 
         return null;
     }
+    */
 }

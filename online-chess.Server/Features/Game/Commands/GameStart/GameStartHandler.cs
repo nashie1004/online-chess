@@ -13,14 +13,14 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
     {
         private readonly IHubContext<GameHub> _hubContext;
         private readonly GameRoomService _gameRoomService;
-        private readonly AuthenticatedUserService _authenticatedUserService;
+        private readonly UserConnectionService _authenticatedUserService;
         private readonly TimerService _timerService;
         private readonly ILogger<GameStartHandler> _logger;
 
         public GameStartHandler(
             IHubContext<GameHub> hubContext
             , GameRoomService gameRoomService
-            , AuthenticatedUserService authenticatedUserService
+            , UserConnectionService authenticatedUserService
             , TimerService timerService
             , ILogger<GameStartHandler> logger
             )

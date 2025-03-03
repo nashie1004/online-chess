@@ -14,14 +14,14 @@ namespace online_chess.Server.Features.Game.Commands.RequestADraw
         private readonly GameRoomService _gameRoomService;
         private readonly IHubContext<GameHub> _hubContext;
         private readonly MainDbContext _mainContext;
-        private readonly AuthenticatedUserService _authenticatedUserService;
+        private readonly UserConnectionService _authenticatedUserService;
         private readonly UserManager<User> _userManager;
 
         public RequestADrawHandler(
             GameRoomService gameRoomService
             , IHubContext<GameHub> hubContext
             , MainDbContext mainDbContext
-            , AuthenticatedUserService authenticatedUserService
+            , UserConnectionService authenticatedUserService
             , UserManager<User> userManager
         )
         {

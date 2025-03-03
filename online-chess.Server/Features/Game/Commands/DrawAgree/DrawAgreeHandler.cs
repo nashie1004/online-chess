@@ -14,7 +14,7 @@ namespace online_chess.Server.Features.Game.Commands.DrawAgree
         private readonly GameRoomService _gameRoomService;
         private readonly IHubContext<GameHub> _hubContext;
         private readonly MainDbContext _mainContext;
-        private readonly AuthenticatedUserService _authenticatedUserService;
+        private readonly UserConnectionService _authenticatedUserService;
         private readonly UserManager<User> _userManager;
         private readonly TimerService _timerService;
 
@@ -22,7 +22,7 @@ namespace online_chess.Server.Features.Game.Commands.DrawAgree
             GameRoomService gameRoomService
             , IHubContext<GameHub> hubContext
             , MainDbContext mainDbContext
-            , AuthenticatedUserService authenticatedUserService
+            , UserConnectionService authenticatedUserService
             , UserManager<User> userManager
             , TimerService timerService
             )

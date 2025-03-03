@@ -8,12 +8,12 @@ namespace online_chess.Server.Features.Game.Commands.Checkmate
     public class CheckmateHandler : IRequestHandler<CheckmateRequest, Unit>
     {
         private readonly IHubContext<GameHub> _hubContext;
-        private readonly AuthenticatedUserService _authenticatedUserService;
+        private readonly UserConnectionService _authenticatedUserService;
         private readonly GameRoomService _gameRoomService;
 
         public CheckmateHandler(
             IHubContext<GameHub> hubContext
-            , AuthenticatedUserService authenticatedUserService
+            , UserConnectionService authenticatedUserService
             , GameRoomService gameRoomService
         )
         {
