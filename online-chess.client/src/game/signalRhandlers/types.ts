@@ -1,5 +1,5 @@
 import { Capture, Castle, GameType, PromotionPrefence } from "../utilities/constants";
-import { IPiece, IPieceMove, IKingState, IMoveHistory } from "../utilities/types";
+import { IPiece, IPieceMove, IKingState, IMoveHistory, IKing } from "../utilities/types";
 
 export interface IInitialPlayerInfo{
     userName: string;
@@ -38,6 +38,7 @@ export interface IOnUpdateBoard{
     creatorColorIsWhite: boolean;
     capturedPiece: IPiece | null;
     moveHistoryLatestMove: IPieceMove;
+    bothKingsState: IKingState;
 }
 
 export interface IOnReceiveMessages{

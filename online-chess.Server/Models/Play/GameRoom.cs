@@ -1,4 +1,5 @@
 ﻿using online_chess.Server.Enums;
+using online_chess.Server.Features.Game.Commands.MovePiece;
 using online_chess.Server.Models.Lobby;
 using online_chess.Server.Models.Play;
 
@@ -83,8 +84,15 @@ namespace online_chess.Server.Models
         }
 
         
-        public BaseMoveInfo? MovePiece(Move whitesOrientationMoveInfo, Capture capture, Castle castle, bool promote, bool pieceIsWhite)
+        public BaseMoveInfo? MovePiece(Move whitesOrientationMoveInfo, MovePieceRequest request, bool pieceIsWhite, bool isRoomCreator)
         {
+            Capture capture = request.Capture;
+            Castle castle = request.Castle;
+            bool promote = request.Promote;
+
+            CreatedByUserInfo.IsPlayersTurnToMove = !isRoomCreator;
+            JoinByUserInfo.IsPlayersTurnToMove = isRoomCreator;
+
             BaseMoveInfo? returnCapturedPiece = null;
 
             var piece = PiecesCoords.Find(i => i.X == whitesOrientationMoveInfo.Old.X && i.Y == whitesOrientationMoveInfo.Old.Y);
@@ -94,7 +102,7 @@ namespace online_chess.Server.Models
 
             SaveToMoveHistory(pieceIsWhite, whitesOrientationMoveInfo);
 
-            UpdateKingCoords(piece, whitesOrientationMoveInfo, pieceIsWhite);
+            UpdateKingsState(piece, whitesOrientationMoveInfo, pieceIsWhite, request);
 
             returnCapturedPiece = CaptureMove(whitesOrientationMoveInfo, capture, pieceIsWhite);
 
@@ -126,23 +134,30 @@ namespace online_chess.Server.Models
             MoveHistory.Black.Add(whitesOrientationMoveInfo);
         }
 
-        private void UpdateKingCoords(BaseMoveInfo piece, Move whitesOrientationMoveInfo, bool pieceIsWhite)
+        private void UpdateKingsState(BaseMoveInfo piece, Move whitesOrientationMoveInfo, bool pieceIsWhite, MovePieceRequest request)
         {
-            // this just updates the king position if the piece moved is king
-            if (piece.UniqueName.Contains("king", StringComparison.OrdinalIgnoreCase)){
-                
-                if (pieceIsWhite)
-                {
-                    BothKingsState.White.X = whitesOrientationMoveInfo.New.X;
-                    BothKingsState.White.Y = whitesOrientationMoveInfo.New.Y;
-                } 
-                else
-                {
-                    BothKingsState.Black.X = whitesOrientationMoveInfo.New.X;
-                    BothKingsState.Black.Y = whitesOrientationMoveInfo.New.Y;
-                }
+            BothKingsState.White.IsInCheck = request.BothKingsState.White.IsInCheck;
+            BothKingsState.White.CheckedBy = request.BothKingsState.White.CheckedBy;
+            BothKingsState.White.IsInStalemate = request.BothKingsState.White.IsInStalemate;
+            BothKingsState.White.IsCheckmate = request.BothKingsState.White.IsCheckmate;
+            
+            BothKingsState.Black.IsInCheck = request.BothKingsState.Black.IsInCheck;
+            BothKingsState.Black.CheckedBy = request.BothKingsState.Black.CheckedBy;
+            BothKingsState.Black.IsInStalemate = request.BothKingsState.Black.IsInStalemate;
+            BothKingsState.Black.IsCheckmate = request.BothKingsState.Black.IsCheckmate;
 
-            }
+            // this just updates the king position if the piece moved is king
+            if (!piece.UniqueName.Contains("king", StringComparison.OrdinalIgnoreCase)) return;
+                
+            if (pieceIsWhite)
+            {
+                BothKingsState.White.X = whitesOrientationMoveInfo.New.X;
+                BothKingsState.White.Y = whitesOrientationMoveInfo.New.Y;
+                return;
+            } 
+
+            BothKingsState.Black.X = whitesOrientationMoveInfo.New.X;
+            BothKingsState.Black.Y = whitesOrientationMoveInfo.New.Y;
         }
 
         private BaseMoveInfo? CaptureMove(Move whitesOrientationMoveInfo, Capture capture, bool pieceIsWhite)

@@ -97,7 +97,7 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
                     initialTime = TimeSpan.FromMinutes(25);
                     break;
                 default:
-                    initialTime = TimeSpan.FromMinutes(5);
+                    initialTime = TimeSpan.FromMinutes(60);
                     break;
             }
 

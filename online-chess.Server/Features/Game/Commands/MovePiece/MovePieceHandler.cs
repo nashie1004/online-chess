@@ -50,10 +50,7 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
 
             var (invertedMoveInfo, whitesOrientationMoveInfo) = GenerateMoveInfo(request, pieceMoveIsWhite);
 
-            room.CreatedByUserInfo.IsPlayersTurnToMove = !isRoomCreator;
-            room.JoinByUserInfo.IsPlayersTurnToMove = isRoomCreator;
-
-            var capturedPiece = room.MovePiece(whitesOrientationMoveInfo, request.Capture, request.Castle, request.Promote, pieceMoveIsWhite);
+            var capturedPiece = room.MovePiece(whitesOrientationMoveInfo, request, pieceMoveIsWhite, isRoomCreator);
 
             if (room.TimerId != null)
             {
@@ -73,6 +70,7 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
                 , CreatorColorIsWhite = room.CreatedByUserColor == Enums.Color.White
                 , CapturedPiece = capturedPiece
                 , MoveHistoryLatestMove = whitesOrientationMoveInfo
+                , BothKingsState = room.BothKingsState
             };
 
             await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync(RoomMethods.onUpdateBoard, retVal);

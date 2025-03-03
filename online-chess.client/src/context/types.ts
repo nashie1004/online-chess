@@ -1,6 +1,6 @@
 import { IOnReceiveMessages } from "../game/signalRhandlers/types";
 import { GameType, PromotionPrefence } from "../game/utilities/constants";
-import { customMessageType, gameStat, ICustomMesage, IMoveHistory, IPiece, IPieceMove, IPlayerInfo, IUser } from "../game/utilities/types";
+import { customMessageType, gameStat, ICustomMesage, IKing, IMoveHistory, IPiece, IPieceMove, IPlayerInfo, IUser } from "../game/utilities/types";
 
 export interface IAuthContext {
     isAuthenticating: boolean;
@@ -41,10 +41,12 @@ export type IGameContextReducerActions =
 | { type: "SET_MYINFO_PROMOTEPAWNTO"; payload: PromotionPrefence }
 | { type: "SET_MYINFO_ISPLAYERSTURN"; payload: boolean } 
 | { type: "SET_MYINFO_OPENPROMOTIONMODAL"; payload: boolean } 
+| { type: "SET_MYINFO_KINGSTATE"; payload: IKing } 
 | { type: "SET_OPPONENTINFO"; payload: IPlayerInfo }
 | { type: "SET_OPPONENTINFO_TIMELEFT"; payload: number }
 | { type: "SET_OPPONENTINFO_PROMOTEPAWNTO"; payload: PromotionPrefence } 
 | { type: "SET_OPPONENTINFO_ISPLAYERSTURN"; payload: boolean } 
+| { type: "SET_OPPONENTINFO_KINGSTATE"; payload: IKing } 
 
 | { type: "SET_GAMESTATUS"; payload: gameStat }
 | { type: "SET_CLEARGAMESTATE"; }

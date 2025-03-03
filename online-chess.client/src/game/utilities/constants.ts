@@ -57,7 +57,7 @@ export const pieceNamesV2 = [
     { shortName: "bK", fullName: "bKing" },
 ];
 
-const baseKing: IKing = { 
+export const baseKing: IKing = { 
     isCheckMate: false, isInCheck: false, checkedBy: []
     , isInStalemate: false, x: -1, y: -1 
 };

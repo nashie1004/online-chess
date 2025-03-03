@@ -47,6 +47,11 @@ function reducerFn(state: IGameContextReducerState, action: IGameContextReducerA
                     ...state.myInfo, openPromotionModal: action.payload
                 } 
             } 
+        case "SET_MYINFO_KINGSTATE":
+            return {  ...state, myInfo: {
+                    ...state.myInfo, kingsState: action.payload
+                } 
+            }
         case "SET_MYINFO_ISPLAYERSTURN":
             return {  ...state, myInfo: {
                     ...state.myInfo, isPlayersTurn: action.payload
@@ -72,6 +77,11 @@ function reducerFn(state: IGameContextReducerState, action: IGameContextReducerA
         case "SET_OPPONENTINFO_REQUESTDRAW":
             return {  ...state, opponentInfo: {
                     ...state.opponentInfo, isOfferingADraw: action.payload
+                } 
+            }
+        case "SET_OPPONENTINFO_KINGSTATE":
+            return {  ...state, myInfo: {
+                    ...state.myInfo, kingsState: action.payload
                 } 
             }
         case "SET_GAMESTATUS":

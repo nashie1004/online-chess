@@ -7,5 +7,6 @@
         public bool CreatorColorIsWhite { get; set; }
         public BaseMoveInfo? CapturedPiece { get; set; }
         public Move MoveHistoryLatestMove { get; set; }
+        public BothKingsState BothKingsState { get; set; }
     }
 }

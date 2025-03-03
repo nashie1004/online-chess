@@ -264,11 +264,12 @@ export class MainGameScene extends Scene{
                 this.moveHistory.white.push(data.moveInfo);
                 return;
             }
-
+            
             this.moveHistory.black.push(data.moveInfo);
         });
-
-        //this.debugHelper();
+        eventEmitter.on(EVENT_ON.SET_BOTH_KINGS_STATE, (data: IKingState) => {
+            this.kingsState = data;
+        });
     }
 
     resetMoves(){
@@ -368,17 +369,18 @@ export class MainGameScene extends Scene{
         this.board[this.bothKingsPosition.black.x][this.bothKingsPosition.black.y]?.resetPostPipeline();
         this.board[this.bothKingsPosition.white.x][this.bothKingsPosition.white.y]?.resetPostPipeline();
 
-        const kingSafety = (new ValidateCheckOrCheckMateOrStalemate(
+        const newKingsState = (new ValidateCheckOrCheckMateOrStalemate(
             this.board, this.boardOrientationIsWhite
             , this.piecesCoordinates_Internal
             , this.bothKingsPosition, this.moveHistory
             , this.kingsState
         )).validate(isWhite);
 
-        // play sound
-        capture != Capture.None ? this.sound.play("capture") : this.sound.play("move");
-
-        if (kingSafety !== 0){
+        if (
+            newKingsState.white.isInCheck || newKingsState.black.isInCheck ||
+            newKingsState.white.isCheckMate || newKingsState.black.isCheckMate
+        )
+        {
             this.sound.play("check");
             const king = isWhite ? this.bothKingsPosition.black : this.bothKingsPosition.white;
             const kingSprite = this.board[king.x][king.y];
@@ -400,6 +402,9 @@ export class MainGameScene extends Scene{
 
             eventEmitter.emit(EVENT_EMIT.SET_MOVE_PIECE, movePiece);
         }
+
+        // play sound
+        capture != Capture.None ? this.sound.play("capture") : this.sound.play("move");
 
         this.resetMoves();
         //this.debugHelper();
