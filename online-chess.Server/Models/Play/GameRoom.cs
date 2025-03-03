@@ -83,22 +83,51 @@ namespace online_chess.Server.Models
         }
 
         
-        public BaseMoveInfo? UpdatePieceCoords(Move whitesOrientationMoveInfo, Capture capture, Castle castle, bool promote, bool pieceIsWhite)
+        public BaseMoveInfo? MovePiece(Move whitesOrientationMoveInfo, Capture capture, Castle castle, bool promote, bool pieceIsWhite)
         {
             BaseMoveInfo? returnCapturedPiece = null;
 
             var piece = PiecesCoords.Find(i => i.X == whitesOrientationMoveInfo.Old.X && i.Y == whitesOrientationMoveInfo.Old.Y);
             if (piece == null) return returnCapturedPiece;
 
-            if (pieceIsWhite){
-                MoveHistory.White.Add(whitesOrientationMoveInfo);
-            } 
-            else {
-                MoveHistory.Black.Add(whitesOrientationMoveInfo);
-            }
-
             MoveCountSinceLastCapture++;
 
+            SaveToMoveHistory(pieceIsWhite, whitesOrientationMoveInfo);
+
+            UpdateKingCoords(piece, whitesOrientationMoveInfo, pieceIsWhite);
+
+            returnCapturedPiece = CaptureMove(whitesOrientationMoveInfo, capture, pieceIsWhite);
+
+            CastleMove(castle, pieceIsWhite);
+
+            var newUniqueName = PromoteMove(piece, promote, whitesOrientationMoveInfo, pieceIsWhite);
+
+            // update piece metadata if promotion move
+            if (!string.IsNullOrEmpty(newUniqueName))
+            {
+                piece.UniqueName = newUniqueName;
+                piece.Name = newUniqueName.Split("-")[0];
+            }
+
+            // update coords
+            piece.X = whitesOrientationMoveInfo.New.X;
+            piece.Y = whitesOrientationMoveInfo.New.Y;
+
+            return returnCapturedPiece;
+        }
+
+        private void SaveToMoveHistory(bool pieceIsWhite, Move whitesOrientationMoveInfo)
+        {
+            if (pieceIsWhite){
+                MoveHistory.White.Add(whitesOrientationMoveInfo);
+                return;
+            } 
+            
+            MoveHistory.Black.Add(whitesOrientationMoveInfo);
+        }
+
+        private void UpdateKingCoords(BaseMoveInfo piece, Move whitesOrientationMoveInfo, bool pieceIsWhite)
+        {
             // this just updates the king position if the piece moved is king
             if (piece.UniqueName.Contains("king", StringComparison.OrdinalIgnoreCase)){
                 
@@ -114,14 +143,18 @@ namespace online_chess.Server.Models
                 }
 
             }
+        }
 
-            // TODO: capture should also handle en passant
+        private BaseMoveInfo? CaptureMove(Move whitesOrientationMoveInfo, Capture capture, bool pieceIsWhite)
+        {
+            BaseMoveInfo? retVal = null; 
+            
             switch(capture){
                 case Capture.Normal:
                     var normalCapturedPiece = PiecesCoords.Find(i => i.X == whitesOrientationMoveInfo.New.X && i.Y == whitesOrientationMoveInfo.New.Y);
                     if (normalCapturedPiece == null) break;
 
-                    returnCapturedPiece = normalCapturedPiece;
+                    retVal = normalCapturedPiece;
                     
                     CaptureHistory.Add(normalCapturedPiece);
                     
@@ -145,7 +178,7 @@ namespace online_chess.Server.Models
 
                     if (!enPassantCapturedPiece.UniqueName.Contains("pawn", StringComparison.OrdinalIgnoreCase)) break;
 
-                    returnCapturedPiece = enPassantCapturedPiece;
+                    retVal = enPassantCapturedPiece;
                     
                     CaptureHistory.Add(enPassantCapturedPiece);
                     
@@ -159,6 +192,11 @@ namespace online_chess.Server.Models
                     break;
             }
 
+            return retVal;
+        }
+    
+        private void CastleMove(Castle castle, bool pieceIsWhite)
+        {
             int rookX = -1;
             int rookY = -1;
 
@@ -198,20 +236,55 @@ namespace online_chess.Server.Models
                     break;
             }
 
-            if (piece.UniqueName.Contains("pawn", StringComparison.OrdinalIgnoreCase) && promote)
+        }
+
+        private string? PromoteMove(BaseMoveInfo piece, bool promote, Move whitesOrientationMoveInfo, bool pieceIsWhite)
+        {
+            if (!promote) return null;
+            if (!piece.UniqueName.Contains("pawn", StringComparison.OrdinalIgnoreCase)) return null;
+            
+            string pieceName = string.Empty;
+            PlayerInfo playerInfo = pieceIsWhite && CreatedByUserInfo.IsColorWhite 
+                ? CreatedByUserInfo : JoinByUserInfo;
+
+            if (pieceIsWhite)
             {
-                // TODO: update piece type on promote 
+                switch(playerInfo.PawnPromotionPreference){
+                    case PawnPromotionPreference.Queen:
+                        pieceName = Pieces.wQueen;
+                        break;
+                    case PawnPromotionPreference.Rook:
+                        pieceName = Pieces.wRook;
+                        break;
+                    case PawnPromotionPreference.Knight:
+                        pieceName = Pieces.wKnight;
+                        break;
+                    case PawnPromotionPreference.Bishop:
+                        pieceName = Pieces.wBishop;
+                        break;
+                }
+            }
+            else 
+            {
+                switch(playerInfo.PawnPromotionPreference){
+                    case PawnPromotionPreference.Queen:
+                        pieceName = Pieces.bQueen;
+                        break;
+                    case PawnPromotionPreference.Rook:
+                        pieceName = Pieces.bRook;
+                        break;
+                    case PawnPromotionPreference.Knight:
+                        pieceName = Pieces.bKnight;
+                        break;
+                    case PawnPromotionPreference.Bishop:
+                        pieceName = Pieces.bBishop;
+                        break;
+                }
             }
 
-            // update coords
-            piece.X = whitesOrientationMoveInfo.New.X;
-            piece.Y = whitesOrientationMoveInfo.New.Y;
-
-            return returnCapturedPiece;
+            string retVal = pieceName + "-" + whitesOrientationMoveInfo.New.X + "-" + whitesOrientationMoveInfo.New.Y;
+            return retVal;
         }
 
-        private void CaptureMove(){
-
-        }
     }
 }

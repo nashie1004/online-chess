@@ -53,7 +53,7 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
             room.CreatedByUserInfo.IsPlayersTurnToMove = !isRoomCreator;
             room.JoinByUserInfo.IsPlayersTurnToMove = isRoomCreator;
 
-            var capturedPiece = room.UpdatePieceCoords(whitesOrientationMoveInfo, request.Capture, request.Castle, request.Promote, pieceMoveIsWhite);
+            var capturedPiece = room.MovePiece(whitesOrientationMoveInfo, request.Capture, request.Castle, request.Promote, pieceMoveIsWhite);
 
             if (room.TimerId != null)
             {

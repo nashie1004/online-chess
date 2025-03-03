@@ -53,10 +53,6 @@ namespace online_chess.Server.Features.Game.Commands.SetPromotionPreference
 
             playerInfoToUpdate.PawnPromotionPreference = request.UserPreference;
 
-            string opponentConnectionId = _authenticatedUserService.GetConnectionId(
-                request.IdentityUserName == room.CreatedByUserId ? room.JoinedByUserId : room.CreatedByUserId
-            );
-
             var retVal = new
             {
                 playerName = playerInfoToUpdate.UserName,

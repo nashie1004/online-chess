@@ -380,7 +380,6 @@ export class MainGameScene extends Scene{
 
         if (kingSafety !== 0){
             this.sound.play("check");
-            // check
             const king = isWhite ? this.bothKingsPosition.black : this.bothKingsPosition.white;
             const kingSprite = this.board[king.x][king.y];
             kingSprite?.postFX?.addGlow(0xE44C6A, 10, 2);
