@@ -20,12 +20,11 @@ export class MainGameScene extends Scene{
     /**
      * unique name = piecename + x + y, example: 'wPawn-0-6'
      */
-    // 1.1 server state - server has these states
+    // 1.1 server state 
     private moveHistory: IMoveHistory;
-    private kingsState: IKingState;
+    private bothKingsState: IKingState;
     private piecesCoordinates_Server: IPiece[];
     
-    // 1.2 server and internal state integrated
     private piecesCoordinates_Internal: IPiecesCoordinates;
     private promotePreference: PlayersPromotePreference; 
     private bothKingsPosition: IBothKingsPosition;
@@ -48,18 +47,16 @@ export class MainGameScene extends Scene{
         key: string, isColorWhite: boolean, boardUI: string
         , piecesUI: string, piecesCoordinates_Server: IPiece[], moveHistory: IMoveHistory
         , bothKingsPosition: IBothKingsPosition, promotePreference: PlayersPromotePreference
-        , isPlayersTurnToMove: boolean, kingsState: IKingState, userIsConnected: boolean
+        , isPlayersTurnToMove: boolean, bothKingsState: IKingState, userIsConnected: boolean
     ) {
         super({ key });
 
         // 1.1 server state - server has these states
         this.moveHistory = moveHistory; 
-        this.kingsState = kingsState;
+        this.bothKingsState = bothKingsState;
+        this.piecesCoordinates_Server = piecesCoordinates_Server;
         
         this.piecesCoordinates_Internal = { white: [], black: [] };
-
-        // 1.2 server and internal state integrated
-        this.piecesCoordinates_Server = piecesCoordinates_Server;
         this.promotePreference = promotePreference;
         this.bothKingsPosition = bothKingsPosition;
 
@@ -218,7 +215,7 @@ export class MainGameScene extends Scene{
                         ,this.boardOrientationIsWhite, this.piecesCoordinates_Internal
                         ,this.selectedPiece
                         ,this.bothKingsPosition, this.moveHistory
-                        ,this.kingsState
+                        ,this.bothKingsState
                     )).showPossibleMoves(pieceName, pieceX, pieceY);
                     
                 });
@@ -269,8 +266,7 @@ export class MainGameScene extends Scene{
             this.moveHistory.black.push(data.moveInfo);
         });
         eventEmitter.on(EVENT_ON.SET_BOTH_KINGS_STATE, (data: IKingState) => {
-            this.kingsState = data;
-            console.log(this.kingsState) // TODO 3/3/2025 9PM
+            this.bothKingsState = data;
         });
     }
 
@@ -375,12 +371,14 @@ export class MainGameScene extends Scene{
             this.board, this.boardOrientationIsWhite
             , this.piecesCoordinates_Internal
             , this.bothKingsPosition, this.moveHistory
-            , this.kingsState
+            , this.bothKingsState
         )).validate(isWhite);
 
         if (
-            newKingsState.white.isInCheck || newKingsState.black.isInCheck ||
-            newKingsState.white.isCheckMate || newKingsState.black.isCheckMate
+            (newKingsState.white.isInCheck && !isWhite) || 
+            (newKingsState.black.isInCheck && isWhite) ||
+            (newKingsState.white.isCheckMate && !isWhite) ||
+            (newKingsState.black.isCheckMate && isWhite)
         )
         {
             this.sound.play("check");
@@ -417,6 +415,6 @@ export class MainGameScene extends Scene{
     }
 
     debugHelper(){
-        console.log(this.moveHistory);
+        //console.log(this.bothKingsState);
     }
 }

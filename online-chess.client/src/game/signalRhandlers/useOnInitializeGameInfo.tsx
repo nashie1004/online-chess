@@ -67,6 +67,8 @@ export default function useOnInitializeGameInfo(
                 currentGameInfo.bothKingsState.black.y = Math.abs(currentGameInfo.bothKingsState.black.y - 7);   
             }
 
+            currentGameInfo.bothKingsState.white.checkedBy = currentGameInfo.bothKingsState.white.checkedBy.map(i => ({ x: Math.abs(i.x - 7), y: Math.abs(i.y - 7) }));
+            currentGameInfo.bothKingsState.black.checkedBy = currentGameInfo.bothKingsState.black.checkedBy.map(i => ({ x: Math.abs(i.x - 7), y: Math.abs(i.y - 7) }));
         }
 
         const bothKingsPosition: IBothKingsPosition = {

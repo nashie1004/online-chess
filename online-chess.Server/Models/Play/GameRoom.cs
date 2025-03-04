@@ -136,6 +136,19 @@ namespace online_chess.Server.Models
 
         private void UpdateKingsState(BaseMoveInfo piece, Move whitesOrientationMoveInfo, bool pieceIsWhite, MovePieceRequest request)
         {
+            if (!pieceIsWhite)
+            {
+                request.BothKingsState.White.CheckedBy.ForEach(i => {
+                    i.X = Math.Abs(i.X - 7);
+                    i.Y = Math.Abs(i.Y - 7);
+                });
+                
+                request.BothKingsState.Black.CheckedBy.ForEach(i => {
+                    i.X = Math.Abs(i.X - 7);
+                    i.Y = Math.Abs(i.Y - 7);
+                });
+            }
+
             BothKingsState.White.IsInCheck = request.BothKingsState.White.IsInCheck;
             BothKingsState.White.CheckedBy = request.BothKingsState.White.CheckedBy;
             BothKingsState.White.IsInStalemate = request.BothKingsState.White.IsInStalemate;

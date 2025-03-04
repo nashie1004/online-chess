@@ -107,6 +107,7 @@ export default class PawnValidator extends BasePieceValidator{
      */
     public validEnPassantCapture(): IValidMove | null{
         let retVal = null;
+        return retVal;
 
         if (this.moveHistory.black.length < 1 || this.moveHistory.white.length < 1) return retVal;
 

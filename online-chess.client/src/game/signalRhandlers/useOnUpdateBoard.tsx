@@ -37,7 +37,16 @@ export default function useOnUpdateBoard(){
 
         eventEmitter.emit(EVENT_EMIT.SET_MOVE_HISTORY_APPEND, newMoveHistoryRecord);
 
-        // TODO 3/3/2025 8:30PM - update king state on phaser and react
+        if (!gameStateRef.current.myInfo.playerIsWhite){
+            data.bothKingsState.white.x = Math.abs(7 - data.bothKingsState.white.x);
+            data.bothKingsState.white.y = Math.abs(7 - data.bothKingsState.white.y);
+            data.bothKingsState.white.checkedBy = data.bothKingsState.white.checkedBy.map(i => ({ x: Math.abs(i.x - 7), y: Math.abs(i.y - 7) }));
+
+            data.bothKingsState.black.x = Math.abs(7 - data.bothKingsState.black.x);
+            data.bothKingsState.black.y = Math.abs(7 - data.bothKingsState.black.y);
+            data.bothKingsState.black.checkedBy = data.bothKingsState.black.checkedBy.map(i => ({ x: Math.abs(i.x - 7), y: Math.abs(i.y - 7) }));
+        }
+
         eventEmitter.emit(EVENT_EMIT.SET_BOTH_KINGS_STATE, data.bothKingsState);
         
         const playerIsWhite = gameStateRef.current.myInfo.playerIsWhite;
