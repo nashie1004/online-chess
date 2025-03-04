@@ -223,7 +223,7 @@ export class MainGameScene extends Scene{
             this.board[x][y] = sprite;
         });
         
-        this.updateKingStateUI(this.bothKingsState, this.boardOrientationIsWhite);
+        this.updateKingStateUI(this.bothKingsState);
 
         // reset if click out of a select piece
         this.input.on("pointerdown", (_: Phaser.Input.Pointer, clickedSprite: GameObjects.Sprite[] | undefined) => {
@@ -376,7 +376,7 @@ export class MainGameScene extends Scene{
             , this.bothKingsState
         )).validate(isWhite);
 
-        this.updateKingStateUI(newKingsState, isWhite);
+        this.updateKingStateUI(newKingsState);
         
         // transfer data from phaser to react
         if (this.isPlayersTurnToMove){
@@ -401,17 +401,15 @@ export class MainGameScene extends Scene{
         //this.debugHelper();
     }
 
-    updateKingStateUI(bothKingsState: IKingState, isWhite: boolean){
+    updateKingStateUI(bothKingsState: IKingState){
 
         if (
-            (bothKingsState.white.isInCheck && !isWhite) || 
-            (bothKingsState.black.isInCheck && isWhite) ||
-            (bothKingsState.white.isCheckMate && !isWhite) ||
-            (bothKingsState.black.isCheckMate && isWhite)
+            bothKingsState.white.isInCheck || bothKingsState.black.isInCheck ||
+            bothKingsState.white.isCheckMate || bothKingsState.black.isCheckMate
         )
         {
             this.sound.play("check");
-            const king = isWhite ? this.bothKingsPosition.black : this.bothKingsPosition.white;
+            const king = this.bothKingsState.white.isInCheck ? this.bothKingsPosition.white : this.bothKingsPosition.black;
             const kingSprite = this.board[king.x][king.y];
             kingSprite?.postFX?.addGlow(0xE44C6A, 10, 2);
         }

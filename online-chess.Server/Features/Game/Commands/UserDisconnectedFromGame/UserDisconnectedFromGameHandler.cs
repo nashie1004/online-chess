@@ -32,6 +32,8 @@ namespace online_chess.Server.Features.Game.Commands.UserDisconnectedFromGame
             var ongoingGameRoom = _gameRoomService.GetRoomByEitherPlayer(request.IdentityUserName);
             if (ongoingGameRoom == null) return Unit.Value;
 
+            // TODO: 3/4/2025 handle if both player disconnected then end the game
+
             if (request.IdentityUserName == ongoingGameRoom.CreatedByUserId)
             {
                 ongoingGameRoom.GamePlayStatus = GamePlayStatus.CreatorDisconnected;
