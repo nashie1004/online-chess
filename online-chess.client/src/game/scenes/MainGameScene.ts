@@ -142,7 +142,7 @@ export class MainGameScene extends Scene{
 
                 this.previewBoard[colIdx][rowIdx] = previewMove;
             })
-        })
+        });
 
         // 2. actual pieces
         this.piecesCoordinates_Server.forEach(piece => {
@@ -221,7 +221,9 @@ export class MainGameScene extends Scene{
                 });
                 
             this.board[x][y] = sprite;
-        })
+        });
+        
+        this.updateKingStateUI(this.bothKingsState, this.boardOrientationIsWhite);
 
         // reset if click out of a select piece
         this.input.on("pointerdown", (_: Phaser.Input.Pointer, clickedSprite: GameObjects.Sprite[] | undefined) => {
@@ -233,7 +235,7 @@ export class MainGameScene extends Scene{
             if (this.selectedPiece && clickedSprite.length < 1){
                 this.resetMoves();
             }
-        })
+        });
 
         // sync / listen to upcoming react state changes
         eventEmitter.on(EVENT_ON.SET_USER_IS_CONNECTED, (data: boolean) => {
@@ -374,18 +376,7 @@ export class MainGameScene extends Scene{
             , this.bothKingsState
         )).validate(isWhite);
 
-        if (
-            (newKingsState.white.isInCheck && !isWhite) || 
-            (newKingsState.black.isInCheck && isWhite) ||
-            (newKingsState.white.isCheckMate && !isWhite) ||
-            (newKingsState.black.isCheckMate && isWhite)
-        )
-        {
-            this.sound.play("check");
-            const king = isWhite ? this.bothKingsPosition.black : this.bothKingsPosition.white;
-            const kingSprite = this.board[king.x][king.y];
-            kingSprite?.postFX?.addGlow(0xE44C6A, 10, 2);
-        }
+        this.updateKingStateUI(newKingsState, isWhite);
         
         // transfer data from phaser to react
         if (this.isPlayersTurnToMove){
@@ -408,6 +399,23 @@ export class MainGameScene extends Scene{
 
         this.resetMoves();
         //this.debugHelper();
+    }
+
+    updateKingStateUI(bothKingsState: IKingState, isWhite: boolean){
+
+        if (
+            (bothKingsState.white.isInCheck && !isWhite) || 
+            (bothKingsState.black.isInCheck && isWhite) ||
+            (bothKingsState.white.isCheckMate && !isWhite) ||
+            (bothKingsState.black.isCheckMate && isWhite)
+        )
+        {
+            this.sound.play("check");
+            const king = isWhite ? this.bothKingsPosition.black : this.bothKingsPosition.white;
+            const kingSprite = this.board[king.x][king.y];
+            kingSprite?.postFX?.addGlow(0xE44C6A, 10, 2);
+        }
+
     }
 
     update(){
