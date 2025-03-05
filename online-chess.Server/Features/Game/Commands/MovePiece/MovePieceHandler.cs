@@ -52,6 +52,10 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
 
             var capturedPiece = room.MovePiece(whitesOrientationMoveInfo, request, pieceMoveIsWhite, isRoomCreator);
 
+            if (room.MoveCountSinceLastCapture > 50 && room.MoveCountSinceLastPawnMove != 0){
+                // TODO 50 move rule
+            }
+            
             if (room.TimerId != null)
             {
                 room.TimerId.Dispose();
@@ -63,7 +67,7 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
                 CreatorsTurn = !isRoomCreator,
                 ServiceScope = _serviceProvider.CreateScope()
             }, 0, 1000);
-            
+
             var retVal = new UpdateBoardInfo(){
                 MoveInfo = invertedMoveInfo
                 , MoveIsWhite = pieceMoveIsWhite
@@ -199,51 +203,12 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
                 // await _hubContext.Clients.Group(room.GameKey.ToString()).SendAsync("", "");
             }
 
-            // TODO
-            /*
-            if (playerSecondsLeft == -1)
+            if (playerSecondsLeft < 0)
             {
                 _logger.LogInformation("0 seconds left Game Ended: {0}", playerSecondsLeft);
-                await TimeIsUp(room, creatorsTurn, scope);
-                room.TimerId.Dispose();
+                _gameRoomService.EndGame(scope, room, );
             }
-            */
-        }
-
-
-        // gets called when a player timer hits 0
-        public async Task TimeIsUp(GameRoom room, bool creatorWon, IServiceScope? scope)
-        {
-            var identityDbContext = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
-            var mainDbContext = scope.ServiceProvider.GetRequiredService<MainDbContext>();
-            var hubContext = scope.ServiceProvider.GetRequiredService<IHubContext<GameHub>>();
-
-            var creator = await identityDbContext.FindByNameAsync(room.CreatedByUserId);
-            var joiner = await identityDbContext.FindByNameAsync(room.JoinedByUserId);
-
-            await mainDbContext.GameHistories.AddAsync(new GameHistory(){
-                GameStartDate = room.GameStartedAt
-                , GameEndDate = DateTime.Now
-
-                , PlayerOneId = creator?.Id ?? 0
-                , PlayerOneColor = room.CreatedByUserColor
-                , PlayerTwoId = joiner?.Id ?? 0
-                , PlayerTwoColor = room.CreatedByUserColor == Color.White ? Color.Black : Color.White
-                    
-                , WinnerPlayerId = creatorWon ? (creator?.Id ?? 0) : (joiner?.Id ?? 0) 
-                , IsDraw = false
-                , GameType = room.GameType
-            });
-
-            await mainDbContext.SaveChangesAsync();
-
-            string creatorConnectionId = _authenticatedUserService.GetConnectionId(room.CreatedByUserId);
-            string joinerConnectionId = _authenticatedUserService.GetConnectionId(room.JoinedByUserId);
-
-            await hubContext.Clients.Client(creatorConnectionId).SendAsync(RoomMethods.onGameOver, creatorWon ? 1 : 0);
-            await hubContext.Clients.Client(joinerConnectionId).SendAsync(RoomMethods.onGameOver, !creatorWon ? 1 : 0);
-
-            _timerService.RemoveTimer(room.GameKey);
+            
         }
 
     }

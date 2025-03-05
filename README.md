@@ -45,9 +45,10 @@ C:/Users/Nash/Downloads/sqlite-tools-win-x64-3480000/sqlite3.exe app.db
 
 # TODOS (BUGS)
 1. en passant - reconnect false and true
-2. display move turn, check, checkmate, stalemate, draw agree - revamp, reconnect false and true
+2. display move turn, check, checkmate, stalemate, draw agree - revamp, reconnect false and true - DOING
 3. recheck time is up - no side effects
 4. bug - timer not found on resignation and draw
+5. disconnect - 1. change page, 2. full page reload - DOING
 
 ## TODOS (FEATURES)
 1. fifty move rule

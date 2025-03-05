@@ -17,5 +17,6 @@ namespace online_chess.Server.Models.Entities
         public long WinnerPlayerId { get; set; }
         public bool IsDraw { get; set; }
         public GameType GameType { get; set; }
+        public string Remarks { get; set; }
     }
 }

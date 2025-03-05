@@ -25,6 +25,7 @@ namespace online_chess.Server.Models
         public MoveHistory MoveHistory { get; set; }
         public List<BaseMoveInfo> CaptureHistory { get; set; }
         public int MoveCountSinceLastCapture { get; set; } // For 50 move rule
+        public int MoveCountSinceLastPawnMove { get; set; } // For 50 move rule
 
         public GameRoom()
         {
@@ -99,6 +100,12 @@ namespace online_chess.Server.Models
             if (piece == null) return returnCapturedPiece;
 
             MoveCountSinceLastCapture++;
+
+            if (!piece.UniqueName.Contains("pawn", StringComparison.OrdinalIgnoreCase)){
+                MoveCountSinceLastPawnMove = 0;
+            } else {
+                MoveCountSinceLastPawnMove++;
+            }
 
             SaveToMoveHistory(pieceIsWhite, whitesOrientationMoveInfo);
 

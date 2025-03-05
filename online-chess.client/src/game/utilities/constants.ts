@@ -24,10 +24,6 @@ export enum GameType{
     Rapid25Mins = 5,
 }
 
-export enum GameStatus{
-    Won, Lose, Draw
-}
-
 export enum ColorOptions{
     White = 1,
     Black = 2,
@@ -108,3 +104,18 @@ export enum Capture{
     EnPassant
 }
 
+export enum EndGameStatus{
+    CreatorIsCheckmated,
+    CreatorResigned,
+    CreatorTimeIsUp,
+
+    JoinerIsCheckmated,
+    JoinerResigned,
+    JoinerTimeIsUp,
+
+    DrawByAgreement,
+    DrawByStalemate,
+    DrawBothPlayerDisconnected,
+    DrawBy50MoveRule,
+    DrawByThreeFoldRepetition
+}

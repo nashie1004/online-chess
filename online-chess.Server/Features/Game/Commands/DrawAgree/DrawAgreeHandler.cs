@@ -13,28 +13,18 @@ namespace online_chess.Server.Features.Game.Commands.DrawAgree
     {
         private readonly GameRoomService _gameRoomService;
         private readonly IHubContext<GameHub> _hubContext;
-        private readonly MainDbContext _mainContext;
-        private readonly UserConnectionService _authenticatedUserService;
-        private readonly UserManager<User> _userManager;
-        private readonly TimerService _timerService;
+        private readonly IServiceProvider _serviceProvider;
 
         public DrawAgreeHandler(
             GameRoomService gameRoomService
             , IHubContext<GameHub> hubContext
-            , MainDbContext mainDbContext
-            , UserConnectionService authenticatedUserService
-            , UserManager<User> userManager
-            , TimerService timerService
+            , IServiceProvider serviceProvider
             )
         {
             _gameRoomService = gameRoomService;
             _hubContext = hubContext;
-            _mainContext = mainDbContext;
-            _authenticatedUserService = authenticatedUserService;
-            _userManager = userManager;
-            _timerService = timerService;
+            _serviceProvider = serviceProvider;
         }
-
 
         public async Task<Unit> Handle(DrawAgreeRequest request, CancellationToken cancellationToken)
         {
@@ -58,53 +48,11 @@ namespace online_chess.Server.Features.Game.Commands.DrawAgree
                 await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync(RoomMethods.onReceiveMessages, room.ChatMessages);
                 
                 await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync(RoomMethods.onDeclineDraw, true);
-                return Unit.Value;
-            }
-
-            // retrieve ids
-            var creator = await _userManager.FindByNameAsync(room.CreatedByUserId);
-            var joiner = await _userManager.FindByNameAsync(room.JoinedByUserId);
-
-            if (creator == null || joiner == null)
-            {
-                await _hubContext.Clients.Client(request.UserConnectionId).SendAsync(RoomMethods.onGenericError, "404 Room Not Found");
-                return Unit.Value;
-            }
-
-            if (room.TimerId != null){
-                room.TimerId.Dispose();
-            }
-            
-            await _mainContext.GameHistories.AddAsync(new GameHistory()
-            {
-                GameStartDate = room.GameStartedAt
-                ,GameEndDate = DateTime.Now
-
-                ,PlayerOneId = creator.Id
-                ,PlayerOneColor = room.CreatedByUserColor
-                ,PlayerTwoId = joiner.Id
-                ,PlayerTwoColor = room.CreatedByUserColor == Color.White ? Color.Black : Color.White
                 
-                ,WinnerPlayerId = 0
-                ,IsDraw = true
-                ,GameType = room.GameType
-            }, cancellationToken);
+                return Unit.Value;
+            }
 
-            await _mainContext.SaveChangesAsync(cancellationToken);
-
-            room.ChatMessages.Add(new Models.Play.Chat(){
-                CreateDate = DateTime.Now,
-                CreatedByUser = "server",
-                Message = $"Game ended in a draw."
-            });
-
-            _timerService.RemoveTimer(room.GameKey);
-
-            await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync(RoomMethods.onReceiveMessages, room.ChatMessages);
-        
-            _gameRoomService.Remove(room.GameKey);
-
-            await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync(RoomMethods.onGameOver, 2);
+            await _gameRoomService.EndGame(_serviceProvider.CreateScope(), room, EndGameStatus.DrawByAgreement);
 
             return Unit.Value;
         }
