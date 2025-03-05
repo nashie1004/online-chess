@@ -1,9 +1,12 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
+using online_chess.Server.Constants;
 using online_chess.Server.Enums;
+using online_chess.Server.Features.Game.Commands.GameStart;
 using online_chess.Server.Hubs;
 using online_chess.Server.Models;
 using online_chess.Server.Models.Entities;
+using online_chess.Server.Models.Play;
 using online_chess.Server.Persistence;
 using System.Collections.Concurrent;
 
@@ -26,7 +29,7 @@ namespace online_chess.Server.Service
 
         public GameRoom? Remove(Guid key)
         {
-            _gameRoomIds.Remove(key, out GameRoom? value);
+            _gameRoomIds.TryRemove(key, out GameRoom? value);
             return value;
         }
 
@@ -77,6 +80,132 @@ namespace online_chess.Server.Service
             }
 
             return null;
+        }
+
+        public CurrentGameInfo StartNewGame(GameRoom gameRoom, GameStartRequest request)
+        {
+            TimeSpan initialTime;
+
+            switch (gameRoom.GameType)
+            {
+                case GameType.Classical:
+                    initialTime = TimeSpan.FromMinutes(60);
+                    break;
+                case GameType.Blitz3Mins:
+                    initialTime = TimeSpan.FromMinutes(3);
+                    break;
+                case GameType.Blitz5Mins:
+                    initialTime = TimeSpan.FromMinutes(5);
+                    break;
+                case GameType.Rapid10Mins:
+                    initialTime = TimeSpan.FromMinutes(10);
+                    break;
+                case GameType.Rapid25Mins:
+                    initialTime = TimeSpan.FromMinutes(25);
+                    break;
+                default:
+                    initialTime = TimeSpan.FromMinutes(60);
+                    break;
+            }
+
+            _timerService.InitializeTimer(gameRoom.GameKey,
+                (initialTime.TotalSeconds, initialTime.TotalSeconds)
+            );
+
+            gameRoom.GameStartedAt = DateTime.Now;
+            gameRoom.GamePlayStatus = GamePlayStatus.Ongoing;
+            gameRoom.CreatedByUserInfo = new PlayerInfo()
+            {
+                UserName = gameRoom.CreatedByUserId
+                ,
+                IsPlayersTurnToMove = gameRoom.CreatedByUserColor == Color.White
+                ,
+                IsColorWhite = gameRoom.CreatedByUserColor == Color.White
+            };
+            gameRoom.JoinByUserInfo = new PlayerInfo()
+            {
+                UserName = gameRoom.JoinedByUserId
+                ,
+                IsPlayersTurnToMove = gameRoom.CreatedByUserColor != Color.White
+                ,
+                IsColorWhite = gameRoom.CreatedByUserColor != Color.White
+            };
+            gameRoom.ChatMessages = new List<Chat>()
+            {
+                new Chat()
+                {
+                    CreateDate = DateTime.Now
+                    , CreatedByUser = gameRoom.CreatedByUserId
+                    , Message = $"{gameRoom.CreatedByUserId} has joined the game."
+                }
+                ,new Chat()
+                {
+                    CreateDate = DateTime.Now
+                    , CreatedByUser = gameRoom.JoinedByUserId
+                    , Message = $"{gameRoom.JoinedByUserId} has joined the game."
+                }
+            };
+
+            var baseGameInfo = new CurrentGameInfo()
+            {
+                GameRoomKey = gameRoom.GameKey,
+                MoveCountSinceLastCapture = 0,
+                CreatedByUserInfo = gameRoom.CreatedByUserInfo,
+                JoinedByUserInfo = gameRoom.JoinByUserInfo,
+                GameType = gameRoom.GameType,
+                PiecesCoordinatesInitial = gameRoom.PiecesCoords,
+                BothKingsState = gameRoom.BothKingsState,
+                Reconnect = request.Reconnect,
+                WhiteKingHasMoved = false,
+                BlackKingHasMoved = false,
+                MoveHistory = gameRoom.MoveHistory,
+                CaptureHistory = gameRoom.CaptureHistory
+            };
+
+            return baseGameInfo;
+        }
+
+        public CurrentGameInfo ReconnectToGame(GameRoom onGoingGameRoom, GameStartRequest request)
+        {
+            onGoingGameRoom.GamePlayStatus = GamePlayStatus.Ongoing;
+
+            onGoingGameRoom.ChatMessages.Add(new Chat()
+            {
+                CreateDate = DateTime.Now
+                ,CreatedByUser = "server"
+                ,Message = $"{request.IdentityUserName} reconnected."
+            });
+
+            var initialWhite = new PiecesInitialPositionWhite();
+            var initialBlack = new PiecesInitialPositionBlack();
+
+            bool whiteKingHasMoved = (
+                onGoingGameRoom.BothKingsState.White.X != initialWhite.wKing.X ||
+                onGoingGameRoom.BothKingsState.White.Y != initialWhite.wKing.Y
+            );
+
+            bool blackKingHasMoved = (
+                onGoingGameRoom.BothKingsState.Black.X != initialBlack.bKing.X ||
+                onGoingGameRoom.BothKingsState.Black.Y != initialBlack.bKing.Y
+            );
+
+            var currentGameInfo = new CurrentGameInfo()
+            {
+                GameRoomKey = onGoingGameRoom.GameKey,
+                MoveCountSinceLastCapture = onGoingGameRoom.MoveCountSinceLastCapture,
+                CreatedByUserInfo = onGoingGameRoom.CreatedByUserInfo,
+                JoinedByUserInfo = onGoingGameRoom.JoinByUserInfo,
+                GameType = onGoingGameRoom.GameType,
+                PiecesCoordinatesInitial = onGoingGameRoom.PiecesCoords,
+                BothKingsState = onGoingGameRoom.BothKingsState,
+                Reconnect = request.Reconnect,
+                WhiteKingHasMoved = whiteKingHasMoved,
+                BlackKingHasMoved = blackKingHasMoved,
+                MoveHistory = onGoingGameRoom.MoveHistory,
+                CaptureHistory = onGoingGameRoom.CaptureHistory
+            };
+
+            return currentGameInfo;
         }
 
         public async Task EndGame(IServiceScope scope, GameRoom room, EndGameStatus finalGameStatus)
@@ -161,7 +290,7 @@ namespace online_chess.Server.Service
 
             await mainDbContext.SaveChangesAsync();
 
-            room.ChatMessages.Add(new Models.Play.Chat(){
+            room.ChatMessages.Add(new Chat(){
                 CreateDate = DateTime.Now,
                 CreatedByUser = "server",
                 Message = finalMessage
@@ -171,11 +300,9 @@ namespace online_chess.Server.Service
                 
             await hubContext.Clients.Group(room.GameKey.ToString()).SendAsync(RoomMethods.onGameOver, finalGameStatus);
 
-            if (room.TimerId != null){
-                room.TimerId.Dispose();
-            }
+            room.TimerId?.Dispose();
 
-            this.Remove(room.GameKey);
+            Remove(room.GameKey);
             _timerService.RemoveTimer(room.GameKey);
         }
 

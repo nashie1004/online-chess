@@ -1,14 +1,8 @@
-﻿using System;
-using System.Text.Json;
-using MediatR;
-using Microsoft.AspNetCore.Identity;
+﻿using MediatR;
 using Microsoft.AspNetCore.SignalR;
 using online_chess.Server.Enums;
 using online_chess.Server.Hubs;
-using online_chess.Server.Models;
-using online_chess.Server.Models.Entities;
 using online_chess.Server.Models.Play;
-using online_chess.Server.Persistence;
 using online_chess.Server.Service;
 
 namespace online_chess.Server.Features.Game.Commands.MovePiece
@@ -52,10 +46,6 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
 
             var capturedPiece = room.MovePiece(whitesOrientationMoveInfo, request, pieceMoveIsWhite, isRoomCreator);
 
-            if (room.MoveCountSinceLastCapture > 50 && room.MoveCountSinceLastPawnMove != 0){
-                // TODO 50 move rule
-            }
-            
             if (room.TimerId != null)
             {
                 room.TimerId.Dispose();
@@ -67,7 +57,7 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
                 CreatorsTurn = !isRoomCreator,
                 ServiceScope = _serviceProvider.CreateScope()
             }, 0, 1000);
-
+            
             var retVal = new UpdateBoardInfo(){
                 MoveInfo = invertedMoveInfo
                 , MoveIsWhite = pieceMoveIsWhite
@@ -78,7 +68,31 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
             };
 
             await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync(RoomMethods.onUpdateBoard, retVal);
-            
+
+            // TODO 3/5/2025: Double check this
+
+            if (room.BothKingsState.White.IsCheckmate || room.BothKingsState.Black.IsCheckmate)
+            {
+                await _gameRoomService.EndGame(_serviceProvider.CreateScope(), room
+                    , room.BothKingsState.White.IsCheckmate ? EndGameStatus.CreatorIsCheckmated : EndGameStatus.JoinerIsCheckmated
+                );
+            }
+
+            if (room.BothKingsState.White.IsInStalemate || room.BothKingsState.Black.IsInStalemate)
+            {
+                await _gameRoomService.EndGame(_serviceProvider.CreateScope(), room, EndGameStatus.DrawByStalemate);
+            }
+
+            if (room.MoveCountSinceLastCapture > 50 && room.MoveCountSinceLastPawnMove != 0)
+            {
+                await _gameRoomService.EndGame(_serviceProvider.CreateScope(), room, EndGameStatus.DrawBy50MoveRule);
+            }
+
+            if (room.LastFewMovesAreTheSame > 3)
+            {
+                await _gameRoomService.EndGame(_serviceProvider.CreateScope(), room, EndGameStatus.DrawByThreeFoldRepetition);
+            }
+
             return Unit.Value;
         }
 
@@ -127,6 +141,7 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
 
         public async void UpdateTimer(object? state)
         {
+            if (state == null) return;
             var timerState = (TimerState)state;
             if (timerState == null) return;
 
@@ -139,7 +154,6 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
             double creatorSecondsLeft = timer.Item1;
             double joinerSecondsLeft = timer.Item2;
 
-            var roomStatus = room.GamePlayStatus;
             var playerSecondsLeft = creatorsTurn ? creatorSecondsLeft : joinerSecondsLeft;
 
             var retVal = new
@@ -168,7 +182,6 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
             , creatorSecondsLeft, joinerSecondsLeft, playerSecondsLeft);
 
             // for every 30 seconds check if the game is finished
-            bool gameFinished = false;
             if (playerSecondsLeft % 30 == 0)
             {
                 var gameRoom = _gameRoomService.GetOne(room.GameKey);
@@ -177,36 +190,18 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
 
                 if (gameRoom == null)
                 {
-                    gameFinished = true;
+                    room.TimerId?.Dispose();
                 }
 
-                if (gameRoom != null && gameRoom.GamePlayStatus == GamePlayStatus.Finished)
-                {
-                    gameFinished = true;
-                }
-
-                if (gameRoom != null)
-                {
-                    roomStatus = gameRoom.GamePlayStatus;
-                }
-            }
-
-            if (roomStatus == GamePlayStatus.Finished)
-            {
-                gameFinished = true;
-            }
-
-            if (gameFinished)
-            {
-                _logger.LogInformation("Game done: {0}, Date ended: {1}", room.GameKey, DateTime.Now);
-                room.TimerId.Dispose();
-                // await _hubContext.Clients.Group(room.GameKey.ToString()).SendAsync("", "");
             }
 
             if (playerSecondsLeft < 0)
             {
                 _logger.LogInformation("0 seconds left Game Ended: {0}", playerSecondsLeft);
-                _gameRoomService.EndGame(scope, room, );
+
+                await _gameRoomService.EndGame(scope, room
+                    , creatorsTurn ? EndGameStatus.CreatorTimeIsUp : EndGameStatus.JoinerTimeIsUp
+                ); 
             }
             
         }

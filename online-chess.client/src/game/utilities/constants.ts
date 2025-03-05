@@ -119,3 +119,7 @@ export enum EndGameStatus{
     DrawBy50MoveRule,
     DrawByThreeFoldRepetition
 }
+
+export enum GameStatus{
+    Won, Lose, Draw
+}

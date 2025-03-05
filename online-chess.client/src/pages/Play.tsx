@@ -3,7 +3,7 @@ import SidebarRight from "../components/play/SidebarRight";
 import CaptureHistory from "../components/play/CaptureHistory";
 import { useSearchParams } from "react-router";
 import useSignalRContext from "../hooks/useSignalRContext";
-import OutcomeModal from "../components/play/OutcomeModal";
+import GameOutcomeModal from "../components/play/GameOutcomeModal";
 import useOnInitializeGameInfo from "../game/signalRhandlers/useOnInitializeGameInfo";
 import useOnUpdateBoard from "../game/signalRhandlers/useOnUpdateBoard";
 import useOpponentDrawRequest from "../game/signalRhandlers/useOpponentDrawRequest";
@@ -92,7 +92,7 @@ export default function Main(){
         <div className="col">
             <SidebarRight />
         </div>
-        <OutcomeModal />
+        <GameOutcomeModal />
         <GameLoading />
         <DrawRequestModal />
         <PromotionPicker />

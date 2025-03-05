@@ -26,6 +26,7 @@ namespace online_chess.Server.Models
         public List<BaseMoveInfo> CaptureHistory { get; set; }
         public int MoveCountSinceLastCapture { get; set; } // For 50 move rule
         public int MoveCountSinceLastPawnMove { get; set; } // For 50 move rule
+        public int LastFewMovesAreTheSame { get; set; } // For threefold repetition rule
 
         public GameRoom()
         {

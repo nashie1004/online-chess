@@ -270,6 +270,10 @@ export class MainGameScene extends Scene{
         eventEmitter.on(EVENT_ON.SET_BOTH_KINGS_STATE, (data: IKingState) => {
             this.bothKingsState = data;
         });
+        eventEmitter.on("todo - set ui", (data: any) => {
+            // this.bothKingsState = data;
+            // TODO 3/5/2025
+        });
     }
 
     resetMoves(){
