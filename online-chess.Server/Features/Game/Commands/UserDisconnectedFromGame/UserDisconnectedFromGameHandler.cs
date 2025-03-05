@@ -35,13 +35,13 @@ namespace online_chess.Server.Features.Game.Commands.UserDisconnectedFromGame
             var ongoingGameRoom = _gameRoomService.GetRoomByEitherPlayer(request.IdentityUserName);
             if (ongoingGameRoom == null) return Unit.Value;
 
-            if (
-                ongoingGameRoom.GamePlayStatus == GamePlayStatus.CreatorDisconnected
-                || ongoingGameRoom.GamePlayStatus == GamePlayStatus.JoinerDisconnected
-            ){
-                await _gameRoomService.EndGame(_serviceProvider.CreateScope(), ongoingGameRoom, EndGameStatus.DrawBothPlayerDisconnected);
-                return Unit.Value;
-            }
+            // if (
+            //     ongoingGameRoom.GamePlayStatus == GamePlayStatus.CreatorDisconnected
+            //     || ongoingGameRoom.GamePlayStatus == GamePlayStatus.JoinerDisconnected
+            // ){
+            //     await _gameRoomService.EndGame(_serviceProvider.CreateScope(), ongoingGameRoom, EndGameStatus.DrawBothPlayerDisconnected);
+            //     return Unit.Value;
+            // }
 
             if (request.IdentityUserName == ongoingGameRoom.CreatedByUserId)
             {

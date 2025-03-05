@@ -8,6 +8,7 @@ export default function ChatHeaderAndPromotionBtn() {
       <div>
         <i 
           id="option-gear"
+          style={{ color: "#A8A8A7", fontSize: "1.5rem", cursor: "pointer" }}
           className="bi bi-gear ps-2" 
           onClick={() => {
             setGameState({ type: "SET_OPENOPTIONMODAL", payload: true });

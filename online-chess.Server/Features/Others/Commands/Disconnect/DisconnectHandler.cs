@@ -64,6 +64,7 @@ namespace online_chess.Server.Features.Others.Commands.Disconnect
             if (ongoingGameRoom == null) return Unit.Value;
 
             // 3.1 ongoing game but the other player is also disconnected
+            /*
             if (
                 ongoingGameRoom.GamePlayStatus == GamePlayStatus.CreatorDisconnected
                 || ongoingGameRoom.GamePlayStatus == GamePlayStatus.JoinerDisconnected
@@ -72,6 +73,7 @@ namespace online_chess.Server.Features.Others.Commands.Disconnect
 
                 return Unit.Value;
             }
+            */
 
             // 3.2 ongoing game but the other player is not disconnected
             if (ongoingGameRoom.GamePlayStatus == GamePlayStatus.Ongoing){

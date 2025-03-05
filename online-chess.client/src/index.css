@@ -234,11 +234,7 @@ input:disabled::placeholder {
   padding: 1rem;
   /* padding-block: 0; */
 }
-.sidebar #option-gear{
-  color: "#A8A8A7";
-  font-size: 1.5rem;
-  cursor: pointer;
-}
+
 .sidebar #option-gear:hover{
   opacity: .75;
 }

@@ -8,6 +8,8 @@ import { PromotionPrefence } from "../../game/utilities/constants";
 import { PromoteOptions } from "../../game/utilities/types";
 import useGameContext from "../../hooks/useGameContext";
 import { PLAY_PAGE_INVOKERS } from "../../constants/invokers";
+import { EVENT_ON } from "../../constants/emitters";
+import { eventEmitter } from "../../game/utilities/eventEmitter";
 
 export default function GameUIChanger(){
   const { setValue: setBoard, data: board } = useLocalStorage("board", "green.png");
@@ -50,6 +52,7 @@ export default function GameUIChanger(){
                             disabled={!userConnectionId}
                             onChange={(e) => {
                                 setBoard(e.target.value);
+                                eventEmitter.emit(EVENT_ON.SET_BOARD_UI, e.target.value);
                             }}
                             value={board}
                             className='w-100'>
@@ -64,6 +67,7 @@ export default function GameUIChanger(){
                             disabled={!userConnectionId}
                             onChange={(e) => {
                                 setPiece(e.target.value);
+                                eventEmitter.emit(EVENT_ON.SET_PIECE_UI, e.target.value);
                             }}
                             value={piece}
                             className='w-100'>
