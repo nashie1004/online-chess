@@ -85,19 +85,11 @@ export class MainGameScene extends Scene{
 
         pieceNamesV2.forEach(piece => {
             this.load.svg(
-                piece.fullName
+                `${this.piecesUI}-${piece.fullName}`
                 , `/src/assets/pieces/${this.piecesUI}/${piece.shortName}.svg`
                 , { width: this.tileSize, height: this.tileSize }
             );
         });
-
-        /*
-        Object.entries(pieceImages).forEach(([pieceName, imagePath]) => {
-            const blob = new Blob([imagePath], { type: 'image/svg+xml' });
-            const url = URL.createObjectURL(blob);
-            this.load.svg(pieceName, url, { width: this.tileSize, height: this.tileSize })
-        });
-        */
     }
 
     getMinSize(){
@@ -167,7 +159,7 @@ export class MainGameScene extends Scene{
             });
 
             const sprite = this.add
-                .sprite(x * this.tileSize, y * this.tileSize, name.toString(), 1)
+                .sprite(x * this.tileSize, y * this.tileSize, `${this.piecesUI}-${name}`, 1)
                 .setOrigin(0, 0)
                 .setName(uniqueName)
                 .setInteractive({  cursor: "pointer" })
@@ -275,38 +267,36 @@ export class MainGameScene extends Scene{
             this.boardUI = data;
 
             this.load.once("complete", () => {
-                board.setTexture(this.boardUI)
-                    .setDisplaySize(this.getMinSize(), this.getMinSize())
-                ;
+                board.setTexture(this.boardUI).setDisplaySize(this.getMinSize(), this.getMinSize());
             });
 
             this.load.image(this.boardUI, `/src/assets/boards/${this.boardUI}`);
             this.load.start();
-
         });
         eventEmitter.on(EVENT_ON.SET_PIECE_UI, (data: string) => {
             this.piecesUI = data;
 
-            // this.load.once("complete", () => {
-            //     [...this.piecesCoordinates_Internal.white, ...this.piecesCoordinates_Internal.black].forEach(piece => {
-            //         const { x, y } = piece;
-            //         if () return;
-
-            //         //console.log(sprite.name, sprite.name.split("-")[0])
-            //         sprite.setTexture(sprite.name.split("-")[0]);
-            //     });
+            this.load.once("complete", () => {
                 
-            // });
+                [...this.piecesCoordinates_Internal.white, ...this.piecesCoordinates_Internal.black].forEach(piece => {
+                    const { x, y } = piece;
+                    const sprite = this.board[x][y];
+                    if (!sprite) return;
+
+                    sprite.setTexture(`${this.piecesUI}-${sprite.name.split("-")[0]}`);
+                });
+                
+            });
             
-            // pieceNamesV2.forEach(piece => {
-            //     //console.log(piece.fullName)
-            //     this.load.svg(
-            //         piece.fullName
-            //         , `/src/assets/pieces/${this.piecesUI}/${piece.shortName}.svg`
-            //         , { width: this.tileSize, height: this.tileSize }
-            //     );
-            // });
-            // this.load.start();
+            pieceNamesV2.forEach(piece => {
+                this.load.svg(
+                    `${this.piecesUI}-${piece.fullName}`
+                    , `/src/assets/pieces/${this.piecesUI}/${piece.shortName}.svg`
+                    , { width: this.tileSize, height: this.tileSize }
+                );
+            });
+
+            this.load.start();
         });
     }
 
@@ -320,8 +310,8 @@ export class MainGameScene extends Scene{
                 if (this.previewBoard[colIdx][rowIdx].visible){
                     this.previewBoard[colIdx][rowIdx].setVisible(false);
                 }
-            })
-        })
+            });
+        });
     }
 
     move(newX: number, newY: number){
