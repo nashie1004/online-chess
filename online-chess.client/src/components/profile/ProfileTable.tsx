@@ -59,8 +59,8 @@ export default function ProfileTable(){
           <th className="col-1">
             <i className="bi bi-hash" style={{ color: "#FFFFFF",  }}></i>
           </th>
-          <th className="col-2">
-            <i className="bi bi-question-circle"  style={{ color: "#FFFFFF",  }}></i> Game Status
+          <th className="col-1">
+            <i className="bi bi-question-circle"  style={{ color: "#FFFFFF",  }}></i> Status
           </th>
           <th className="col-1">
             <i className="bi bi-circle-half"  style={{ color: "#FFFFFF",  }}></i> Color
@@ -68,11 +68,14 @@ export default function ProfileTable(){
           <th className="col-3">
             <i className="bi bi-hourglass"  style={{ color: "#FFFFFF",  }}></i> Game Type
           </th>
-          <th className="col-3">
+          <th className="col-2">
             <i className="bi bi-person"  style={{ color: "#FFFFFF",  }}></i> Opponent
           </th>
           <th className="col-2">
             <i className="bi bi-calendar2-fill" style={{color: "#FFFFFF"}}></i> Date 
+          </th>
+          <th className="col-2">
+            <i className="bi bi-pencil-fill" style={{color: "#FFFFFF"}}></i> Remarks 
           </th>
         </tr>
       </thead>
@@ -88,6 +91,7 @@ export default function ProfileTable(){
             <td>{gameTypeDisplay(item.gameType)}</td>
             <td>{item.opponentName}</td>
             <td>{moment(item.gameDate).fromNow()}</td>
+            <td>{item.remarks}</td>
           </tr>
         })}
       </tbody>

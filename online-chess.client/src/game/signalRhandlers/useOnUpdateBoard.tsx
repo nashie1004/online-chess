@@ -15,6 +15,12 @@ export default function useOnUpdateBoard(){
 
         const { moveInfo, moveIsWhite, capturedPiece } = data;
 
+        const newMoveHistoryRecord: IMoveHistoryAppend = { moveInfo: data.moveHistoryLatestMove, moveIsWhite };
+
+        setGameState({ type: "SET_MOVEHISTORY_APPEND", payload: newMoveHistoryRecord });
+
+        eventEmitter.emit(EVENT_EMIT.SET_MOVE_HISTORY_APPEND, newMoveHistoryRecord);
+
         const opponentsTurn = (!moveIsWhite && !gameStateRef.current.opponentInfo.playerIsWhite) ||
             (moveIsWhite && gameStateRef.current.opponentInfo.playerIsWhite);
 
@@ -30,12 +36,6 @@ export default function useOnUpdateBoard(){
         if (capturedPiece){
             setGameState({ type: "SET_CAPTUREHISTORY_APPEND", payload: capturedPiece });
         }
-
-        const newMoveHistoryRecord: IMoveHistoryAppend = { moveInfo: data.moveHistoryLatestMove, moveIsWhite };
-
-        setGameState({ type: "SET_MOVEHISTORY_APPEND", payload: newMoveHistoryRecord });
-
-        eventEmitter.emit(EVENT_EMIT.SET_MOVE_HISTORY_APPEND, newMoveHistoryRecord);
 
         if (!gameStateRef.current.myInfo.playerIsWhite){
             data.bothKingsState.white.x = Math.abs(7 - data.bothKingsState.white.x);

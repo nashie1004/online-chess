@@ -4,18 +4,15 @@ export default function ChatHeaderAndPromotionBtn() {
   const { setGameState } = useGameContext();
 
   return (
-    <div className='hstack justify-content-between ps-2 sidebar-bar'>
+    <div className='hstack justify-content-between sidebar-bar'>
       <div>
-        <i className="bi bi-chat-fill ps-2" style={{color: "#A8A8A7", fontSize: "1.5rem"}}></i>
-        <span style={{ color: "#F5F5F5"}}>&nbsp; Chat</span>
-      </div>
-      <div>
-        <span className='text-white'>Promote to</span>
-        <button 
+        <i 
+          id="option-gear"
+          className="bi bi-gear ps-2" 
           onClick={() => {
-            setGameState({ type: "SET_MYINFO_OPENPROMOTIONMODAL", payload: true });
+            setGameState({ type: "SET_OPENOPTIONMODAL", payload: true });
           }}
-          className='btn btn-2'>Pawn</button>
+        />
       </div>
     </div>
   )

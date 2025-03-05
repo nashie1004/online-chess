@@ -19,7 +19,8 @@ WITH MainQuery AS (
             WHEN G.PlayerTwoId = @PlayerId THEN P1.UserName
             ELSE ''
         END) AS OpponentName,
-        G.GameStartDate AS GameDate
+        G.GameStartDate AS GameDate,
+        G.Remarks
     FROM GameHistories G
     LEFT JOIN AspNetUsers P1 ON P1.Id = G.PlayerOneId
     LEFT JOIN AspNetUsers P2 ON P2.Id = G.PlayerTwoId
@@ -32,7 +33,8 @@ SELECT
     IsColorWhite,
     GameType,
     OpponentName,
-    GameDate
+    GameDate,
+    Remarks
 FROM MainQuery 
 ORDER BY GameDate DESC
 LIMIT @PageSize OFFSET @PaginationOffset;

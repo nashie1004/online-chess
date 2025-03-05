@@ -145,6 +145,7 @@ export interface IGameHistory{
     gameType: GameType;
     opponentName: string;
     gameDate: Date;
+    remarks: string;
 }
 
 export interface IGameHistoryList{
@@ -166,7 +167,6 @@ export interface IPlayerInfo{
     isOfferingADraw: boolean;
     resign: boolean;
     promotePawnTo: PromotionPrefence;
-    openPromotionModal: boolean
 }
 
 export interface PromoteOptions{
