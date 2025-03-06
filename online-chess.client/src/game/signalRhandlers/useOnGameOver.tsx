@@ -12,7 +12,7 @@ export default function useOnGameOver(){
         setGameState({ type: "SET_CLEARGAMESTATE" });
         setGameState({ type: "SET_GAMESTATUS", payload: "FINISHED" });
         
-        // TODO 3/5/2025
+        // TODO 3/6/2025 1PM
         /*
         switch(outcome){
             case GameStatus.Won:

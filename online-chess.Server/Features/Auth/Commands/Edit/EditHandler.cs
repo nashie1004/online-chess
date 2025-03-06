@@ -75,6 +75,12 @@ public class EditHandler : IRequestHandler<EditRequest, EditResponse>
                 }
             }
 
+            // edit / upload profile image url
+            if (!string.IsNullOrEmpty(req.ProfileImageUrl)){
+                // TODO 3/6/2025
+                //user.ProfileImageUrl = req.ProfileImageUrl;
+            }
+
         } 
         catch (Exception err){
             retVal.ValidationErrors.Add(err.Message);

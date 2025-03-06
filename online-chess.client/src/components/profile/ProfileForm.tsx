@@ -47,7 +47,7 @@ export default function ProfileForm(){
       if (!userConnectionId) return;
 
       const res = await profileService.basePost("/api/Auth/edit", {
-        oldUserName: user?.userName, ...data 
+        oldUserName: user?.userName, ...data , profileImageUrl: "todo" 
       });
           
       setNotificationState({ 

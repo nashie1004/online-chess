@@ -28,6 +28,7 @@ export class MainGameScene extends Scene{
     private piecesCoordinates_Internal: IPiecesCoordinates;
     private promotePreference: PlayersPromotePreference; 
     private bothKingsPosition: IBothKingsPosition;
+    private isPlayersTurnToMove: boolean;
 
     // 2. internal state
     private readonly tileSize: number;
@@ -35,8 +36,6 @@ export class MainGameScene extends Scene{
     private readonly boardOrientationIsWhite: boolean;
     private readonly board: (null | GameObjects.Sprite)[][];
     private selectedPiece: IMoveInfo | null;
-    private isPlayersTurnToMove: boolean;
-
     private userIsConnected: boolean;
 
     // 3. user preference
@@ -59,15 +58,14 @@ export class MainGameScene extends Scene{
         this.piecesCoordinates_Internal = { white: [], black: [] };
         this.promotePreference = promotePreference;
         this.bothKingsPosition = bothKingsPosition;
+        this.isPlayersTurnToMove = isPlayersTurnToMove;
 
         // 2. internal state
-        this.isPlayersTurnToMove = isPlayersTurnToMove;
         this.boardOrientationIsWhite = isColorWhite;
         this.selectedPiece = null;
         this.tileSize = 100;
         this.board = Array.from({ length: 8 }).map(_ => new Array(8).fill(null)); // creates 8x8 grid
         this.previewBoard = Array.from({ length: 8 }).map(_ => new Array(8));
-
         this.userIsConnected = userIsConnected;
 
         // 3. user prefernce
@@ -240,7 +238,7 @@ export class MainGameScene extends Scene{
             
             this.promotePreference[isWhite ? "white" : "black"] = preference;
         });
-        eventEmitter.on(EVENT_ON.SET_ENEMY_MOVE, (data: IPieceMove) => {
+        eventEmitter.on(EVENT_ON.SET_ENEMY_MOVE, (data: IPieceMove) => {1
             this.selectedPiece = {
                 x: data.old.x,
                 y: data.old.y,
@@ -253,12 +251,8 @@ export class MainGameScene extends Scene{
             this.isPlayersTurnToMove = true;
         });
         eventEmitter.on(EVENT_ON.SET_MOVE_HISTORY_APPEND, (data: IMoveHistoryAppend) => {
-            if (data.moveIsWhite){
-                this.moveHistory.white.push(data.moveInfo);
-                return;
-            }
-            
-            this.moveHistory.black.push(data.moveInfo);
+            const { moveIsWhite, moveInfo } = data;
+            this.moveHistory[moveIsWhite ? "white" : "black"].push(moveInfo);
         });
         eventEmitter.on(EVENT_ON.SET_BOTH_KINGS_STATE, (data: IKingState) => {
             this.bothKingsState = data;
@@ -356,7 +350,7 @@ export class MainGameScene extends Scene{
 
         // some special logic
         promote = (new PawnPromote(
-            this.boardOrientationIsWhite, this.promotePreference, this.piecesCoordinates_Internal 
+            this.boardOrientationIsWhite, this.promotePreference, this.piecesCoordinates_Internal, this.piecesUI
         )).pawnPromote(uniquePieceName, newX, newY, isWhite, sprite);
 
         const kingCastled = (new KingCastled(

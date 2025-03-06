@@ -36,8 +36,7 @@ after that, the web application should now be running.
 ## Credits
 All [board](https://github.com/lichess-org/lila/blob/master/public/images/board/), [pieces](https://github.com/lichess-org/lila/blob/master/public/piece/), and [sound](https://github.com/lichess-org/lila/blob/master/public/sound/) assets are sourced from [Lichess](https://github.com/lichess-org/lila) Github repo. Custom asset(s) and logo(s) were created using [Piskel](https://www.piskelapp.com/) and [SVGRepo](https://www.svgrepo.com/svg/509810/chess-board).
 
-
-### SQLite
+## SQLite
 ```
 cd /online-chess.Server/SQLiteDB
 C:/Users/Nash/Downloads/sqlite-tools-win-x64-3480000/sqlite3.exe app.db
@@ -45,19 +44,18 @@ C:/Users/Nash/Downloads/sqlite-tools-win-x64-3480000/sqlite3.exe app.db
 
 ## MVP (BUGS)
 1. en passant - reconnect false and true
-2. main chess moves have no bugs
+2. castling bug incorrect coordinates?
 
 ## MVP (FEATURES)
 1. display move turn, check, checkmate, stalemate, draw agree - revamp, reconnect false and true - DOING
 2. add profile image
-3. simple chess move notation
-4. board coordinates
+3. board coordinates
 
 ## DEPLOYMENT
 1. expose ports with a simple html file
-2. transfer files and setup NGINX
-3. add SSL for https
-
+2. transfer files and setup NGINX React
+3. transfer files and setup NGINX Server
+4. add SSL for https
 
 ## OTHER (FEATURES)
 1. fifty move rule
@@ -69,6 +67,7 @@ C:/Users/Nash/Downloads/sqlite-tools-win-x64-3480000/sqlite3.exe app.db
 9. fix types
 10. clean code
 11. emoji
+12. google oauth
 
 ## MAIN TODOS
 1. handle disconnect / leave logic

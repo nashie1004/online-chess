@@ -9,4 +9,5 @@ public class EditRequest : IRequest<EditResponse>
     public string NewUsername { get; set; }
     public string OldPassword { get; set; }
     public string NewPassword { get; set; }
+    public string ProfileImageUrl { get; set; }
 }

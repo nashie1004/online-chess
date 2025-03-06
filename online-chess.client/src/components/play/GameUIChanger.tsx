@@ -43,7 +43,7 @@ export default function GameUIChanger(){
             >
             <Modal.Body>
                 <div className="m-header">
-                    <h5><i className="bi bi-gear pe-1"  style={{ color: "#FFFFFF" }} /> Game Options</h5>
+                    <h5><i className="bi bi-gear pe-1"  style={{ color: "#FFFFFF" }} /> Game Settings</h5>
                 </div>
                 <Form className='m-body'>
                     <Form.Group className="mb-3 d-flex">
@@ -86,6 +86,7 @@ export default function GameUIChanger(){
                                     src={item.assetURL}
                                     className={item.name === selectedOption ? "selected-promote-option" : ""}
                                     onClick={() => {
+                                        if (!userConnectionId) return;
                                         setSelectedOption(item.name);  
                                         invoke(PLAY_PAGE_INVOKERS.SET_PROMOTION_PREFERENCE, gameState.gameRoomKey, selectedOption);
                                     }}

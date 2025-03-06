@@ -12,13 +12,11 @@ export default function Home() {
         gameTypeLabel="CLASSICAL" 
         icon="bi bi-hourglass" 
       />
-      {/** Blitz 3 and 5 mins */}
       <GameTypeTable 
         gameType={GameType.Blitz3Mins} 
         gameTypeLabel="BLITZ" 
         icon="bi bi-fire" 
       />
-      {/** Rapid 10 and 25 mins */}
       <GameTypeTable 
         gameType={GameType.Rapid10Mins} 
         gameTypeLabel="RAPID" 
