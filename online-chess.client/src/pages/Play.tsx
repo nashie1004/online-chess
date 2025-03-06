@@ -3,7 +3,7 @@ import SidebarRight from "../components/play/SidebarRight";
 import CaptureHistory from "../components/play/CaptureHistory";
 import { useSearchParams } from "react-router";
 import useSignalRContext from "../hooks/useSignalRContext";
-import OutcomeModal from "../components/play/OutcomeModal";
+import GameOutcomeModal from "../components/play/GameOutcomeModal";
 import useOnInitializeGameInfo from "../game/signalRhandlers/useOnInitializeGameInfo";
 import useOnUpdateBoard from "../game/signalRhandlers/useOnUpdateBoard";
 import useOpponentDrawRequest from "../game/signalRhandlers/useOpponentDrawRequest";
@@ -13,7 +13,6 @@ import useGameContext from "../hooks/useGameContext";
 import GameLoading from "../components/play/GameLoading";
 import DrawRequestModal from "../components/play/DrawRequestModal";
 import useOnDeclineDraw from "../game/signalRhandlers/useOnDeclineDraw";
-import PromotionPicker from "../components/play/PromotionPickerModal";
 import useOnSetPromotionPreference from "../game/signalRhandlers/useOnSetPromotionPreference";
 import useNotificationContext from "../hooks/useNotificationContext";
 import useQueuingContext from "../hooks/useQueuingContext";
@@ -21,6 +20,7 @@ import { PLAY_PAGE_INVOKERS } from "../constants/invokers";
 import { PLAY_PAGE_HANDLERS } from "../constants/handlers";
 import { eventEmitter } from "../game/utilities/eventEmitter";
 import useOnUserIsConnected from "../game/signalRhandlers/useOnUserIsConnected";
+import GameUIChanger from "../components/play/GameUIChanger";
 
 export default function Main(){
     const gameRef = useRef<Phaser.Game | null>();
@@ -92,9 +92,9 @@ export default function Main(){
         <div className="col">
             <SidebarRight />
         </div>
-        <OutcomeModal />
+        <GameOutcomeModal />
         <GameLoading />
         <DrawRequestModal />
-        <PromotionPicker />
+        <GameUIChanger />
     </>
 }

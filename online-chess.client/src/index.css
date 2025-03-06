@@ -234,6 +234,10 @@ input:disabled::placeholder {
   padding: 1rem;
   /* padding-block: 0; */
 }
+
+.sidebar #option-gear:hover{
+  opacity: .75;
+}
 .match-form-body{
   padding-top: 1rem;
 }
@@ -339,17 +343,17 @@ div.modal-content
 }
 #promotion-picker-modal .m-body{
 }
-#promotion-picker-modal .m-body img{
-  min-height: 80px;
+.m-body img{
+  min-height: 65px;
   width: 100%;
-  max-width: 80px;
+  max-width: 65px;
 }
-#promotion-picker-modal .m-body img:hover{
+.m-body img:hover{
   opacity: .85;
   cursor: pointer;
 }
 
-#promotion-picker-modal .m-body .selected-promote-option{
+.m-body .selected-promote-option{
   border: 2px solid var(--text-1); /* Green outline for contrast */
 }
 

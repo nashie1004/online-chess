@@ -24,10 +24,6 @@ export enum GameType{
     Rapid25Mins = 5,
 }
 
-export enum GameStatus{
-    Won, Lose, Draw
-}
-
 export enum ColorOptions{
     White = 1,
     Black = 2,
@@ -71,7 +67,6 @@ export const basePlayerInfo: IPlayerInfo = {
     ,isOfferingADraw: false
     ,resign: false
     ,promotePawnTo: PromotionPrefence.Queen
-    ,openPromotionModal: false
 }
 
 export const baseGameState: IGameContextReducerState = {
@@ -83,6 +78,7 @@ export const baseGameState: IGameContextReducerState = {
     ,opponentInfo: basePlayerInfo
     ,gameStatus: "LOADING"
     ,gameType: GameType.Classical
+    ,openOptionModal: false
 };
 
 export const baseNotificationState: INotificationContextReducerState = {
@@ -108,3 +104,22 @@ export enum Capture{
     EnPassant
 }
 
+export enum EndGameStatus{
+    CreatorIsCheckmated,
+    CreatorResigned,
+    CreatorTimeIsUp,
+
+    JoinerIsCheckmated,
+    JoinerResigned,
+    JoinerTimeIsUp,
+
+    DrawByAgreement,
+    DrawByStalemate,
+    DrawBothPlayerDisconnected,
+    DrawBy50MoveRule,
+    DrawByThreeFoldRepetition
+}
+
+export enum GameStatus{
+    Won, Lose, Draw
+}

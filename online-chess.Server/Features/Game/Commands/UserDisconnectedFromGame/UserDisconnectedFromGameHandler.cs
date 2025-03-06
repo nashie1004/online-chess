@@ -13,16 +13,19 @@ namespace online_chess.Server.Features.Game.Commands.UserDisconnectedFromGame
         private readonly GameRoomService _gameRoomService;
         private readonly UserConnectionService _authenticatedUserService;
         private readonly IHubContext<GameHub> _hubContext;
+        private readonly IServiceProvider _serviceProvider;
 
         public UserDisconnectedFromGameHandler(
             GameRoomService gameRoomService
             , UserConnectionService authenticatedUserService
             , IHubContext<GameHub> hubContext
+            , IServiceProvider serviceProvider
             )
         {
             _gameRoomService = gameRoomService;
             _authenticatedUserService = authenticatedUserService;
             _hubContext = hubContext;
+            _serviceProvider = serviceProvider;
         }
 
         public async Task<Unit> Handle(UserDisconnectedFromGameRequest request, CancellationToken ct)
@@ -32,7 +35,13 @@ namespace online_chess.Server.Features.Game.Commands.UserDisconnectedFromGame
             var ongoingGameRoom = _gameRoomService.GetRoomByEitherPlayer(request.IdentityUserName);
             if (ongoingGameRoom == null) return Unit.Value;
 
-            // TODO: 3/4/2025 handle if both player disconnected then end the game
+            // if (
+            //     ongoingGameRoom.GamePlayStatus == GamePlayStatus.CreatorDisconnected
+            //     || ongoingGameRoom.GamePlayStatus == GamePlayStatus.JoinerDisconnected
+            // ){
+            //     await _gameRoomService.EndGame(_serviceProvider.CreateScope(), ongoingGameRoom, EndGameStatus.DrawBothPlayerDisconnected);
+            //     return Unit.Value;
+            // }
 
             if (request.IdentityUserName == ongoingGameRoom.CreatedByUserId)
             {

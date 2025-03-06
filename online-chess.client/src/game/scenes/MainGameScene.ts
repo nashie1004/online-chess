@@ -40,8 +40,8 @@ export class MainGameScene extends Scene{
     private userIsConnected: boolean;
 
     // 3. user preference
-    private readonly boardUI: string;
-    private readonly piecesUI: string;
+    private boardUI: string;
+    private piecesUI: string;
 
     constructor(
         key: string, isColorWhite: boolean, boardUI: string
@@ -76,7 +76,7 @@ export class MainGameScene extends Scene{
     }
 
     preload(){
-        this.load.image("bg", `/src/assets/boards/${this.boardUI}`);
+        this.load.image(this.boardUI, `/src/assets/boards/${this.boardUI}`);
         this.load.image("previewMove", previewMove)
         this.load.audio("move", move);
         this.load.audio("capture", capture);
@@ -85,19 +85,11 @@ export class MainGameScene extends Scene{
 
         pieceNamesV2.forEach(piece => {
             this.load.svg(
-                piece.fullName
+                `${this.piecesUI}-${piece.fullName}`
                 , `/src/assets/pieces/${this.piecesUI}/${piece.shortName}.svg`
                 , { width: this.tileSize, height: this.tileSize }
             );
         });
-
-        /*
-        Object.entries(pieceImages).forEach(([pieceName, imagePath]) => {
-            const blob = new Blob([imagePath], { type: 'image/svg+xml' });
-            const url = URL.createObjectURL(blob);
-            this.load.svg(pieceName, url, { width: this.tileSize, height: this.tileSize })
-        });
-        */
     }
 
     getMinSize(){
@@ -108,10 +100,11 @@ export class MainGameScene extends Scene{
 
     create(){
         const board = this.add
-            .image(this.scale.width / 2, this.scale.height / 2, "bg")
+            .image(this.scale.width / 2, this.scale.height / 2, this.boardUI)
             .setOrigin(0.5) // Center the image
             .setDisplaySize(this.getMinSize(), this.getMinSize())
-
+            .setName("board");
+        
         this.scale.on("resize", () => {
             board.setDisplaySize(this.getMinSize(), this.getMinSize());
         }, this);
@@ -166,7 +159,7 @@ export class MainGameScene extends Scene{
             });
 
             const sprite = this.add
-                .sprite(x * this.tileSize, y * this.tileSize, name.toString(), 1)
+                .sprite(x * this.tileSize, y * this.tileSize, `${this.piecesUI}-${name}`, 1)
                 .setOrigin(0, 0)
                 .setName(uniqueName)
                 .setInteractive({  cursor: "pointer" })
@@ -219,7 +212,7 @@ export class MainGameScene extends Scene{
                     )).showPossibleMoves(pieceName, pieceX, pieceY);
                     
                 });
-                
+            
             this.board[x][y] = sprite;
         });
         
@@ -270,6 +263,41 @@ export class MainGameScene extends Scene{
         eventEmitter.on(EVENT_ON.SET_BOTH_KINGS_STATE, (data: IKingState) => {
             this.bothKingsState = data;
         });
+        eventEmitter.on(EVENT_ON.SET_BOARD_UI, (data: string) => {
+            this.boardUI = data;
+
+            this.load.once("complete", () => {
+                board.setTexture(this.boardUI).setDisplaySize(this.getMinSize(), this.getMinSize());
+            });
+
+            this.load.image(this.boardUI, `/src/assets/boards/${this.boardUI}`);
+            this.load.start();
+        });
+        eventEmitter.on(EVENT_ON.SET_PIECE_UI, (data: string) => {
+            this.piecesUI = data;
+
+            this.load.once("complete", () => {
+                
+                [...this.piecesCoordinates_Internal.white, ...this.piecesCoordinates_Internal.black].forEach(piece => {
+                    const { x, y } = piece;
+                    const sprite = this.board[x][y];
+                    if (!sprite) return;
+
+                    sprite.setTexture(`${this.piecesUI}-${sprite.name.split("-")[0]}`);
+                });
+                
+            });
+            
+            pieceNamesV2.forEach(piece => {
+                this.load.svg(
+                    `${this.piecesUI}-${piece.fullName}`
+                    , `/src/assets/pieces/${this.piecesUI}/${piece.shortName}.svg`
+                    , { width: this.tileSize, height: this.tileSize }
+                );
+            });
+
+            this.load.start();
+        });
     }
 
     resetMoves(){
@@ -282,8 +310,8 @@ export class MainGameScene extends Scene{
                 if (this.previewBoard[colIdx][rowIdx].visible){
                     this.previewBoard[colIdx][rowIdx].setVisible(false);
                 }
-            })
-        })
+            });
+        });
     }
 
     move(newX: number, newY: number){

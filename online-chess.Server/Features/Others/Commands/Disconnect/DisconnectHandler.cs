@@ -14,6 +14,7 @@ namespace online_chess.Server.Features.Others.Commands.Disconnect
         private readonly UserConnectionService _authenticatedUserService;
         private readonly LogInTrackerService _logInTrackerService;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IServiceProvider _serviceProvider;
 
         public DisconnectHandler(
             IHubContext<GameHub> hubContext
@@ -22,6 +23,7 @@ namespace online_chess.Server.Features.Others.Commands.Disconnect
             , GameRoomService gameRoomService
             , LogInTrackerService logInTrackerService
             , IHttpContextAccessor httpContextAccessor
+            , IServiceProvider serviceProvider
             )
         {
             _hubContext = hubContext;
@@ -30,6 +32,7 @@ namespace online_chess.Server.Features.Others.Commands.Disconnect
             _authenticatedUserService = authenticatedUserService;
             _logInTrackerService = logInTrackerService;
             _httpContextAccessor = httpContextAccessor;
+            _serviceProvider = serviceProvider;
         }
 
         public async Task<Unit> Handle(DisconnectRequest request, CancellationToken cancellationToken)
@@ -48,10 +51,32 @@ namespace online_chess.Server.Features.Others.Commands.Disconnect
                 );
             }
 
-            // 2. has an ongoing game
-            var ongoingGameRoom = _gameRoomService.GetRoomByEitherPlayer(request.IdentityUserName);
+            // 2. is logged in
+            bool currentLogIn = _httpContextAccessor.HttpContext?.User?.Identity?.IsAuthenticated ?? false;
 
-            if (ongoingGameRoom != null && ongoingGameRoom.GamePlayStatus == GamePlayStatus.Ongoing){
+            if (currentLogIn)
+            {
+                _logInTrackerService.Remove(request.IdentityUserName);
+            }
+
+            // 3. has an ongoing game
+            var ongoingGameRoom = _gameRoomService.GetRoomByEitherPlayer(request.IdentityUserName);
+            if (ongoingGameRoom == null) return Unit.Value;
+
+            // 3.1 ongoing game but the other player is also disconnected
+            /*
+            if (
+                ongoingGameRoom.GamePlayStatus == GamePlayStatus.CreatorDisconnected
+                || ongoingGameRoom.GamePlayStatus == GamePlayStatus.JoinerDisconnected
+            ){
+                await _gameRoomService.EndGame(_serviceProvider.CreateScope(), ongoingGameRoom, EndGameStatus.DrawBothPlayerDisconnected);
+
+                return Unit.Value;
+            }
+            */
+
+            // 3.2 ongoing game but the other player is not disconnected
+            if (ongoingGameRoom.GamePlayStatus == GamePlayStatus.Ongoing){
                 
                 if (ongoingGameRoom.CreatedByUserId == request.IdentityUserName)
                 {
@@ -70,14 +95,6 @@ namespace online_chess.Server.Features.Others.Commands.Disconnect
 
                 await _hubContext.Clients.Group(ongoingGameRoom.GameKey.ToString())
                     .SendAsync(RoomMethods.onReceiveMessages, ongoingGameRoom.ChatMessages);
-            }
-
-            // 3. is logged in
-            bool currentLogIn = _httpContextAccessor.HttpContext?.User?.Identity?.IsAuthenticated ?? false;
-
-            if (currentLogIn)
-            {
-                _logInTrackerService.Remove(request.IdentityUserName);
             }
 
             return Unit.Value;

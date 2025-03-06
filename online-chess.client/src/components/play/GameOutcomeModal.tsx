@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router';
 import useGameContext from '../../hooks/useGameContext';
 
 
-export default function OutcomeModal(
+export default function GameOutcomeModal(
 ) {
     const navigate = useNavigate();
     const [show, setShow] = useState(false);

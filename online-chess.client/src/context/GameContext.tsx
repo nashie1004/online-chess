@@ -42,11 +42,6 @@ function reducerFn(state: IGameContextReducerState, action: IGameContextReducerA
                     ...state.myInfo, promotePawnTo: action.payload
                 } 
             } 
-        case "SET_MYINFO_OPENPROMOTIONMODAL":
-            return {  ...state, myInfo: {
-                    ...state.myInfo, openPromotionModal: action.payload
-                } 
-            } 
         case "SET_MYINFO_KINGSTATE":
             return {  ...state, myInfo: {
                     ...state.myInfo, kingsState: action.payload
@@ -84,6 +79,8 @@ function reducerFn(state: IGameContextReducerState, action: IGameContextReducerA
                     ...state.myInfo, kingsState: action.payload
                 } 
             }
+        case "SET_OPENOPTIONMODAL":
+            return {  ...state, openOptionModal: action.payload }
         case "SET_GAMESTATUS":
             return {  ...state, gameStatus: action.payload }
         case "SET_GAMETYPE":

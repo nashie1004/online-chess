@@ -13,4 +13,5 @@ public class LeaderboardList
     public int Draws { get; set; }
     public DateTime SinceDate { get; set; }
     public DateTime LastGameDate { get; set; }   
+    public int Elo { get; set; }
 }

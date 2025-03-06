@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { GameStatus } from "../utilities/constants";
+import { EndGameStatus } from "../utilities/constants";
 import useGameContext from "../../hooks/useGameContext";
 import useNotificationContext from "../../hooks/useNotificationContext";
 
@@ -7,11 +7,13 @@ export default function useOnGameOver(){
     const { setGameState, gameState } = useGameContext();
     const { setNotificationState } = useNotificationContext();
 
-    const onGameOver = useCallback((outcome: GameStatus) => {
+    const onGameOver = useCallback((outcome: EndGameStatus) => {
         setNotificationState({ type: "SET_RESETNOTIFICATIONS" });
         setGameState({ type: "SET_CLEARGAMESTATE" });
         setGameState({ type: "SET_GAMESTATUS", payload: "FINISHED" });
         
+        // TODO 3/5/2025
+        /*
         switch(outcome){
             case GameStatus.Won:
                 setGameState({ 
@@ -49,6 +51,7 @@ export default function useOnGameOver(){
 
                 break;
         }
+        */
 
     }, []);
 

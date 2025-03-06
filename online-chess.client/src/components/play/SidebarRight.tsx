@@ -4,10 +4,9 @@ import MoveHistory from './MoveHistory';
 import GameOutcome from './GameOutcome';
 import useGameContext from '../../hooks/useGameContext';
 import { GameType } from '../../game/utilities/constants';
-import ChatHeaderAndPromotionBtn from './ChatHeaderAndPromotionBtn';
 
 export default function SidebarRight() {
-  const { gameState } = useGameContext();
+  const { gameState, setGameState } = useGameContext();
 
   function gameDisplay(){
     switch(gameState.gameType){
@@ -47,7 +46,18 @@ export default function SidebarRight() {
         <MoveHistory />
       </div>
       <div className="sidebar-footer">
-        <ChatHeaderAndPromotionBtn />
+        <div className='hstack justify-content-between sidebar-bar'>
+        <div className=''>
+          <i 
+            id="option-gear"
+            style={{ color: "#A8A8A7", fontSize: "1.5rem", cursor: "pointer" }}
+            className="bi bi-gear ps-2" 
+            onClick={() => {
+              setGameState({ type: "SET_OPENOPTIONMODAL", payload: true });
+            }}
+          />
+        </div>
+      </div>
         <Chatbar />
       </div>
     </div>

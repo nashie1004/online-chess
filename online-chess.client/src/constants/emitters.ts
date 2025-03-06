@@ -9,6 +9,8 @@ export const EVENT_EMIT = {
     ,SET_PROMOTE_TO: "setPromoteTo"
     ,SET_USER_IS_CONNECTED: "setUserIsConnected"
     ,SET_BOTH_KINGS_STATE: "setBothKingsState"
+    ,SET_BOARD_UI: "setBoardUI"
+    ,SET_PIECE_UI: "setPieceUI"
 }
 
 export const EVENT_ON = {
@@ -18,6 +20,8 @@ export const EVENT_ON = {
     ,SET_MOVE_PIECE: "setMovePiece"
     ,SET_USER_IS_CONNECTED: "setUserIsConnected"
     ,SET_BOTH_KINGS_STATE: "setBothKingsState"
+    ,SET_BOARD_UI: "setBoardUI"
+    ,SET_PIECE_UI: "setPieceUI"
 }
 
   

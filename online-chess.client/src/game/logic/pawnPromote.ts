@@ -6,15 +6,18 @@ export default class PawnPromote {
     private readonly boardOrientationIsWhite: boolean;
     private readonly promoteTo: PlayersPromotePreference;
     private readonly pieceCoordinates: IPiecesCoordinates;
+    private readonly piecesUI: string;
 
     constructor(
         boardOrientationIsWhite: boolean,
         promoteTo: PlayersPromotePreference,
-        pieceCoordinates: IPiecesCoordinates
+        pieceCoordinates: IPiecesCoordinates,
+        piecesUI: string
     ) {
         this.boardOrientationIsWhite = boardOrientationIsWhite;
         this.promoteTo = promoteTo;
         this.pieceCoordinates = pieceCoordinates;
+        this.piecesUI = piecesUI;
     }
 
     pawnPromote(pieceName: string, newX: number, newY: number, isWhite: boolean, sprite: GameObjects.Sprite | null){
@@ -42,31 +45,26 @@ export default class PawnPromote {
                     newUniqueName = (isWhite ? PieceNames.wRook : PieceNames.bRook) + `-${newX}-${newY}`; 
                     pieceName = isWhite ? PieceNames.wRook : PieceNames.bRook;
 
-                    sprite.setName(newUniqueName);
-                    sprite.setTexture(pieceName);
                     break;
                 case PromotionPrefence.Knight:
                     newUniqueName = (isWhite ? PieceNames.wKnight : PieceNames.bKnight) + `-${newX}-${newY}`;
                     pieceName = isWhite ? PieceNames.wKnight : PieceNames.bKnight;
 
-                    sprite.setName(newUniqueName);
-                    sprite.setTexture(pieceName);
                     break;
                 case PromotionPrefence.Bishop:
                     newUniqueName = (isWhite ? PieceNames.wBishop : PieceNames.bBishop) + `-${newX}-${newY}`;
                     pieceName = isWhite ? PieceNames.wBishop : PieceNames.bBishop;
                     
-                    sprite.setName(newUniqueName);
-                    sprite.setTexture(pieceName);
                     break;
                 case PromotionPrefence.Queen:
                     newUniqueName = (isWhite ? PieceNames.wQueen : PieceNames.bQueen) + `-${newX}-${newY}`;
                     pieceName = isWhite ? PieceNames.wQueen : PieceNames.bQueen;
 
-                    sprite.setName(newUniqueName);
-                    sprite.setTexture(pieceName);
                     break;
             }
+
+            sprite.setName(newUniqueName);
+            sprite.setTexture(`${this.piecesUI}-${newUniqueName.split("-")[0]}`);
                 
             pawnPromoted = true;
             

@@ -21,6 +21,7 @@ export interface IGameContextReducerState{
     opponentInfo: IPlayerInfo;
     gameStatus: gameStat;
     gameType: GameType;
+    openOptionModal: boolean;
 }
 
 export interface IMoveHistoryAppend{
@@ -40,7 +41,6 @@ export type IGameContextReducerActions =
 | { type: "SET_MYINFO_TIMELEFT"; payload: number }
 | { type: "SET_MYINFO_PROMOTEPAWNTO"; payload: PromotionPrefence }
 | { type: "SET_MYINFO_ISPLAYERSTURN"; payload: boolean } 
-| { type: "SET_MYINFO_OPENPROMOTIONMODAL"; payload: boolean } 
 | { type: "SET_MYINFO_KINGSTATE"; payload: IKing } 
 | { type: "SET_OPPONENTINFO"; payload: IPlayerInfo }
 | { type: "SET_OPPONENTINFO_TIMELEFT"; payload: number }
@@ -48,6 +48,7 @@ export type IGameContextReducerActions =
 | { type: "SET_OPPONENTINFO_ISPLAYERSTURN"; payload: boolean } 
 | { type: "SET_OPPONENTINFO_KINGSTATE"; payload: IKing } 
 
+| { type: "SET_OPENOPTIONMODAL"; payload: boolean }
 | { type: "SET_GAMESTATUS"; payload: gameStat }
 | { type: "SET_CLEARGAMESTATE"; }
 | { type: "SET_OPPONENTINFO_REQUESTDRAW"; payload: boolean }
