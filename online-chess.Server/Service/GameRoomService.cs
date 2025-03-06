@@ -288,6 +288,9 @@ namespace online_chess.Server.Service
                 , Remarks = finalMessage
             });
 
+            // TODO Update ELO
+            //await identityDbContext.GetUserAsync("asd");
+
             await mainDbContext.SaveChangesAsync();
 
             room.ChatMessages.Add(new Chat(){

@@ -82,6 +82,14 @@ export default function ProfileForm(){
             <div className="match-form-body">
               <Row>
                 <Col>
+                  <img src="https://picsum.photos/id/237/150/150" alt="profile-img" className="rounded" />
+                </Col>
+                <Col>
+                  <input type="file" />
+                </Col>
+              </Row>
+              <Row>
+                <Col>
                     <Form.Group className="mb-3">
                     <Form.Label>New Username</Form.Label>
                     <Form.Control 

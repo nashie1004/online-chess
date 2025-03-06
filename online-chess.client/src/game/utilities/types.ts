@@ -117,6 +117,7 @@ export interface ILeaderboard{
     draws: number;
     sinceDate: Date;
     lastGameDate: Date;
+    elo: number;
 }
 
 export interface ILeaderboardList{

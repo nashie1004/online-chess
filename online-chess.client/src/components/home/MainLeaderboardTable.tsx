@@ -59,8 +59,11 @@ export default function MainLeaderboardTable(){
             <th className="col-1">
             <i className="bi bi-bar-chart-fill" style={{ color: "#FFFFFF",  }}></i>
             </th>
-            <th className="col-4">
-              <i className="bi bi-person-fill" style={{color: "#FFFFFF"}}></i> Best Players
+            <th className="col-3">
+              <i className="bi bi-person-fill" style={{color: "#FFFFFF"}}></i> Players
+            </th>
+            <th className="col-1">
+              <i className="bi bi-person-fill" style={{color: "#FFFFFF"}}></i> Elo
             </th>
             <th className="col-1">
               <i className="bi bi-check-lg" style={{color: "#FFFFFF"}}></i> Wins 
@@ -109,6 +112,7 @@ export default function MainLeaderboardTable(){
                   </div>
                 </td>
                 <td>{item.userName}</td>
+                <td>{item.elo}</td>
                 <td className="table-win">{item.wins === 0 ? "-" : item.wins}</td>
                 <td className="table-lose">{item.loses === 0 ? "-" : item.loses}</td>
                 <td className="table-draw">{item.draws === 0 ? "-" : item.draws}</td>

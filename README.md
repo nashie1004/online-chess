@@ -43,24 +43,32 @@ cd /online-chess.Server/SQLiteDB
 C:/Users/Nash/Downloads/sqlite-tools-win-x64-3480000/sqlite3.exe app.db
 ```
 
-# TODOS (BUGS)
+## MVP (BUGS)
 1. en passant - reconnect false and true
-2. display move turn, check, checkmate, stalemate, draw agree - revamp, reconnect false and true - DOING
-3. recheck time is up - no side effects
-4. bug - timer not found on resignation and draw
-5. disconnect - 1. change page, 2. full page reload - DOING
+2. main chess moves have no bugs
 
-## TODOS (FEATURES)
+## MVP (FEATURES)
+1. display move turn, check, checkmate, stalemate, draw agree - revamp, reconnect false and true - DOING
+2. add profile image
+3. simple chess move notation
+4. board coordinates
+
+## DEPLOYMENT
+1. expose ports with a simple html file
+2. transfer files and setup NGINX
+3. add SSL for https
+
+
+## OTHER (FEATURES)
 1. fifty move rule
 2. show proper chess move notation
 3. 3 fold repetition
 4. responsive ui / resizeable board
 5. some framer motion?, more sounds and some phaser effects
 6. use redis
-7. add board coordinates
-8. add profile image
 9. fix types
 10. clean code
+11. emoji
 
 ## MAIN TODOS
 1. handle disconnect / leave logic

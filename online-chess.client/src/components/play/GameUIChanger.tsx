@@ -30,7 +30,7 @@ export default function GameUIChanger(){
       { name: PromotionPrefence.Knight, assetURL: imgFn(playerIsWhite ? "wN" : "bN") },
       { name: PromotionPrefence.Rook, assetURL: imgFn(playerIsWhite ? "wR" : "bR") },
     ]
-  }, [gameState]);
+  }, [piece]);
   
     return <>
         

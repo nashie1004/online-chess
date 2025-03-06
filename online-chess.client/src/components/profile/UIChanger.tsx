@@ -49,9 +49,7 @@ export default function UIChanger() {
             </Form.Select>
           </Form.Group>
           <Form.Group className="mb-3 d-flex">
-            <Form.Label column sm={2}>
-              Piece
-            </Form.Label>
+            <Form.Label column sm={2}>Piece</Form.Label>
             <Form.Select  
               disabled={!userConnectionId}
               onChange={(e) => setPiece(e.target.value)}

@@ -66,6 +66,8 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
             /* Player Reconnects */
             else
             {
+                await _hubContext.Groups.AddToGroupAsync(request.UserConnectionId, request.GameRoomKeyString);
+
                 var currentGameInfo = _gameRoomService.ReconnectToGame(gameRoom, request);
 
                 await _hubContext.Clients.Client(request.UserConnectionId).SendAsync(RoomMethods.onInitializeGameInfo, currentGameInfo);
