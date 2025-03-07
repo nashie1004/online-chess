@@ -117,18 +117,14 @@ namespace online_chess.Server.Service
             gameRoom.CreatedByUserInfo = new PlayerInfo()
             {
                 UserName = gameRoom.CreatedByUserId
-                ,
-                IsPlayersTurnToMove = gameRoom.CreatedByUserColor == Color.White
-                ,
-                IsColorWhite = gameRoom.CreatedByUserColor == Color.White
+                ,IsPlayersTurnToMove = gameRoom.CreatedByUserColor == Color.White
+                ,IsColorWhite = gameRoom.CreatedByUserColor == Color.White
             };
             gameRoom.JoinByUserInfo = new PlayerInfo()
             {
                 UserName = gameRoom.JoinedByUserId
-                ,
-                IsPlayersTurnToMove = gameRoom.CreatedByUserColor != Color.White
-                ,
-                IsColorWhite = gameRoom.CreatedByUserColor != Color.White
+                ,IsPlayersTurnToMove = gameRoom.CreatedByUserColor != Color.White
+                ,IsColorWhite = gameRoom.CreatedByUserColor != Color.White
             };
             gameRoom.ChatMessages = new List<Chat>()
             {

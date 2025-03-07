@@ -60,13 +60,13 @@ function reducerFn(state: IGameContextReducerState, action: IGameContextReducerA
                 } 
             }
         case "SET_OPPONENTINFO_PROMOTEPAWNTO":
-            return {  ...state, myInfo: {
-                    ...state.myInfo, promotePawnTo: action.payload
+            return {  ...state, opponentInfo: {
+                    ...state.opponentInfo, promotePawnTo: action.payload
                 } 
             }
         case "SET_OPPONENTINFO_ISPLAYERSTURN":
-            return {  ...state, myInfo: {
-                    ...state.myInfo, isPlayersTurn: action.payload
+            return {  ...state, opponentInfo: {
+                    ...state.opponentInfo, isPlayersTurn: action.payload
                 } 
             } 
         case "SET_OPPONENTINFO_REQUESTDRAW":
@@ -75,8 +75,8 @@ function reducerFn(state: IGameContextReducerState, action: IGameContextReducerA
                 } 
             }
         case "SET_OPPONENTINFO_KINGSTATE":
-            return {  ...state, myInfo: {
-                    ...state.myInfo, kingsState: action.payload
+            return {  ...state, opponentInfo: {
+                    ...state.opponentInfo, kingsState: action.payload
                 } 
             }
         case "SET_OPENOPTIONMODAL":

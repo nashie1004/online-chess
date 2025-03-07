@@ -13,9 +13,9 @@ export default function useOnUpdateBoard(){
 
     const onUpdateBoard = (data: IOnUpdateBoard) => {
 
-        const { moveInfo, moveIsWhite, capturedPiece } = data;
+        const { moveInfo, moveIsWhite, capturedPiece, bothKingsState, moveHistoryLatestMove } = data;
 
-        const newMoveHistoryRecord: IMoveHistoryAppend = { moveInfo: data.moveHistoryLatestMove, moveIsWhite };
+        const newMoveHistoryRecord: IMoveHistoryAppend = { moveInfo: moveHistoryLatestMove, moveIsWhite };
 
         setGameState({ type: "SET_MOVEHISTORY_APPEND", payload: newMoveHistoryRecord });
 
@@ -38,21 +38,21 @@ export default function useOnUpdateBoard(){
         }
 
         if (!gameStateRef.current.myInfo.playerIsWhite){
-            data.bothKingsState.white.x = Math.abs(7 - data.bothKingsState.white.x);
-            data.bothKingsState.white.y = Math.abs(7 - data.bothKingsState.white.y);
-            data.bothKingsState.white.checkedBy = data.bothKingsState.white.checkedBy.map(i => ({ x: Math.abs(i.x - 7), y: Math.abs(i.y - 7) }));
+            bothKingsState.white.x = Math.abs(7 - bothKingsState.white.x);
+            bothKingsState.white.y = Math.abs(7 - bothKingsState.white.y);
+            bothKingsState.white.checkedBy = bothKingsState.white.checkedBy.map(i => ({ x: Math.abs(i.x - 7), y: Math.abs(i.y - 7) }));
 
-            data.bothKingsState.black.x = Math.abs(7 - data.bothKingsState.black.x);
-            data.bothKingsState.black.y = Math.abs(7 - data.bothKingsState.black.y);
-            data.bothKingsState.black.checkedBy = data.bothKingsState.black.checkedBy.map(i => ({ x: Math.abs(i.x - 7), y: Math.abs(i.y - 7) }));
+            bothKingsState.black.x = Math.abs(7 - bothKingsState.black.x);
+            bothKingsState.black.y = Math.abs(7 - bothKingsState.black.y);
+            bothKingsState.black.checkedBy = bothKingsState.black.checkedBy.map(i => ({ x: Math.abs(i.x - 7), y: Math.abs(i.y - 7) }));
         }
 
-        eventEmitter.emit(EVENT_EMIT.SET_BOTH_KINGS_STATE, data.bothKingsState);
+        eventEmitter.emit(EVENT_EMIT.SET_BOTH_KINGS_STATE, bothKingsState);
         
         const playerIsWhite = gameStateRef.current.myInfo.playerIsWhite;
 
-        setGameState({ type: "SET_MYINFO_KINGSTATE" , payload: data.bothKingsState[playerIsWhite ? "white" : "black"] });
-        setGameState({ type: "SET_OPPONENTINFO_KINGSTATE" , payload: data.bothKingsState[!playerIsWhite ? "white" : "black"] });
+        setGameState({ type: "SET_MYINFO_KINGSTATE" , payload: bothKingsState[playerIsWhite ? "white" : "black"] });
+        setGameState({ type: "SET_OPPONENTINFO_KINGSTATE" , payload: bothKingsState[!playerIsWhite ? "white" : "black"] });
     }
     
     return onUpdateBoard; 

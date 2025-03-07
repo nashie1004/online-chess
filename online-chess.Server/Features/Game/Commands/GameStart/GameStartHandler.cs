@@ -48,23 +48,8 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
                 return Unit.Value;
             }
 
-            //var player1 = _authenticatedUserService.GetConnectionId(gameRoom.CreatedByUserId);
-            //var player2 = _authenticatedUserService.GetConnectionId(gameRoom.JoinedByUserId);
-
-            //if (string.IsNullOrEmpty(player1) || string.IsNullOrEmpty(player2))
-            //{
-                //return Unit.Value;
-            //}
-
-            /* New Game */
-            if (!request.Reconnect)
-            {
-                var baseGameInfo = _gameRoomService.StartNewGame(gameRoom, request);
-
-                await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync(RoomMethods.onInitializeGameInfo, baseGameInfo);
-            } 
             /* Player Reconnects */
-            else
+            if (request.Reconnect || gameRoom.GameStartedAt != DateTime.MinValue)
             {
                 await _hubContext.Groups.AddToGroupAsync(request.UserConnectionId, request.GameRoomKeyString);
 
@@ -72,6 +57,13 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
 
                 await _hubContext.Clients.Client(request.UserConnectionId).SendAsync(RoomMethods.onInitializeGameInfo, currentGameInfo);
             }
+            /* New Game */
+            else if (!request.Reconnect)
+            {
+                var baseGameInfo = _gameRoomService.StartNewGame(gameRoom, request);
+
+                await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync(RoomMethods.onInitializeGameInfo, baseGameInfo);
+            } 
 
             await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync(RoomMethods.onReceiveMessages, gameRoom.ChatMessages);
 

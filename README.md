@@ -45,11 +45,13 @@ C:/Users/Nash/Downloads/sqlite-tools-win-x64-3480000/sqlite3.exe app.db
 ## MVP (BUGS)
 1. en passant - reconnect false and true
 2. castling bug incorrect coordinates?
+3. if user disconnecteed and game timer is up, dont show resume notif 
 
 ## MVP (FEATURES)
 1. display move turn, check, checkmate, stalemate, draw agree - revamp, reconnect false and true - DOING
 2. add profile image
 3. board coordinates
+4. elo
 
 ## DEPLOYMENT
 1. expose ports with a simple html file
