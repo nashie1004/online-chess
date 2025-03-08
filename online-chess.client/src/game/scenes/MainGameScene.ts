@@ -139,12 +139,12 @@ export class MainGameScene extends Scene{
                 
                 this.previewBoard[colIdx][rowIdx] = previewMove;
                 
-                const coords = this.add.text(colIdx * this.tileSize, rowIdx * this.tileSize, boardNotation[colIdx][rowIdx], {
-                    fontFamily: "Arial",
-                    color: "#F5F5F5"
+                const textCoords = this.add.text(colIdx * this.tileSize, rowIdx * this.tileSize, boardNotation[colIdx][rowIdx], {
+                    fontFamily: "Fira Sans",
+                    color: rowIdx % 2 !== colIdx % 2  ? "#F5F5F5" : "#302E2B"
                 }).setVisible(this.coordinatesUIShow);
 
-                notationsSprite.push(coords);
+                notationsSprite.push(textCoords);
             })
         });
 
