@@ -124,14 +124,10 @@ export default function GameTypeTable(
 
               return <tr key={idx}>
                 <td>
-                  <div 
-                    className={rankColor}
-                  >
-                    #{item.rank}
-                  </div>
+                  <div className={rankColor}>#{item.rank}</div>
                 </td>
                 <td>
-                  <img src="https://picsum.photos/id/237/300/300" className='profile-img small' alt="player-1-img" />
+                  <img src={item.profileImageUrl} className='profile-img small' alt="player-img" loading="lazy" />
                   <span className="ps-2">{item.username}</span>
                 </td>
                 <td className="table-win">{item.wins === 0 ? "-" : item.wins}</td>

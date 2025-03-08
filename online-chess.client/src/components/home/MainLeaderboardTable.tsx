@@ -112,7 +112,7 @@ export default function MainLeaderboardTable(){
                   </div>
                 </td>
                 <td>
-                  <img src="https://picsum.photos/id/237/300/300" className='profile-img small' alt="player-1-img" />
+                  <img src={item.profileImageUrl} className='profile-img small' alt="player-img" loading="lazy" />
                   <span className="ps-2">{item.userName}</span>
                 </td>
                 <td>{item.elo}</td>

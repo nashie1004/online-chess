@@ -86,6 +86,11 @@ namespace online_chess.Server.Service
 
         public CurrentGameInfo StartNewGame(GameRoom gameRoom, GameStartRequest request)
         {
+            if (gameRoom.GameStartedAt != DateTime.MinValue)
+            {
+                return ReconnectToGame(gameRoom, request); // initialize game only once
+            }
+
             TimeSpan initialTime;
 
             switch (gameRoom.GameType)

@@ -55,7 +55,7 @@ namespace online_chess.Server.Features.Leaderboard.Queries.GetGameTypeList
 
                 retVal.Items.ForEach(i =>
                 {
-                    i.ProfileImageUrl = $"https://picsum.photos/id/{(new Random()).Next(1, 999)}/300/300";
+                    i.ProfileImageUrl = $"https://picsum.photos/300/300";
                 });
             } 
             catch (Exception ex)

@@ -52,7 +52,6 @@ C:/Users/Nash/Downloads/sqlite-tools-win-x64-3480000/sqlite3.exe app.db
 1. handle checkmate, stalemate game game over sidebar and modal screen text - DOING
 3. add profile image
 4. board coordinates
-5. elo
 
 ## DEPLOYMENT
 1. expose ports with a simple html file
@@ -63,6 +62,7 @@ C:/Users/Nash/Downloads/sqlite-tools-win-x64-3480000/sqlite3.exe app.db
 ## OTHER (FEATURES)
 1. fifty move rule
 2. show proper chess move notation
+5. elo
 3. 3 fold repetition
 4. responsive ui / resizeable board
 5. some framer motion?, more sounds and some phaser effects

@@ -13,7 +13,7 @@ namespace online_chess.Server.Models
     public class GameRoom : GameQueue
     {
         // 1. meta data
-        public DateTime GameStartedAt { get; set; }
+        public DateTime GameStartedAt { get; set; } = DateTime.MinValue;
         public PlayerInfo CreatedByUserInfo { get; set; }
         public PlayerInfo JoinByUserInfo { get; set; }
         public List<Chat> ChatMessages { get; set; }

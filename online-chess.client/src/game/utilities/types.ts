@@ -118,6 +118,7 @@ export interface ILeaderboard{
     sinceDate: Date;
     lastGameDate: Date;
     elo: number;
+    profileImageUrl: string;
 }
 
 export interface ILeaderboardList{
@@ -132,6 +133,7 @@ interface IGameType{
     loses: number;
     draws: number;
     lastGameDate: Date;
+    profileImageUrl: string;
 }
 
 export interface IGameTypeList{
@@ -147,6 +149,7 @@ export interface IGameHistory{
     opponentName: string;
     gameDate: Date;
     remarks: string;
+    profileImageUrl: string;
 }
 
 export interface IGameHistoryList{
