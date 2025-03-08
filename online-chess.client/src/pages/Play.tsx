@@ -20,7 +20,7 @@ import { PLAY_PAGE_INVOKERS } from "../constants/invokers";
 import { PLAY_PAGE_HANDLERS } from "../constants/handlers";
 import { eventEmitter } from "../game/utilities/eventEmitter";
 import useOnUserIsConnected from "../game/signalRhandlers/useOnUserIsConnected";
-import GameUIChanger from "../components/play/GameUIChanger";
+import GameOptionsModal from "../components/play/GameOptionsModal";
 import useGameUIHandlerContext from "../hooks/useGameUIHandlerContext";
 
 export default function Main(){
@@ -29,7 +29,7 @@ export default function Main(){
     const { setGameState } = useGameContext();
     const { setNotificationState } = useNotificationContext();
     const { setQueuingRoomKey } = useQueuingContext();
-    const { setShowLoadingModal } = useGameUIHandlerContext();
+    const { setShowLoadingModal, setGameOverMessage } = useGameUIHandlerContext();
     const [searchParams] = useSearchParams();
     
     const onInitializeGameInfo = useOnInitializeGameInfo(gameRef);
@@ -47,6 +47,7 @@ export default function Main(){
         setGameState({ type: "SET_CLEARGAMESTATE" });
         setGameState({ type: "SET_GAMESTATUS", payload: "LOADING" });
         setShowLoadingModal(true);
+        setGameOverMessage("");
 
         if (!userConnectionId) return;
 
@@ -98,6 +99,6 @@ export default function Main(){
         <GameOutcomeModal />
         <GameLoading />
         <DrawRequestModal />
-        <GameUIChanger />
+        <GameOptionsModal />
     </>
 }

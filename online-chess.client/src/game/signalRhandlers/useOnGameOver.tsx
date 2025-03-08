@@ -2,15 +2,19 @@ import { useCallback } from "react";
 import { EndGameStatus } from "../utilities/constants";
 import useGameContext from "../../hooks/useGameContext";
 import useNotificationContext from "../../hooks/useNotificationContext";
+import useGameUIHandlerContext from "../../hooks/useGameUIHandlerContext";
 
 export default function useOnGameOver(){
     const { setGameState, gameState } = useGameContext();
     const { setNotificationState } = useNotificationContext();
+    const { setGameOverMessage, setShowLoadingModal } = useGameUIHandlerContext();
 
     const onGameOver = useCallback((outcome: EndGameStatus) => {
         setNotificationState({ type: "SET_RESETNOTIFICATIONS" });
         setGameState({ type: "SET_CLEARGAMESTATE" });
         setGameState({ type: "SET_GAMESTATUS", payload: "FINISHED" });
+        setShowLoadingModal(false);
+        setGameOverMessage("TODOOOOOO");
         
         // TODO 3/6/2025 1PM
         /*

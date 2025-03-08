@@ -2,7 +2,7 @@ import { Form, Modal } from "react-bootstrap";
 import boardUIOptions from "../../constants/boardUI";
 import pieceUIOptions from "../../constants/pieceUI";
 import useSignalRContext from "../../hooks/useSignalRContext";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { PromotionPrefence } from "../../game/utilities/constants";
 import { PromoteOptions } from "../../game/utilities/types";
 import useGameContext from "../../hooks/useGameContext";
@@ -11,7 +11,7 @@ import { EVENT_ON } from "../../constants/emitters";
 import { eventEmitter } from "../../game/utilities/eventEmitter";
 import useUserPreferenceContext from "../../hooks/useUserPreferenceContext";
 
-export default function GameUIChanger(){
+export default function GameOptionsModal(){
   const { setBoard, setPiece, boardUI, pieceUI } = useUserPreferenceContext();
   const { userConnectionId, invoke } = useSignalRContext();
   const { setGameState, gameState } = useGameContext();
@@ -22,14 +22,12 @@ export default function GameUIChanger(){
 
   const imgFn = (firstTwoChars: string) => `${piecePath}${firstTwoChars}.svg`;
 
-  const pieces: PromoteOptions[] = useMemo(() => {
-    return [ 
+  const pieces: PromoteOptions[] = [
       { name: PromotionPrefence.Queen, assetURL: imgFn(playerIsWhite ? "wQ" : "bQ") },
       { name: PromotionPrefence.Bishop, assetURL: imgFn(playerIsWhite ? "wB" : "bB") },
       { name: PromotionPrefence.Knight, assetURL: imgFn(playerIsWhite ? "wN" : "bN") },
       { name: PromotionPrefence.Rook, assetURL: imgFn(playerIsWhite ? "wR" : "bR") },
-    ]
-  }, [pieceUI]);
+    ];
   
     return <>
         

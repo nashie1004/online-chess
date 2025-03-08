@@ -10,8 +10,7 @@ export default function GameOutcome() {
     const { invoke } = useSignalRContext();
     const { gameState, setGameState } = useGameContext();
 
-    async function formSubmit(e: React.FormEvent<HTMLFormElement>){
-      e.preventDefault();
+    async function formSubmit(){
       setGameState({ type: "SET_GAMESTATUS", payload: "LOADING" });
       invoke(outcome === 0 ? PLAY_PAGE_INVOKERS.RESIGN : PLAY_PAGE_INVOKERS.REQUEST_A_DRAW, gameState.gameRoomKey);
       setModalShow(false);
@@ -47,21 +46,24 @@ export default function GameOutcome() {
       onHide={() => setModalShow(false)}
     >
       <Modal.Body>
-        <form className="m-body" onSubmit={formSubmit}>
+        <div className='m-header'>
+          <h5>Confirmation</h5>
+        </div>
+        <div className="m-body">
           {outcome === 0 ? <>
             <h5>Are you sure you want to resign?</h5>
             </> : <>
             <h5>Are you sure you want to request a draw?</h5>
           </>}
-          <div className="d-flex justify-content-end">
-            <button 
-              type='submit'
-              className="btn btn-1 w-100 mt-5 "
-              >
-              Yes
-            </button>
-          </div>
-        </form>
+        </div>
+        <div className="m-footer d-flex justify-content-end">
+          <button 
+            onClick={formSubmit}
+            type='submit'
+            className="btn btn-1 w-25">
+            Yes
+          </button>
+        </div>
       </Modal.Body>
     </Modal>
     </>

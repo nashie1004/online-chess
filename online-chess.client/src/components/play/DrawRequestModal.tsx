@@ -24,13 +24,15 @@ export default function DrawRequestModal(){
         show={modalShow || gameState.opponentInfo.isOfferingADraw}
       >
         <Modal.Body>
+          <div className="m-header">
+            <h5>{gameState.opponentInfo.userName} is offering a draw.</h5>
+          </div>
           <form className="m-body" onSubmit={formSubmit}>
-          <h5>{gameState.opponentInfo.userName} is offering a draw.</h5>
             <div className="">
               <button 
                 type='submit'
                 onClick={() => setConfirmValue(0)}
-                className="btn btn-2 w-100 mt-5 mb-3"
+                className="btn btn-2 w-100 mb-3"
                 >
                 Decline
               </button>
@@ -39,10 +41,11 @@ export default function DrawRequestModal(){
                 onClick={() => setConfirmValue(1)}
                 className="btn btn-1 w-100 "
                 >
-                Accept Draw?
+                Accept
               </button>
             </div>
           </form>
+          <div className="m-footer"></div>
         </Modal.Body>
       </Modal>
     </>
