@@ -1,7 +1,6 @@
 import { Form, Modal } from "react-bootstrap";
-import useLocalStorage from "../../hooks/useLocalStorage";
-import boardUI from "../../constants/boardUI";
-import pieceUI from "../../constants/pieceUI";
+import boardUIOptions from "../../constants/boardUI";
+import pieceUIOptions from "../../constants/pieceUI";
 import useSignalRContext from "../../hooks/useSignalRContext";
 import { useMemo, useState } from "react";
 import { PromotionPrefence } from "../../game/utilities/constants";
@@ -10,16 +9,16 @@ import useGameContext from "../../hooks/useGameContext";
 import { PLAY_PAGE_INVOKERS } from "../../constants/invokers";
 import { EVENT_ON } from "../../constants/emitters";
 import { eventEmitter } from "../../game/utilities/eventEmitter";
+import useUserPreferenceContext from "../../hooks/useUserPreferenceContext";
 
 export default function GameUIChanger(){
-  const { setValue: setBoard, data: board } = useLocalStorage("board", "green.png");
-  const { setValue: setPiece, data: piece } = useLocalStorage("piece", "cburnett");
-    const { userConnectionId, invoke } = useSignalRContext();
+  const { setBoard, setPiece, boardUI, pieceUI } = useUserPreferenceContext();
+  const { userConnectionId, invoke } = useSignalRContext();
   const { setGameState, gameState } = useGameContext();
   const [selectedOption, setSelectedOption] = useState<PromotionPrefence>(PromotionPrefence.Queen);
 
   const playerIsWhite = gameState.myInfo.playerIsWhite;
-  const piecePath = `/src/assets/pieces/${piece}/`;
+  const piecePath = `/src/assets/pieces/${pieceUI}/`;
 
   const imgFn = (firstTwoChars: string) => `${piecePath}${firstTwoChars}.svg`;
 
@@ -30,7 +29,7 @@ export default function GameUIChanger(){
       { name: PromotionPrefence.Knight, assetURL: imgFn(playerIsWhite ? "wN" : "bN") },
       { name: PromotionPrefence.Rook, assetURL: imgFn(playerIsWhite ? "wR" : "bR") },
     ]
-  }, [piece]);
+  }, [pieceUI]);
   
     return <>
         
@@ -54,9 +53,9 @@ export default function GameUIChanger(){
                                 setBoard(e.target.value);
                                 eventEmitter.emit(EVENT_ON.SET_BOARD_UI, e.target.value);
                             }}
-                            value={board}
+                            value={boardUI}
                             className='w-100'>
-                            {boardUI.map((item, idx) => {
+                            {boardUIOptions.map((item, idx) => {
                                 return <option key={idx} value={item.displayCode}>{item.displayName}</option>
                             })}
                         </Form.Select>
@@ -69,9 +68,9 @@ export default function GameUIChanger(){
                                 setPiece(e.target.value);
                                 eventEmitter.emit(EVENT_ON.SET_PIECE_UI, e.target.value);
                             }}
-                            value={piece}
+                            value={pieceUI}
                             className='w-100'>
-                            {pieceUI.map((item, idx) => {
+                            {pieceUIOptions.map((item, idx) => {
                                 return <option key={idx} value={item.displayCode}>{item.displayName}</option>
                             })}
                         </Form.Select>

@@ -21,6 +21,7 @@ import { PLAY_PAGE_HANDLERS } from "../constants/handlers";
 import { eventEmitter } from "../game/utilities/eventEmitter";
 import useOnUserIsConnected from "../game/signalRhandlers/useOnUserIsConnected";
 import GameUIChanger from "../components/play/GameUIChanger";
+import useGameUIHandlerContext from "../hooks/useGameUIHandlerContext";
 
 export default function Main(){
     const gameRef = useRef<Phaser.Game | null>();
@@ -28,6 +29,7 @@ export default function Main(){
     const { setGameState } = useGameContext();
     const { setNotificationState } = useNotificationContext();
     const { setQueuingRoomKey } = useQueuingContext();
+    const { setShowLoadingModal } = useGameUIHandlerContext();
     const [searchParams] = useSearchParams();
     
     const onInitializeGameInfo = useOnInitializeGameInfo(gameRef);
@@ -44,6 +46,7 @@ export default function Main(){
         setNotificationState({ type: "SET_RESETNOTIFICATIONS" });
         setGameState({ type: "SET_CLEARGAMESTATE" });
         setGameState({ type: "SET_GAMESTATUS", payload: "LOADING" });
+        setShowLoadingModal(true);
 
         if (!userConnectionId) return;
 

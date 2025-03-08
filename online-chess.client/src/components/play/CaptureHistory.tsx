@@ -1,13 +1,13 @@
 import { useCallback } from 'react';
 import { PieceNames } from '../../game/utilities/constants';
 import useGameContext from '../../hooks/useGameContext';
-import useLocalStorage from '../../hooks/useLocalStorage';
+import useUserPreferenceContext from '../../hooks/useUserPreferenceContext';
 
 export default function CaptureHistory() {
     const { gameState } = useGameContext();
-    const { data: piece } = useLocalStorage("piece", "cburnett");
+    const { pieceUI } = useUserPreferenceContext();
     
-    const piecePath = `/src/assets/pieces/${piece}/`;
+    const piecePath = `/src/assets/pieces/${pieceUI}/`;
   
     const imgFn = useCallback((piece: PieceNames) => {
         let firstTwoChars = piece.slice(0, 2);
@@ -19,7 +19,7 @@ export default function CaptureHistory() {
         }
 
         return `${piecePath}${firstTwoChars}.svg`;
-    }, []);
+    }, [pieceUI]);
 
     return (
     <>

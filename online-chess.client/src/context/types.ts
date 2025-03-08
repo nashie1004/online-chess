@@ -63,7 +63,21 @@ export interface IInitializerContext{
     setInitialize: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
+export interface IUserPreferenceContext{
+    boardUI: string;
+    setBoard: (data: string) => void;
+    pieceUI: string;
+    setPiece: (data: string) => void;
+    soundFx: string;
+    setSound: (data: string) => void;
+}
 
+export interface IGameUIChandlerContext{
+    showLoadingModal: boolean;
+    setShowLoadingModal: React.Dispatch<React.SetStateAction<boolean>>;
+    gameOverMessage: string;
+    setGameOverMessage: React.Dispatch<React.SetStateAction<string>>;
+}
 
 export interface INotificationContext{
     notificationState: INotificationContextReducerState;

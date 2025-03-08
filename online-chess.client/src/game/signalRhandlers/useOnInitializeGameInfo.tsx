@@ -6,11 +6,11 @@ import { IBothKingsPosition, PlayersPromotePreference } from "../utilities/types
 import useGameContext from "../../hooks/useGameContext";
 import useSignalRContext from "../../hooks/useSignalRContext";
 import useAuthContext from "../../hooks/useAuthContext";
-import useLocalStorage from "../../hooks/useLocalStorage";
 import { EVENT_ON } from "../../constants/emitters";
 import { PLAY_PAGE_INVOKERS } from "../../constants/invokers";
 import { IMovePiece, IUseOnInitializeGameInfo } from "./types";
-import { PromotionPrefence } from "../utilities/constants";
+import useGameUIHandlerContext from "../../hooks/useGameUIHandlerContext";
+import useUserPreferenceContext from "../../hooks/useUserPreferenceContext";
 
 export default function useOnInitializeGameInfo(
     gameRef: React.MutableRefObject<Phaser.Game | null | undefined>
@@ -19,8 +19,8 @@ export default function useOnInitializeGameInfo(
     const { invoke, userConnectionId } = useSignalRContext();
     const { user } = useAuthContext();
     const gameStateRef = useRef(gameState);
-    const { data: boardUI } = useLocalStorage("board", "green.png");
-    const { data: pieceUI } = useLocalStorage("piece", "cburnett");
+    const { setShowLoadingModal } = useGameUIHandlerContext();
+    const { boardUI, pieceUI } = useUserPreferenceContext();
 
     // https://stackoverflow.com/questions/57847594/accessing-up-to-date-state-from-within-a-callback
     // this contains the up to date version of our gamestate, 
@@ -103,35 +103,6 @@ export default function useOnInitializeGameInfo(
                 ],
             });
             
-            // connect react and phaser
-            /*
-            eventEmitter.on(EVENT_ON.SET_KINGS_STATE, (data: IKingState) => {
-                console.log(data)
-
-                if (data.white.isInCheck || data.white.isCheckMate || data.white.isInStalemate)
-                {
-                    setGameState({ 
-                        type: gameState.myInfo.playerIsWhite ? "SET_MYINFO" : "SET_OPPONENTINFO",
-                        payload: {
-                            ...gameState[gameState.myInfo.playerIsWhite ? "myInfo" : "opponentInfo"],
-                            kingsState: data.white
-                        }
-                    });
-                } 
-                else if (data.black.isInCheck || data.black.isCheckMate || data.black.isInStalemate) 
-                {
-                    setGameState({ 
-                        type: !gameState.myInfo.playerIsWhite ? "SET_MYINFO" : "SET_OPPONENTINFO",
-                        payload: {
-                            ...gameState[!gameState.myInfo.playerIsWhite ? "myInfo" : "opponentInfo"],
-                            kingsState: data.black
-                        }
-                    });
-                }
-
-            });
-            */
-            
             eventEmitter.on(EVENT_ON.SET_MOVE_PIECE, (move: IMovePiece) => {
                 
                 invoke(PLAY_PAGE_INVOKERS.MOVE_PIECE
@@ -154,8 +125,7 @@ export default function useOnInitializeGameInfo(
                 playerIsWhite: myInfo.isColorWhite,
                 isOfferingADraw: false,
                 resign: false,
-                promotePawnTo: PromotionPrefence.Queen,
-                openPromotionModal: false
+                promotePawnTo: myInfo.pawnPromotionPreference,
             }
         });
         
@@ -169,8 +139,7 @@ export default function useOnInitializeGameInfo(
                 playerIsWhite: opponentInfo.isColorWhite,
                 isOfferingADraw: false,
                 resign: false,
-                promotePawnTo: PromotionPrefence.Queen,
-                openPromotionModal: false
+                promotePawnTo: opponentInfo.pawnPromotionPreference,
             }
         });
 
@@ -183,6 +152,8 @@ export default function useOnInitializeGameInfo(
         setGameState({ type: "SET_CAPTUREHISTORY", payload: currentGameInfo.captureHistory });
 
         setGameState({ type: "SET_GAMESTATUS", payload: "ONGOING" });
+        
+        setShowLoadingModal(false);
     }, []);
 
     return onInitializeGameInfo;

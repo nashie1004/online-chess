@@ -1,17 +1,16 @@
 import { Col, Form } from 'react-bootstrap'
-import useLocalStorage from '../../hooks/useLocalStorage';
 import { useMemo } from 'react';
-import boardUI from '../../constants/boardUI';
-import pieceUI from '../../constants/pieceUI';
+import boardUIOptions from '../../constants/boardUI';
+import pieceUIOptions from '../../constants/pieceUI';
 import useSignalRContext from '../../hooks/useSignalRContext';
+import useUserPreferenceContext from '../../hooks/useUserPreferenceContext';
 
 export default function UIChanger() {
-  const { setValue: setBoard, data: board } = useLocalStorage("board", "green.png");
-  const { setValue: setPiece, data: piece } = useLocalStorage("piece", "cburnett");
+  const { boardUI, pieceUI, setBoard, setPiece } = useUserPreferenceContext();
   const { userConnectionId } = useSignalRContext();
 
-  const boardPath = `/src/assets/boards/${board}`;
-  const piecePath = `/src/assets/pieces/${piece}/`;
+  const boardPath = `/src/assets/boards/${boardUI}`;
+  const piecePath = `/src/assets/pieces/${pieceUI}/`;
   
   const pieces = useMemo(() => {
     return [
@@ -41,9 +40,9 @@ export default function UIChanger() {
             <Form.Select 
               disabled={!userConnectionId}
               onChange={(e) => setBoard(e.target.value)}
-              value={board}
+              value={boardUI}
               className='w-50'>
-                {boardUI.map((item, idx) => {
+                {boardUIOptions.map((item, idx) => {
                   return <option key={idx} value={item.displayCode}>{item.displayName}</option>
                 })}
             </Form.Select>
@@ -53,9 +52,9 @@ export default function UIChanger() {
             <Form.Select  
               disabled={!userConnectionId}
               onChange={(e) => setPiece(e.target.value)}
-              value={piece}
+              value={pieceUI}
               className='w-50'>
-              {pieceUI.map((item, idx) => {
+              {pieceUIOptions.map((item, idx) => {
                 return <option key={idx} value={item.displayCode}>{item.displayName}</option>
               })}
             </Form.Select>
