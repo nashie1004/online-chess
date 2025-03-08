@@ -68,9 +68,7 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
             };
 
             await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync(RoomMethods.onUpdateBoard, retVal);
-
-            // TODO 3/5/2025: Double check this
-
+            
             if (room.BothKingsState.White.IsCheckmate || room.BothKingsState.Black.IsCheckmate)
             {
                 await _gameRoomService.EndGame(_serviceProvider.CreateScope(), room

@@ -9,12 +9,37 @@ export default function useOnGameOver(){
     const { setNotificationState } = useNotificationContext();
     const { setGameOverMessage, setShowLoadingModal } = useGameUIHandlerContext();
 
-    const onGameOver = useCallback((outcome: EndGameStatus) => {
+    const onGameOver = (data: any) => {
+        // TODO 3/8/2025
+        const finalMessage: string = data.finalMessage; 
+        const finalGameStatus: EndGameStatus = data.finalGameStatus;
+        const creatorIdentityName: string = data.creatorIdentityName;
+        const userIsCreator = gameState.myInfo.userName === creatorIdentityName;
+        const userWon = (
+            // user won
+            (
+            (
+                finalGameStatus === EndGameStatus.CreatorIsCheckmated ||
+                finalGameStatus === EndGameStatus.CreatorResigned ||
+                finalGameStatus === EndGameStatus.CreatorTimeIsUp
+            ) && !userIsCreator
+            ) 
+            ||
+            // user lost
+            (
+            (
+                finalGameStatus === EndGameStatus.JoinerIsCheckmated ||
+                finalGameStatus === EndGameStatus.JoinerResigned ||
+                finalGameStatus === EndGameStatus.JoinerTimeIsUp
+            ) && userIsCreator
+            )
+        );
+
         setNotificationState({ type: "SET_RESETNOTIFICATIONS" });
-        setGameState({ type: "SET_CLEARGAMESTATE" });
-        setGameState({ type: "SET_GAMESTATUS", payload: "FINISHED" });
         setShowLoadingModal(false);
-        setGameOverMessage("TODOOOOOO");
+        setGameOverMessage(finalMessage);
+        // setGameState({ type: "SET_CLEARGAMESTATE" });
+        setGameState({ type: "SET_GAMESTATUS", payload: "FINISHED" });
         
         // TODO 3/6/2025 1PM
         /*
@@ -57,7 +82,7 @@ export default function useOnGameOver(){
         }
         */
 
-    }, []);
+    };
 
     return onGameOver;
 }

@@ -69,7 +69,7 @@ export default function NavigationBar() {
             {
               user ?
               <>
-                <img src="https://picsum.photos/id/237/300/300" className='profile-img small' alt="player-1-img" />
+                <img src={user.profileImageUrl} className='profile-img small' alt="player-1-img" />
                 <span className="text-white">{user.userName}</span>
                 <button 
                   onClick={logoutHandler}

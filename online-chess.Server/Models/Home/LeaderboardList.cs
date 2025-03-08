@@ -14,4 +14,5 @@ public class LeaderboardList
     public DateTime SinceDate { get; set; }
     public DateTime LastGameDate { get; set; }   
     public int Elo { get; set; }
+    public string? ProfileImageUrl { get; set; }
 }

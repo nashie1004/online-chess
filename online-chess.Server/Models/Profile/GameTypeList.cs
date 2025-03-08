@@ -11,5 +11,6 @@ namespace online_chess.Server.Models.Profile
         public int Loses { get; set; }
         public int Draws { get; set; }
         public DateTime LastGameDate { get; set; }
+        public string? ProfileImageUrl { get; set; }
     }
 }

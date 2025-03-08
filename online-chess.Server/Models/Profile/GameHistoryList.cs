@@ -14,5 +14,6 @@ namespace online_chess.Server.Models.Profile
         public string OpponentName { get; set; }
         public DateTime GameDate { get; set; }
         public string Remarks { get; set; }
+        public string? ProfileImageUrl { get; set; }
     }
 }

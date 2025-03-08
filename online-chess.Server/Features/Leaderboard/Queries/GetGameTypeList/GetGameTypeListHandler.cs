@@ -52,6 +52,11 @@ namespace online_chess.Server.Features.Leaderboard.Queries.GetGameTypeList
                     ,new SqliteParameter("@PageSize", pageSize)
                     ,new SqliteParameter("@PaginationOffset", pageSize * (request.PageNumber - 1))
                 ).ToListAsync();
+
+                retVal.Items.ForEach(i =>
+                {
+                    i.ProfileImageUrl = $"https://picsum.photos/id/{(new Random()).Next(1, 999)}/300/300";
+                });
             } 
             catch (Exception ex)
             {

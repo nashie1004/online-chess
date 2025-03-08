@@ -50,7 +50,7 @@ export default function Login() {
       return;
     }
     
-    login({ userName: res.data.userName, profileURL: "" });
+    login({ userName: res.data.userName, profileImageUrl: "" });
     setInitialize(true);
     navigate("/");
   }

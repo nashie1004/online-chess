@@ -34,6 +34,11 @@ public class GetDefaultLeaderboardHandler : IRequestHandler<GetDefaultLeaderboar
                 ,new SqliteParameter("@PaginationOffset", pageSize * (req.PageNumber - 1))
             ).ToListAsync();
 
+            retVal.Items.ForEach(i =>
+            {
+                i.ProfileImageUrl = $"https://picsum.photos/id/{(new Random()).Next(1, 999)}/300/300";
+            });
+
         } 
         catch (Exception err){
             retVal.ValidationErrors.Add(err.Message);

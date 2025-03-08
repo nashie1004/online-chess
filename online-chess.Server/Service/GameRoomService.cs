@@ -16,10 +16,12 @@ namespace online_chess.Server.Service
     {
         private static ConcurrentDictionary<Guid, GameRoom> _gameRoomIds = new();
         private readonly TimerService _timerService;
+        private readonly IHubContext<GameHub> _hubContext;
 
-        public GameRoomService(TimerService timerService)
+        public GameRoomService(TimerService timerService, IHubContext<GameHub> hubContext)
         {
             _timerService = timerService;
+            _hubContext = hubContext;
         }
 
         public void Add(Guid roomIdKey, GameRoom GameRoom)
@@ -208,7 +210,7 @@ namespace online_chess.Server.Service
         {
             var identityDbContext = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
             var mainDbContext = scope.ServiceProvider.GetRequiredService<MainDbContext>();
-            var hubContext = scope.ServiceProvider.GetRequiredService<IHubContext<GameHub>>();
+            // var hubContext = scope.ServiceProvider.GetRequiredService<IHubContext<GameHub>>();
 
             var creator = await identityDbContext.FindByNameAsync(room.CreatedByUserId);
             var joiner = await identityDbContext.FindByNameAsync(room.JoinedByUserId);
@@ -295,9 +297,15 @@ namespace online_chess.Server.Service
                 Message = finalMessage
             });
 
-            await hubContext.Clients.Group(room.GameKey.ToString()).SendAsync(RoomMethods.onReceiveMessages, room.ChatMessages);
-                
-            await hubContext.Clients.Group(room.GameKey.ToString()).SendAsync(RoomMethods.onGameOver, finalGameStatus);
+            await _hubContext.Clients.Group(room.GameKey.ToString()).SendAsync(RoomMethods.onReceiveMessages, room.ChatMessages);
+            
+            var gameOverRetVal = new {
+                finalMessage
+                , finalGameStatus
+                , creatorIdentityName = creator.UserName 
+            };
+            
+            await _hubContext.Clients.Group(room.GameKey.ToString()).SendAsync(RoomMethods.onGameOver, gameOverRetVal);
 
             room.TimerId?.Dispose();
 

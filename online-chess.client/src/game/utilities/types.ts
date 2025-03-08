@@ -106,7 +106,7 @@ export interface IGameRoomList{
 
 export interface IUser {
     userName: string;
-    profileURL: string; // TODO
+    profileImageUrl: string; 
 }
 
 export interface ILeaderboard{

@@ -1,20 +1,18 @@
 import { Modal, Spinner } from "react-bootstrap";
-import useGameContext from "../../hooks/useGameContext";
+import useGameUIHandlerContext from "../../hooks/useGameUIHandlerContext";
 
 export default function GameLoading(){
-    const { gameState } = useGameContext();
+    const { showLoadingModal } = useGameUIHandlerContext();
 
     return <>
-
         <Modal 
             id="modal-loading"
-            show={gameState.gameStatus === "LOADING"}
+            show={showLoadingModal}
             centered
         >
             <div>
                 <Spinner animation="border" variant="light"  />
             </div>
         </Modal>
-
     </>
 }

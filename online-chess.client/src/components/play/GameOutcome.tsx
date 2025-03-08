@@ -3,15 +3,17 @@ import { Modal } from 'react-bootstrap';
 import useSignalRContext from '../../hooks/useSignalRContext';
 import useGameContext from '../../hooks/useGameContext';
 import { PLAY_PAGE_INVOKERS } from '../../constants/invokers';
+import useGameUIHandlerContext from '../../hooks/useGameUIHandlerContext';
 
 export default function GameOutcome() {
     const [modalShow, setModalShow] = React.useState(false);
     const [outcome, setOutcome] = useState<0 | 1>(0); // 0 = resign, 1 = draw
     const { invoke } = useSignalRContext();
     const { gameState, setGameState } = useGameContext();
+    const { setShowLoadingModal } = useGameUIHandlerContext();
 
     async function formSubmit(){
-      setGameState({ type: "SET_GAMESTATUS", payload: "LOADING" });
+      setShowLoadingModal(true);
       invoke(outcome === 0 ? PLAY_PAGE_INVOKERS.RESIGN : PLAY_PAGE_INVOKERS.REQUEST_A_DRAW, gameState.gameRoomKey);
       setModalShow(false);
     }

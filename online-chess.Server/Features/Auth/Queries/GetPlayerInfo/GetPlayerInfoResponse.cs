@@ -5,5 +5,6 @@ namespace online_chess.Server.Features.Auth.Queries.GetPlayerInfo
     public class GetPlayerInfoResponse : BaseResponse
     {
         public string UserName { get; set; }
+        public string ProfileImageUrl { get; set; }
     }
 }

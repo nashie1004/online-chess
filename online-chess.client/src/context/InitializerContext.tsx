@@ -39,7 +39,7 @@ export default function InitializerContext(
     const res = await authService.baseGet("/api/Auth/is-signed-in");
     
     if (res.status === 200){
-      setUser({ userName: res.data.userName, profileURL: "" });
+      setUser({ userName: res.data.userName, profileImageUrl: res.data.profileImageUrl });
       signedIn = true;
     }
     

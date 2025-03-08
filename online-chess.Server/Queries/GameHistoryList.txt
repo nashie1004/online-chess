@@ -20,7 +20,8 @@ WITH MainQuery AS (
             ELSE ''
         END) AS OpponentName,
         G.GameStartDate AS GameDate,
-        G.Remarks
+        G.Remarks,
+        COALESCE(P1.ProfileImageUrl, P2.ProfileImageUrl) AS ProfileImageUrl
     FROM GameHistories G
     LEFT JOIN AspNetUsers P1 ON P1.Id = G.PlayerOneId
     LEFT JOIN AspNetUsers P2 ON P2.Id = G.PlayerTwoId
@@ -34,7 +35,8 @@ SELECT
     GameType,
     OpponentName,
     GameDate,
-    Remarks
+    Remarks,
+    ProfileImageUrl
 FROM MainQuery 
 ORDER BY GameDate DESC
 LIMIT @PageSize OFFSET @PaginationOffset;

@@ -32,7 +32,8 @@ WITH MainQuery AS (
             (G.PlayerOneId = U1.Id OR G.PlayerTwoId = U1.Id) 
             AND G.GameType IN (@GameType)
         ORDER BY G.GameHistoryId DESC LIMIT 1
-    ) AS LastGameDate
+    ) AS LastGameDate,
+    U1.ProfileImageUrl
     FROM AspNetUsers U1
     LEFT JOIN GameHistories P1 ON P1.PlayerOneId = U1.Id
     LEFT JOIN GameHistories P2 ON P2.PlayerTwoId = U1.Id
@@ -46,6 +47,7 @@ SELECT
   Wins,
   Loses,
   Draws,
-  LastGameDate
+  LastGameDate,
+  ProfileImageUrl
 FROM MainQuery ORDER BY Wins DESC
     LIMIT @PageSize OFFSET @PaginationOffset
