@@ -20,7 +20,7 @@ export default function useOnInitializeGameInfo(
     const { user } = useAuthContext();
     const gameStateRef = useRef(gameState);
     const { setShowLoadingModal } = useGameUIHandlerContext();
-    const { boardUI, pieceUI } = useUserPreferenceContext();
+    const { boardUI, pieceUI, showCoords } = useUserPreferenceContext();
 
     // https://stackoverflow.com/questions/57847594/accessing-up-to-date-state-from-within-a-callback
     // this contains the up to date version of our gamestate, 
@@ -98,7 +98,7 @@ export default function useOnInitializeGameInfo(
                         "mainChessboard", myInfo.isColorWhite, boardUI
                         , pieceUI, currentGameInfo.piecesCoordinatesInitial, currentGameInfo.moveHistory
                         , bothKingsPosition, promotePreference, myInfo.isPlayersTurnToMove
-                        , currentGameInfo.bothKingsState, userConnectionId !== null
+                        , currentGameInfo.bothKingsState, userConnectionId !== null, showCoords
                     )
                 ],
             });

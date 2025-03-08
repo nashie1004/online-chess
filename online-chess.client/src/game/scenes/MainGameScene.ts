@@ -15,6 +15,7 @@ import ValidateCheckOrCheckMateOrStalemate from "../logic/validateCheckOrCheckma
 import { EVENT_EMIT, EVENT_ON } from "../../constants/emitters";
 import { IMovePiece } from "../signalRhandlers/types";
 import { IMoveHistoryAppend } from "../../context/types";
+import { chessBoardNotation } from "../utilities/helpers";
 
 export class MainGameScene extends Scene{
     /**
@@ -41,12 +42,14 @@ export class MainGameScene extends Scene{
     // 3. user preference
     private boardUI: string;
     private piecesUI: string;
+    private coordinatesUIShow: boolean;
 
     constructor(
         key: string, isColorWhite: boolean, boardUI: string
         , piecesUI: string, piecesCoordinates_Server: IPiece[], moveHistory: IMoveHistory
         , bothKingsPosition: IBothKingsPosition, promotePreference: PlayersPromotePreference
         , isPlayersTurnToMove: boolean, bothKingsState: IKingState, userIsConnected: boolean
+        , showCoords: boolean
     ) {
         super({ key });
 
@@ -71,6 +74,7 @@ export class MainGameScene extends Scene{
         // 3. user prefernce
         this.boardUI = boardUI;
         this.piecesUI = piecesUI;
+        this.coordinatesUIShow = showCoords;
     }
 
     preload(){
@@ -109,6 +113,8 @@ export class MainGameScene extends Scene{
 
        // this.add.image(0, 0, "bg").setOrigin(0, 0) ;
         const select = this.sound.add("select");
+        const boardNotation  = chessBoardNotation();
+        const notationsSprite: GameObjects.Text[] = [];
 
         // create pieces
 
@@ -130,8 +136,15 @@ export class MainGameScene extends Scene{
                     }, this)
                     .setAlpha(.5)
                     ;
-
+                
                 this.previewBoard[colIdx][rowIdx] = previewMove;
+                
+                const coords = this.add.text(colIdx * this.tileSize, rowIdx * this.tileSize, boardNotation[colIdx][rowIdx], {
+                    fontFamily: "Arial",
+                    color: "#F5F5F5"
+                }).setVisible(this.coordinatesUIShow);
+
+                notationsSprite.push(coords);
             })
         });
 
@@ -291,6 +304,12 @@ export class MainGameScene extends Scene{
             });
 
             this.load.start();
+        });
+        eventEmitter.on(EVENT_ON.SET_COORDS_UI_SHOW, (data: boolean) => {
+            this.coordinatesUIShow = data;
+            notationsSprite.forEach(text => {
+                text.setVisible(data);
+            });
         });
     }
 

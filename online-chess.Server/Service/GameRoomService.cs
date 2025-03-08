@@ -86,7 +86,10 @@ namespace online_chess.Server.Service
 
         public CurrentGameInfo StartNewGame(GameRoom gameRoom, GameStartRequest request)
         {
-            if (gameRoom.GameStartedAt != DateTime.MinValue)
+            if (
+                gameRoom.GameStartedAt != DateTime.MinValue && 
+                (gameRoom.GamePlayStatus == GamePlayStatus.CreatorDisconnected || gameRoom.GamePlayStatus == GamePlayStatus.JoinerDisconnected)
+            )
             {
                 return ReconnectToGame(gameRoom, request); // initialize game only once
             }

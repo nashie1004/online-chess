@@ -47,11 +47,12 @@ C:/Users/Nash/Downloads/sqlite-tools-win-x64-3480000/sqlite3.exe app.db
 2. castling bug incorrect coordinates?
 3. if user disconnected and game timer is up, dont show resume notif
 4. offer draw bug if no move made yet
+5. handle if both player disconnect
 
 ## MVP (FEATURES)
 1. handle checkmate, stalemate game game over sidebar and modal screen text - DOING
 3. add profile image
-4. board coordinates
+4. board coordinates - DOING
 
 ## DEPLOYMENT
 1. expose ports with a simple html file

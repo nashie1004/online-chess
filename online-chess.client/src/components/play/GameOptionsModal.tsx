@@ -12,7 +12,7 @@ import { eventEmitter } from "../../game/utilities/eventEmitter";
 import useUserPreferenceContext from "../../hooks/useUserPreferenceContext";
 
 export default function GameOptionsModal(){
-  const { setBoard, setPiece, boardUI, pieceUI } = useUserPreferenceContext();
+  const { setBoard, setPiece, setShowCoords, boardUI, pieceUI, showCoords } = useUserPreferenceContext();
   const { userConnectionId, invoke } = useSignalRContext();
   const { setGameState, gameState } = useGameContext();
   const [selectedOption, setSelectedOption] = useState<PromotionPrefence>(PromotionPrefence.Queen);
@@ -72,6 +72,16 @@ export default function GameOptionsModal(){
                                 return <option key={idx} value={item.displayCode}>{item.displayName}</option>
                             })}
                         </Form.Select>
+                    </Form.Group>
+                    <Form.Group className="mb-3 d-flex">
+                        <Form.Label column sm={3}>Show Coordinates:</Form.Label>
+                        <Form.Check
+                            checked={showCoords}
+                            onChange={() => {
+                                setShowCoords(!showCoords ? "true" : "false");
+                                eventEmitter.emit(EVENT_ON.SET_COORDS_UI_SHOW, !showCoords);
+                            }}
+                        />
                     </Form.Group>
                     <Form.Group className="mb-3 d-flex">
                         <Form.Label column sm={3} className="d-flex align-items-center">Promote:</Form.Label>

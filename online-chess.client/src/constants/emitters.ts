@@ -11,6 +11,7 @@ export const EVENT_EMIT = {
     ,SET_BOTH_KINGS_STATE: "setBothKingsState"
     ,SET_BOARD_UI: "setBoardUI"
     ,SET_PIECE_UI: "setPieceUI"
+    ,SET_COORDS_UI_SHOW: "setShowUICoords"
 }
 
 export const EVENT_ON = {
@@ -22,6 +23,7 @@ export const EVENT_ON = {
     ,SET_BOTH_KINGS_STATE: "setBothKingsState"
     ,SET_BOARD_UI: "setBoardUI"
     ,SET_PIECE_UI: "setPieceUI"
+    ,SET_COORDS_UI_SHOW: "setShowUICoords"
 }
 
   

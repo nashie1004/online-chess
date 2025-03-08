@@ -70,6 +70,8 @@ export interface IUserPreferenceContext{
     setPiece: (data: string) => void;
     soundFx: string;
     setSound: (data: string) => void;
+    showCoords: boolean;
+    setShowCoords: (data: string) => void;
 }
 
 export interface IGameUIChandlerContext{

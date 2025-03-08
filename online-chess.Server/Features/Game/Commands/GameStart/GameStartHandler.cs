@@ -6,6 +6,9 @@ using online_chess.Server.Enums;
 using online_chess.Server.Models.Play;
 using online_chess.Server.Constants;
 using online_chess.Server.Models;
+using online_chess.Server.Persistence;
+using Microsoft.AspNetCore.Identity;
+using online_chess.Server.Models.Entities;
 
 namespace online_chess.Server.Features.Game.Commands.GameStart
 {
@@ -13,23 +16,17 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
     {
         private readonly IHubContext<GameHub> _hubContext;
         private readonly GameRoomService _gameRoomService;
-        private readonly UserConnectionService _authenticatedUserService;
-        private readonly TimerService _timerService;
-        private readonly ILogger<GameStartHandler> _logger;
+        private readonly UserManager<User> _userManager;
 
         public GameStartHandler(
             IHubContext<GameHub> hubContext
             , GameRoomService gameRoomService
-            , UserConnectionService authenticatedUserService
-            , TimerService timerService
-            , ILogger<GameStartHandler> logger
+            , UserManager<User> userManager
             )
         {
             _hubContext = hubContext;
             _gameRoomService = gameRoomService;
-            _authenticatedUserService = authenticatedUserService;
-            _timerService = timerService;
-            _logger = logger;
+            _userManager = userManager;
         }
 
         public async Task<Unit> Handle(GameStartRequest request, CancellationToken cancellationToken)
@@ -56,12 +53,16 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
 
                 var currentGameInfo = _gameRoomService.ReconnectToGame(gameRoom, request);
 
+                await SetPlayersProfileImages(currentGameInfo);
+
                 await _hubContext.Clients.Client(request.UserConnectionId).SendAsync(RoomMethods.onInitializeGameInfo, currentGameInfo);
             }
             /* New Game */
-            else if (!request.Reconnect)
+            else
             {
                 var baseGameInfo = _gameRoomService.StartNewGame(gameRoom, request);
+
+                await SetPlayersProfileImages(baseGameInfo);
 
                 await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync(RoomMethods.onInitializeGameInfo, baseGameInfo);
             } 
@@ -71,5 +72,13 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
             return Unit.Value;
         }
     
+        private async Task SetPlayersProfileImages(CurrentGameInfo gameInfo)
+        {
+            string defaultImg = "https://picsum.photos/300/300"; 
+
+            // gameInfo.CreatedByUserInfo.ProfileImageUrl = (await _userManager.FindByNameAsync(gameInfo.CreatedByUserInfo.UserName))?.ProfileImageUrl ?? defaultImg;
+            // gameInfo.JoinedByUserInfo.ProfileImageUrl = (await _userManager.FindByNameAsync(gameInfo.JoinedByUserInfo.UserName))?.ProfileImageUrl ?? defaultImg;
+        }
+
     }
 }
