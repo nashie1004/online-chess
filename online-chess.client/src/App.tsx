@@ -17,33 +17,39 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import NotificationContext from "./context/NotificationContext";
 import InitializerContext from "./context/InitializerContext";
 import QueuingContext from "./context/QueuingContext";
+import GameUIHandlerContext from "./context/GameUIHanderContext";
+import UserPreferenceContext from "./context/UserPreferenceContext";
 
 export default function App(){
     return <>
         <BrowserRouter>
             <NotificationContext>
-                <SignalRContext>
-                    <AuthContext>
-                        <QueuingContext>
-                            <GameContext>
-                                <InitializerContext>
-                                    <Routes>
-                                        <Route path="/" element={<Layout />}>
-                                            <Route path="/" element={<Home /> } />
-                                            <Route path="/play" element={<Play /> } />
-                                            <Route path="/register" element={<Register /> } />
-                                            <Route path="/login" element={<Login /> } />
-                                            <Route path="/profile" element={<Profile /> } />
-                                            <Route path="/about" element={<About /> } />
-                                            <Route path="/lobby" element={<Lobby /> } />
-                                            <Route path="*" element={<NotFound /> } />
-                                        </Route>
-                                    </Routes>
-                                </InitializerContext>
-                            </GameContext>
-                        </QueuingContext>
-                    </AuthContext>
-                </SignalRContext>
+                <UserPreferenceContext>
+                    <GameUIHandlerContext>
+                        <SignalRContext>
+                            <AuthContext>
+                                <QueuingContext>
+                                    <GameContext>
+                                        <InitializerContext>
+                                            <Routes>
+                                                <Route path="/" element={<Layout />}>
+                                                    <Route path="/" element={<Home /> } />
+                                                    <Route path="/play" element={<Play /> } />
+                                                    <Route path="/register" element={<Register /> } />
+                                                    <Route path="/login" element={<Login /> } />
+                                                    <Route path="/profile" element={<Profile /> } />
+                                                    <Route path="/about" element={<About /> } />
+                                                    <Route path="/lobby" element={<Lobby /> } />
+                                                    <Route path="*" element={<NotFound /> } />
+                                                </Route>
+                                            </Routes>
+                                        </InitializerContext>
+                                    </GameContext>
+                                </QueuingContext>
+                            </AuthContext>
+                        </SignalRContext>
+                    </GameUIHandlerContext>
+                </UserPreferenceContext>
             </NotificationContext>
         </BrowserRouter>
     </>

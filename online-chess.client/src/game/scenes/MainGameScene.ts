@@ -4,7 +4,7 @@ import move from "../../assets/sounds/Move.ogg"
 import capture from "../../assets/sounds/Capture.ogg"
 import select from "../../assets/sounds/Select.ogg"
 import check from "../../assets/sounds/Check.mp3"
-import { Capture, Castle, PieceNames, PromotionPrefence, pieceNamesV2 } from "../utilities/constants";
+import { Capture, Castle, PieceNames, PromotionPrefence, pieceNamesV2 as pieceNamesToPreload } from "../utilities/constants";
 import { IBothKingsPosition, IKingState, IMoveHistory, IMoveInfo, IPiece, IPieceMove, IPiecesCoordinates, PlayersPromotePreference } from "../utilities/types";
 import { eventEmitter } from "../utilities/eventEmitter";
 import KingCastled from "../logic/kingCastled";
@@ -81,7 +81,7 @@ export class MainGameScene extends Scene{
         this.load.audio("select", select);
         this.load.audio("check", check);
 
-        pieceNamesV2.forEach(piece => {
+        pieceNamesToPreload.forEach(piece => {
             this.load.svg(
                 `${this.piecesUI}-${piece.fullName}`
                 , `/src/assets/pieces/${this.piecesUI}/${piece.shortName}.svg`
@@ -282,7 +282,7 @@ export class MainGameScene extends Scene{
                 
             });
             
-            pieceNamesV2.forEach(piece => {
+            pieceNamesToPreload.forEach(piece => {
                 this.load.svg(
                     `${this.piecesUI}-${piece.fullName}`
                     , `/src/assets/pieces/${this.piecesUI}/${piece.shortName}.svg`

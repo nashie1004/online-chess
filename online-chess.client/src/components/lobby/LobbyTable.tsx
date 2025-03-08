@@ -69,7 +69,12 @@ export default function LobbyTable({
                                     className="btn btn-2 btn-sm w-100">View</button>
                             </> : <></>}
                         </td>
-                        <td>{user?.userName === item.value.createdByUserId ? "You" : item.value.createdByUserId}</td>
+                        <td>
+                            <img src="https://picsum.photos/id/237/300/300" className='profile-img small' alt="player-1-img" />
+                            <span className="ps-2">
+                                {user?.userName === item.value.createdByUserId ? "You" : item.value.createdByUserId}
+                            </span>
+                        </td>
                         <td>{gameTypeDisplay(item.value.gameType)}</td>
                         <td>{colorOptionsDisplay(item.value.createdByUserColor)}</td>
                         <td>{moment(item.value.createDate).fromNow()}</td>
@@ -120,14 +125,12 @@ export default function LobbyTable({
                     <h5>Are you sure you want to join this game?</h5>
                 </div>
                 <div className="m-body">
-                    {
-                        selectedRoom && <>
-                            <p><b>Connection Id:</b> {selectedRoom.key}</p>
-                            <p><b>Created By User:</b> {selectedRoom.value.createdByUserId}</p>
-                            <p><b>Game Type:</b> {gameTypeDisplay(selectedRoom.value.gameType)}</p>
-                            <p><b>Create Date Time:</b> {moment(selectedRoom.value.createDate).fromNow()}</p>
-                        </>
-                    }
+                    {selectedRoom && <>
+                        <p><b>Connection Id:</b> {selectedRoom.key}</p>
+                        <p><b>Created By User:</b> {selectedRoom.value.createdByUserId}</p>
+                        <p><b>Game Type:</b> {gameTypeDisplay(selectedRoom.value.gameType)}</p>
+                        <p><b>Create Date Time:</b> {moment(selectedRoom.value.createDate).fromNow()}</p>
+                    </>}
                 </div>
                 <div className="m-footer">
                     <button 

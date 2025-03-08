@@ -45,13 +45,17 @@ C:/Users/Nash/Downloads/sqlite-tools-win-x64-3480000/sqlite3.exe app.db
 ## MVP (BUGS)
 1. en passant - reconnect false and true
 2. castling bug incorrect coordinates?
-3. if user disconnecteed and game timer is up, dont show resume notif 
+3. if user disconnected and game timer is up, dont show resume notif 
+4. offer draw bug if no move made yet
+5. game options pawn promote not same color if white
+6. capture history component
 
 ## MVP (FEATURES)
-1. display move turn, check, checkmate, stalemate, draw agree - revamp, reconnect false and true - DOING
-2. add profile image
-3. board coordinates
-4. elo
+1. handle checkmate, stalemate game game over sidebar and modal screen text
+3. add profile image
+4. board coordinates
+5. elo
+6. add another context for handling game ui like (spinner modal, pawn promotion)
 
 ## DEPLOYMENT
 1. expose ports with a simple html file

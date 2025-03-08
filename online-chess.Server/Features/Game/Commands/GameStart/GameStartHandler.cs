@@ -49,7 +49,8 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
             }
 
             /* Player Reconnects */
-            if (request.Reconnect || gameRoom.GameStartedAt != DateTime.MinValue)
+            // if (request.Reconnect && gameRoom.GameStartedAt != DateTime.MinValue)
+            if (request.Reconnect)
             {
                 await _hubContext.Groups.AddToGroupAsync(request.UserConnectionId, request.GameRoomKeyString);
 

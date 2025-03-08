@@ -130,7 +130,10 @@ export default function GameTypeTable(
                     #{item.rank}
                   </div>
                 </td>
-                <td>{item.username}</td>
+                <td>
+                  <img src="https://picsum.photos/id/237/300/300" className='profile-img small' alt="player-1-img" />
+                  <span className="ps-2">{item.username}</span>
+                </td>
                 <td className="table-win">{item.wins === 0 ? "-" : item.wins}</td>
                 <td className="table-lose">{item.loses === 0 ? "-" : item.loses}</td>
                 <td className="table-draw">{item.draws === 0 ? "-" : item.draws}</td>

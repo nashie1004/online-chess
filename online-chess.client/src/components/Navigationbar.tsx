@@ -23,9 +23,7 @@ export default function NavigationBar() {
       <Container>
         <Navbar.Brand id="page-title" className='d-flex align-items-center'>
           <img src={logo} alt="logo"  width={20} height={20} />
-          <span className='ps-2'>
-            ONLINE-CHESS.XYZ
-          </span>
+          <span className='ps-2'>ONLINE-CHESS.XYZ</span>
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
@@ -71,6 +69,7 @@ export default function NavigationBar() {
             {
               user ?
               <>
+                <img src="https://picsum.photos/id/237/300/300" className='profile-img small' alt="player-1-img" />
                 <span className="text-white">{user.userName}</span>
                 <button 
                   onClick={logoutHandler}

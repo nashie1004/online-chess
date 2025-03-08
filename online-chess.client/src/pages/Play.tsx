@@ -80,7 +80,7 @@ export default function Main(){
 
             eventEmitter.removeAllListeners();
         };
-    }, [])
+    }, []);
  
     return <> 
         <div className="col-auto pt-2">
