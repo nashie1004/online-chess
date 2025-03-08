@@ -1,4 +1,4 @@
-import { createContext, useReducer } from "react"
+import { createContext, useReducer, useState } from "react"
 import { baseNotificationState } from "../game/utilities/constants";
 import { IBaseContextProps } from "../types/global";
 import { INotificationContext, INotificationContextReducerState, INotificationContextReducerActions } from "./types";
@@ -29,6 +29,8 @@ function reducerFn(state: INotificationContextReducerState, action: INotificatio
 export default function GameUIHandlerContext(
     { children }: IBaseContextProps
 ){
+    // TODO 3/8/2025
+    const [a,aa] = useState("custom game over modal screen text here");
     const [notificationState, setNotificationState] = useReducer<React.Reducer<INotificationContextReducerState, INotificationContextReducerActions>>(reducerFn, baseNotificationState);
 
     return <gameUIHandlerContext.Provider value={{
