@@ -125,6 +125,8 @@ export default function useOnInitializeGameInfo(
                 playerIsWhite: myInfo.isColorWhite,
                 isOfferingADraw: false,
                 promotePawnTo: myInfo.pawnPromotionPreference,
+                profileImageUrl: myInfo.profileImageUrl,
+                color: myInfo.color
             }
         });
         
@@ -138,6 +140,8 @@ export default function useOnInitializeGameInfo(
                 playerIsWhite: opponentInfo.isColorWhite,
                 isOfferingADraw: false,
                 promotePawnTo: opponentInfo.pawnPromotionPreference,
+                profileImageUrl: opponentInfo.profileImageUrl,
+                color: opponentInfo.color
             }
         });
 

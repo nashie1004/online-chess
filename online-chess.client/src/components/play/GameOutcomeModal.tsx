@@ -28,14 +28,14 @@ export default function GameOutcomeModal(
             <div className="m-body game-over-modal">
                 <div className='d-flex justify-content-around'>
                     <div className='d-flex flex-column align-items-center gap-2'>
-                        <img src={setImage()} alt="player-1" loading='lazy' />
+                        <img src={setImage(gameState.myInfo.profileImageUrl)} alt="player-1" loading='lazy' />
                         <p className='text-white'>{gameState.myInfo.userName} (You)</p>
                     </div>
                     <div className='d-flex align-items-center'>
                         <p className='text-white'>vs</p>
                     </div>
                     <div className='d-flex flex-column align-items-center gap-2'>
-                        <img src={setImage()} alt="player-2" loading='lazy' />
+                        <img src={setImage(gameState.opponentInfo.profileImageUrl)} alt="player-2" loading='lazy' />
                         <p className='text-white'>{gameState.opponentInfo.userName}</p>
                     </div>
                 </div>

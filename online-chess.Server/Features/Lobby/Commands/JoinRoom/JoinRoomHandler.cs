@@ -1,8 +1,10 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 using online_chess.Server.Enums;
 using online_chess.Server.Hubs;
 using online_chess.Server.Models;
+using online_chess.Server.Models.Entities;
 using online_chess.Server.Service;
 
 namespace online_chess.Server.Features.Lobby.Commands.JoinRoom
@@ -13,13 +15,21 @@ namespace online_chess.Server.Features.Lobby.Commands.JoinRoom
         private readonly GameQueueService _gameQueueService;
         private readonly GameRoomService _gameRoomService; 
         private readonly UserConnectionService _authenticatedUserService;
+        private readonly UserManager<User> _userManager;
 
-        public JoinRoomHandler(IHubContext<GameHub> hubContext, GameQueueService gameQueueService, UserConnectionService authenticatedUserService, GameRoomService gameRoomService)
+        public JoinRoomHandler(
+            IHubContext<GameHub> hubContext
+            , GameQueueService gameQueueService
+            , UserConnectionService authenticatedUserService
+            , GameRoomService gameRoomService
+            , UserManager<User> userManager
+        )
         {
             _hubContext = hubContext;
             _gameQueueService = gameQueueService;
             _gameRoomService = gameRoomService;
             _authenticatedUserService = authenticatedUserService;
+            _userManager = userManager;
         }
 
         public async Task<Unit> Handle(JoinRoomRequest request, CancellationToken cancellationToken)
@@ -31,6 +41,9 @@ namespace online_chess.Server.Features.Lobby.Commands.JoinRoom
                 await _hubContext.Clients.Client(request.UserConnectionId).SendAsync(RoomMethods.onGenericError, "404 Room Not Found");
                 return Unit.Value;
             }
+
+            var user = (await _userManager.FindByNameAsync(request.IdentityUserName ?? ""));
+            if (user == null) return Unit.Value;
 
             // add joiner user to the group
             await _hubContext.Groups.AddToGroupAsync(request.UserConnectionId, request.GameRoomKeyString);
@@ -51,10 +64,11 @@ namespace online_chess.Server.Features.Lobby.Commands.JoinRoom
                 CreatedByUserInfo = queue.CreatedByUserInfo,
                 JoinByUserInfo = new Models.Play.PlayerInfo()
                 {
-                    UserName = request.IdentityUserName
+                    UserName = user.UserName
                     ,IsPlayersTurnToMove = !queue.CreatedByUserInfo.IsColorWhite
                     ,IsColorWhite = !queue.CreatedByUserInfo.IsColorWhite
                     ,Color = queue.CreatedByUserInfo.Color == Color.White ? Color.Black : Color.White
+                    ,ProfileImageUrl = user.ProfileImageUrl
                 }
             };
 

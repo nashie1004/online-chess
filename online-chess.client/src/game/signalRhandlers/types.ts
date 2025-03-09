@@ -1,4 +1,4 @@
-import { Capture, Castle, GameType, PromotionPrefence } from "../utilities/constants";
+import { Capture, Castle, ColorOptions, GameType, PromotionPrefence } from "../utilities/constants";
 import { IPiece, IPieceMove, IKingState, IMoveHistory, IKing } from "../utilities/types";
 
 export interface IInitialPlayerInfo{
@@ -10,6 +10,8 @@ export interface IInitialPlayerInfo{
     kingInCheckMate: boolean;
     kingInStaleMate: boolean;
     pawnPromotionPreference: PromotionPrefence;
+    profileImageUrl: string;
+    color: ColorOptions;
 }
 
 export interface IUseOnInitializeGameInfo{

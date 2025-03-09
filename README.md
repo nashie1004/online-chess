@@ -54,7 +54,7 @@ C:/Users/Nash/Downloads/sqlite-tools-win-x64-3480000/sqlite3.exe app.db
 6. handle incorrect/non existing gameroomkey on play page
 
 ## MVP (FEATURES)
-1. add profile image -- (lobby page table, game history table, set in play page, encryption?)
+1. add profile image -- (game history table, encryption?)
 
 ## DEPLOYMENT
 1. expose ports with a simple html file

@@ -63,20 +63,20 @@ export default function LobbyTable({
                                 <button 
                                     disabled={!userConnectionId}
                                     onClick={() => {
-                                        setSelectedRoom(item)
-                                        setModal(true)
+                                        setSelectedRoom(item);
+                                        setModal(true);
                                     }}
                                     className="btn btn-2 btn-sm w-100">View</button>
                             </> : <></>}
                         </td>
                         <td>
-                            <img src={setImage()} className='profile-img small' alt="player-1-img" />
+                            <img src={setImage(item.value.createdByUserInfo.profileImageUrl)} className='profile-img small' alt="player-1-img" />
                             <span className="ps-2">
                                 {user?.userName === item.value.createdByUserInfo.userName ? "You" : item.value.createdByUserInfo.userName}
                             </span>
                         </td>
                         <td>{gameTypeDisplay(item.value.gameType)}</td>
-                        <td>{colorOptionsDisplay(item.value.createdByUserInfo.userName)}</td>
+                        <td>{colorOptionsDisplay(item.value.createdByUserInfo.color)}</td>
                         <td>{moment(item.value.createDate).fromNow()}</td>
                     </tr>
                 })}

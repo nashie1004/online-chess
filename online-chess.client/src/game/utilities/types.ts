@@ -168,6 +168,8 @@ export interface IPlayerInfo{
     playerIsWhite: boolean;
     isOfferingADraw: boolean;
     promotePawnTo: PromotionPrefence;
+    profileImageUrl: string;
+    color: ColorOptions
 }
 
 export interface PromoteOptions{

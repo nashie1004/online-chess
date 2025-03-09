@@ -66,6 +66,8 @@ export const basePlayerInfo: IPlayerInfo = {
     ,playerIsWhite: false
     ,isOfferingADraw: false
     ,promotePawnTo: PromotionPrefence.Queen
+    ,profileImageUrl: ""
+    ,color: ColorOptions.White
 }
 
 export const baseGameState: IGameContextReducerState = {

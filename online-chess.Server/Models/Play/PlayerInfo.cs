@@ -9,5 +9,6 @@ namespace online_chess.Server.Models.Play
         public bool IsColorWhite { get; set; }
         public Color Color { get; set; }
         public PawnPromotionPreference PawnPromotionPreference { get; set; }
+        public string ProfileImageUrl { get; set; }
     }
 }

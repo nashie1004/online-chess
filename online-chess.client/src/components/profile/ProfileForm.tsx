@@ -8,6 +8,7 @@ import BaseApiService from "../../services/BaseApiService";
 import useNotificationContext from "../../hooks/useNotificationContext";
 import useSignalRContext from "../../hooks/useSignalRContext";
 import { setImage } from "../../utils/helper";
+import useQueuingContext from "../../hooks/useQueuingContext";
 
 const VALID_FILE_TYPES = [ "image/png", "image/jpeg", "image/jpg", "image/svg+xml", "image/gif" ];
 const MAX_SIZE = 5 * 1024 * 1024;
@@ -36,6 +37,7 @@ export default function ProfileForm(){
   const { setNotificationState, notificationState } = useNotificationContext();
   const { userConnectionId } = useSignalRContext();
   const [profileImgIsSubmitting, setProfileImgIsSubmitting] = useState(false);
+  const { queuingRoomKey } = useQueuingContext();
 
   const {
     register, handleSubmit, watch,
@@ -143,7 +145,7 @@ export default function ProfileForm(){
             <div className="d-flex justify-content-center align-items-center">
               <Form.Control 
                 type="file"
-                disabled={!userConnectionId || loading || notificationState.hasAGameOnGoing}
+                disabled={!userConnectionId || loading || notificationState.hasAGameOnGoing || queuingRoomKey ? true : false}
                 onChange={changeProfileImage}
                 id="profileImageFile"
               />

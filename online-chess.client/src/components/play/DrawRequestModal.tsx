@@ -21,11 +21,11 @@ export default function DrawRequestModal(){
       <Modal
         aria-labelledby="contained-modal-title-vcenter"
         centered
-        show={modalShow || gameState.opponentInfo.isOfferingADraw}
+        show={(modalShow || gameState.opponentInfo.isOfferingADraw) && gameState.gameStatus !== "FINISHED"}
       >
         <Modal.Body>
           <div className="m-header">
-            <h5>{gameState.opponentInfo.userName} is offering a draw.</h5>
+            <p>{gameState.opponentInfo.userName} is offering a draw.</p>
           </div>
           <form className="m-body" onSubmit={formSubmit}>
             <div className="">

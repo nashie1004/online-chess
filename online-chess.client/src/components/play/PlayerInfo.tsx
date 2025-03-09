@@ -51,22 +51,23 @@ export default function PlayerInfo() {
         <div className="hstack my-3">
             <div className='timer-info w-100'>
                 <h6 className='text-secondary'>{playerIsWhite ? "You" : opponentInfo.userName} (white)</h6>
-                <img src={setImage()} className='profile-img small' alt="player-1-img" />
+                <img src={setImage(playerIsWhite ? myInfo.profileImageUrl : opponentInfo.profileImageUrl)} className='profile-img small' alt="player-1-img" />
                 <h2>
                     <i className="bi bi-clock" style={{ fontSize: "1.4rem" }}></i> <span>{secondsToMinuteDisplay2(actualTime.white)}s</span>
                 </h2>
             </div>
             <div className='timer-info w-100'>
                 <h6  className='text-secondary'>{!playerIsWhite ? "You" : opponentInfo.userName} (black)</h6>
-                <img src={setImage()} className='profile-img small' alt="player-2-img" />
+                <img src={setImage(!playerIsWhite ? myInfo.profileImageUrl : opponentInfo.profileImageUrl)} className='profile-img small' alt="player-2-img" />
                 <h2>
                     <i className="bi bi-clock" style={{ fontSize: "1.4rem" }}></i> <span>{secondsToMinuteDisplay2(actualTime.black)}s</span>
                 </h2>
             </div>
         </div>
         <div className='game-alert'>
-            {actualTime.whitesTurn && `White's turn to move.`}
-            {!actualTime.whitesTurn && `Black's turn to move.`}
+            {gameState.gameStatus === "FINISHED" && `Game over. `}
+            {(actualTime.whitesTurn && gameState.gameStatus !== "FINISHED") && ` White's turn to move.`}
+            {(!actualTime.whitesTurn && gameState.gameStatus !== "FINISHED") && ` Black's turn to move.`}
             {white.kingsState.isInCheck && ` White is in check.`}
             {black.kingsState.isInCheck && ` Black is in check.`}
             {white.kingsState.isCheckMate && ` White is checkmated.`}
