@@ -47,16 +47,20 @@ export default function SidebarRight() {
       </div>
       <div className="sidebar-footer">
         <div className='hstack justify-content-between sidebar-bar'>
-        <div className='d-flex align-items-center gap-1'>
-          <i 
+        <div className=''>
+          <div
+            className='d-flex align-items-center gap-1'
             id="option-gear"
-            style={{ color: "#A8A8A7", fontSize: "1.5rem", cursor: "pointer" }}
-            className="bi bi-gear ps-2" 
             onClick={() => {
               setGameState({ type: "SET_OPENOPTIONMODAL", payload: true });
             }}
-          />
-          <span className='text-white'>Settings</span>
+          >
+            <i 
+              style={{ color: "#A8A8A7", fontSize: "1.5rem" }}
+              className="bi bi-gear ps-2" 
+            />
+            <span className='text-white'>Settings</span>
+          </div>
         </div>
       </div>
         <Chatbar />

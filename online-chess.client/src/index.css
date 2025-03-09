@@ -249,9 +249,15 @@ input:disabled::placeholder {
 
 .sidebar #option-gear:hover{
   opacity: .75;
+  cursor: pointer;
 }
 .match-form-body{
   padding-top: 1rem;
+}
+.match-form-body img{
+  min-height: 100px;
+  width: 100%;
+  max-width: 100px;
 }
 .table-title{
   background-color: var(--bg-2);

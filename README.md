@@ -46,12 +46,11 @@ C:/Users/Nash/Downloads/sqlite-tools-win-x64-3480000/sqlite3.exe app.db
 1. en passant - reconnect false and true
 2. castling bug incorrect coordinates?
 3. if user disconnected and game timer is up, dont show resume notif
-4. offer draw bug if no move made yet
-5. handle if both player disconnect
+4. double check pawn promote
+5. after game over, cleanup (btns disabled, unable to move, show game over on game outcome component)
 
 ## MVP (FEATURES)
-1. handle checkmate, stalemate game game over sidebar and modal screen text - DOING
-3. add profile image
+1. add profile image
 
 ## DEPLOYMENT
 1. expose ports with a simple html file

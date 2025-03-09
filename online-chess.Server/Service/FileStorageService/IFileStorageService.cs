@@ -2,8 +2,8 @@
 {
     public interface IFileStorageService
     {
-        //bool AddFile(byte[] content, string fileName);
-        //bool RemoveFile(string fileName);
-        //string GetFile(string fileName);
+        Task<(bool success, string fileNameOrErrorMsg)> SaveFile(IFormFile file);
+        Task<bool> RemoveFile(string fileName);
+        Task<(bool exists, byte[] content, string mimeType)> GetFile(string fileName);
     }
 }

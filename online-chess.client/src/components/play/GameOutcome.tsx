@@ -14,7 +14,7 @@ export default function GameOutcome() {
 
     async function formSubmit(){
       setModalShow(false);
-      setShowLoadingModal(true);
+      outcome === 0 && setShowLoadingModal(true);
       invoke(outcome === 0 ? PLAY_PAGE_INVOKERS.RESIGN : PLAY_PAGE_INVOKERS.REQUEST_A_DRAW, gameState.gameRoomKey);
     }
 

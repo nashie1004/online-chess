@@ -232,9 +232,6 @@ namespace online_chess.Server.Hubs
         }
 
         /*
-        TODO AS OF 2/24/2025 8:04PM
-        - Checkmate and Stalemate
-        */
         [Authorize]
         public async Task Checkmate()
         {
@@ -254,6 +251,7 @@ namespace online_chess.Server.Hubs
                 IdentityUserName = Context.User?.Identity?.Name,
             });
         }
+        */
 
         [Authorize]
         public async Task UserDisconnectedFromGame()

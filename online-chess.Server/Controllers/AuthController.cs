@@ -5,6 +5,7 @@ using online_chess.Server.Features.Auth.Commands.Edit;
 using online_chess.Server.Features.Auth.Commands.LogIn;
 using online_chess.Server.Features.Auth.Commands.LogOut;
 using online_chess.Server.Features.Auth.Commands.Register;
+using online_chess.Server.Features.Auth.Commands.UploadProfileImage;
 using online_chess.Server.Features.Auth.Queries.GetGameHistory;
 using online_chess.Server.Features.Auth.Queries.GetPlayerInfo;
 
@@ -53,12 +54,13 @@ namespace online_chess.Server.Controllers
         {
             return Ok(await _mediator.Send(req));
         }
-        
-        // [HttpGet("gameHistory")]
-        // public async Task<IActionResult> GameHistory([FromQuery] GetGameHistoryRequest req)
-        // {
-        //     return Ok(await _mediator.Send(req));
-        // }
+
+
+        [HttpPost("upload-image")]
+        public async Task<IActionResult> UploadProfileImage([FromBody] UploadProfileImageRequest req)
+        {
+            return Ok(await _mediator.Send(req));
+        }
 
     }
 }

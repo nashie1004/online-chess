@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import React, { useState } from "react";
 import { Row, Col, Form, Button, Spinner } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -8,19 +8,22 @@ import BaseApiService from "../../services/BaseApiService";
 import useNotificationContext from "../../hooks/useNotificationContext";
 import useSignalRContext from "../../hooks/useSignalRContext";
 
+const VALID_FILE_TYPES = [ "image/png", "image/jpeg", "image/jpg", "image/svg+xml", "image/gif" ];
+const MAX_SIZE = 5 * 1024 * 1024;
+
 const schema = z.object({
-    newUsername: z.string().nonempty().min(8, "New username must contain at least 8 character(s)"),
-    oldPassword: z.string().nonempty().min(8, "Old password must contain at least 8 character(s)"),
-    newPassword: z.string().nonempty().min(8, "New password must contain at least 8 character(s)")
-  }).superRefine(({ oldPassword, newPassword }, ctx) => {
-    if (oldPassword === newPassword) {
-      ctx.addIssue({
-        code: "custom",
-        message: "The old and new password should be different.",
-        path: ['newPassword']
-      });
-    }
-  });
+  newUsername: z.string().nonempty().min(8, "New username must contain at least 8 character(s)"),
+  oldPassword: z.string().nonempty().min(8, "Old password must contain at least 8 character(s)"),
+  newPassword: z.string().nonempty().min(8, "New password must contain at least 8 character(s)"),
+}).superRefine(({ oldPassword, newPassword}, ctx) => {
+  if (oldPassword === newPassword) {
+    ctx.addIssue({
+      code: "custom",
+      message: "The old and new password should be different.",
+      path: ['newPassword']
+    });
+  }
+});
   
 type FormFields = z.infer<typeof schema>;
 
@@ -31,6 +34,7 @@ export default function ProfileForm(){
     const [editableProfile, setEditableProfile] = useState(true);
     const { setNotificationState } = useNotificationContext();
     const { userConnectionId } = useSignalRContext();
+    const [profileImgIsSubmitting, setProfileImgIsSubmitting] = useState(false);
   
     const {
       register, handleSubmit, watch,
@@ -43,12 +47,10 @@ export default function ProfileForm(){
       resolver: zodResolver(schema)
     });
   
-    async function submitForm(data: FormFields){
+    async function submitForm(formData: FormFields){
       if (!userConnectionId) return;
 
-      const res = await profileService.basePost("/api/Auth/edit", {
-        oldUserName: user?.userName, ...data , profileImageUrl: "todo" 
-      });
+      const res = await profileService.basePost("/api/Auth/edit", { oldUserName: user?.userName, ...formData });
           
       setNotificationState({ 
         type: "SET_CUSTOMMESSAGE"
@@ -65,29 +67,92 @@ export default function ProfileForm(){
       }); 
       }
     }
+
+    async function changeProfileImage(e: React.ChangeEvent<HTMLInputElement>) {
+        setProfileImgIsSubmitting(true);
+
+        if (!userConnectionId) return;
+        if (!e.target.files) return;
+        if (e.target.files.length < 1) return;
+
+        if (e.target.files.length > 1) {
+            setNotificationState({
+                type: "SET_CUSTOMMESSAGE"
+                , payload: { customMessage: "Only one profile image is allowed", customMessageType: "DANGER" }
+            });
+            setProfileImgIsSubmitting(false);
+            return;
+        }
+
+        const file = e.target.files[0];
+
+        if (!VALID_FILE_TYPES.includes(file.type)) {
+            setNotificationState({
+                type: "SET_CUSTOMMESSAGE"
+                , payload: { customMessage: `Valid file formats are ${VALID_FILE_TYPES.join(", ")}`, customMessageType: "DANGER" }
+            });
+            setProfileImgIsSubmitting(false);
+            return;
+        }
+
+        if (file.size > MAX_SIZE) {
+            setNotificationState({
+                type: "SET_CUSTOMMESSAGE"
+                , payload: { customMessage: `Max size is 5mb`, customMessageType: "DANGER" }
+            });
+            setProfileImgIsSubmitting(false);
+            return;
+        }
+
+        const res = await profileService.basePost("/api/Play/upload-image", { profileImageFile: file })
+
+        if (!res.isOk) {
+            setNotificationState({
+                type: "SET_CUSTOMMESSAGE"
+                , payload: { customMessage: res.message, customMessageType: "DANGER" }
+            });
+        }
+
+        setProfileImgIsSubmitting(false);
+    }
     
     const formValues = watch();
-    const loading = isSubmitting;
-  
+    const loading = isSubmitting || profileImgIsSubmitting;
+
     return <>
+      <Form className="mb-3">
+        <div className="match-form-header">
+          <h5>
+            <i className="bi bi-camera pe-2"  style={{ color: "#FFEB3B", fontSize: "1.6rem" }}></i> 
+            <span>PROFILE IMAGE</span>
+          </h5>
+        </div>
+        <div className="match-form-body">
+          <Row>
+            <Col className="d-flex justify-content-center gap-3">
+              <img src={user?.profileImageUrl} alt="profile-img" className="rounded" />
+              <div className="d-flex justify-content-center align-items-center">
+                <Form.Control 
+                  type="file"
+                    disabled={!userConnectionId || loading}
+                    onChange={changeProfileImage}
+                />
+              </div>
+            </Col>
+          </Row>
+        </div>
+      </Form>
         <Form
             onSubmit={handleSubmit(submitForm)}
             className="mb-3"
           >
           <div className="match-form-header">
               <h5 className="">
-                  <i className="bi bi-clipboard2-check pe-2"  style={{ color: "#FFEB3B", fontSize: "1.6rem" }}></i> ACCOUNT INFORMATION
+                  <i className="bi bi-clipboard2-check pe-2"  style={{ color: "#FFEB3B", fontSize: "1.6rem" }}></i> 
+                  <span>CHANGE USERNAME/PASSWORD</span>
               </h5>
           </div>
             <div className="match-form-body">
-              <Row>
-                <Col>
-                  <img src="https://picsum.photos/id/237/150/150" alt="profile-img" className="rounded" />
-                </Col>
-                <Col>
-                  <input type="file" />
-                </Col>
-              </Row>
               <Row>
                 <Col>
                     <Form.Group className="mb-3">

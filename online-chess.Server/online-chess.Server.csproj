@@ -12,13 +12,9 @@
 
   <ItemGroup>
     <Compile Remove="Service\NewFolder\**" />
-    <Compile Remove="UploadedFiles\**" />
     <Content Remove="Service\NewFolder\**" />
-    <Content Remove="UploadedFiles\**" />
     <EmbeddedResource Remove="Service\NewFolder\**" />
-    <EmbeddedResource Remove="UploadedFiles\**" />
     <None Remove="Service\NewFolder\**" />
-    <None Remove="UploadedFiles\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -51,6 +47,7 @@
     <Folder Include="Migrations\" />
     <Folder Include="Queries\" />
     <Folder Include="SQLiteDB\" />
+    <Folder Include="UploadedFiles\ProfileImages\" />
   </ItemGroup>
 
 </Project>
