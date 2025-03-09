@@ -55,9 +55,8 @@ namespace online_chess.Server.Controllers
             return Ok(await _mediator.Send(req));
         }
 
-
         [HttpPost("upload-image")]
-        public async Task<IActionResult> UploadProfileImage([FromBody] UploadProfileImageRequest req)
+        public async Task<IActionResult> UploadProfileImage([FromForm] UploadProfileImageRequest req)
         {
             return Ok(await _mediator.Send(req));
         }

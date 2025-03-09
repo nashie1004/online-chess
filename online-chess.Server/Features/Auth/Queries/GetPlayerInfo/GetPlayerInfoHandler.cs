@@ -36,6 +36,7 @@ namespace online_chess.Server.Features.Auth.Queries.GetPlayerInfo
 
                 retVal.UserName = user.UserName ?? string.Empty;
                 var num = (new Random()).Next(1, 999);
+                // TOOD
                 retVal.ProfileImageUrl = user.ProfileImageUrl ?? $"https://picsum.photos/id/{num}/300/300";
             }
             catch (Exception ex) { 

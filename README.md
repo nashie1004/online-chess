@@ -38,8 +38,11 @@ All [board](https://github.com/lichess-org/lila/blob/master/public/images/board/
 
 ## SQLite
 ```
-cd /online-chess.Server/SQLiteDB
+cd /online-chess.Server/SQLiteDB/
 C:/Users/Nash/Downloads/sqlite-tools-win-x64-3480000/sqlite3.exe app.db
+.mode column
+.headers on
+.tables
 ```
 
 ## MVP (BUGS)
@@ -50,7 +53,7 @@ C:/Users/Nash/Downloads/sqlite-tools-win-x64-3480000/sqlite3.exe app.db
 5. after game over, cleanup (btns disabled, unable to move, show game over on game outcome component)
 
 ## MVP (FEATURES)
-1. add profile image
+1. add profile image -- 3ca3fe7c-8467-4c71-9582-8ed26c29eca6.jpg
 
 ## DEPLOYMENT
 1. expose ports with a simple html file

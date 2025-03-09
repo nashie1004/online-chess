@@ -69,6 +69,11 @@
             return (true, content, GetMimeTypeFromHeader(content));
         }
 
+        private void EncryptFile()
+        {
+            
+        }
+
         private string GetMimeTypeFromHeader(byte[] fileHeader)
         {
             if (fileHeader.Length < 8)
