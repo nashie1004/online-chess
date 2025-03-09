@@ -51,6 +51,7 @@ C:/Users/Nash/Downloads/sqlite-tools-win-x64-3480000/sqlite3.exe app.db
 3. if user disconnected and game timer is up, dont show resume notif
 4. double check pawn promote
 5. after game over, cleanup (btns disabled, unable to move, show game over on game outcome component)
+6. handle incorrect/non existing gameroomkey on play page
 
 ## MVP (FEATURES)
 1. add profile image -- (lobby page table, game history table, set in play page, encryption?)

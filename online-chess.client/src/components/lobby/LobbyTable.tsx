@@ -59,7 +59,7 @@ export default function LobbyTable({
 
                     return <tr key={idx}> 
                         <td>
-                            {user?.userName !== item.value.createdByUserId ? <>
+                            {user?.userName !== item.value.createdByUserInfo.userName ? <>
                                 <button 
                                     disabled={!userConnectionId}
                                     onClick={() => {
@@ -72,11 +72,11 @@ export default function LobbyTable({
                         <td>
                             <img src={setImage()} className='profile-img small' alt="player-1-img" />
                             <span className="ps-2">
-                                {user?.userName === item.value.createdByUserId ? "You" : item.value.createdByUserId}
+                                {user?.userName === item.value.createdByUserInfo.userName ? "You" : item.value.createdByUserInfo.userName}
                             </span>
                         </td>
                         <td>{gameTypeDisplay(item.value.gameType)}</td>
-                        <td>{colorOptionsDisplay(item.value.createdByUserColor)}</td>
+                        <td>{colorOptionsDisplay(item.value.createdByUserInfo.userName)}</td>
                         <td>{moment(item.value.createDate).fromNow()}</td>
                     </tr>
                 })}
@@ -127,7 +127,7 @@ export default function LobbyTable({
                 <div className="m-body">
                     {selectedRoom && <>
                         <p><b>Connection Id:</b> {selectedRoom.key}</p>
-                        <p><b>Created By User:</b> {selectedRoom.value.createdByUserId}</p>
+                        <p><b>Created By User:</b> {selectedRoom.value.createdByUserInfo.userName}</p>
                         <p><b>Game Type:</b> {gameTypeDisplay(selectedRoom.value.gameType)}</p>
                         <p><b>Create Date Time:</b> {moment(selectedRoom.value.createDate).fromNow()}</p>
                     </>}

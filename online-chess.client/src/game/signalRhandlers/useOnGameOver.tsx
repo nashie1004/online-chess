@@ -3,6 +3,8 @@ import { EndGameStatus } from "../utilities/constants";
 import useGameContext from "../../hooks/useGameContext";
 import useNotificationContext from "../../hooks/useNotificationContext";
 import useGameUIHandlerContext from "../../hooks/useGameUIHandlerContext";
+import { eventEmitter } from "../utilities/eventEmitter";
+import { EVENT_ON } from "../../constants/emitters";
 
 export default function useOnGameOver(){
     const { setGameState, gameState } = useGameContext();
@@ -23,6 +25,8 @@ export default function useOnGameOver(){
         setGameState({ type: "SET_GAMESTATUS", payload: "FINISHED" });
         setShowGameOverModal(true);
         
+        eventEmitter.emit(EVENT_ON.SET_GAME_OVER, true);
+
         // TODO 3/6/2025 1PM
         /*
         switch(outcome){

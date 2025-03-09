@@ -1,7 +1,7 @@
 import { useCallback, useRef } from "react";
 import useGameContext from "../../hooks/useGameContext";
 import { eventEmitter } from "../utilities/eventEmitter";
-import { EVENT_EMIT } from "../../constants/emitters";
+import { EVENT_ON } from "../../constants/emitters";
 import { IOnSetPromotionPreference } from "./types";
 
 export default function useOnSetPromotionPreference(){
@@ -17,14 +17,14 @@ export default function useOnSetPromotionPreference(){
         if (playerName === gameStateRef.current.myInfo.userName)
         {
             setGameState({ type: "SET_MYINFO_PROMOTEPAWNTO", payload: preference });
-            eventEmitter.emit(EVENT_EMIT.SET_PROMOTE_TO, {
+            eventEmitter.emit(EVENT_ON.SET_PROMOTE_TO, {
                 isWhite: gameStateRef.current.myInfo.playerIsWhite,
                 preference
             });
         } 
         else {
             setGameState({ type: "SET_OPPONENTINFO_PROMOTEPAWNTO", payload: preference });
-            eventEmitter.emit(EVENT_EMIT.SET_PROMOTE_TO, {
+            eventEmitter.emit(EVENT_ON.SET_PROMOTE_TO, {
                 isWhite: gameStateRef.current.opponentInfo.playerIsWhite,
                 preference
             });

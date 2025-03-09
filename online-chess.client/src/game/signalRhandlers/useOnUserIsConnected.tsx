@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import useSignalRContext from "../../hooks/useSignalRContext";
 import { eventEmitter } from "../utilities/eventEmitter";
-import { EVENT_EMIT } from "../../constants/emitters";
+import { EVENT_ON } from "../../constants/emitters";
 import useNotificationContext from "../../hooks/useNotificationContext";
 
 export default function useOnUserIsConnected(){
@@ -9,10 +9,10 @@ export default function useOnUserIsConnected(){
     const { notificationState } = useNotificationContext();
 
     useEffect(() => {
-        eventEmitter.emit(EVENT_EMIT.SET_USER_IS_CONNECTED, userConnectionId !== null);
+        eventEmitter.emit(EVENT_ON.SET_USER_IS_CONNECTED, userConnectionId !== null);
 
         return () => {
-            eventEmitter.off(EVENT_EMIT.SET_USER_IS_CONNECTED);
+            eventEmitter.off(EVENT_ON.SET_USER_IS_CONNECTED);
         };
     }, [userConnectionId]);
 

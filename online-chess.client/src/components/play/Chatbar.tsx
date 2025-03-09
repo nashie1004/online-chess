@@ -46,7 +46,9 @@ export default function Chatbar() {
             placeholder='Your Message' 
             onChange={e => setMessage(e.target.value)}
             value={message} />
-          <button className='btn btn-2' type='submit'>Send</button>
+          <button 
+            disabled={gameState.gameStatus === "FINISHED"}
+            className='btn btn-2' type='submit'>Send</button>
         </Form>
     </>
   )

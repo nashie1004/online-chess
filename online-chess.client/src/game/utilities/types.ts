@@ -86,12 +86,10 @@ export interface IPinInfo {
 }
 
 export interface IGameRoomValue{
-    createdByUserId: string | number;
     createDate: Date,
     gameType: GameType;
-    createdByUserColor: ColorOptions;
-    joinedByUserId: string | number;
-
+    createdByUserInfo: IPlayerInfo;
+    joinedByUserInfo: IPlayerInfo;
 }
 
 export interface IGameRoom{

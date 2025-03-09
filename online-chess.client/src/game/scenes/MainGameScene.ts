@@ -12,7 +12,7 @@ import PawnPromote from "../logic/pawnPromote";
 import PieceCapture from "../logic/pieceCapture";
 import ShowPossibleMoves from "../logic/showPossibleMoves";
 import ValidateCheckOrCheckMateOrStalemate from "../logic/validateCheckOrCheckmateOrStalemate";
-import { EVENT_EMIT, EVENT_ON } from "../../constants/emitters";
+import { EVENT_ON } from "../../constants/emitters";
 import { IMovePiece } from "../signalRhandlers/types";
 import { IMoveHistoryAppend } from "../../context/types";
 import { chessBoardNotation } from "../utilities/helpers";
@@ -38,6 +38,7 @@ export class MainGameScene extends Scene{
     private readonly board: (null | GameObjects.Sprite)[][];
     private selectedPiece: IMoveInfo | null;
     private userIsConnected: boolean;
+    private gameIsOver: boolean;
 
     // 3. user preference
     private boardUI: string;
@@ -70,6 +71,7 @@ export class MainGameScene extends Scene{
         this.board = Array.from({ length: 8 }).map(_ => new Array(8).fill(null)); // creates 8x8 grid
         this.previewBoard = Array.from({ length: 8 }).map(_ => new Array(8));
         this.userIsConnected = userIsConnected;
+        this.gameIsOver = false;
 
         // 3. user prefernce
         this.boardUI = boardUI;
@@ -175,8 +177,9 @@ export class MainGameScene extends Scene{
                 .setName(uniqueName)
                 .setInteractive({  cursor: "pointer" })
                 .on("pointerover", () => {
-
                     // not allowed to move
+                    if (this.gameIsOver) return;
+
                     if (
                         !this.isPlayersTurnToMove || (
                             (this.boardOrientationIsWhite && name[0] !== "w") ||
@@ -188,13 +191,15 @@ export class MainGameScene extends Scene{
                     }
 
                     sprite.setTint(0x98DEC7)
+                    // sprite.setInteractive({ cursor: "pointer" });
                 })
                 .on("pointerout", () => {
                     sprite.clearTint()
                  })
                 .on("pointerdown", () => {
-
                     // not allowed to move
+                    if (this.gameIsOver) return;
+
                     if (
                         !this.isPlayersTurnToMove || (
                             (this.boardOrientationIsWhite && name[0] !== "w") ||
@@ -310,6 +315,9 @@ export class MainGameScene extends Scene{
             notationsSprite.forEach(text => {
                 text.setVisible(data);
             });
+        });
+        eventEmitter.on(EVENT_ON.SET_GAME_OVER, (data: boolean) => {
+            this.gameIsOver = data; // always true
         });
     }
 
@@ -432,7 +440,7 @@ export class MainGameScene extends Scene{
                 , promote
             }
 
-            eventEmitter.emit(EVENT_EMIT.SET_MOVE_PIECE, movePiece);
+            eventEmitter.emit(EVENT_ON.SET_MOVE_PIECE, movePiece);
         }
 
         // play sound
