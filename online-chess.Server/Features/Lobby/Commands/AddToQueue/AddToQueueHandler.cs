@@ -27,12 +27,16 @@ namespace online_chess.Server.Features.Lobby.Commands.AddToQueue
             _gameRoomService.Add(roomKey, new GameQueue()
             {
                 GameKey = roomKey,
-                CreatedByUserId = request.IdentityUserName,
                 CreateDate = DateTime.Now,
                 GameType = request.GameType,
-                CreatedByUserColor = request.ColorOption,
-                JoinedByUserId = string.Empty,
-                GamePlayStatus = GamePlayStatus.WaitingForPlayers
+                GamePlayStatus = GamePlayStatus.WaitingForPlayers,
+                CreatedByUserInfo = new Models.Play.PlayerInfo()
+                {
+                    UserName = request.IdentityUserName
+                    ,IsPlayersTurnToMove = request.ColorOption == Color.White
+                    ,IsColorWhite = request.ColorOption == Color.White
+                    ,Color = request.ColorOption
+                }
             });
 
             await _hubContext.Groups.AddToGroupAsync(request.UserConnectionId, roomKey.ToString());

@@ -53,7 +53,7 @@ C:/Users/Nash/Downloads/sqlite-tools-win-x64-3480000/sqlite3.exe app.db
 5. after game over, cleanup (btns disabled, unable to move, show game over on game outcome component)
 
 ## MVP (FEATURES)
-1. add profile image -- (lobby page table, game history table, set in play page)
+1. add profile image -- (lobby page table, game history table, set in play page, encryption?)
 
 ## DEPLOYMENT
 1. expose ports with a simple html file

@@ -39,8 +39,8 @@ namespace online_chess.Server.Features.Game.Commands.SetPromotionPreference
             }
 
             // retrieve ids
-            var creator = await _userManager.FindByNameAsync(room.CreatedByUserId);
-            var joiner = await _userManager.FindByNameAsync(room.JoinedByUserId);
+            var creator = await _userManager.FindByNameAsync(room.CreatedByUserInfo.UserName);
+            var joiner = await _userManager.FindByNameAsync(room.JoinByUserInfo.UserName);
 
             if (creator == null || joiner == null)
             {
@@ -48,7 +48,7 @@ namespace online_chess.Server.Features.Game.Commands.SetPromotionPreference
                 return Unit.Value;
             }
 
-            var playerInfoToUpdate = (request.IdentityUserName == room.CreatedByUserId)
+            var playerInfoToUpdate = (request.IdentityUserName == room.CreatedByUserInfo.UserName)
                 ? room.CreatedByUserInfo : room.JoinByUserInfo;
 
             playerInfoToUpdate.PawnPromotionPreference = request.UserPreference;

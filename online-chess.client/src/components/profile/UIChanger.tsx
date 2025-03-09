@@ -4,10 +4,12 @@ import boardUIOptions from '../../constants/boardUI';
 import pieceUIOptions from '../../constants/pieceUI';
 import useSignalRContext from '../../hooks/useSignalRContext';
 import useUserPreferenceContext from '../../hooks/useUserPreferenceContext';
+import { eventEmitter } from '../../game/utilities/eventEmitter';
+import { EVENT_ON } from '../../constants/emitters';
 
 export default function UIChanger() {
-  const { boardUI, pieceUI, setBoard, setPiece } = useUserPreferenceContext();
   const { userConnectionId } = useSignalRContext();
+  const { setBoard, setPiece, setShowCoords, boardUI, pieceUI, showCoords } = useUserPreferenceContext();
 
   const boardPath = `/src/assets/boards/${boardUI}`;
   const piecePath = `/src/assets/pieces/${pieceUI}/`;
@@ -59,6 +61,17 @@ export default function UIChanger() {
               })}
             </Form.Select>
           </Form.Group>
+          {/* <Form.Group className="mb-3 d-flex">
+              <Form.Label column sm={3}>Show Coordinates:</Form.Label>
+              <Form.Check
+                className='d-flex justify-content-center align-items-center'
+                  checked={showCoords}
+                  onChange={() => {
+                      setShowCoords(!showCoords ? "true" : "false");
+                      eventEmitter.emit(EVENT_ON.SET_COORDS_UI_SHOW, !showCoords);
+                  }}
+              />
+          </Form.Group> */}
         </Form>
           </Col>
           <Col className='ui-display d-flex justify-content-center' id="ui-changer-container">

@@ -32,32 +32,37 @@ namespace online_chess.Server.Features.Lobby.Commands.JoinRoom
                 return Unit.Value;
             }
 
-            queue.JoinedByUserId = request.IdentityUserName;
-
             // add joiner user to the group
             await _hubContext.Groups.AddToGroupAsync(request.UserConnectionId, request.GameRoomKeyString);
             
             var val = new Random().Next(0, 2);  // Generates either 0 or 1
             var randomColor = val == 0 ? Color.White : Color.Black;
-            var newColor = queue.CreatedByUserColor == Color.Random ? randomColor : queue.CreatedByUserColor;
+            var newColor = queue.CreatedByUserInfo.Color == Color.Random ? randomColor : queue.CreatedByUserInfo.Color;
+
+            queue.CreatedByUserInfo.Color = newColor;
 
             // remove from game queue and add to game room
             var room = new GameRoom(){
                 GameKey = queue.GameKey,
-                CreatedByUserId = queue.CreatedByUserId,
                 CreateDate = queue.CreateDate,
                 GameType = queue.GameType,
-                CreatedByUserColor = newColor, 
-                JoinedByUserId = queue.JoinedByUserId,
                 GamePlayStatus = GamePlayStatus.Ongoing,
                 GameStartedAt = DateTime.Now,
+                CreatedByUserInfo = queue.CreatedByUserInfo,
+                JoinByUserInfo = new Models.Play.PlayerInfo()
+                {
+                    UserName = request.IdentityUserName
+                    ,IsPlayersTurnToMove = !queue.CreatedByUserInfo.IsColorWhite
+                    ,IsColorWhite = !queue.CreatedByUserInfo.IsColorWhite
+                    ,Color = queue.CreatedByUserInfo.Color == Color.White ? Color.Black : Color.White
+                }
             };
 
             _gameRoomService.Add(room.GameKey, room);
 
             // remove both player queuing rooms
-            _gameQueueService.RemoveByCreator(room.CreatedByUserId);
-            _gameQueueService.RemoveByCreator(room.JoinedByUserId);
+            _gameQueueService.RemoveByCreator(room.CreatedByUserInfo.UserName);
+            _gameQueueService.RemoveByCreator(room.JoinByUserInfo.UserName);
 
             await _hubContext.Clients.All.SendAsync(RoomMethods.onRefreshRoomList,
                 _gameQueueService.GetPaginatedDictionary().ToArray().OrderByDescending(i => i.Value.CreateDate)

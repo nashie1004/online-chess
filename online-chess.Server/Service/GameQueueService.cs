@@ -62,7 +62,7 @@ namespace online_chess.Server.Service
 
         public bool RemoveByCreator(string identityUserName)
         {
-            var roomQueueKey = _gameRoomIds.FirstOrDefault(i => i.Value.CreatedByUserId == identityUserName).Key;
+            var roomQueueKey = _gameRoomIds.FirstOrDefault(i => i.Value.CreatedByUserInfo.UserName == identityUserName).Key;
             return _gameRoomIds.TryRemove(roomQueueKey, out GameQueue? val);
         }
 

@@ -75,7 +75,7 @@ namespace online_chess.Server.Service
 
         public GameRoom? GetRoomByEitherPlayer(string playerIdentityName)
         {
-            var room = _gameRoomIds.FirstOrDefault(i => i.Value.CreatedByUserId == playerIdentityName || i.Value.JoinedByUserId == playerIdentityName);
+            var room = _gameRoomIds.FirstOrDefault(i => i.Value.CreatedByUserInfo.UserName == playerIdentityName || i.Value.JoinByUserInfo.UserName == playerIdentityName);
 
             if (room.Value != null){
                 return room.Value;
@@ -124,31 +124,19 @@ namespace online_chess.Server.Service
 
             gameRoom.GameStartedAt = DateTime.Now;
             gameRoom.GamePlayStatus = GamePlayStatus.Ongoing;
-            gameRoom.CreatedByUserInfo = new PlayerInfo()
-            {
-                UserName = gameRoom.CreatedByUserId
-                ,IsPlayersTurnToMove = gameRoom.CreatedByUserColor == Color.White
-                ,IsColorWhite = gameRoom.CreatedByUserColor == Color.White
-            };
-            gameRoom.JoinByUserInfo = new PlayerInfo()
-            {
-                UserName = gameRoom.JoinedByUserId
-                ,IsPlayersTurnToMove = gameRoom.CreatedByUserColor != Color.White
-                ,IsColorWhite = gameRoom.CreatedByUserColor != Color.White
-            };
             gameRoom.ChatMessages = new List<Chat>()
             {
                 new Chat()
                 {
                     CreateDate = DateTime.Now
                     , CreatedByUser = "server"
-                    , Message = $"{gameRoom.CreatedByUserId} has joined the game."
+                    , Message = $"{gameRoom.CreatedByUserInfo.UserName} has joined the game."
                 }
                 ,new Chat()
                 {
                     CreateDate = DateTime.Now
                     , CreatedByUser = "server"
-                    , Message = $"{gameRoom.JoinedByUserId} has joined the game."
+                    , Message = $"{gameRoom.JoinByUserInfo.UserName} has joined the game."
                 }
             };
 
@@ -220,8 +208,8 @@ namespace online_chess.Server.Service
             var mainDbContext = scope.ServiceProvider.GetRequiredService<MainDbContext>();
             // var hubContext = scope.ServiceProvider.GetRequiredService<IHubContext<GameHub>>();
 
-            var creator = await identityDbContext.FindByNameAsync(room.CreatedByUserId);
-            var joiner = await identityDbContext.FindByNameAsync(room.JoinedByUserId);
+            var creator = await identityDbContext.FindByNameAsync(room.CreatedByUserInfo.UserName);
+            var joiner = await identityDbContext.FindByNameAsync(room.JoinByUserInfo.UserName);
 
             if (creator == null || joiner == null) return;
 
@@ -284,9 +272,9 @@ namespace online_chess.Server.Service
                 , GameEndDate = DateTime.Now
 
                 , PlayerOneId = creator.Id
-                , PlayerOneColor = room.CreatedByUserColor
+                , PlayerOneColor = room.CreatedByUserInfo.Color
                 , PlayerTwoId = joiner.Id
-                , PlayerTwoColor = room.CreatedByUserColor == Color.White ? Color.Black : Color.White
+                , PlayerTwoColor = room.CreatedByUserInfo.Color == Color.White ? Color.Black : Color.White
                     
                 , WinnerPlayerId = winnerPlayerId
                 , IsDraw = isDraw

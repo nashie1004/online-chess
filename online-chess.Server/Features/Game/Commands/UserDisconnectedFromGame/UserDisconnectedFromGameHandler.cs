@@ -43,7 +43,7 @@ namespace online_chess.Server.Features.Game.Commands.UserDisconnectedFromGame
             //     return Unit.Value;
             // }
 
-            if (request.IdentityUserName == ongoingGameRoom.CreatedByUserId)
+            if (request.IdentityUserName == ongoingGameRoom.CreatedByUserInfo.UserName)
             {
                 ongoingGameRoom.GamePlayStatus = GamePlayStatus.CreatorDisconnected;
             } 

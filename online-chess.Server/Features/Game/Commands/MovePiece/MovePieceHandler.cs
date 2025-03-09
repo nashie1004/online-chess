@@ -35,9 +35,9 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
             var room = _gameRoomService.GetOne(request.GameRoomKeyString);
             if (room == null) return Unit.Value;
 
-            bool isRoomCreator = room.CreatedByUserId == request.IdentityUserName;
-            bool pieceMoveIsWhite = isRoomCreator ? room.CreatedByUserColor == Color.White 
-                : room.CreatedByUserColor == Color.Black;
+            bool isRoomCreator = room.CreatedByUserInfo.UserName == request.IdentityUserName;
+            bool pieceMoveIsWhite = isRoomCreator ? room.CreatedByUserInfo.Color == Color.White 
+                : room.CreatedByUserInfo.Color == Color.Black;
 
             var (invertedMoveInfo, whitesOrientationMoveInfo) = GenerateMoveInfo(request, pieceMoveIsWhite);
 
@@ -58,7 +58,7 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
             var retVal = new UpdateBoardInfo(){
                 MoveInfo = invertedMoveInfo
                 , MoveIsWhite = pieceMoveIsWhite
-                , CreatorColorIsWhite = room.CreatedByUserColor == Enums.Color.White
+                , CreatorColorIsWhite = room.CreatedByUserInfo.Color == Enums.Color.White
                 , CapturedPiece = capturedPiece
                 , MoveHistoryLatestMove = whitesOrientationMoveInfo
                 , BothKingsState = room.BothKingsState

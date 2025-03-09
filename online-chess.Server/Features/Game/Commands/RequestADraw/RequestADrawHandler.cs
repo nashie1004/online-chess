@@ -43,7 +43,7 @@ namespace online_chess.Server.Features.Game.Commands.RequestADraw
             }
 
             string opponentConnectionId = _authenticatedUserService.GetConnectionId(
-                request.IdentityUserName == room.CreatedByUserId ? room.JoinedByUserId : room.CreatedByUserId
+                request.IdentityUserName == room.CreatedByUserInfo.UserName ? room.JoinByUserInfo.UserName : room.CreatedByUserInfo.UserName
             );
 
             room.ChatMessages.Add(new Models.Play.Chat(){

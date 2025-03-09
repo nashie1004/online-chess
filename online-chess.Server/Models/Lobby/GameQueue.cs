@@ -1,6 +1,6 @@
 ﻿using online_chess.Server.Constants;
 using online_chess.Server.Enums;
-using System.Reflection.Metadata.Ecma335;
+using online_chess.Server.Models.Play;
 
 namespace online_chess.Server.Models.Lobby
 {
@@ -8,11 +8,10 @@ namespace online_chess.Server.Models.Lobby
     public class GameQueue
     {
         public Guid GameKey { get; set; }
-        public string CreatedByUserId { get; set; }
         public DateTime CreateDate { get; set; }
         public GameType GameType { get; set; }
-        public Color CreatedByUserColor { get; set; }
-        public string JoinedByUserId { get; set; }
         public GamePlayStatus GamePlayStatus { get; set; }
+        public PlayerInfo CreatedByUserInfo { get; set; }
+        public PlayerInfo JoinByUserInfo { get; set; }
     }
 }

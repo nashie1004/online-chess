@@ -78,7 +78,7 @@ namespace online_chess.Server.Features.Others.Commands.Disconnect
             // 3.2 ongoing game but the other player is not disconnected
             if (ongoingGameRoom.GamePlayStatus == GamePlayStatus.Ongoing){
                 
-                if (ongoingGameRoom.CreatedByUserId == request.IdentityUserName)
+                if (ongoingGameRoom.CreatedByUserInfo.UserName == request.IdentityUserName)
                 {
                     ongoingGameRoom.GamePlayStatus = GamePlayStatus.CreatorDisconnected;
                 } 

@@ -35,7 +35,7 @@ namespace online_chess.Server.Features.Game.Commands.Resign
                 return Unit.Value;
             }
 
-            var endGameStatus = request.IdentityUserName == room.CreatedByUserId ? EndGameStatus.CreatorResigned : EndGameStatus.JoinerResigned;
+            var endGameStatus = request.IdentityUserName == room.CreatedByUserInfo.UserName ? EndGameStatus.CreatorResigned : EndGameStatus.JoinerResigned;
 
             await _gameRoomService.EndGame(_serviceProvider.CreateScope(), room, endGameStatus);
 
