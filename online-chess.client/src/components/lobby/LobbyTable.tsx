@@ -70,7 +70,7 @@ export default function LobbyTable({
                             </> : <></>}
                         </td>
                         <td>
-                            <img src={setImage(item.profileImageUrl)} className='profile-img small' alt="player-1-img" />
+                            <img src={setImage()} className='profile-img small' alt="player-1-img" />
                             <span className="ps-2">
                                 {user?.userName === item.value.createdByUserId ? "You" : item.value.createdByUserId}
                             </span>

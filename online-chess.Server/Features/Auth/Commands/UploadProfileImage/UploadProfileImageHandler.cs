@@ -29,6 +29,11 @@ namespace online_chess.Server.Features.Auth.Commands.UploadProfileImage
                     return retVal;
                 }
 
+                if (!string.IsNullOrEmpty(user.ProfileImageUrl))
+                {
+                    var prevImgRemoved = _fileStorageService.RemoveFile(user.ProfileImageUrl);
+                }
+
                 var result = await _fileStorageService.SaveFile(request.ProfileImageFile);
 
                 if (!result.success)

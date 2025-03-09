@@ -52,7 +52,16 @@
 
         public async Task<bool> RemoveFile(string fileName)
         {
-            throw new NotImplementedException();
+            if (fileName == "DefaultProfileImage.jpg") return false;
+
+            string filePath = Path.Combine(_uploadPath, fileName);
+
+            if (!File.Exists(filePath)){
+                return false;
+            }
+
+            File.Delete(filePath);
+            return true;
         }
 
         public async Task<(bool exists, byte[] content, string mimeType)> GetFile(string fileName)
