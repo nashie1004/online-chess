@@ -8,24 +8,37 @@ import useGameUIHandlerContext from '../../hooks/useGameUIHandlerContext';
 export default function GameOutcomeModal(
 ) {
     const navigate = useNavigate();
-    const [show, setShow] = useState(false);
     const { gameState } = useGameContext();
-    const { gameOverMessage } = useGameUIHandlerContext();
+    const { 
+        gameOverMessage, showGameOverModal, setShowGameOverModal 
+    } = useGameUIHandlerContext();
   
   return (
     <>
     
     <Modal
         centered
-        show={show || gameState.gameStatus === "FINISHED" || gameOverMessage !== ""}
-        onHide={() => setShow(false)}
+        show={showGameOverModal}
+        onHide={() => setShowGameOverModal(false)}
         >
         <Modal.Body>
             <div className="m-header">
-                <h5>Game Over</h5>
+                <h5>{gameOverMessage}</h5>
             </div>
-            <div className="m-body">
-                <h6>{gameOverMessage}</h6>
+            <div className="m-body game-over-modal">
+                <div className='d-flex justify-content-around'>
+                    <div className='d-flex flex-column align-items-center gap-2'>
+                        <img src="https://picsum.photos/300/300" alt="player-1" loading='lazy' />
+                        <p className='text-white'>{gameState.myInfo.userName} (You)</p>
+                    </div>
+                    <div className='d-flex align-items-center'>
+                        <p className='text-white'>vs</p>
+                    </div>
+                    <div className='d-flex flex-column align-items-center gap-2'>
+                        <img src="https://picsum.photos/300/300" alt="player-2" loading='lazy' />
+                        <p className='text-white'>{gameState.opponentInfo.userName}</p>
+                    </div>
+                </div>
                 <button 
                     onClick={() => navigate("/lobby")}
                     className='btn btn-1 w-100 mt-4'>Go To Lobby</button>

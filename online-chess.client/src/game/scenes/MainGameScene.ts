@@ -113,7 +113,7 @@ export class MainGameScene extends Scene{
 
        // this.add.image(0, 0, "bg").setOrigin(0, 0) ;
         const select = this.sound.add("select");
-        const boardNotation  = chessBoardNotation();
+        const boardNotation  = chessBoardNotation(this.boardOrientationIsWhite);
         const notationsSprite: GameObjects.Text[] = [];
 
         // create pieces

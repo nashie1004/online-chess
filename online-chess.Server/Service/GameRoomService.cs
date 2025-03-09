@@ -141,13 +141,13 @@ namespace online_chess.Server.Service
                 new Chat()
                 {
                     CreateDate = DateTime.Now
-                    , CreatedByUser = gameRoom.CreatedByUserId
+                    , CreatedByUser = "server"
                     , Message = $"{gameRoom.CreatedByUserId} has joined the game."
                 }
                 ,new Chat()
                 {
                     CreateDate = DateTime.Now
-                    , CreatedByUser = gameRoom.JoinedByUserId
+                    , CreatedByUser = "server"
                     , Message = $"{gameRoom.JoinedByUserId} has joined the game."
                 }
             };
@@ -232,27 +232,27 @@ namespace online_chess.Server.Service
             switch(finalGameStatus)
             {
                 case EndGameStatus.CreatorIsCheckmated:
-                    finalMessage = $"{joiner.UserName} won by checkmate.";
+                    finalMessage = $"{joiner.UserName} won by checkmating {creator.UserName}.";
                     winnerPlayerId = joiner.Id;
                     break;
                 case EndGameStatus.CreatorResigned:
-                    finalMessage = $"{creator.UserName} resigned the game.";
+                    finalMessage = $"{joiner.UserName} won. {creator.UserName} resigned.";
                     winnerPlayerId = joiner.Id;
                     break;
                 case EndGameStatus.CreatorTimeIsUp:
-                    finalMessage = $"{creator.UserName} ran out of time.";
+                    finalMessage = $"{joiner.UserName} won. {creator.UserName} ran out of time.";
                     winnerPlayerId = joiner.Id;
                     break;
                 case EndGameStatus.JoinerIsCheckmated:
-                    finalMessage = $"{creator.UserName} won by checkmate.";
+                    finalMessage = $"{creator.UserName} won by checkmating {joiner.UserName}.";
                     winnerPlayerId = joiner.Id;
                     break;
                 case EndGameStatus.JoinerResigned:
-                    finalMessage = $"{joiner.UserName} resigned the game.";
+                    finalMessage = $"{creator.UserName} won. {joiner.UserName} resigned.";
                     winnerPlayerId = joiner.Id;
                     break;
                 case EndGameStatus.JoinerTimeIsUp:
-                    finalMessage = $"{joiner.UserName} ran out of time.";
+                    finalMessage = $"{creator.UserName} won. {joiner.UserName} ran out of time.";
                     winnerPlayerId = joiner.Id;
                     break;
                 case EndGameStatus.DrawByAgreement:

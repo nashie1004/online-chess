@@ -124,7 +124,6 @@ export default function useOnInitializeGameInfo(
                 timeLeft: moment.duration(myInfo.timeLeft).asMilliseconds(),
                 playerIsWhite: myInfo.isColorWhite,
                 isOfferingADraw: false,
-                resign: false,
                 promotePawnTo: myInfo.pawnPromotionPreference,
             }
         });
@@ -138,7 +137,6 @@ export default function useOnInitializeGameInfo(
                 timeLeft: moment.duration(opponentInfo.timeLeft).asMilliseconds(),
                 playerIsWhite: opponentInfo.isColorWhite,
                 isOfferingADraw: false,
-                resign: false,
                 promotePawnTo: opponentInfo.pawnPromotionPreference,
             }
         });

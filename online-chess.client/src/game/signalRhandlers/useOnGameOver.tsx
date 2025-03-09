@@ -7,7 +7,7 @@ import useGameUIHandlerContext from "../../hooks/useGameUIHandlerContext";
 export default function useOnGameOver(){
     const { setGameState, gameState } = useGameContext();
     const { setNotificationState } = useNotificationContext();
-    const { setGameOverMessage, setShowLoadingModal } = useGameUIHandlerContext();
+    const { setGameOverMessage, setShowLoadingModal, setShowGameOverModal } = useGameUIHandlerContext();
 
     const onGameOver = (data: any) => {
         // TODO 3/8/2025
@@ -15,31 +15,13 @@ export default function useOnGameOver(){
         const finalGameStatus: EndGameStatus = data.finalGameStatus;
         const creatorIdentityName: string = data.creatorIdentityName;
         const userIsCreator = gameState.myInfo.userName === creatorIdentityName;
-        const userWon = (
-            // user won
-            (
-            (
-                finalGameStatus === EndGameStatus.CreatorIsCheckmated ||
-                finalGameStatus === EndGameStatus.CreatorResigned ||
-                finalGameStatus === EndGameStatus.CreatorTimeIsUp
-            ) && !userIsCreator
-            ) 
-            ||
-            // user lost
-            (
-            (
-                finalGameStatus === EndGameStatus.JoinerIsCheckmated ||
-                finalGameStatus === EndGameStatus.JoinerResigned ||
-                finalGameStatus === EndGameStatus.JoinerTimeIsUp
-            ) && userIsCreator
-            )
-        );
-
+  
         setNotificationState({ type: "SET_RESETNOTIFICATIONS" });
         setShowLoadingModal(false);
         setGameOverMessage(finalMessage);
         // setGameState({ type: "SET_CLEARGAMESTATE" });
         setGameState({ type: "SET_GAMESTATUS", payload: "FINISHED" });
+        setShowGameOverModal(true);
         
         // TODO 3/6/2025 1PM
         /*

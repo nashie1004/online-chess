@@ -169,7 +169,6 @@ export interface IPlayerInfo{
     timeLeft: number;
     playerIsWhite: boolean;
     isOfferingADraw: boolean;
-    resign: boolean;
     promotePawnTo: PromotionPrefence;
 }
 

@@ -24,10 +24,8 @@ export default function LobbyForm(
     const { gameState } = useGameContext();
 
     const disableQueueBtn = (roomKey ? true : false) || 
-        (gameState.gameRoomKey !== null ? true : false) || 
+        (gameState.gameRoomKey !== null && gameState.gameRoomKey !== "" ? true : false) || 
         (userConnectionId === null ? true : false);
-
-    // console.log(roomKey, gameState.gameRoomKey, userConnectionId)
 
   return (
     <>

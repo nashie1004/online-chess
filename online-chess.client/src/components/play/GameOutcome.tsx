@@ -13,9 +13,9 @@ export default function GameOutcome() {
     const { setShowLoadingModal } = useGameUIHandlerContext();
 
     async function formSubmit(){
+      setModalShow(false);
       setShowLoadingModal(true);
       invoke(outcome === 0 ? PLAY_PAGE_INVOKERS.RESIGN : PLAY_PAGE_INVOKERS.REQUEST_A_DRAW, gameState.gameRoomKey);
-      setModalShow(false);
     }
 
     return (

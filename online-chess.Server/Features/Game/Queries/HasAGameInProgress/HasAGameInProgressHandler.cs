@@ -23,13 +23,16 @@ namespace online_chess.Server.Features.Game.Queries.HasAGameInProgress
 
         public async Task<Unit> Handle(HasAGameInProgressRequest req, CancellationToken ct)
         {
+            string? roomKey = null;
             var inProgressGame = _gameRoomService.GetRoomByEitherPlayer(req.IdentityUserName ?? "");
 
             if (inProgressGame != null)
             {
-                await _hubContext.Clients.Client(req.UserConnectionId)
-                    .SendAsync(RoomMethods.onHasAGameInProgress, inProgressGame.GameKey);
+                roomKey = inProgressGame.GameKey.ToString();
             }
+
+            await _hubContext.Clients.Client(req.UserConnectionId)
+                .SendAsync(RoomMethods.onHasAGameInProgress, roomKey);
 
 
             return Unit.Value;

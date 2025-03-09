@@ -62,12 +62,18 @@ export default function InitializerContext(
       setQueuingRoomKey(roomKey);
     });
     await addHandler(LOBBY_PAGE_HANDLERS.ON_MATCH_FOUND, (roomKey: string) => {
+      if (!roomKey){
+        setNotificationState({ 
+          type: "SET_CUSTOMMESSAGE"
+          , payload: { customMessage: `404 room not found.`, customMessageType: "DANGER" } 
+        });
+        return;
+      }
       navigate(`/play?gameRoomKey=${roomKey}&reconnect=false`);
     });
-    await addHandler(MAIN_PAGE_HANDLERS.ON_HAS_A_GAME_IN_PROGRESS, (roomKey: string) => {
-      if (!roomKey) return;
-      setGameState({ type: "SET_GAMEROOMKEY", payload: roomKey });
-      setNotificationState({ type: "SET_HASAGAMEONGOING", payload: true });
+    await addHandler(MAIN_PAGE_HANDLERS.ON_HAS_A_GAME_IN_PROGRESS, (roomKey: string | null) => {
+      setNotificationState({ type: "SET_HASAGAMEONGOING", payload: roomKey ? true : false });
+      setGameState({ type: "SET_GAMEROOMKEY", payload: roomKey ? roomKey : "" });
     });
     
     await invoke(MAIN_PAGE_INVOKERS.GET_CONNECTION_ID);

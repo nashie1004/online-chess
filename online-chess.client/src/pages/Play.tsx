@@ -29,7 +29,7 @@ export default function Main(){
     const { setGameState } = useGameContext();
     const { setNotificationState } = useNotificationContext();
     const { setQueuingRoomKey } = useQueuingContext();
-    const { setShowLoadingModal, setGameOverMessage } = useGameUIHandlerContext();
+    const { setShowLoadingModal, setGameOverMessage, setShowGameOverModal } = useGameUIHandlerContext();
     const [searchParams] = useSearchParams();
     
     const onInitializeGameInfo = useOnInitializeGameInfo(gameRef);
@@ -48,6 +48,7 @@ export default function Main(){
         setGameState({ type: "SET_GAMESTATUS", payload: "LOADING" });
         setShowLoadingModal(true);
         setGameOverMessage("");
+        setShowGameOverModal(false);
 
         if (!userConnectionId) return;
 

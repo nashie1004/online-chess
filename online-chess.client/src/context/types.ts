@@ -79,6 +79,8 @@ export interface IGameUIChandlerContext{
     setShowLoadingModal: React.Dispatch<React.SetStateAction<boolean>>;
     gameOverMessage: string;
     setGameOverMessage: React.Dispatch<React.SetStateAction<string>>;
+    showGameOverModal: boolean;
+    setShowGameOverModal: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export interface INotificationContext{

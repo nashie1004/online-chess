@@ -361,12 +361,17 @@ div.modal-content
   max-width: 65px;
 }
 .m-body img:hover{
-  opacity: .85;
-  cursor: pointer;
+  /* opacity: .85;
+  cursor: pointer; */
 }
 
 .m-body .selected-promote-option{
   border: 2px solid var(--text-1); /* Green outline for contrast */
+}
+.m-body.game-over-modal img{
+  min-height: 80px;
+  width: 100%;
+  max-width: 80px;
 }
 
 .chessboard {

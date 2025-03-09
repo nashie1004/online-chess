@@ -65,7 +65,6 @@ export const basePlayerInfo: IPlayerInfo = {
     ,timeLeft: 0
     ,playerIsWhite: false
     ,isOfferingADraw: false
-    ,resign: false
     ,promotePawnTo: PromotionPrefence.Queen
 }
 

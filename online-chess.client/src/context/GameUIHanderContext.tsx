@@ -9,10 +9,12 @@ export default function GameUIHandlerContext(
 ){
     const [showLoadingModal, setShowLoadingModal] = useState<boolean>(false);
     const [gameOverMessage, setGameOverMessage] = useState<string>("");
+    const [showGameOverModal, setShowGameOverModal] = useState(false);
 
     return <gameUIHandlerContext.Provider value={{
         showLoadingModal, setShowLoadingModal
         ,gameOverMessage, setGameOverMessage
+        ,showGameOverModal, setShowGameOverModal
     }}>
         {children}
     </gameUIHandlerContext.Provider>

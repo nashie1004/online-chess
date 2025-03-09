@@ -52,7 +52,6 @@ C:/Users/Nash/Downloads/sqlite-tools-win-x64-3480000/sqlite3.exe app.db
 ## MVP (FEATURES)
 1. handle checkmate, stalemate game game over sidebar and modal screen text - DOING
 3. add profile image
-4. board coordinates - DOING
 
 ## DEPLOYMENT
 1. expose ports with a simple html file
