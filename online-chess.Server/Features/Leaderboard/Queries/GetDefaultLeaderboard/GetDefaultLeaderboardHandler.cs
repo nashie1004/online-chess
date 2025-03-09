@@ -34,10 +34,10 @@ public class GetDefaultLeaderboardHandler : IRequestHandler<GetDefaultLeaderboar
                 ,new SqliteParameter("@PaginationOffset", pageSize * (req.PageNumber - 1))
             ).ToListAsync();
 
-            retVal.Items.ForEach(i =>
-            {
-                i.ProfileImageUrl = $"https://picsum.photos/300/300";
-            });
+            // retVal.Items.ForEach(i =>
+            // {
+            //     i.ProfileImageUrl = $"https://picsum.photos/300/300";
+            // });
 
         } 
         catch (Exception err){

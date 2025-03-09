@@ -7,6 +7,7 @@ import useAuthContext from "../../hooks/useAuthContext";
 import BaseApiService from "../../services/BaseApiService";
 import useNotificationContext from "../../hooks/useNotificationContext";
 import useSignalRContext from "../../hooks/useSignalRContext";
+import { setImage } from "../../utils/helper";
 
 const VALID_FILE_TYPES = [ "image/png", "image/jpeg", "image/jpg", "image/svg+xml", "image/gif" ];
 const MAX_SIZE = 5 * 1024 * 1024;
@@ -32,7 +33,7 @@ const profileService = new BaseApiService();
 export default function ProfileForm(){
   const { user, setUser } = useAuthContext();
   const [editableProfile, setEditableProfile] = useState(true);
-  const { setNotificationState } = useNotificationContext();
+  const { setNotificationState, notificationState } = useNotificationContext();
   const { userConnectionId } = useSignalRContext();
   const [profileImgIsSubmitting, setProfileImgIsSubmitting] = useState(false);
 
@@ -76,32 +77,32 @@ export default function ProfileForm(){
     setProfileImgIsSubmitting(true);
 
     if (e.target.files.length > 1) {
-        setNotificationState({
-            type: "SET_CUSTOMMESSAGE"
-            , payload: { customMessage: "Only one profile image is allowed", customMessageType: "DANGER" }
-        });
-        setProfileImgIsSubmitting(false);
-        return;
+      setNotificationState({
+        type: "SET_CUSTOMMESSAGE"
+        , payload: { customMessage: "Only one profile image is allowed", customMessageType: "DANGER" }
+      });
+      setProfileImgIsSubmitting(false);
+      return;
     }
 
     const file = e.target.files[0];
 
     if (!VALID_FILE_TYPES.includes(file.type)) {
-        setNotificationState({
-            type: "SET_CUSTOMMESSAGE"
-            , payload: { customMessage: `Valid file formats are ${VALID_FILE_TYPES.join(", ")}`, customMessageType: "DANGER" }
-        });
-        setProfileImgIsSubmitting(false);
-        return;
+      setNotificationState({
+        type: "SET_CUSTOMMESSAGE"
+        , payload: { customMessage: `Valid file formats are ${VALID_FILE_TYPES.join(", ")}`, customMessageType: "DANGER" }
+      });
+      setProfileImgIsSubmitting(false);
+      return;
     }
 
     if (file.size > MAX_SIZE) {
-        setNotificationState({
-            type: "SET_CUSTOMMESSAGE"
-            , payload: { customMessage: `Max size is 5mb`, customMessageType: "DANGER" }
-        });
-        setProfileImgIsSubmitting(false);
-        return;
+      setNotificationState({
+        type: "SET_CUSTOMMESSAGE"
+        , payload: { customMessage: `Max size is 5mb`, customMessageType: "DANGER" }
+      });
+      setProfileImgIsSubmitting(false);
+      return;
     }
 
     const formData = new FormData();
@@ -112,11 +113,15 @@ export default function ProfileForm(){
 
     if (!res.isOk) {
       setNotificationState({
-          type: "SET_CUSTOMMESSAGE"
-          , payload: { customMessage: res.message, customMessageType: "DANGER" }
+        type: "SET_CUSTOMMESSAGE"
+        , payload: { customMessage: res.message, customMessageType: "DANGER" }
       });
     }
 
+  setUser(prev => {
+      if (!prev) return prev;
+      return ({ ...prev, profileImageUrl: setImage(res.data.profileImageUrl) })
+  }); 
     setProfileImgIsSubmitting(false);
   }
   
@@ -138,7 +143,7 @@ export default function ProfileForm(){
             <div className="d-flex justify-content-center align-items-center">
               <Form.Control 
                 type="file"
-                disabled={!userConnectionId || loading}
+                disabled={!userConnectionId || loading || notificationState.hasAGameOnGoing}
                 onChange={changeProfileImage}
                 id="profileImageFile"
               />

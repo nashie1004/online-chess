@@ -3,7 +3,7 @@ import { Table, Modal, Spinner } from "react-bootstrap"
 import { IGameRoom, IGameRoomList } from "../../game/utilities/types"
 import { useEffect, useState } from "react";
 import useSignalRContext from "../../hooks/useSignalRContext";
-import { colorOptionsDisplay, gameTypeDisplay } from "../../utils/helper";
+import { colorOptionsDisplay, gameTypeDisplay, setImage } from "../../utils/helper";
 import useAuthContext from "../../hooks/useAuthContext";
 import { LOBBY_PAGE_INVOKERS } from "../../constants/invokers";
 
@@ -70,7 +70,7 @@ export default function LobbyTable({
                             </> : <></>}
                         </td>
                         <td>
-                            <img src="https://picsum.photos/id/237/300/300" className='profile-img small' alt="player-1-img" />
+                            <img src={setImage(item.profileImageUrl)} className='profile-img small' alt="player-1-img" />
                             <span className="ps-2">
                                 {user?.userName === item.value.createdByUserId ? "You" : item.value.createdByUserId}
                             </span>

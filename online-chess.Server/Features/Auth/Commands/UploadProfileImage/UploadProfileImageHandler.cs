@@ -40,7 +40,7 @@ namespace online_chess.Server.Features.Auth.Commands.UploadProfileImage
                 user.ProfileImageUrl = result.fileNameOrErrorMsg;
                 await _userManager.UpdateAsync(user);
 
-                retVal.FileName = result.fileNameOrErrorMsg;
+                retVal.ProfileImageUrl = result.fileNameOrErrorMsg;
             }
             catch (Exception ex)
             {

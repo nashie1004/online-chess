@@ -8,6 +8,7 @@ import useSignalRContext from "../../hooks/useSignalRContext";
 import useNotificationContext from "../../hooks/useNotificationContext";
 import { LIST_HANDLERS } from "../../constants/handlers";
 import { LIST_INVOKERS } from "../../constants/invokers";
+import { setImage } from "../../utils/helper";
 
 interface IGameTypeTable{
   gameTypeLabel: string;
@@ -127,7 +128,7 @@ export default function GameTypeTable(
                   <div className={rankColor}>#{item.rank}</div>
                 </td>
                 <td>
-                  <img src={item.profileImageUrl} className='profile-img small' alt="player-img" loading="lazy" />
+                  <img src={setImage(item.profileImageUrl)} className='profile-img small' alt="player-img" loading="lazy" />
                   <span className="ps-2">{item.username}</span>
                 </td>
                 <td className="table-win">{item.wins === 0 ? "-" : item.wins}</td>

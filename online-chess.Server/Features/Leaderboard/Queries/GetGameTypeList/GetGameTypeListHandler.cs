@@ -53,10 +53,10 @@ namespace online_chess.Server.Features.Leaderboard.Queries.GetGameTypeList
                     ,new SqliteParameter("@PaginationOffset", pageSize * (request.PageNumber - 1))
                 ).ToListAsync();
 
-                retVal.Items.ForEach(i =>
-                {
-                    i.ProfileImageUrl = $"https://picsum.photos/300/300";
-                });
+                // retVal.Items.ForEach(i =>
+                // {
+                //     i.ProfileImageUrl = $"https://picsum.photos/300/300";
+                // });
             } 
             catch (Exception ex)
             {

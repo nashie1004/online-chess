@@ -106,3 +106,8 @@ export function gameTypeToSeconds(gameType: GameType){
     }
     return seconds;
 }
+
+export function setImage(profileImageUrl: string = ""){
+    profileImageUrl = profileImageUrl === "" || !profileImageUrl ? "DefaultProfileImage.jpg" : profileImageUrl; 
+    return `${import.meta.env.VITE_API_URL}/api/Play/get-image?FileName=${profileImageUrl}`
+}

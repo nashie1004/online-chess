@@ -7,6 +7,7 @@ import useSignalRContext from "../../hooks/useSignalRContext";
 import useNotificationContext from "../../hooks/useNotificationContext";
 import { LIST_INVOKERS } from "../../constants/invokers";
 import { LIST_HANDLERS } from "../../constants/handlers";
+import { setImage } from "../../utils/helper";
 
 export default function MainLeaderboardTable(){
     const [pageNo, setPageNo] = useState<number>(1);
@@ -112,7 +113,7 @@ export default function MainLeaderboardTable(){
                   </div>
                 </td>
                 <td>
-                  <img src={item.profileImageUrl} className='profile-img small' alt="player-img" loading="lazy" />
+                  <img src={setImage(item.profileImageUrl)} className='profile-img small' alt="player-img" loading="lazy" />
                   <span className="ps-2">{item.userName}</span>
                 </td>
                 <td>{item.elo}</td>

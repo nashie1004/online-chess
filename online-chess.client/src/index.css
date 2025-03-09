@@ -57,6 +57,7 @@ body{
 }
 img.profile-img{
   /* border-radius: 50%; */
+  object-fit: cover !important;
 }
 img.profile-img.small{
   width: 50px;  

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import useGameContext from '../../hooks/useGameContext';
-import { gameTypeToSeconds, secondsToMinuteDisplay2 } from '../../utils/helper';
+import { gameTypeToSeconds, secondsToMinuteDisplay2, setImage } from '../../utils/helper';
 import useSignalRContext from '../../hooks/useSignalRContext';
 import { PLAY_PAGE_HANDLERS } from '../../constants/handlers';
 
@@ -51,14 +51,14 @@ export default function PlayerInfo() {
         <div className="hstack my-3">
             <div className='timer-info w-100'>
                 <h6 className='text-secondary'>{playerIsWhite ? "You" : opponentInfo.userName} (white)</h6>
-                <img src="https://picsum.photos/id/237/300/300" className='profile-img small' alt="player-1-img" />
+                <img src={setImage()} className='profile-img small' alt="player-1-img" />
                 <h2>
                     <i className="bi bi-clock" style={{ fontSize: "1.4rem" }}></i> <span>{secondsToMinuteDisplay2(actualTime.white)}s</span>
                 </h2>
             </div>
             <div className='timer-info w-100'>
                 <h6  className='text-secondary'>{!playerIsWhite ? "You" : opponentInfo.userName} (black)</h6>
-                <img src="https://picsum.photos/id/237/300/300" className='profile-img small' alt="player-2-img" />
+                <img src={setImage()} className='profile-img small' alt="player-2-img" />
                 <h2>
                     <i className="bi bi-clock" style={{ fontSize: "1.4rem" }}></i> <span>{secondsToMinuteDisplay2(actualTime.black)}s</span>
                 </h2>

@@ -56,6 +56,7 @@ namespace online_chess.Server.Features.Auth.Commands.LogIn
                 _logInTrackerService.Add(identityUserName);
 
                 retVal.UserName = identityUserName;
+                retVal.ProfileImageUrl = !string.IsNullOrEmpty(user.ProfileImageUrl) ? user.ProfileImageUrl : "DefaultProfileImage.jpg";
             }
             catch (Exception ex)
             {

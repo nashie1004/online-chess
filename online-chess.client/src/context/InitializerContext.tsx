@@ -10,6 +10,7 @@ import { MAIN_PAGE_INVOKERS, PLAY_PAGE_INVOKERS } from '../constants/invokers';
 import { LOBBY_PAGE_HANDLERS, MAIN_PAGE_HANDLERS } from '../constants/handlers';
 import { IBaseContextProps } from '../types/global';
 import { IInitializerContext } from './types';
+import { setImage } from '../utils/helper';
 
 export const initializerContext = createContext<IInitializerContext | null>(null);
 
@@ -39,7 +40,7 @@ export default function InitializerContext(
     const res = await authService.baseGet("/api/Auth/is-signed-in");
     
     if (res.status === 200){
-      setUser({ userName: res.data.userName, profileImageUrl: res.data.profileImageUrl });
+      setUser({ userName: res.data.userName, profileImageUrl: setImage(res.data.profileImageUrl) });
       signedIn = true;
     }
     

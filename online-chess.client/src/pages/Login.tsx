@@ -9,6 +9,7 @@ import { useEffect } from "react";
 import useNotificationContext from "../hooks/useNotificationContext";
 import useInitializerContext from "../hooks/useInitializerContext";
 import useSignalRContext from "../hooks/useSignalRContext";
+import { setImage } from "../utils/helper";
 
 const schema = z.object({
   userName: z.string().min(8, "Username must contain at least 8 character(s)"),
@@ -50,7 +51,7 @@ export default function Login() {
       return;
     }
     
-    login({ userName: res.data.userName, profileImageUrl: "" });
+    login({ userName: res.data.userName, profileImageUrl: setImage(res.data.profileImageUrl) });
     setInitialize(true);
     navigate("/");
   }
