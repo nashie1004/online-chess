@@ -364,3 +364,4 @@ FodyWeavers.xsd
 /online-chess.Server/SQLiteDB
 
 .env
+/online-chess.Server/UploadedFiles/ProfileImages
