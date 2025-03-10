@@ -9,10 +9,11 @@ namespace online_chess.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class PlayController : ControllerBase
     {
         private readonly IMediator _mediator;
+
         public PlayController(IMediator mediator)
         {
             _mediator = mediator;

@@ -64,10 +64,11 @@ export default function InitializerContext(
     });
     await addHandler(LOBBY_PAGE_HANDLERS.ON_MATCH_FOUND, (roomKey: string) => {
       if (!roomKey){
-        setNotificationState({ 
-          type: "SET_CUSTOMMESSAGE"
-          , payload: { customMessage: `404 room not found.`, customMessageType: "DANGER" } 
-        });
+        // setNotificationState({ 
+        //   type: "SET_CUSTOMMESSAGE"
+        //   , payload: { customMessage: `404 room not found.`, customMessageType: "DANGER" } 
+        // });
+        navigate("*");
         return;
       }
       navigate(`/play?gameRoomKey=${roomKey}&reconnect=false`);

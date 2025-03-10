@@ -3,7 +3,7 @@ import { useEffect, useState } from "react"
 import { Table, Spinner } from "react-bootstrap"
 import { IGameHistoryList } from "../../game/utilities/types";
 import { GenericReturnMessageList } from "../../services/BaseApiService";
-import { gameStatusDisplay, gameTypeDisplay } from "../../utils/helper";
+import { gameStatusDisplay, gameTypeDisplay, setImage } from "../../utils/helper";
 import useSignalRContext from "../../hooks/useSignalRContext";
 import useNotificationContext from "../../hooks/useNotificationContext";
 import { LIST_INVOKERS } from "../../constants/invokers";
@@ -59,19 +59,19 @@ export default function ProfileTable(){
           <th className="col-1">
             <i className="bi bi-hash" style={{ color: "#FFFFFF",  }}></i>
           </th>
+          <th className="col-2">
+            <i className="bi bi-person"  style={{ color: "#FFFFFF",  }}></i> Opponent
+          </th>
           <th className="col-1">
             <i className="bi bi-question-circle"  style={{ color: "#FFFFFF",  }}></i> Status
           </th>
           <th className="col-1">
             <i className="bi bi-circle-half"  style={{ color: "#FFFFFF",  }}></i> Color
           </th>
-          <th className="col-3">
+          <th className="col-2">
             <i className="bi bi-hourglass"  style={{ color: "#FFFFFF",  }}></i> Game Type
           </th>
-          <th className="col-2">
-            <i className="bi bi-person"  style={{ color: "#FFFFFF",  }}></i> Opponent
-          </th>
-          <th className="col-2">
+          <th className="col-1">
             <i className="bi bi-calendar2-fill" style={{color: "#FFFFFF"}}></i> Date 
           </th>
           <th className="col-2">
@@ -86,10 +86,13 @@ export default function ProfileTable(){
 
           return <tr key={idx}>
             <td>{item.indexNo}</td>
+            <td>
+              <img src={setImage(item.profileImageUrl)} className='profile-img small' alt="player-img" loading="lazy" />
+              <span className="ps-2">{item.opponentName}</span>
+            </td>
             <td>{gameStatusDisplay(item.gameStatus)}</td>
             <td>{item.isColorWhite ? "White" : "Black"}</td>
             <td>{gameTypeDisplay(item.gameType)}</td>
-            <td>{item.opponentName}</td>
             <td>{moment(item.gameDate).fromNow()}</td>
             <td>{item.remarks}</td>
           </tr>

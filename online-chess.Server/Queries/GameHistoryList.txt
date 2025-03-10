@@ -21,7 +21,11 @@ WITH MainQuery AS (
         END) AS OpponentName,
         G.GameStartDate AS GameDate,
         G.Remarks,
-        COALESCE(P1.ProfileImageUrl, P2.ProfileImageUrl) AS ProfileImageUrl
+        (CASE 
+            WHEN P1.Id = @PlayerId THEN P2.ProfileImageUrl
+            WHEN P2.Id = @PlayerId THEN P1.ProfileImageUrl
+            ELSE ''
+        END) AS ProfileImageUrl
     FROM GameHistories G
     LEFT JOIN AspNetUsers P1 ON P1.Id = G.PlayerOneId
     LEFT JOIN AspNetUsers P2 ON P2.Id = G.PlayerTwoId

@@ -53,9 +53,6 @@ C:/Users/Nash/Downloads/sqlite-tools-win-x64-3480000/sqlite3.exe app.db
 5. after game over, cleanup (btns disabled, unable to move, show game over on game outcome component)
 6. handle incorrect/non existing gameroomkey on play page
 
-## MVP (FEATURES)
-1. add profile image -- (game history table, encryption?)
-
 ## DEPLOYMENT
 1. expose ports with a simple html file
 2. transfer files and setup NGINX React
@@ -74,6 +71,7 @@ C:/Users/Nash/Downloads/sqlite-tools-win-x64-3480000/sqlite3.exe app.db
 10. clean code
 11. emoji
 12. google oauth
+13. add profile image -- encryption
 
 ## MAIN TODOS
 1. handle disconnect / leave logic
