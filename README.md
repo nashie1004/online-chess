@@ -48,9 +48,8 @@ C:/Users/Nash/Downloads/sqlite-tools-win-x64-3480000/sqlite3.exe app.db
 ## MVP (BUGS)
 1. en passant - reconnect false and true
 2. castling bug incorrect coordinates?
-3. if user disconnected and game timer is up, dont show resume notif
-4. double check pawn promote
-5. after game over, cleanup (btns disabled, unable to move, show game over on game outcome component)
+
+4. double check pawn promote mismatch state
 6. handle incorrect/non existing gameroomkey on play page
 
 ## DEPLOYMENT
@@ -64,7 +63,7 @@ C:/Users/Nash/Downloads/sqlite-tools-win-x64-3480000/sqlite3.exe app.db
 2. show proper chess move notation
 5. elo
 3. 3 fold repetition
-4. responsive ui / resizeable board
+4. responsive ui / resizeable board (https://phaser.io/examples/v3.85.0/scalemanager/view/manually-resize)
 5. some framer motion?, more sounds and some phaser effects
 6. use redis
 9. fix types

@@ -10,7 +10,7 @@ export default function useOnSetPromotionPreference(){
 
     gameStateRef.current = gameState;
 
-    const onSetPromotionPreference = useCallback((data: IOnSetPromotionPreference) => {
+    const onSetPromotionPreference = (data: IOnSetPromotionPreference) => {
 
         const { playerName, preference } = data;
 
@@ -30,7 +30,7 @@ export default function useOnSetPromotionPreference(){
             });
         }
 
-    }, []);
+    }
 
     return onSetPromotionPreference;
 }

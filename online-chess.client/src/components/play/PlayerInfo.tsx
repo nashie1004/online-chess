@@ -50,18 +50,28 @@ export default function PlayerInfo() {
     <>
         <div className="hstack my-3">
             <div className='timer-info w-100'>
-                <h6 className='text-secondary'>{playerIsWhite ? "You" : opponentInfo.userName} (white)</h6>
-                <img src={setImage(playerIsWhite ? myInfo.profileImageUrl : opponentInfo.profileImageUrl)} className='profile-img small' alt="player-1-img" />
-                <h2>
-                    <i className="bi bi-clock" style={{ fontSize: "1.4rem" }}></i> <span>{secondsToMinuteDisplay2(actualTime.white)}s</span>
-                </h2>
+                <h6 className='text-secondary mb-2 d-flex align-items-center gap-1'>
+                    <i className="bi bi-clock" style={{ fontSize: "1.4rem" }}></i> 
+                    <span>{playerIsWhite ? "You" : opponentInfo.userName} (white)</span>
+                </h6>
+                <div className='d-flex gap-2 align-items-center'>
+                    <img src={setImage(playerIsWhite ? myInfo.profileImageUrl : opponentInfo.profileImageUrl)} className='profile-img small' alt="player-1-img" />
+                    <h2>
+                        <span>{secondsToMinuteDisplay2(actualTime.white)}s</span>
+                    </h2>
+                </div>
             </div>
             <div className='timer-info w-100'>
-                <h6  className='text-secondary'>{!playerIsWhite ? "You" : opponentInfo.userName} (black)</h6>
-                <img src={setImage(!playerIsWhite ? myInfo.profileImageUrl : opponentInfo.profileImageUrl)} className='profile-img small' alt="player-2-img" />
-                <h2>
-                    <i className="bi bi-clock" style={{ fontSize: "1.4rem" }}></i> <span>{secondsToMinuteDisplay2(actualTime.black)}s</span>
-                </h2>
+                <h6 className='text-secondary mb-2 d-flex align-items-center gap-1'>
+                    <i className="bi bi-clock" style={{ fontSize: "1.4rem" }}></i> 
+                    <span>{!playerIsWhite ? "You" : opponentInfo.userName} (black)</span>
+                </h6>
+                <div className='d-flex gap-2 align-items-center'>
+                    <img src={setImage(!playerIsWhite ? myInfo.profileImageUrl : opponentInfo.profileImageUrl)} className='profile-img small' alt="player-2-img" />
+                    <h2>
+                        <span>{secondsToMinuteDisplay2(actualTime.black)}s</span>
+                    </h2>
+                </div>
             </div>
         </div>
         <div className='game-alert'>

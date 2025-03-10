@@ -91,6 +91,7 @@ export default function GameOptionsModal(){
                                     key={idx} 
                                     alt={item.name.toString()} 
                                     src={item.assetURL}
+                                    style={{ cursor: "pointer "}}
                                     className={item.name === selectedOption ? "selected-promote-option" : ""}
                                     onClick={() => {
                                         if (!userConnectionId) return;

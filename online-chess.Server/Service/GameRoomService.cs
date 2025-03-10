@@ -17,11 +17,17 @@ namespace online_chess.Server.Service
         private static ConcurrentDictionary<Guid, GameRoom> _gameRoomIds = new();
         private readonly TimerService _timerService;
         private readonly IHubContext<GameHub> _hubContext;
+        private readonly UserConnectionService _userConnectionService;
 
-        public GameRoomService(TimerService timerService, IHubContext<GameHub> hubContext)
+        public GameRoomService(
+            TimerService timerService
+            , IHubContext<GameHub> hubContext
+            , UserConnectionService userConnectionService
+            )
         {
             _timerService = timerService;
             _hubContext = hubContext;
+            _userConnectionService = userConnectionService;
         }
 
         public void Add(Guid roomIdKey, GameRoom GameRoom)
@@ -304,6 +310,14 @@ namespace online_chess.Server.Service
             await _hubContext.Clients.Group(room.GameKey.ToString()).SendAsync(RoomMethods.onGameOver, gameOverRetVal);
 
             room.TimerId?.Dispose();
+
+            // if one or both player disconnected and they have a resume game notification
+            // remove that
+            string? creatorConnectionId = _userConnectionService.GetConnectionId(creator.UserName ?? string.Empty);
+            string? joinerConnectionId = _userConnectionService.GetConnectionId(joiner.UserName ?? string.Empty);
+
+            await _hubContext.Clients.Client(creatorConnectionId ?? "").SendAsync(RoomMethods.onHasAGameInProgress, null);
+            await _hubContext.Clients.Client(joinerConnectionId ?? "").SendAsync(RoomMethods.onHasAGameInProgress, null);
 
             Remove(room.GameKey);
             _timerService.RemoveTimer(room.GameKey);
