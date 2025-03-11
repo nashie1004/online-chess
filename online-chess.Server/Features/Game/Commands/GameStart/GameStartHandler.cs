@@ -46,14 +46,11 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
             }
 
             /* Player Reconnects */
-            // if (request.Reconnect && gameRoom.GameStartedAt != DateTime.MinValue)
             if (request.Reconnect)
             {
                 await _hubContext.Groups.AddToGroupAsync(request.UserConnectionId, request.GameRoomKeyString);
 
                 var currentGameInfo = _gameRoomService.ReconnectToGame(gameRoom, request);
-
-                await SetPlayersProfileImages(currentGameInfo);
 
                 await _hubContext.Clients.Client(request.UserConnectionId).SendAsync(RoomMethods.onInitializeGameInfo, currentGameInfo);
             }
@@ -62,22 +59,12 @@ namespace online_chess.Server.Features.Game.Commands.GameStart
             {
                 var baseGameInfo = _gameRoomService.StartNewGame(gameRoom, request);
 
-                await SetPlayersProfileImages(baseGameInfo);
-
                 await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync(RoomMethods.onInitializeGameInfo, baseGameInfo);
             } 
 
             await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync(RoomMethods.onReceiveMessages, gameRoom.ChatMessages);
 
             return Unit.Value;
-        }
-    
-        private async Task SetPlayersProfileImages(CurrentGameInfo gameInfo)
-        {
-            string defaultImg = "https://picsum.photos/300/300"; 
-
-            // gameInfo.CreatedByUserInfo.ProfileImageUrl = (await _userManager.FindByNameAsync(gameInfo.CreatedByUserInfo.UserName))?.ProfileImageUrl ?? defaultImg;
-            // gameInfo.JoinedByUserInfo.ProfileImageUrl = (await _userManager.FindByNameAsync(gameInfo.JoinedByUserInfo.UserName))?.ProfileImageUrl ?? defaultImg;
         }
 
     }

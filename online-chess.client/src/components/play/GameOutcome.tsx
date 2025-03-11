@@ -11,6 +11,7 @@ export default function GameOutcome() {
     const { invoke } = useSignalRContext();
     const { gameState, setGameState } = useGameContext();
     const { setShowLoadingModal } = useGameUIHandlerContext();
+    const { userConnectionId } = useSignalRContext();
 
     async function formSubmit(){
       setModalShow(false);
@@ -27,7 +28,7 @@ export default function GameOutcome() {
                   setOutcome(0);
                   setModalShow(true);
                 }}
-                disabled={gameState.gameStatus === "FINISHED"}
+                disabled={gameState.gameStatus === "FINISHED" || !userConnectionId}
                 className='btn w-100 btn-2'>
                   <i className="bi bi-flag-fill"></i> Resign
                 </button>
@@ -37,7 +38,7 @@ export default function GameOutcome() {
                   setOutcome(1); 
                   setModalShow(true);
                 }}
-                disabled={gameState.gameStatus === "FINISHED"}
+                disabled={gameState.gameStatus === "FINISHED" || !userConnectionId}
                 className='btn w-100  btn-2'>
                   <i className="bi bi-person-fill-dash"></i> Offer a Draw
                 </button>

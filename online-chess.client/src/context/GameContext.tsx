@@ -9,7 +9,9 @@ function reducerFn(state: IGameContextReducerState, action: IGameContextReducerA
     
     switch(action.type){
         case "SET_MESSAGES":
-            return {  ...state, messages: action.payload }
+            return { ...state, messages: action.payload }
+        case "SET_MESSAGES_APPEND":
+            return { ...state, messages: [ ...state.messages, action.payload ] };
         case "SET_GAMEROOMKEY":
             return {  ...state, gameRoomKey: action.payload }
         case "SET_MOVEHISTORY":

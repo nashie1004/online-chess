@@ -7,7 +7,7 @@ import { PLAY_PAGE_INVOKERS } from "../../constants/invokers";
 
 export default function Chatbar() {
   const { gameState } = useGameContext();
-  const { invoke } = useSignalRContext();
+  const { invoke, userConnectionId } = useSignalRContext();
   const [message, setMessage] = useState("");
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
@@ -47,7 +47,7 @@ export default function Chatbar() {
             onChange={e => setMessage(e.target.value)}
             value={message} />
           <button 
-            disabled={gameState.gameStatus === "FINISHED"}
+            disabled={gameState.gameStatus === "FINISHED" || !userConnectionId}
             className='btn btn-2' type='submit'>Send</button>
         </Form>
     </>

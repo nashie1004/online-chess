@@ -31,6 +31,7 @@ export interface IMoveHistoryAppend{
 
 export type IGameContextReducerActions = 
 | { type: "SET_MESSAGES"; payload: IOnReceiveMessages[] }
+| { type: "SET_MESSAGES_APPEND"; payload: IOnReceiveMessages }
 | { type: "SET_GAMEROOMKEY"; payload: string }
 | { type: "SET_MOVEHISTORY"; payload: IMoveHistory } 
 | { type: "SET_MOVEHISTORY_APPEND"; payload: IMoveHistoryAppend } 

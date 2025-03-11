@@ -77,6 +77,7 @@ export default function GameOptionsModal(){
                         <Form.Label column sm={3}>Show Coordinates:</Form.Label>
                         <Form.Check
                             checked={showCoords}
+                            disabled={!userConnectionId}
                             onChange={() => {
                                 setShowCoords(!showCoords ? "true" : "false");
                                 eventEmitter.emit(EVENT_ON.SET_COORDS_UI_SHOW, !showCoords);

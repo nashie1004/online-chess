@@ -125,9 +125,9 @@ export default class PawnValidator extends BasePieceValidator{
             this.piece.y === enemyLatestMove.y && 
             (this.piece.x - 1 === enemyLatestMove.x || this.piece.x + 1 === enemyLatestMove.x)
             && (this.piece.y === 3 || this.piece.y === 4)
+            && (enemyLatestMove.y - 2 === 1 || enemyLatestMove.y + 2 === 6)
         ){
             retVal = { x: enemyLatestMove.x, y: this.piece.y + this.captureYDirection, isCapture: true };
-            //console.log(retVal, this.piece.y)
         }
       
         return retVal;

@@ -10,9 +10,10 @@ export default function UserPreferenceContext(
 ){
   const { setValue: setBoard, data: boardUI } = useLocalStorage("board", "green.png");
   const { setValue: setPiece, data: pieceUI } = useLocalStorage("piece", "cburnett");
-  const { setValue: setSound, data: soundFx } = useLocalStorage("sound", "TODO");
+  const { setValue: setSound, data: soundFx } = useLocalStorage("sound", "true");
   const { setValue: setShowCoords, data: showCoordsString } = useLocalStorage("showCoords", "true");
 
+  const soundFx2 = soundFx === "true";
   const showCoords = showCoordsString === "true";
 
     return <userPreferenceContext.Provider value={{

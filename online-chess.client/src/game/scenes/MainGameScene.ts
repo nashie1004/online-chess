@@ -205,6 +205,7 @@ export class MainGameScene extends Scene{
                 })
                 .on("pointerout", () => {
                     sprite.clearTint()
+                    //sprite.resetPostPipeline()
                  })
                 .on("pointerdown", () => {
                     // not allowed to move
@@ -229,6 +230,8 @@ export class MainGameScene extends Scene{
                     // show available moves
                     select.play();
                     this.resetMoves();
+                    //sprite.postFX.addGlow(0xD0CB86, 6, 2);
+
                     this.selectedPiece = (new ShowPossibleMoves(
                         this.board, this.previewBoard
                         ,this.boardOrientationIsWhite, this.piecesCoordinates_Internal
@@ -328,7 +331,7 @@ export class MainGameScene extends Scene{
         });
         eventEmitter.on(EVENT_ON.SET_GAME_OVER, (data: boolean) => {
             this.gameIsOver = data; // always true
-            this.sound.setVolume(0.5);
+            // this.sound.setVolume(0.5);
             this.sound.play("defeat");
         });
     }

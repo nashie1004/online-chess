@@ -49,7 +49,7 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
                 room.TimerId = null;
             }
 
-            room.TimerId = new Timer(UpdateTimer, new TimerState(){
+            room.TimerId = new Timer(StartNewTimer, new TimerState(){
                 GameRoom = room,
                 CreatorsTurn = !isRoomCreator,
                 ServiceScope = _serviceProvider.CreateScope()
@@ -69,7 +69,7 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
             if (room.BothKingsState.White.IsCheckmate || room.BothKingsState.Black.IsCheckmate)
             {
                 await _gameRoomService.EndGame(_serviceProvider.CreateScope(), room
-                    , room.BothKingsState.White.IsCheckmate ? EndGameStatus.CreatorIsCheckmated : EndGameStatus.JoinerIsCheckmated
+                    , room.BothKingsState.White.IsCheckmate && room.CreatedByUserInfo.IsColorWhite ? EndGameStatus.CreatorIsCheckmated : EndGameStatus.JoinerIsCheckmated
                 );
             }
 
@@ -134,7 +134,7 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
             return (invertedMoveInfo, whitesOrientationMoveInfo);
         }
 
-        public async void UpdateTimer(object? state)
+        public async void StartNewTimer(object? state)
         {
             if (state == null) return;
             var timerState = (TimerState)state;
