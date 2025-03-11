@@ -97,7 +97,7 @@ export default function GameOptionsModal(){
                                     onClick={() => {
                                         if (!userConnectionId) return;
                                         setSelectedOption(item.name);  
-                                        invoke(PLAY_PAGE_INVOKERS.SET_PROMOTION_PREFERENCE, gameState.gameRoomKey, selectedOption);
+                                        invoke(PLAY_PAGE_INVOKERS.SET_PROMOTION_PREFERENCE, gameState.gameRoomKey, item.name);
                                     }}
                                 />
                             })}
