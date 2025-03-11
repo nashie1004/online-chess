@@ -1,5 +1,5 @@
-import axios from "axios";
 import api from "./api";
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 
 export interface GenericListRequest {
     pageSize: number,
@@ -35,7 +35,7 @@ export default class BaseApiService {
 
     }
 
-    public handleError(error: axios.AxiosError | any): GenericReturnMessage {
+    public handleError(error: AxiosError | any): GenericReturnMessage {
         if (axios.isAxiosError(error)) {
             return {
                 isOk: false
@@ -54,7 +54,7 @@ export default class BaseApiService {
         }
     }
 
-    public handleResponse(response: axios.AxiosResponse<RequestBaseResponse>): GenericReturnMessage {
+    public handleResponse(response: AxiosResponse<RequestBaseResponse>): GenericReturnMessage {
         if (response.data.isSuccess && response.data.validationErrors.length < 1) {
             return {
                 isOk: true,
@@ -72,7 +72,7 @@ export default class BaseApiService {
         }
     }
 
-    public async baseGet(url: string, config?: axios.AxiosRequestConfig) {
+    public async baseGet(url: string, config?: AxiosRequestConfig) {
         try {
             const response = await api.get(url, config);
             return this.handleResponse(response);
@@ -82,7 +82,7 @@ export default class BaseApiService {
         }
     }
 
-    public async baseGetList(url: string, listParams: GenericListRequest, config?: axios.AxiosRequestConfig) {
+    public async baseGetList(url: string, listParams: GenericListRequest, config?: AxiosRequestConfig) {
         try {
             const { pageSize, pageNumber, sortBy, filters } = listParams;
             url = `${url}?pageSize=${pageSize}&pageNumber=${pageNumber}&sortBy=${sortBy}&filters=${filters}`;
@@ -95,7 +95,7 @@ export default class BaseApiService {
         }
     }
 
-    public async basePost(url: string, data: any, config?: axios.AxiosRequestConfig) {
+    public async basePost(url: string, data: any, config?: AxiosRequestConfig) {
         try {
             const response = await api.post(url, data, config);
             return this.handleResponse(response);
@@ -105,7 +105,7 @@ export default class BaseApiService {
         }
     }
 
-    public async baseDelete(url: string, config?: axios.AxiosRequestConfig) {
+    public async baseDelete(url: string, config?: AxiosRequestConfig) {
         try {
             const response = await api.delete(url, config);
             return this.handleResponse(response);
@@ -115,7 +115,7 @@ export default class BaseApiService {
         }
     }
 
-    public async basePut(url: string, data: any, config?: axios.AxiosRequestConfig) {
+    public async basePut(url: string, data: any, config?: AxiosRequestConfig) {
         try {
             const response = await api.put(url, data, config);
             return this.handleResponse(response);
