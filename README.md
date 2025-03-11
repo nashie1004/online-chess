@@ -46,11 +46,11 @@ C:/Users/Nash/Downloads/sqlite-tools-win-x64-3480000/sqlite3.exe app.db
 ```
 
 ## MVP (BUGS)
-1. en passant - reconnect false and true
-2. castling bug incorrect coordinates?
+1. en passant - reconnect false and true - DOING
+2. castling bug (if already castled) incorrect coordinates on reconnect?
+3. bug on first move, both e4, d5 pawns move
 
 4. double check pawn promote mismatch state
-6. handle incorrect/non existing gameroomkey on play page
 
 ## DEPLOYMENT
 1. expose ports with a simple html file
@@ -71,6 +71,7 @@ C:/Users/Nash/Downloads/sqlite-tools-win-x64-3480000/sqlite3.exe app.db
 11. emoji
 12. google oauth
 13. add profile image -- encryption
+14. optimize other functions using nested loop, pass piece coordinates instead
 
 ## MAIN TODOS
 1. handle disconnect / leave logic

@@ -24,6 +24,7 @@ export default function useOnGameOver(){
         // setGameState({ type: "SET_CLEARGAMESTATE" });
         setGameState({ type: "SET_GAMESTATUS", payload: "FINISHED" });
         setShowGameOverModal(true);
+        setGameState({ type: "SET_GAMEROOMKEY", payload: "" });
         
         eventEmitter.emit(EVENT_ON.SET_GAME_OVER, true);
 

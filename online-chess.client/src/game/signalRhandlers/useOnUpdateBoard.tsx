@@ -19,6 +19,14 @@ export default function useOnUpdateBoard(){
 
         setGameState({ type: "SET_MOVEHISTORY_APPEND", payload: newMoveHistoryRecord });
 
+        if (!gameStateRef.current.myInfo.playerIsWhite){
+            newMoveHistoryRecord.moveInfo.new.x = Math.abs(newMoveHistoryRecord.moveInfo.new.x - 7);
+            newMoveHistoryRecord.moveInfo.new.y = Math.abs(newMoveHistoryRecord.moveInfo.new.y - 7);
+            
+            newMoveHistoryRecord.moveInfo.old.x = Math.abs(newMoveHistoryRecord.moveInfo.old.x - 7);
+            newMoveHistoryRecord.moveInfo.old.y = Math.abs(newMoveHistoryRecord.moveInfo.old.y - 7);
+        }
+
         eventEmitter.emit(EVENT_ON.SET_MOVE_HISTORY_APPEND, newMoveHistoryRecord);
 
         const opponentsTurn = (!moveIsWhite && !gameStateRef.current.opponentInfo.playerIsWhite) ||

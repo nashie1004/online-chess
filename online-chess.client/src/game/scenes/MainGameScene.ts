@@ -4,6 +4,10 @@ import move from "../../assets/sounds/Move.ogg"
 import capture from "../../assets/sounds/Capture.ogg"
 import select from "../../assets/sounds/Select.ogg"
 import check from "../../assets/sounds/Check.mp3"
+import victory from "../../assets/sounds/lisp/Victory.mp3"
+import newPM from "../../assets/sounds/lisp/NewPM.mp3"
+import castle from "../../assets/sounds/lisp/Castles.mp3"
+import defeat from "../../assets/sounds/lisp/Defeat.mp3"
 import { Capture, Castle, PieceNames, PromotionPrefence, pieceNamesV2 as pieceNamesToPreload } from "../utilities/constants";
 import { IBothKingsPosition, IKingState, IMoveHistory, IMoveInfo, IPiece, IPieceMove, IPiecesCoordinates, PlayersPromotePreference } from "../utilities/types";
 import { eventEmitter } from "../utilities/eventEmitter";
@@ -86,6 +90,10 @@ export class MainGameScene extends Scene{
         this.load.audio("capture", capture);
         this.load.audio("select", select);
         this.load.audio("check", check);
+        this.load.audio("victory", victory);
+        this.load.audio("newPM", newPM);
+        this.load.audio("castle", castle);
+        this.load.audio("defeat", defeat);
 
         pieceNamesToPreload.forEach(piece => {
             this.load.svg(
@@ -103,6 +111,8 @@ export class MainGameScene extends Scene{
     }
 
     create(){
+        this.sound.play("newPM");
+
         const board = this.add
             .image(this.scale.width / 2, this.scale.height / 2, this.boardUI)
             .setOrigin(0.5) // Center the image
@@ -114,8 +124,8 @@ export class MainGameScene extends Scene{
         }, this);
 
        // this.add.image(0, 0, "bg").setOrigin(0, 0) ;
-        const select = this.sound.add("select");
-        const boardNotation  = chessBoardNotation(this.boardOrientationIsWhite);
+       const select = this.sound.add("select");
+       const boardNotation  = chessBoardNotation(this.boardOrientationIsWhite);
         const notationsSprite: GameObjects.Text[] = [];
 
         // create pieces
@@ -318,14 +328,14 @@ export class MainGameScene extends Scene{
         });
         eventEmitter.on(EVENT_ON.SET_GAME_OVER, (data: boolean) => {
             this.gameIsOver = data; // always true
+            this.sound.setVolume(0.5);
+            this.sound.play("defeat");
         });
     }
 
     resetMoves(){
-        // reset selected piece
         this.selectedPiece = null;
 
-        // reset preview
         this.previewBoard.forEach((row, rowIdx) => {
             row.forEach((_, colIdx) => {
                 if (this.previewBoard[colIdx][rowIdx].visible){
@@ -339,6 +349,7 @@ export class MainGameScene extends Scene{
         let capture: Capture = Capture.None; 
         let castle: Castle = Castle.None;
         let promote: boolean = false;
+        let soundToPlay = "move";
 
         if (!this.selectedPiece) return;
 

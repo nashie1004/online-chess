@@ -46,7 +46,7 @@ export default function SidebarRight() {
         <MoveHistory />
       </div>
       <div className="sidebar-footer">
-        <div className='hstack justify-content-between sidebar-bar'>
+        <div className='hstack justify-content-between sidebar-bar' style={{ background: "#21201D"}}>
         <div className=''>
           <div
             className='d-flex align-items-center gap-1'

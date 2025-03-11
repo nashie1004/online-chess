@@ -124,3 +124,5 @@ export enum EndGameStatus{
 export enum GameStatus{
     Won, Lose, Draw
 }
+
+export const SOUNDS = {};

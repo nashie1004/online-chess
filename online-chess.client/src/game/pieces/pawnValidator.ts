@@ -107,6 +107,37 @@ export default class PawnValidator extends BasePieceValidator{
      */
     public validEnPassantCapture(): IValidMove | null{
         let retVal = null;
+
+        if (this.moveHistory.black.length < 1 || this.moveHistory.white.length < 1) return retVal;
+
+        let enemyLatestMove: IPiece;
+
+        if (this.isWhite){
+            enemyLatestMove = this.moveHistory.black[this.moveHistory.black.length - 1].new
+        } else {
+            enemyLatestMove = this.moveHistory.white[this.moveHistory.white.length - 1].new
+        }
+
+        if (enemyLatestMove.name.toLowerCase().indexOf("pawn") < 0) return retVal;
+
+        // same rank (y) and just nearby square (x)
+        if (
+            this.piece.y === enemyLatestMove.y && 
+            (this.piece.x - 1 === enemyLatestMove.x || this.piece.x + 1 === enemyLatestMove.x)
+            && (this.piece.y === 3 || this.piece.y === 4)
+        ){
+            retVal = { x: enemyLatestMove.x, y: this.piece.y + this.captureYDirection, isCapture: true };
+            //console.log(retVal, this.piece.y)
+        }
+      
+        return retVal;
+    }
+
+    /**
+     * - checks this.piece coordinates and validates against opponent's latest move
+     * @returns
+    public validEnPassantCaptureOld2(): IValidMove | null{
+        let retVal = null;
         return retVal;
 
         if (this.moveHistory.black.length < 1 || this.moveHistory.white.length < 1) return retVal;
@@ -151,6 +182,7 @@ export default class PawnValidator extends BasePieceValidator{
 
         return retVal;
     }
+     */
 
     /*
     public validEnPassantCapture_OLD(): IValidMove | null{
