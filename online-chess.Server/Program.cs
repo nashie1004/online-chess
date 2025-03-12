@@ -69,11 +69,12 @@ if (app.Environment.IsDevelopment())
         .AllowCredentials()); // allow credentials
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
 
 // Serve static files for your frontend (if any)
+app.UseStaticFiles();
 app.MapFallbackToFile("/index.html");
 
 app.MapHub<GameHub>("/hub");

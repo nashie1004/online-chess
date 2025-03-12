@@ -2,7 +2,7 @@
 A simple real time 2-player chess web application created with Phaser, React, Typescript, Bootstrap, ASP.NET Core SignalR and Identity, and SQLite. Uses .NET 9 and React 18.
 You can view a demo [here](https://github.com/nashie1004/online-chess).
 
-## Installation
+## Installation (Local)
 
 Update the .env.development file in `./online-chess.client` by pointing it to our server:
 ```
@@ -32,6 +32,11 @@ cd ./online-chess.Server/
 dotnet watch
 ```
 after that, the web application should now be running.
+
+## Installation (Deployment)
+
+TODO: build the server app, run migration, run the .exe file
+
 
 ## Credits
 All [board](https://github.com/lichess-org/lila/blob/master/public/images/board/), [pieces](https://github.com/lichess-org/lila/blob/master/public/piece/), and [sound](https://github.com/lichess-org/lila/blob/master/public/sound/) assets are sourced from [Lichess](https://github.com/lichess-org/lila) Github repo. Custom asset(s) and logo(s) were created using [Piskel](https://www.piskelapp.com/) and [SVGRepo](https://www.svgrepo.com/svg/509810/chess-board).
