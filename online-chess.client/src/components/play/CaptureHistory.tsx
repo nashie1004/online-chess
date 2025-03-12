@@ -7,7 +7,7 @@ export default function CaptureHistory() {
     const { gameState } = useGameContext();
     const { pieceUI } = useUserPreferenceContext();
     
-    const piecePath = `/src/assets/pieces/${pieceUI}/`;
+    const piecePath = `/pieces/${pieceUI}/`;
   
     const imgFn = useCallback((piece: PieceNames) => {
         let firstTwoChars = piece.slice(0, 2);

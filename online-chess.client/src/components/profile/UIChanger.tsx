@@ -4,15 +4,13 @@ import boardUIOptions from '../../constants/boardUI';
 import pieceUIOptions from '../../constants/pieceUI';
 import useSignalRContext from '../../hooks/useSignalRContext';
 import useUserPreferenceContext from '../../hooks/useUserPreferenceContext';
-import { eventEmitter } from '../../game/utilities/eventEmitter';
-import { EVENT_ON } from '../../constants/emitters';
 
 export default function UIChanger() {
   const { userConnectionId } = useSignalRContext();
   const { setBoard, setPiece, setShowCoords, boardUI, pieceUI, showCoords } = useUserPreferenceContext();
 
-  const boardPath = `/src/assets/boards/${boardUI}`;
-  const piecePath = `/src/assets/pieces/${pieceUI}/`;
+  const boardPath = `/boards/${boardUI}`;
+  const piecePath = `/pieces/${pieceUI}/`;
   
   const pieces = useMemo(() => {
     return [
