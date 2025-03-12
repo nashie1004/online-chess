@@ -18,7 +18,7 @@ export default function GameOptionsModal(){
   const [selectedOption, setSelectedOption] = useState<PromotionPrefence>(PromotionPrefence.Queen);
 
   const playerIsWhite = gameState.myInfo.playerIsWhite;
-  const piecePath = `/src/assets/pieces/${pieceUI}/`;
+  const piecePath = `/pieces/${pieceUI}/`;
 
   const imgFn = (firstTwoChars: string) => `${piecePath}${firstTwoChars}.svg`;
 

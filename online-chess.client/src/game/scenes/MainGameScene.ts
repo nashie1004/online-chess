@@ -1,13 +1,4 @@
 import { GameObjects, Scene } from "phaser";
-import previewMove from "../../assets/indicator.png"
-import move from "../../assets/sounds/Move.ogg"
-import capture from "../../assets/sounds/Capture.ogg"
-import select from "../../assets/sounds/Select.ogg"
-import check from "../../assets/sounds/Check.mp3"
-import victory from "../../assets/sounds/lisp/Victory.mp3"
-import newPM from "../../assets/sounds/lisp/NewPM.mp3"
-import castle from "../../assets/sounds/lisp/Castles.mp3"
-import defeat from "../../assets/sounds/lisp/Defeat.mp3"
 import { Capture, Castle, PieceNames, PromotionPrefence, pieceNamesV2 as pieceNamesToPreload } from "../utilities/constants";
 import { IBothKingsPosition, IKingState, IMoveHistory, IMoveInfo, IPiece, IPieceMove, IPiecesCoordinates, PlayersPromotePreference } from "../utilities/types";
 import { eventEmitter } from "../utilities/eventEmitter";
@@ -84,21 +75,21 @@ export class MainGameScene extends Scene{
     }
 
     preload(){
-        this.load.image(this.boardUI, `/src/assets/boards/${this.boardUI}`);
-        this.load.image("previewMove", previewMove)
-        this.load.audio("move", move);
-        this.load.audio("capture", capture);
-        this.load.audio("select", select);
-        this.load.audio("check", check);
-        this.load.audio("victory", victory);
-        this.load.audio("newPM", newPM);
-        this.load.audio("castle", castle);
-        this.load.audio("defeat", defeat);
+        this.load.image(this.boardUI, `/boards/${this.boardUI}`);
+        this.load.image("previewMove", "/indicator.png")
+        this.load.audio("move", "/sounds/Move.ogg");
+        this.load.audio("capture", "/sounds/Capture.ogg");
+        this.load.audio("select", "/sounds/Select.ogg");
+        this.load.audio("check", "/sounds/Check.mp3");
+        this.load.audio("victory", "/sounds/lisp/Victory.mp3");
+        this.load.audio("newPM", "/sounds/lisp/NewPM.mp3");
+        this.load.audio("castle", "/sounds/lisp/Castles.mp3");
+        this.load.audio("defeat", "/sounds/lisp/Defeat.mp3");
 
         pieceNamesToPreload.forEach(piece => {
             this.load.svg(
                 `${this.piecesUI}-${piece.fullName}`
-                , `/src/assets/pieces/${this.piecesUI}/${piece.shortName}.svg`
+                , `/pieces/${this.piecesUI}/${piece.shortName}.svg`
                 , { width: this.tileSize, height: this.tileSize }
             );
         });
@@ -295,7 +286,7 @@ export class MainGameScene extends Scene{
                 board.setTexture(this.boardUI).setDisplaySize(this.getMinSize(), this.getMinSize());
             });
 
-            this.load.image(this.boardUI, `/src/assets/boards/${this.boardUI}`);
+            this.load.image(this.boardUI, `/boards/${this.boardUI}`);
             this.load.start();
         });
         eventEmitter.on(EVENT_ON.SET_PIECE_UI, (data: string) => {
@@ -316,7 +307,7 @@ export class MainGameScene extends Scene{
             pieceNamesToPreload.forEach(piece => {
                 this.load.svg(
                     `${this.piecesUI}-${piece.fullName}`
-                    , `/src/assets/pieces/${this.piecesUI}/${piece.shortName}.svg`
+                    , `/pieces/${this.piecesUI}/${piece.shortName}.svg`
                     , { width: this.tileSize, height: this.tileSize }
                 );
             });
