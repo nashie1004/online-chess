@@ -50,4 +50,16 @@
     <Folder Include="UploadedFiles\ProfileImages\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Queries\GameHistoryList.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Queries\GameTypeList.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Queries\LeaderboardList.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
