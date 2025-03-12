@@ -68,7 +68,7 @@ if (app.Environment.IsDevelopment())
         .SetIsOriginAllowed(origin => true) // allow any origin
         .AllowCredentials()); // allow credentials
 } 
-else {
+//else {
     using (var scope = app.Services.CreateScope())
     {
         var mainCtx = scope.ServiceProvider.GetRequiredService<MainDbContext>();
@@ -77,7 +77,7 @@ else {
         mainCtx.Database.Migrate();
         identityCtx.Database.Migrate();
     }
-}
+//}
 
 
 //app.UseHttpsRedirection();
