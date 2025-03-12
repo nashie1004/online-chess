@@ -69,6 +69,15 @@ if (app.Environment.IsDevelopment())
         .AllowCredentials()); // allow credentials
 }
 
+using (var scope = app.Services.CreateScope())
+{
+    var mainCtx = scope.ServiceProvider.GetRequiredService<MainDbContext>();
+    var identityCtx = scope.ServiceProvider.GetRequiredService<UserIdentityDbContext>();
+    
+    mainCtx.Database.Migrate();
+    identityCtx.Database.Migrate();
+}
+
 //app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
