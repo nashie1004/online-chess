@@ -39,28 +39,28 @@ All [board](https://github.com/lichess-org/lila/blob/master/public/images/board/
 ## Remaining Todos
 
 ### Deployment
-[ ] expose ports with a simple html file
-[ ] transfer files and setup NGINX React
-[ ] transfer files and setup NGINX Server
-[ ] add SSL for https
+- [ ] expose ports with a simple html file
+- [ ] transfer files and setup NGINX React
+- [ ] transfer files and setup NGINX Server
+- [ ] add SSL for https
 
 ### Features
-[ ] multiple tabs opened
-[ ] castling bug (if already castled) incorrect coordinates on reconnect? - DOING
-[ ] bug on first move, both e4, d5 pawns move
-[ ] fifty move rule check
-[ ] show proper chess move notation
-[ ] elo
-[ ] 3 fold repetition
-[ ] responsive ui / resizeable board (https://phaser.io/examples/v3.85.0/scalemanager/view/manually-resize)
-[ ] some framer motion?, more sounds and some phaser effects
-[ ] use redis
-[ ] fix types
-[ ] clean code
-[ ] emoji
-[ ] google oauth
-[ ] add profile image -- encryption
-[ ] optimize other functions using nested loop, pass piece coordinates instead
+- [ ] multiple tabs opened
+- [ ] castling bug (if already castled) incorrect coordinates on reconnect? - DOING
+- [ ] bug on first move, both e4, d5 pawns move
+- [ ] fifty move rule check
+- [ ] show proper chess move notation
+- [ ] elo
+- [ ] 3 fold repetition
+- [ ] responsive ui / resizeable board [Phaser](https://phaser.io/examples/v3.85.0/scalemanager/view/manually-resize)
+- [ ] some framer motion?, more sounds and some phaser effects
+- [ ] use redis
+- [ ] fix types
+- [ ] clean code
+- [ ] emoji
+- [ ] google oauth
+- [ ] add profile image -- encryption
+- [ ] optimize other functions using nested loop, pass piece coordinates instead
 
 ## Miscellaneous Commands
 ```
