@@ -172,16 +172,16 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
 
             _timerService.UpdateTimer(room.GameKey, (creatorSecondsLeft, joinerSecondsLeft));
 
-            _logger.LogInformation(
-            "Running - Creator: {0}, Joiner: {1}, Current Player: {0}"
-            , creatorSecondsLeft, joinerSecondsLeft, playerSecondsLeft);
+            // _logger.LogInformation(
+            // "Running - Creator: {0}, Joiner: {1}, Current Player: {0}"
+            // , creatorSecondsLeft, joinerSecondsLeft, playerSecondsLeft);
 
             // for every 30 seconds check if the game is finished
             if (playerSecondsLeft % 30 == 0)
             {
                 var gameRoom = _gameRoomService.GetOne(room.GameKey);
 
-                _logger.LogInformation("Check room status: {0}, {1}", gameRoom?.GameKey, gameRoom?.GamePlayStatus);
+                //_logger.LogInformation("Check room status: {0}, {1}", gameRoom?.GameKey, gameRoom?.GamePlayStatus);
 
                 if (gameRoom == null)
                 {
@@ -192,7 +192,7 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
 
             if (playerSecondsLeft < 0)
             {
-                _logger.LogInformation("0 seconds left Game Ended: {0}", playerSecondsLeft);
+                //_logger.LogInformation("0 seconds left Game Ended: {0}", playerSecondsLeft);
 
                 await _gameRoomService.EndGame(scope, room
                     , creatorsTurn ? EndGameStatus.CreatorTimeIsUp : EndGameStatus.JoinerTimeIsUp

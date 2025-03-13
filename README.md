@@ -1,81 +1,78 @@
 # Online-Chess
 A simple real time 2-player chess web application created with Phaser, React, Typescript, Bootstrap, ASP.NET Core SignalR and Identity, and SQLite. Uses .NET 9 and React 18.
-You can view a demo [here](https://github.com/nashie1004/online-chess).
+You can view a demo [here](http://ec2-3-106-228-168.ap-southeast-2.compute.amazonaws.com:5000/home).
 
 ## Installation (Local)
 
-Update the .env.development file in `./online-chess.client` by pointing it to our server:
+1. Update the `appsettings.json` AllowedOrigins value:
 ```
-VITE_API_URL=https://localhost:44332
+"AllowedOrigins": "https://localhost:5000"
 ```
-
-Run the following commands on `./online-chess.Server`:
+2. Run the web app:
 ```
-Update-Database -Context MainDbContext
-Update-Database -Context UserIdentityDbContext
-```
-or
-```
-dotnet ef database update --context MainDbContext
-dotnet ef database update --context UserIdentityDbContext
-```
-This should create a directory named `./SQLiteDB` where our SQLite Database resides.
-
-Then
-```
-cd ./online-chess.client/
+cd online-chess.client
 npm run dev
-```
-and open a new terminal and finally
-```
-cd ./online-chess.Server/
+
+cd online-chess.Server
 dotnet watch
 ```
-after that, the web application should now be running.
 
 ## Installation (Deployment)
 
-TODO: build the server app, run migration, run the .exe file
-
+1. Update the `.env.production` file:
+```
+VITE_API_URL=http://{{your-server}}:5000
+```
+2. Update the `appsettings.json` AllowedOrigins value:
+```
+"AllowedOrigins": "http://{{your-server}}:5000"
+```
+4. Publish and start:
+```
+dotnet publish --self-contained false
+dotnet online-chess.Server.dll
+```
 
 ## Credits
 All [board](https://github.com/lichess-org/lila/blob/master/public/images/board/), [pieces](https://github.com/lichess-org/lila/blob/master/public/piece/), and [sound](https://github.com/lichess-org/lila/blob/master/public/sound/) assets are sourced from [Lichess](https://github.com/lichess-org/lila) Github repo. Custom asset(s) and logo(s) were created using [Piskel](https://www.piskelapp.com/) and [SVGRepo](https://www.svgrepo.com/svg/509810/chess-board).
 
-## SQLite
+## Remaining Todos
+
+### Deployment
+[ ] expose ports with a simple html file
+[ ] transfer files and setup NGINX React
+[ ] transfer files and setup NGINX Server
+[ ] add SSL for https
+
+### Features
+[ ] multiple tabs opened
+[ ] castling bug (if already castled) incorrect coordinates on reconnect? - DOING
+[ ] bug on first move, both e4, d5 pawns move
+[ ] fifty move rule check
+[ ] show proper chess move notation
+[ ] elo
+[ ] 3 fold repetition
+[ ] responsive ui / resizeable board (https://phaser.io/examples/v3.85.0/scalemanager/view/manually-resize)
+[ ] some framer motion?, more sounds and some phaser effects
+[ ] use redis
+[ ] fix types
+[ ] clean code
+[ ] emoji
+[ ] google oauth
+[ ] add profile image -- encryption
+[ ] optimize other functions using nested loop, pass piece coordinates instead
+
+## Miscellaneous Commands
 ```
+-- SQLite
 cd /online-chess.Server/SQLiteDB/
 C:/Users/Nash/Downloads/sqlite-tools-win-x64-3480000/sqlite3.exe app.db
 .mode column
 .headers on
 .tables
+
+-- linux dotnet
+dotnet --version
+export PATH=$PATH:~/dotnet
+
 ```
-
-## MVP (BUGS)
-1. castling bug (if already castled) incorrect coordinates on reconnect? - DOING
-2. bug on first move, both e4, d5 pawns move
-
-## DEPLOYMENT
-1. expose ports with a simple html file
-2. transfer files and setup NGINX React
-3. transfer files and setup NGINX Server
-4. add SSL for https
-
-## OTHER (FEATURES)
-1. fifty move rule
-2. show proper chess move notation
-5. elo
-3. 3 fold repetition
-4. responsive ui / resizeable board (https://phaser.io/examples/v3.85.0/scalemanager/view/manually-resize)
-5. some framer motion?, more sounds and some phaser effects
-6. use redis
-9. fix types
-10. clean code
-11. emoji
-12. google oauth
-13. add profile image -- encryption
-14. optimize other functions using nested loop, pass piece coordinates instead
-
-## MAIN TODOS
-1. handle disconnect / leave logic
-2. game is properly saved on resign or draw
-3. no main chess move bugs
