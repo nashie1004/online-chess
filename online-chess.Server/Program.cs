@@ -50,39 +50,45 @@ builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 builder.Logging.AddDebug();
 
+var allowedOrigins = builder.Configuration["AllowedOrigins"];
+
+builder.Services.AddCors(opt =>
+{
+    opt.AddPolicy("ReactApp", policy => policy
+    .WithOrigins(allowedOrigins)
+    .AllowAnyMethod()
+    .AllowAnyHeader()
+    .AllowCredentials());
+});
+
 var app = builder.Build();
 
-// Enable Swagger in the HTTP request pipeline for development environment
-if (app.Environment.IsDevelopment())
+//if (app.Environment.IsDevelopment())
+//{
+app.UseSwagger(); // Generates the Swagger JSON endpoint
+app.UseSwaggerUI(c =>
 {
-    app.UseSwagger(); // Generates the Swagger JSON endpoint
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-        c.RoutePrefix = string.Empty; // Optional: serves Swagger UI at the root of the app
-    });
-
-    app.UseCors(x => x
-        .AllowAnyMethod()
-        .AllowAnyHeader()
-        .SetIsOriginAllowed(origin => true) // allow any origin
-        .AllowCredentials()); // allow credentials
-} 
-//else {
-    using (var scope = app.Services.CreateScope())
-    {
-        var mainCtx = scope.ServiceProvider.GetRequiredService<MainDbContext>();
-        var identityCtx = scope.ServiceProvider.GetRequiredService<UserIdentityDbContext>();
-        
-        mainCtx.Database.Migrate();
-        identityCtx.Database.Migrate();
-    }
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+    c.RoutePrefix = string.Empty; 
+});
 //}
 
+app.UseCors("ReactApp");
+
+using (var scope = app.Services.CreateScope())
+{
+    var mainCtx = scope.ServiceProvider.GetRequiredService<MainDbContext>();
+    var identityCtx = scope.ServiceProvider.GetRequiredService<UserIdentityDbContext>();
+        
+    mainCtx.Database.Migrate();
+    identityCtx.Database.Migrate();
+}
 
 //app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
+
+app.UseDefaultFiles();
 
 // Serve static files for your frontend (if any)
 app.UseStaticFiles();

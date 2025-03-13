@@ -28,7 +28,7 @@ namespace online_chess.Server.Features.Auth.Commands.Register
                 var user = new User()
                 {
                     UserName = request.Username,
-                    ProfileImageUrl = "DefaultProfileImage.png"
+                    ProfileImageUrl = "DefaultProfileImage.jpg"
                 };
 
                 var result = await _userManager.CreateAsync(user, request.Password);
