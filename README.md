@@ -35,7 +35,12 @@ after that, the web application should now be running.
 
 ## Installation (Deployment)
 
-TODO: build the server app, run migration, run the .exe file
+1. Publish the app with `dotnet publish --self-contained false`.
+2. Update the .env.production file: `VITE_API_URL=http://{{your-server}}:5000`.
+3. Update the appsettings.json AllowedOrigins value: `"AllowedOrigins": "http://{{your-server}}:5000"`.
+
+dotnet --version
+export PATH=$PATH:~/dotnet
 
 
 ## Credits
