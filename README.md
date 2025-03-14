@@ -39,15 +39,14 @@ All [board](https://github.com/lichess-org/lila/blob/master/public/images/board/
 ## Remaining Todos
 
 ### Deployment
-- [ ] expose ports with a simple html file
-- [ ] transfer files and setup NGINX React
-- [ ] transfer files and setup NGINX Server
+- [ ] setup NGINX and ASP.NET Core
 - [ ] add SSL for https
+- [ ] follow NGINX/deployment best practices
 
 ### Features
 - [ ] multiple tabs opened
+- [ ] draw request modal no popup
 - [ ] castling bug (if already castled) incorrect coordinates on reconnect? - DOING
-- [ ] bug on first move, both e4, d5 pawns move
 - [ ] fifty move rule check
 - [ ] show proper chess move notation
 - [ ] elo

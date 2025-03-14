@@ -11,6 +11,7 @@ import { LOBBY_PAGE_HANDLERS, MAIN_PAGE_HANDLERS } from '../constants/handlers';
 import { IBaseContextProps } from '../types/global';
 import { IInitializerContext } from './types';
 import { setImage } from '../utils/helper';
+import useMultipleTabsDetector from '../hooks/useMultipleTabsDetector';
 
 export const initializerContext = createContext<IInitializerContext | null>(null);
 
@@ -29,7 +30,7 @@ export default function InitializerContext(
   const [initialize, setInitialize] = useState<boolean>(true);
   const { setGameState, gameState } = useGameContext();
   const urlLocation = useLocation();
-  //const urlParams = useParams();
+  //const { setOneTab, oneTab } = useMultipleTabsDetector();
 
   // if not signed in, allowed urls are these
   const unAuthenticatedAllowedPaths = useMemo(() => ["/", "/about", "/register", "/login"], []);
@@ -82,6 +83,8 @@ export default function InitializerContext(
     await invoke(MAIN_PAGE_INVOKERS.GET_HAS_A_GAME_IN_PROGRESS);
   }
 
+  console.log(urlLocation)
+
   /**
    * Handles on page change event
    */
@@ -99,11 +102,24 @@ export default function InitializerContext(
         invoke(PLAY_PAGE_INVOKERS.USER_DISCONNECT_FROM_ONGOING_GAME);
       }
 
-      window.addEventListener("beforeunload", handleDisconnect, { signal });
-      handleDisconnect();
+      addEventListener("beforeunload", handleDisconnect, { signal });
 
+      handleDisconnect();
       invoke(MAIN_PAGE_INVOKERS.GET_HAS_A_GAME_IN_PROGRESS);
     }
+
+    // TODO 3/14/2025
+    // check if the user opened multiple tabs
+    addEventListener("visibilitychange", () => {
+      console.log(notificationState.hasAGameOnGoing, urlLocation.pathname)
+
+      if (notificationState.hasAGameOnGoing && urlLocation.pathname !== "/play"){
+        setNotificationState({ type: "SET_HASMULTIPLETABSOPENED", payload: true });
+        return;
+      }
+
+      setNotificationState({ type: "SET_HASMULTIPLETABSOPENED", payload: false });
+    }, { signal });
 
     if (user) return;
 
