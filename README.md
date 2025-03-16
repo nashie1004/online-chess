@@ -38,21 +38,21 @@ All [board](https://github.com/lichess-org/lila/blob/master/public/images/board/
 
 ## Remaining Todos
 
-### Deployment
-- [ ] add SSL for https
-- [ ] setup NGINX reverse proxy to server
-- [ ] link namecheap and ec2
-
-#### Linux Deployment (not yet finished)
-1. install dotnet sdk and runtime + environment variables
-2. build the project, transfer the files with scp or git
-2. install nginx and update .conf file
-3. add .service file (systemctl) (with proper permission)
-4. setup aws ec2 inbound
+#### Linux Deployment
+1. install nginx, dotnet sdk + runtime, node, npm, nvm, git and then set env variables
+2. build the project, transfer the files from windows to linux ec2
+3. update nginx.conf file to handle http, https, web socket
+4. setup .service (systemctl) 1 for nginx, 1 for asp.net core dll (with proper permission)
+5. setup aws ec2 inbound
+6. add SSL for https
 
 ### Features
+- [x] simple elo count
+- [ ] simple google analytics?
 - [ ] multiple tabs opened
-- [ ] castling bug (if already castled) incorrect coordinates on reconnect? - DOING
+- [ ] no password limitation
+- [ ] check limit vm access (aws, .json, .env)
+
 - [ ] add profile image -- encryption
 - [ ] fix datetime
 

@@ -46,7 +46,7 @@ builder.Services.AddSingleton<UserConnectionService>();
 builder.Services.AddSingleton<TimerService>();
 builder.Services.AddSingleton<LogInTrackerService>();
 builder.Services.AddScoped<IFileStorageService, LocalFileStorageService>();
-//builder.Services.AddAWS
+//builder.Services.AddAWS // TODO: add aws s3 option
 builder.Services.Configure<FormOptions>(opt => {
     opt.MultipartBodyLengthLimit = 2 * 1024 * 1024; // 2mb
 });
@@ -81,7 +81,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger(); 
     app.UseSwaggerUI(c =>
     {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Online-Chess V1");
         c.RoutePrefix = string.Empty; 
     });
 }
