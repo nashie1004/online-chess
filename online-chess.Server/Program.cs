@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -46,6 +47,9 @@ builder.Services.AddSingleton<TimerService>();
 builder.Services.AddSingleton<LogInTrackerService>();
 builder.Services.AddScoped<IFileStorageService, LocalFileStorageService>();
 //builder.Services.AddAWS
+builder.Services.Configure<FormOptions>(opt => {
+    opt.MultipartBodyLengthLimit = 2 * 1024 * 1024; // 2mb
+});
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 builder.Logging.AddDebug();
@@ -94,7 +98,6 @@ using (var scope = app.Services.CreateScope())
     identityCtx.Database.Migrate();
 }
 
-//app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
 

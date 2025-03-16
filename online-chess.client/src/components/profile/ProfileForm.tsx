@@ -11,7 +11,7 @@ import { setImage } from "../../utils/helper";
 import useQueuingContext from "../../hooks/useQueuingContext";
 
 const VALID_FILE_TYPES = [ "image/png", "image/jpeg", "image/jpg", "image/svg+xml", "image/gif" ];
-const MAX_SIZE = 5 * 1024 * 1024;
+const MAX_SIZE = 2 * 1024 * 1024;
 
 const schema = z.object({
   newUsername: z.string().nonempty().min(8, "New username must contain at least 8 character(s)"),
@@ -101,7 +101,7 @@ export default function ProfileForm(){
     if (file.size > MAX_SIZE) {
       setNotificationState({
         type: "SET_CUSTOMMESSAGE"
-        , payload: { customMessage: `Max size is 5mb`, customMessageType: "DANGER" }
+        , payload: { customMessage: `Max size is 2mb`, customMessageType: "DANGER" }
       });
       setProfileImgIsSubmitting(false);
       return;

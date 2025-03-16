@@ -27,7 +27,7 @@ namespace online_chess.Server.Controllers
             return File(result.ImgInBytes, result.MimeType, result.FileName);
         }
 
-        
+        // for testing purposes
         [HttpGet("ping-server")]
         public async Task<IActionResult> PingServer()
         {
