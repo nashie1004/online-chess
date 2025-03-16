@@ -4,8 +4,7 @@
     {
         public static string CreateSQLiteDB(string folderName = "SQLiteDB")
         {
-            var folder = folderName;
-            var path = Path.Combine(Directory.GetCurrentDirectory(), folder);
+            var path = Path.Combine(Directory.GetCurrentDirectory(), folderName);
 
             if (!Directory.Exists(path))
             {
