@@ -25,6 +25,16 @@ export default function GameAlert(){
     }
 
     function gameNotif(){
+        console.log(notificationState.hasMultipleTabsOpened, notificationState.signalRConnectionDisconnected)
+        
+        if (notificationState.hasMultipleTabsOpened){
+            return <>
+                <i className="bi bi-exclamation-circle-fill"></i>
+                <span className="ps-2">
+                    You have multiple tabs opened.
+                </span>
+            </>
+        }
 
         if (notificationState.signalRConnectionDisconnected){
             return <>

@@ -11,6 +11,7 @@ import { LOBBY_PAGE_HANDLERS, MAIN_PAGE_HANDLERS } from '../constants/handlers';
 import { IBaseContextProps } from '../types/global';
 import { IInitializerContext } from './types';
 import { setImage } from '../utils/helper';
+import { MultiTabDetection } from '../utils/multipleTabsDetector';
 
 export const initializerContext = createContext<IInitializerContext | null>(null);
 
@@ -29,7 +30,7 @@ export default function InitializerContext(
   const [initialize, setInitialize] = useState<boolean>(true);
   const { setGameState, gameState } = useGameContext();
   const urlLocation = useLocation();
-  //const urlParams = useParams();
+  //const { setOneTab, oneTab } = useMultipleTabsDetector();
 
   // if not signed in, allowed urls are these
   const unAuthenticatedAllowedPaths = useMemo(() => ["/", "/about", "/register", "/login"], []);
@@ -82,6 +83,45 @@ export default function InitializerContext(
     await invoke(MAIN_PAGE_INVOKERS.GET_HAS_A_GAME_IN_PROGRESS);
   }
 
+  // DOING 3/16/2025
+  function multiTabDetection(signal: AbortSignal){
+    const multiTabDetection = new MultiTabDetection();
+
+    const timeoutId = setTimeout(() => {
+      console.log(multiTabDetection.NumberOfTabsOpened)
+      setNotificationState({ 
+        type: "SET_HASMULTIPLETABSOPENED"
+        , payload: multiTabDetection.NumberOfTabsOpened > 1 
+      });
+    }, 1000)
+    
+    multiTabDetection.NewTabDetectedEvent.subscribe((numOfTabs) => {
+      console.log(`New Tab: ${numOfTabs}`)
+      setNotificationState({ 
+        type: "SET_HASMULTIPLETABSOPENED"
+        , payload: multiTabDetection.NumberOfTabsOpened > 1 
+      });
+    });
+
+    multiTabDetection.ExistingTabDetectedEvent.subscribe(() => {
+      console.log(`New Tab: ${multiTabDetection.NumberOfTabsOpened}`)
+      setNotificationState({ 
+        type: "SET_HASMULTIPLETABSOPENED"
+        , payload: multiTabDetection.NumberOfTabsOpened > 1 
+      });
+    });
+    
+    multiTabDetection.ClosedTabDetectedEvent.subscribe((numOfTabs) => {
+      console.log(`Closed Tab: ${numOfTabs}`)
+      setNotificationState({ 
+        type: "SET_HASMULTIPLETABSOPENED"
+        , payload: multiTabDetection.NumberOfTabsOpened > 1 
+      });
+    });
+
+    // addEventListener("abort", () => clearTimeout(timeoutId), { signal })
+  }
+
   /**
    * Handles on page change event
    */
@@ -99,9 +139,9 @@ export default function InitializerContext(
         invoke(PLAY_PAGE_INVOKERS.USER_DISCONNECT_FROM_ONGOING_GAME);
       }
 
-      window.addEventListener("beforeunload", handleDisconnect, { signal });
-      handleDisconnect();
+      addEventListener("beforeunload", handleDisconnect, { signal });
 
+      handleDisconnect();
       invoke(MAIN_PAGE_INVOKERS.GET_HAS_A_GAME_IN_PROGRESS);
     }
 
@@ -117,7 +157,7 @@ export default function InitializerContext(
     }
 
     return () => {
-      controller.abort();
+    controller.abort();
     };
   }, [user, urlLocation.pathname, userConnectionId]);
 
@@ -125,6 +165,8 @@ export default function InitializerContext(
    * This is the actual initializer of our app
    */
   useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
     
     async function init(){
       // 0. clear state
@@ -140,6 +182,9 @@ export default function InitializerContext(
 
       // 3. add handlers and invoke
       await addHandlers();
+
+      // 4. detect multiple tabs
+      multiTabDetection(signal);
     }
 
     if (initialize){
@@ -153,6 +198,7 @@ export default function InitializerContext(
       removeHandler(MAIN_PAGE_HANDLERS.ON_HAS_A_GAME_IN_PROGRESS);
       removeHandler(MAIN_PAGE_HANDLERS.ON_GENERIC_ERROR);
       stopConnection();
+      controller.abort();
     }
   }, [initialize]);
 

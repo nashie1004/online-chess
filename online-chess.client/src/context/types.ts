@@ -98,6 +98,7 @@ export interface INotificationContextReducerState{
     hasAGameOnGoing: boolean;
     roomKey: string | null;
     asOfDate: Date | null;
+    hasMultipleTabsOpened: boolean;
 }
 
 export type INotificationContextReducerActions = 
@@ -108,6 +109,7 @@ export type INotificationContextReducerActions =
 | { type: "SET_HASAGAMEONGOING", payload: boolean }
 | { type: "SET_ROOMKEY", payload: string }
 | { type: "SET_ASOFDATE", payload: Date }
+| { type: "SET_HASMULTIPLETABSOPENED", payload: boolean }
 | { type: "SET_RESETNOTIFICATIONS" }
 ;
 

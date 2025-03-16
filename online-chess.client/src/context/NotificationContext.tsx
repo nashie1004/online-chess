@@ -1,4 +1,4 @@
-import { createContext, useReducer } from "react"
+import { act, createContext, useReducer } from "react"
 import { baseNotificationState } from "../game/utilities/constants";
 import { IBaseContextProps } from "../types/global";
 import { INotificationContext, INotificationContextReducerState, INotificationContextReducerActions } from "./types";
@@ -19,6 +19,9 @@ function reducerFn(state: INotificationContextReducerState, action: INotificatio
             return { ...state, hasAGameOnGoing: action.payload };
         case "SET_CUSTOMMESSAGE":
             return {  ...state, customMessage: action.payload.customMessage, customMessageType: action.payload.customMessageType }
+        case "SET_HASMULTIPLETABSOPENED":
+            console.log(action.payload)
+            return { ...state, hasMultipleTabsOpened: action.payload };
         case "SET_RESETNOTIFICATIONS":
             return baseNotificationState;
         default:

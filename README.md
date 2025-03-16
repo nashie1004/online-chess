@@ -34,11 +34,9 @@ dotnet online-chess.Server.dll
 ```
 
 ## Credits
-All [board](https://github.com/lichess-org/lila/blob/master/public/images/board/), [piece](https://github.com/lichess-org/lila/blob/master/public/piece/), and [sound](https://github.com/lichess-org/lila/blob/master/public/sound/) assets are came from [Lichess'](https://github.com/lichess-org/lila) Github repository. Custom asset(s) and logo(s) were created using [Piskel](https://www.piskelapp.com/) and [SVGRepo](https://www.svgrepo.com/svg/509810/chess-board).
+All [board](https://github.com/lichess-org/lila/blob/master/public/images/board/), [piece](https://github.com/lichess-org/lila/blob/master/public/piece/), and [sound](https://github.com/lichess-org/lila/blob/master/public/sound/) assets came from [Lichess'](https://github.com/lichess-org/lila) Github repository. Custom asset(s) and logo(s) were created using [Piskel](https://www.piskelapp.com/) and [SVGRepo](https://www.svgrepo.com/svg/509810/chess-board).
 
 ## Remaining Todos
-- [x] simple elo count
-- [ ] simple google analytics?
 - [ ] multiple tabs opened
 
 - [ ] auto renew SSL
