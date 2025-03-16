@@ -1,10 +1,11 @@
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using online_chess.Server;
 using online_chess.Server.Hubs;
 using online_chess.Server.Models;
 using online_chess.Server.Models.Entities;
-using online_chess.Server.Models.Play;
 using online_chess.Server.Persistence;
 using online_chess.Server.Service;
 using online_chess.Server.Service.FileStorageService;
@@ -45,7 +46,10 @@ builder.Services.AddSingleton<UserConnectionService>();
 builder.Services.AddSingleton<TimerService>();
 builder.Services.AddSingleton<LogInTrackerService>();
 builder.Services.AddScoped<IFileStorageService, LocalFileStorageService>();
-//builder.Services.AddAWS
+//builder.Services.AddAWS // TODO: add aws s3 option
+builder.Services.Configure<FormOptions>(opt => {
+    opt.MultipartBodyLengthLimit = 2 * 1024 * 1024; // 2mb
+});
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 builder.Logging.AddDebug();
@@ -63,18 +67,28 @@ builder.Services.AddCors(opt =>
 
 var app = builder.Build();
 
-//if (app.Environment.IsDevelopment())
-//{
-app.UseSwagger(); // Generates the Swagger JSON endpoint
-app.UseSwaggerUI(c =>
+bool.TryParse(builder.Configuration["UseNGINX"], out bool useNGINX);
+
+// if we will use NGINX, handle reverse proxy 
+if (useNGINX){
+    app.UseForwardedHeaders(new ForwardedHeadersOptions(){
+        ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto       
+    });
+}
+
+if (app.Environment.IsDevelopment())
 {
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-    c.RoutePrefix = string.Empty; 
-});
-//}
+    app.UseSwagger(); 
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Online-Chess V1");
+        c.RoutePrefix = string.Empty; 
+    });
+}
 
 app.UseCors("ReactApp");
 
+// auto run migrations and update sqlite db
 using (var scope = app.Services.CreateScope())
 {
     var mainCtx = scope.ServiceProvider.GetRequiredService<MainDbContext>();
@@ -84,13 +98,11 @@ using (var scope = app.Services.CreateScope())
     identityCtx.Database.Migrate();
 }
 
-//app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
 
 app.UseDefaultFiles();
 
-// Serve static files for your frontend (if any)
 app.UseStaticFiles();
 app.MapFallbackToFile("/index.html");
 

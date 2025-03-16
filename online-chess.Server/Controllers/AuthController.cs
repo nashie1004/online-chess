@@ -56,6 +56,7 @@ namespace online_chess.Server.Controllers
         }
 
         [HttpPost("upload-image")]
+        [RequestSizeLimit(2 * 1024 * 1024)]
         public async Task<IActionResult> UploadProfileImage([FromForm] UploadProfileImageRequest req)
         {
             return Ok(await _mediator.Send(req));

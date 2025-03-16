@@ -288,8 +288,14 @@ namespace online_chess.Server.Service
                 , Remarks = finalMessage
             });
 
-            // TODO Update ELO
-            //await identityDbContext.GetUserAsync("asd");
+            // simple ELO Rating
+            if (!isDraw){
+                creator.Elo = winnerPlayerId == creator.Id ? creator.Elo + 1 : creator.Elo - 1;
+                joiner.Elo = winnerPlayerId == joiner.Id ? joiner.Elo + 1 : joiner.Elo - 1;
+
+                await identityDbContext.UpdateAsync(creator);
+                await identityDbContext.UpdateAsync(joiner);
+            }
 
             await mainDbContext.SaveChangesAsync();
 

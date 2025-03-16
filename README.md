@@ -1,6 +1,6 @@
 # Online-Chess
 A simple real time 2-player chess web application created with Phaser, React, Typescript, Bootstrap, ASP.NET Core SignalR and Identity, and SQLite. Uses .NET 9 and React 18.
-You can view a demo [here](http://ec2-3-106-228-168.ap-southeast-2.compute.amazonaws.com:5000/home).
+You can view a demo [here](https://online-chess.xyz).
 
 ## Installation (Local)
 
@@ -38,15 +38,24 @@ All [board](https://github.com/lichess-org/lila/blob/master/public/images/board/
 
 ## Remaining Todos
 
-### Deployment
-- [ ] expose ports with a simple html file
-- [ ] transfer files and setup NGINX React
-- [ ] transfer files and setup NGINX Server
-- [ ] add SSL for https
+#### Linux Deployment
+1. install nginx, dotnet sdk + runtime, node, npm, nvm, git and then set env variables
+2. build the project, transfer the files from windows to linux ec2
+3. update nginx.conf file to handle http, https, web socket
+4. setup .service (systemctl) 1 for nginx, 1 for asp.net core dll (with proper permission)
+5. setup aws ec2 inbound
+6. add SSL for https
 
 ### Features
+- [x] simple elo count
+- [ ] simple google analytics?
 - [ ] multiple tabs opened
-- [ ] castling bug (if already castled) incorrect coordinates on reconnect? - DOING
+- [ ] no password limitation
+- [ ] check limit vm access (aws, .json, .env)
+
+- [ ] add profile image -- encryption
+- [ ] fix datetime
+
 - [ ] bug on first move, both e4, d5 pawns move
 - [ ] fifty move rule check
 - [ ] show proper chess move notation
@@ -59,20 +68,21 @@ All [board](https://github.com/lichess-org/lila/blob/master/public/images/board/
 - [ ] clean code
 - [ ] emoji
 - [ ] google oauth
-- [ ] add profile image -- encryption
 - [ ] optimize other functions using nested loop, pass piece coordinates instead
 
 ## Miscellaneous Commands
 ```
 -- SQLite
-cd /online-chess.Server/SQLiteDB/
-C:/Users/Nash/Downloads/sqlite-tools-win-x64-3480000/sqlite3.exe app.db
+:path/sqlite3.exe /online-chess.Server/SQLiteDB/app.db
 .mode column
 .headers on
 .tables
 
 -- linux dotnet
-dotnet --version
 export PATH=$PATH:~/dotnet
+dotnet --version
+
+-- windows to linux file transfer
+scp -r -i /path/key-pair-name.pem /path/my-file.txt ec2-user@instance-public-dns-name:path/
 
 ```
