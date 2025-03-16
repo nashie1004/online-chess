@@ -12,6 +12,7 @@ import { IBaseContextProps } from '../types/global';
 import { IInitializerContext } from './types';
 import { setImage } from '../utils/helper';
 import { MultiTabDetection } from '../utils/multipleTabsDetector';
+import useMultipleTabsDetector from '../hooks/useMultiTabDetector';
 
 export const initializerContext = createContext<IInitializerContext | null>(null);
 
@@ -30,7 +31,7 @@ export default function InitializerContext(
   const [initialize, setInitialize] = useState<boolean>(true);
   const { setGameState, gameState } = useGameContext();
   const urlLocation = useLocation();
-  //const { setOneTab, oneTab } = useMultipleTabsDetector();
+  const [] = useMultipleTabsDetector(initialize);
 
   // if not signed in, allowed urls are these
   const unAuthenticatedAllowedPaths = useMemo(() => ["/", "/about", "/register", "/login"], []);
@@ -83,45 +84,6 @@ export default function InitializerContext(
     await invoke(MAIN_PAGE_INVOKERS.GET_HAS_A_GAME_IN_PROGRESS);
   }
 
-  // DOING 3/16/2025
-  function multiTabDetection(signal: AbortSignal){
-    const multiTabDetection = new MultiTabDetection();
-
-    const timeoutId = setTimeout(() => {
-      console.log(multiTabDetection.NumberOfTabsOpened)
-      setNotificationState({ 
-        type: "SET_HASMULTIPLETABSOPENED"
-        , payload: multiTabDetection.NumberOfTabsOpened > 1 
-      });
-    }, 1000)
-    
-    multiTabDetection.NewTabDetectedEvent.subscribe((numOfTabs) => {
-      console.log(`New Tab: ${numOfTabs}`)
-      setNotificationState({ 
-        type: "SET_HASMULTIPLETABSOPENED"
-        , payload: multiTabDetection.NumberOfTabsOpened > 1 
-      });
-    });
-
-    multiTabDetection.ExistingTabDetectedEvent.subscribe(() => {
-      console.log(`New Tab: ${multiTabDetection.NumberOfTabsOpened}`)
-      setNotificationState({ 
-        type: "SET_HASMULTIPLETABSOPENED"
-        , payload: multiTabDetection.NumberOfTabsOpened > 1 
-      });
-    });
-    
-    multiTabDetection.ClosedTabDetectedEvent.subscribe((numOfTabs) => {
-      console.log(`Closed Tab: ${numOfTabs}`)
-      setNotificationState({ 
-        type: "SET_HASMULTIPLETABSOPENED"
-        , payload: multiTabDetection.NumberOfTabsOpened > 1 
-      });
-    });
-
-    // addEventListener("abort", () => clearTimeout(timeoutId), { signal })
-  }
-
   /**
    * Handles on page change event
    */
@@ -148,7 +110,7 @@ export default function InitializerContext(
     if (user) return;
 
     if (notificationState.customMessage){
-      setNotificationState({ type: "SET_RESETNOTIFICATIONS" });
+      // setNotificationState({ type: "SET_RESETNOTIFICATIONS" });
     }
 
     if (!unAuthenticatedAllowedPaths.includes(urlLocation.pathname)) {
@@ -171,7 +133,7 @@ export default function InitializerContext(
     async function init(){
       // 0. clear state
       setInitialize(false);
-      setNotificationState({ type: "SET_RESETNOTIFICATIONS" });
+      // setNotificationState({ type: "SET_RESETNOTIFICATIONS" });
 
       // 1. check if signed in
       await checkIfSignedIn();
@@ -183,8 +145,6 @@ export default function InitializerContext(
       // 3. add handlers and invoke
       await addHandlers();
 
-      // 4. detect multiple tabs
-      multiTabDetection(signal);
     }
 
     if (initialize){
