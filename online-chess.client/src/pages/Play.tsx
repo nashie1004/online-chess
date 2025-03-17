@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react"
 import SidebarRight from "../components/play/SidebarRight";
 import CaptureHistory from "../components/play/CaptureHistory";
-import { useSearchParams } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 import useSignalRContext from "../hooks/useSignalRContext";
 import GameOutcomeModal from "../components/play/GameOutcomeModal";
 import useOnInitializeGameInfo from "../game/signalRhandlers/useOnInitializeGameInfo";
@@ -27,10 +27,11 @@ export default function Main(){
     const gameRef = useRef<Phaser.Game | null>();
     const { userConnectionId, addHandler, invoke, removeHandler } = useSignalRContext();
     const { setGameState } = useGameContext();
-    const { setNotificationState } = useNotificationContext();
+    const { setNotificationState, notificationState } = useNotificationContext();
     const { setQueuingRoomKey } = useQueuingContext();
     const { setShowLoadingModal, setGameOverMessage, setShowGameOverModal } = useGameUIHandlerContext();
     const [searchParams] = useSearchParams();
+    const navigate = useNavigate();
     
     const onInitializeGameInfo = useOnInitializeGameInfo(gameRef);
     const onUpdateBoard = useOnUpdateBoard();
@@ -51,6 +52,10 @@ export default function Main(){
         setShowGameOverModal(false);
 
         if (!userConnectionId) return;
+        if (notificationState.hasMultipleTabsOpened){
+            navigate("*")
+            return;
+        }
 
         async function start() {
             await addHandler(PLAY_PAGE_HANDLERS.ON_INITIALIZE_GAME_INFO, onInitializeGameInfo);
