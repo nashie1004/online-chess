@@ -26,7 +26,7 @@ export default function SignalRContext(
         const URL = import.meta.env.VITE_API_URL + "/hub"
 
         hubConnection = new HubConnectionBuilder()
-            .configureLogging(LogLevel.Information) 
+            .configureLogging(LogLevel.Critical) 
             .withUrl(URL, {
                 // force
                 skipNegotiation: true,  
@@ -72,7 +72,7 @@ export default function SignalRContext(
             setUserConnectionId(null);
             await hubConnection.stop();
         } catch(err){
-            console.log(`Stop connection error ${err}`)
+            //console.log(`Stop connection error ${err}`)
         }
     }
     
@@ -85,7 +85,7 @@ export default function SignalRContext(
         try{
             await hubConnection.invoke(methodName, ...arg)
         } catch(err){
-            console.log(`Invoke error ${err}`)
+            //console.log(`Invoke error ${err}`)
         }
     }
     
@@ -98,7 +98,7 @@ export default function SignalRContext(
         try{
             await hubConnection.on(methodName, method);
         } catch(err){
-            console.log(`Add Handler ${err}`)
+            //console.log(`Add Handler ${err}`)
         }
     }
 

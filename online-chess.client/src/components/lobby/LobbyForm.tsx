@@ -6,6 +6,7 @@ import useSignalRContext from '../../hooks/useSignalRContext';
 import { IGameRoomList } from '../../game/utilities/types';
 import { LOBBY_PAGE_INVOKERS } from '../../constants/invokers';
 import useGameContext from '../../hooks/useGameContext';
+import useNotificationContext from '../../hooks/useNotificationContext';
 
 interface ILobbyForm{
     setGameRoomList: React.Dispatch<React.SetStateAction<IGameRoomList>>;
@@ -22,8 +23,10 @@ export default function LobbyForm(
     const [gameType, setGameType] = useState<GameType>(1);
     const [colorOption, setColorOption] = useState<ColorOptions>(1);
     const { gameState } = useGameContext();
+    const { notificationState } = useNotificationContext();
 
     const disableQueueBtn = (roomKey ? true : false) || 
+        (notificationState.hasMultipleTabsOpened) ||
         (gameState.gameRoomKey !== null && gameState.gameRoomKey !== "" ? true : false) || 
         (userConnectionId === null ? true : false);
 

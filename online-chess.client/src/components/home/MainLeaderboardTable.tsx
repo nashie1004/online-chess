@@ -50,7 +50,7 @@ export default function MainLeaderboardTable(){
 
     return <>
     
-    <div className="table-title hstack gap-2 align-items-center mt-5 mb-3">
+    <div className="table-title hstack gap-2 align-items-center mt-3 mb-3">
         <i className="bi bi-trophy-fill" style={{ color: "#FFEB3B", fontSize: "1.5rem" }}></i>
         <h4 className="ps-2">LEADERBOARD</h4>
       </div>

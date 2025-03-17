@@ -11,7 +11,6 @@ import { LOBBY_PAGE_HANDLERS, MAIN_PAGE_HANDLERS } from '../constants/handlers';
 import { IBaseContextProps } from '../types/global';
 import { IInitializerContext } from './types';
 import { setImage } from '../utils/helper';
-import { MultiTabDetection } from '../utils/multipleTabsDetector';
 import useMultipleTabsDetector from '../hooks/useMultiTabDetector';
 
 export const initializerContext = createContext<IInitializerContext | null>(null);
@@ -31,7 +30,7 @@ export default function InitializerContext(
   const [initialize, setInitialize] = useState<boolean>(true);
   const { setGameState, gameState } = useGameContext();
   const urlLocation = useLocation();
-  const [] = useMultipleTabsDetector(initialize);
+  const { } = useMultipleTabsDetector(initialize);
 
   // if not signed in, allowed urls are these
   const unAuthenticatedAllowedPaths = useMemo(() => ["/", "/about", "/register", "/login"], []);
@@ -110,7 +109,7 @@ export default function InitializerContext(
     if (user) return;
 
     if (notificationState.customMessage){
-      // setNotificationState({ type: "SET_RESETNOTIFICATIONS" });
+      setNotificationState({ type: "SET_RESETNOTIFICATIONS" });
     }
 
     if (!unAuthenticatedAllowedPaths.includes(urlLocation.pathname)) {
@@ -133,7 +132,7 @@ export default function InitializerContext(
     async function init(){
       // 0. clear state
       setInitialize(false);
-      // setNotificationState({ type: "SET_RESETNOTIFICATIONS" });
+      setNotificationState({ type: "SET_RESETNOTIFICATIONS" });
 
       // 1. check if signed in
       await checkIfSignedIn();

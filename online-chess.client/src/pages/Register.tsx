@@ -21,7 +21,7 @@ const registerService = new BaseApiService();
 export default function Register() {
   const navigate = useNavigate();
   const { user } = useAuthContext();
-  const { setNotificationState } = useNotificationContext();
+  const { setNotificationState, notificationState } = useNotificationContext();
   const { userConnectionId } = useSignalRContext();
 
   const {
@@ -97,7 +97,7 @@ export default function Register() {
                   </Form.Control.Feedback>
                 </Form.Group>
                 <Button 
-                  disabled={loading}
+                  disabled={loading || notificationState.hasMultipleTabsOpened}
                   className="w-100" 
                   size="lg"
                   type="submit">

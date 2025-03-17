@@ -19,14 +19,14 @@ export default function GameAlert(){
         !notificationState.customMessage &&
         !notificationState.signalRConnectionDisconnected &&
         !notificationState.hasAGameQueuing &&
-        !notificationState.hasAGameOnGoing 
+        !notificationState.hasAGameOnGoing  && 
+        !notificationState.hasMultipleTabsOpened
     ){
         return <></>;
     }
 
     function gameNotif(){
         let returnComponent: JSX.Element = <></>
-        console.log(notificationState.hasMultipleTabsOpened, notificationState.signalRConnectionDisconnected)
         
         if (notificationState.hasMultipleTabsOpened){
             returnComponent = <div>
@@ -37,7 +37,7 @@ export default function GameAlert(){
                 </span>
             </div>
         }
-
+    
         if (notificationState.signalRConnectionDisconnected){
             returnComponent = <div>
                 {returnComponent}
@@ -104,16 +104,19 @@ export default function GameAlert(){
                 <i className="bi bi-exclamation-circle-fill"></i>
                 <span className="ps-2">
                     You have a game in-progress.
-                    <a href="#" 
-                        className="ps-1 alert-link"
-                        onClick={() => {
-                            navigate(`/play?gameRoomKey=${gameState.gameRoomKey}&reconnect=true`);
-                        }}
-                        >Resume.</a> 
+
+                    {!notificationState.hasMultipleTabsOpened && <>
+                        <a 
+                            href="#" 
+                            className="ps-1 alert-link"
+                            onClick={() => {
+                                navigate(`/play?gameRoomKey=${gameState.gameRoomKey}&reconnect=true`);
+                            }}>Resume.</a> 
+                    </>}
                 </span>
             </div>
         }
-
+        
         return returnComponent;
     }
 

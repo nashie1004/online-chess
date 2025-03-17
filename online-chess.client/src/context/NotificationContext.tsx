@@ -20,7 +20,6 @@ function reducerFn(state: INotificationContextReducerState, action: INotificatio
         case "SET_CUSTOMMESSAGE":
             return {  ...state, customMessage: action.payload.customMessage, customMessageType: action.payload.customMessageType }
         case "SET_HASMULTIPLETABSOPENED":
-            console.log(action.payload)
             return { ...state, hasMultipleTabsOpened: action.payload };
         case "SET_RESETNOTIFICATIONS":
             return baseNotificationState;
