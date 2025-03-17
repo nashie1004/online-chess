@@ -4,10 +4,12 @@ import boardUIOptions from '../../constants/boardUI';
 import pieceUIOptions from '../../constants/pieceUI';
 import useSignalRContext from '../../hooks/useSignalRContext';
 import useUserPreferenceContext from '../../hooks/useUserPreferenceContext';
+import useNotificationContext from '../../hooks/useNotificationContext';
 
 export default function UIChanger() {
   const { userConnectionId } = useSignalRContext();
   const { setBoard, setPiece, setShowCoords, boardUI, pieceUI, showCoords } = useUserPreferenceContext();
+  const { notificationState } = useNotificationContext();
 
   const boardPath = `/boards/${boardUI}`;
   const piecePath = `/pieces/${pieceUI}/`;
@@ -34,11 +36,9 @@ export default function UIChanger() {
           <Col>
           <Form className=''>
           <Form.Group className="mb-3 d-flex">
-            <Form.Label column sm={2}>
-              Board
-            </Form.Label>
+            <Form.Label column sm={2}>Board:</Form.Label>
             <Form.Select 
-              disabled={!userConnectionId}
+              disabled={!userConnectionId || notificationState.hasMultipleTabsOpened}
               onChange={(e) => setBoard(e.target.value)}
               value={boardUI}
               className='w-50'>
@@ -48,9 +48,9 @@ export default function UIChanger() {
             </Form.Select>
           </Form.Group>
           <Form.Group className="mb-3 d-flex">
-            <Form.Label column sm={2}>Piece</Form.Label>
+            <Form.Label column sm={2}>Piece:</Form.Label>
             <Form.Select  
-              disabled={!userConnectionId}
+              disabled={!userConnectionId || notificationState.hasMultipleTabsOpened}
               onChange={(e) => setPiece(e.target.value)}
               value={pieceUI}
               className='w-50'>

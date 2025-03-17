@@ -6,6 +6,7 @@ import useSignalRContext from "../../hooks/useSignalRContext";
 import { colorOptionsDisplay, gameTypeDisplay, setImage } from "../../utils/helper";
 import useAuthContext from "../../hooks/useAuthContext";
 import { LOBBY_PAGE_INVOKERS } from "../../constants/invokers";
+import useNotificationContext from "../../hooks/useNotificationContext";
 
 interface ILobbyTable{
     setGameRoomList: React.Dispatch<React.SetStateAction<IGameRoomList>>;
@@ -20,6 +21,7 @@ export default function LobbyTable({
     const { invoke, userConnectionId } = useSignalRContext();
     const [pageNo, setPageNo] = useState<number>(1);
     const { user } = useAuthContext();
+    const { notificationState } = useNotificationContext();
 
     useEffect(() => {
         invoke(LOBBY_PAGE_INVOKERS.GET_ROOM_LIST, pageNo);
@@ -61,7 +63,7 @@ export default function LobbyTable({
                         <td>
                             {user?.userName !== item.value.createdByUserInfo.userName ? <>
                                 <button 
-                                    disabled={!userConnectionId}
+                                    disabled={!userConnectionId || notificationState.hasMultipleTabsOpened}
                                     onClick={() => {
                                         setSelectedRoom(item);
                                         setModal(true);
@@ -134,7 +136,7 @@ export default function LobbyTable({
                 </div>
                 <div className="m-footer">
                     <button 
-                        disabled={!userConnectionId}
+                        disabled={!userConnectionId || notificationState.hasMultipleTabsOpened}
                         className="btn btn-1 w-25"
                         onClick={() => {
                             setModal(false);

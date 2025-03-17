@@ -11,6 +11,7 @@ import { LOBBY_PAGE_HANDLERS, MAIN_PAGE_HANDLERS } from '../constants/handlers';
 import { IBaseContextProps } from '../types/global';
 import { IInitializerContext } from './types';
 import { setImage } from '../utils/helper';
+import useMultipleTabsDetector from '../hooks/useMultiTabDetector';
 
 export const initializerContext = createContext<IInitializerContext | null>(null);
 
@@ -29,7 +30,7 @@ export default function InitializerContext(
   const [initialize, setInitialize] = useState<boolean>(true);
   const { setGameState, gameState } = useGameContext();
   const urlLocation = useLocation();
-  //const urlParams = useParams();
+  const { } = useMultipleTabsDetector(initialize);
 
   // if not signed in, allowed urls are these
   const unAuthenticatedAllowedPaths = useMemo(() => ["/", "/about", "/register", "/login"], []);
@@ -99,9 +100,9 @@ export default function InitializerContext(
         invoke(PLAY_PAGE_INVOKERS.USER_DISCONNECT_FROM_ONGOING_GAME);
       }
 
-      window.addEventListener("beforeunload", handleDisconnect, { signal });
-      handleDisconnect();
+      addEventListener("beforeunload", handleDisconnect, { signal });
 
+      handleDisconnect();
       invoke(MAIN_PAGE_INVOKERS.GET_HAS_A_GAME_IN_PROGRESS);
     }
 
@@ -117,7 +118,7 @@ export default function InitializerContext(
     }
 
     return () => {
-      controller.abort();
+    controller.abort();
     };
   }, [user, urlLocation.pathname, userConnectionId]);
 
@@ -125,6 +126,8 @@ export default function InitializerContext(
    * This is the actual initializer of our app
    */
   useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
     
     async function init(){
       // 0. clear state
@@ -140,6 +143,7 @@ export default function InitializerContext(
 
       // 3. add handlers and invoke
       await addHandlers();
+
     }
 
     if (initialize){
@@ -153,6 +157,7 @@ export default function InitializerContext(
       removeHandler(MAIN_PAGE_HANDLERS.ON_HAS_A_GAME_IN_PROGRESS);
       removeHandler(MAIN_PAGE_HANDLERS.ON_GENERIC_ERROR);
       stopConnection();
+      controller.abort();
     }
   }, [initialize]);
 

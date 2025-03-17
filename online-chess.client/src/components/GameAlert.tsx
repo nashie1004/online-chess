@@ -19,17 +19,30 @@ export default function GameAlert(){
         !notificationState.customMessage &&
         !notificationState.signalRConnectionDisconnected &&
         !notificationState.hasAGameQueuing &&
-        !notificationState.hasAGameOnGoing 
+        !notificationState.hasAGameOnGoing  && 
+        !notificationState.hasMultipleTabsOpened
     ){
         return <></>;
     }
 
     function gameNotif(){
-
-        if (notificationState.signalRConnectionDisconnected){
-            return <>
+        let returnComponent: JSX.Element = <></>
+        
+        if (notificationState.hasMultipleTabsOpened){
+            returnComponent = <div>
+                {returnComponent}
                 <i className="bi bi-exclamation-circle-fill"></i>
-                <span className="ps-1">Unable to establish real time connection with the server. 
+                <span className="ps-2">
+                    You have multiple tabs opened.
+                </span>
+            </div>
+        }
+    
+        if (notificationState.signalRConnectionDisconnected){
+            returnComponent = <div>
+                {returnComponent}
+                <i className="bi bi-exclamation-circle-fill"></i>
+                <span className="ps-2">Unable to establish real time connection with the server. 
                     <a 
                         href="#" 
                         className="ps-1 alert-link"
@@ -39,7 +52,7 @@ export default function GameAlert(){
                         }}
                     >Reconnect and reauthenticate?</a>
                 </span>
-            </> 
+            </div> 
         }
 
         if (notificationState.customMessage){
@@ -57,16 +70,18 @@ export default function GameAlert(){
                     break;
             }
 
-            return <>
+            returnComponent = <div>
+                {returnComponent}
                 <i className={icon}></i>
                 <span className="ps-2">
                     {notificationState.customMessage}
                 </span>
-            </>
+            </div>
         }
 
         if (notificationState.hasAGameQueuing){
-            return <>
+            returnComponent = <div>
+                {returnComponent}
                 <Spinner size="sm" animation="border" variant="dark" /> 
                 <span className="ps-2">
                     You have a game queuing... 
@@ -80,25 +95,29 @@ export default function GameAlert(){
                         }}
                         >Stop queuing?</a> 
                 </span>
-            </>
+            </div>
         }
 
         if (notificationState.hasAGameOnGoing){
-            return <>
+            returnComponent = <div>
+                {returnComponent}
                 <i className="bi bi-exclamation-circle-fill"></i>
                 <span className="ps-2">
                     You have a game in-progress.
-                    <a href="#" 
-                        className="ps-1 alert-link"
-                        onClick={() => {
-                            navigate(`/play?gameRoomKey=${gameState.gameRoomKey}&reconnect=true`);
-                        }}
-                        >Resume.</a> 
-                </span>
-            </>
-        }
 
-        return <></>
+                    {!notificationState.hasMultipleTabsOpened && <>
+                        <a 
+                            href="#" 
+                            className="ps-1 alert-link"
+                            onClick={() => {
+                                navigate(`/play?gameRoomKey=${gameState.gameRoomKey}&reconnect=true`);
+                            }}>Resume.</a> 
+                    </>}
+                </span>
+            </div>
+        }
+        
+        return returnComponent;
     }
 
     return <>

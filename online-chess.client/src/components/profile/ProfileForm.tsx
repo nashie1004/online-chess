@@ -145,7 +145,7 @@ export default function ProfileForm(){
             <div className="d-flex justify-content-center align-items-center">
               <Form.Control 
                 type="file"
-                disabled={!userConnectionId || loading || notificationState.hasAGameOnGoing || queuingRoomKey ? true : false}
+                disabled={!userConnectionId || loading || notificationState.hasAGameOnGoing || queuingRoomKey ? true : false || notificationState.hasMultipleTabsOpened}
                 onChange={changeProfileImage}
                 id="profileImageFile"
               />
@@ -223,12 +223,13 @@ export default function ProfileForm(){
             
             <div className="form-check mb-3">
               <input 
+                disabled={notificationState.hasMultipleTabsOpened}
                 onChange={() => setEditableProfile(prev => !prev)}
                 type="checkbox" className="form-check-input" />
               <label htmlFor="" className="form-check-label mt-1 ps-1">Edit Profile</label>
             </div>
               <Button 
-              disabled={loading || editableProfile}
+              disabled={loading || editableProfile || notificationState.hasMultipleTabsOpened}
               className="w-100 btn-1" 
               type="submit">
               {

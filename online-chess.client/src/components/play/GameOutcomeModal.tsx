@@ -40,8 +40,8 @@ export default function GameOutcomeModal(
                     </div>
                 </div>
                 <button 
-                    onClick={() => navigate("/lobby")}
-                    className='btn btn-1 w-100 mt-4'>Go To Lobby</button>
+                    onClick={() => navigate("/")}
+                    className='btn btn-1 w-100 mt-4'>See Leaderboards</button>
             </div>
             <div className="m-footer"></div>
         </Modal.Body>

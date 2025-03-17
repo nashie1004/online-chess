@@ -91,6 +91,7 @@ export const baseNotificationState: INotificationContextReducerState = {
     ,hasAGameOnGoing: false
     ,roomKey: null
     ,asOfDate: null 
+    ,hasMultipleTabsOpened: false
 }
 
 export enum Castle{
