@@ -3,7 +3,7 @@ A simple real time 2-player chess web application created with Phaser, React, Ty
 You can view a demo [here](https://online-chess.xyz) hosted on AWS EC2.
 
 ## Installation (Local)
-
+0. Remove the Google Analytics tag in `/online-chess.client/index.html`
 1. Update the `appsettings.json` AllowedOrigins value:
 ```
 "AllowedOrigins": "https://localhost:5000"
@@ -36,13 +36,11 @@ dotnet online-chess.Server.dll
 ## Credits
 All [board](https://github.com/lichess-org/lila/blob/master/public/images/board/), [piece](https://github.com/lichess-org/lila/blob/master/public/piece/), and [sound](https://github.com/lichess-org/lila/blob/master/public/sound/) assets came from [Lichess'](https://github.com/lichess-org/lila) Github repository. Custom asset(s) and logo(s) were created using [Piskel](https://www.piskelapp.com/) and [SVGRepo](https://www.svgrepo.com/svg/509810/chess-board).
 
-## Remaining Todos
-- [ ] bug on first move e4 and d5
+## Remaining Todos (By Priority)
 - [ ] auto renew SSL
 - [ ] add profile image -- encryption
 - [ ] fix datetime
 - [ ] bug on offer draw
-
 - [ ] fifty move rule check
 - [ ] show proper chess move notation
 - [ ] proper elo
@@ -52,7 +50,7 @@ All [board](https://github.com/lichess-org/lila/blob/master/public/images/board/
 - [ ] use redis
 - [ ] fix types
 - [ ] clean code
-- [ ] emoji
+- [ ] emoji to chatbox
 - [ ] google oauth
 - [ ] optimize other functions using nested loop, pass piece coordinates instead
 - [ ] lazy load 

@@ -4,9 +4,11 @@ import MoveHistory from './MoveHistory';
 import GameOutcome from './GameOutcome';
 import useGameContext from '../../hooks/useGameContext';
 import { GameType } from '../../game/utilities/constants';
+import useSignalRContext from '../../hooks/useSignalRContext';
 
 export default function SidebarRight() {
   const { gameState, setGameState } = useGameContext();
+  const { userConnectionId } = useSignalRContext();
 
   function gameDisplay(){
     switch(gameState.gameType){
@@ -52,6 +54,7 @@ export default function SidebarRight() {
             className='d-flex align-items-center gap-1'
             id="option-gear"
             onClick={() => {
+              if (!userConnectionId || gameState.gameStatus === "FINISHED") return;
               setGameState({ type: "SET_OPENOPTIONMODAL", payload: true });
             }}
           >

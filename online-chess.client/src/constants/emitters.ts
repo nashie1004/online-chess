@@ -13,6 +13,7 @@ export const EVENT_ON = {
     ,SET_PIECE_UI: "setPieceUI"
     ,SET_COORDS_UI_SHOW: "setShowUICoords"
     ,SET_GAME_OVER: "setGameOver"
+    ,SET_PHASER_DONE_LOADING: "setPhaserDoneLoading"
 }
 
   

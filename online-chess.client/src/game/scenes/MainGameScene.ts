@@ -325,6 +325,11 @@ export class MainGameScene extends Scene{
             // this.sound.setVolume(0.5);
             this.sound.play("defeat");
         });
+
+        eventEmitter.emit(EVENT_ON.SET_PHASER_DONE_LOADING, true)
+        // console.log(this.game.isBooted, this.load.isReady())
+        // this.load.on("complete", () => {
+        // })
     }
 
     resetMoves(){
@@ -472,9 +477,5 @@ export class MainGameScene extends Scene{
 
     update(){
         // may not need this
-    }
-
-    debugHelper(){
-        //console.log(this.bothKingsState);
     }
 }

@@ -82,39 +82,6 @@ export default function useOnInitializeGameInfo(
             }
         };
 
-        /** To ensure that phaser and eventemitter listeners are only created once */
-        if (!gameRef.current){
-            gameRef.current = new Phaser.Game({
-                type: Phaser.AUTO,
-                width: 800,
-                height: 800,
-                parent: 'game-container',
-                backgroundColor: '#028af8',
-                scale: {
-                    // mode: Phaser.Scale.RESIZE
-                },
-                scene: [
-                    new MainGameScene(
-                        "mainChessboard", myInfo.isColorWhite, boardUI
-                        , pieceUI, currentGameInfo.piecesCoordinatesInitial, currentGameInfo.moveHistory
-                        , bothKingsPosition, promotePreference, myInfo.isPlayersTurnToMove
-                        , currentGameInfo.bothKingsState, userConnectionId !== null, showCoords
-                    )
-                ],
-            });
-            
-            eventEmitter.on(EVENT_ON.SET_MOVE_PIECE, (move: IMovePiece) => {
-                
-                invoke(PLAY_PAGE_INVOKERS.MOVE_PIECE
-                    , currentGameInfo.gameRoomKey, move.oldMove, move.newMove
-                    , move.capture, move.castle, move.kingsState
-                    , move.promote
-                );
-
-            });
-
-        }
-
         setGameState({
             type: "SET_MYINFO",
             payload: {
@@ -155,7 +122,46 @@ export default function useOnInitializeGameInfo(
 
         setGameState({ type: "SET_GAMESTATUS", payload: "ONGOING" });
         
-        setShowLoadingModal(false);
+        /** To ensure that phaser and eventemitter listeners are only created once */
+        if (gameRef.current) return;
+
+        gameRef.current = new Phaser.Game({
+            type: Phaser.AUTO,
+            width: 800,
+            height: 800,
+            parent: 'game-container',
+            backgroundColor: '#028af8',
+            scale: {
+                // mode: Phaser.Scale.RESIZE
+            },
+            scene: [
+                new MainGameScene(
+                    "mainChessboard", myInfo.isColorWhite, boardUI
+                    , pieceUI, currentGameInfo.piecesCoordinatesInitial, currentGameInfo.moveHistory
+                    , bothKingsPosition, promotePreference, myInfo.isPlayersTurnToMove
+                    , currentGameInfo.bothKingsState, userConnectionId !== null, showCoords
+                )
+            ],
+        });
+        
+        eventEmitter.on(EVENT_ON.SET_MOVE_PIECE, (move: IMovePiece) => {
+            
+            invoke(PLAY_PAGE_INVOKERS.MOVE_PIECE
+                , currentGameInfo.gameRoomKey, move.oldMove, move.newMove
+                , move.capture, move.castle, move.kingsState
+                , move.promote
+            );
+
+        });
+
+        eventEmitter.on(EVENT_ON.SET_PHASER_DONE_LOADING, (data: boolean) => {
+            setShowLoadingModal(false);
+        });
+
+        // setTimeout(() => {
+        //     setShowLoadingModal(false);
+        // }, 1500)
+
     }, []);
 
     return onInitializeGameInfo;
