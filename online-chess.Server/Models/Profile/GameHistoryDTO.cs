@@ -8,5 +8,5 @@ public class GameHistoryDTO
     public GameHistoryStatus GameStatus { get; set; }
     public bool IsColorWhite { get; set; }
     public string OpponentName { get; set; }
-    public DateTime CreateDate { get; set; }
+    public DateTimeOffset CreateDate { get; set; }
 }

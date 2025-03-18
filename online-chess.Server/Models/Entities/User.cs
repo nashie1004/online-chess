@@ -4,7 +4,7 @@ namespace online_chess.Server.Models.Entities
 {
     public class User : IdentityUser<long>
     {
-        public DateTime CreateDate { get; set; } = DateTime.Now;
+        public DateTimeOffset CreateDate { get; set; } = DateTimeOffset.UtcNow;
         public string? ProfileImageUrl { get; set; }
         public int Elo { get; set; }
     }

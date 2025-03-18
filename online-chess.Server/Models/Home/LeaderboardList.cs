@@ -11,8 +11,8 @@ public class LeaderboardList
     public int Wins { get; set; }
     public int Loses { get; set; }
     public int Draws { get; set; }
-    public DateTime SinceDate { get; set; }
-    public DateTime LastGameDate { get; set; }   
+    public DateTimeOffset SinceDate { get; set; }
+    public DateTimeOffset LastGameDate { get; set; }   
     public int Elo { get; set; }
     public string? ProfileImageUrl { get; set; }
 }

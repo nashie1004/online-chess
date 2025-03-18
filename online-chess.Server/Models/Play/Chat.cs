@@ -7,7 +7,7 @@ namespace online_chess.Server.Models.Play
         }
 
         public string CreatedByUser { get; set; }
-        public DateTime CreateDate { get; set; }
+        public DateTimeOffset CreateDate { get; set; } = DateTimeOffset.UtcNow;
         public string Message { get; set; }
     }
 }

@@ -1,0 +1,51 @@
+# name: AWS EC2 Deployment
+
+# on: 
+#   push:
+#     branches: [master, main]
+#   pull_request:
+#     branches: [master, main]
+
+# env:
+#   EC2_LOGIN: ${{ secrets.EC2_PUBLIC_DNS }}
+#   EC2_PUBLIC_DNS: ${{ secrets.EC2_PUBLIC_DNS }}
+#   SSH_PRIVATE_KEY: ${{ secrets.EC2_PUBLIC_DNS }}
+#   NODE_VERSION: 22.14.0
+#   DOTNET_VERSION: 9.0.200
+
+# jobs:
+#   deploy:
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - name: 1. Checkout branch
+#       - uses: actions/checkout@v3
+
+#       - name: 2. Setup Node
+#         with:
+#           node-version: ${{ env.NODE_VERSION }}
+
+#       - name: 3. Setup Dotnet
+#         with:
+#           dotnet-version:  ${{ env.DOTNET_VERSION }}
+
+#       - name: 4. Run publish command
+#         run: dotnet publish --configuration Release --runtime linux-x64 --self-contained false
+
+#       - name: 5. Copy the built files to EC2
+#         run: |
+#           scp -r -i /path/key-pair-name.pem /path/my-file.txt "$EC2_PUBLIC_DNS":/home/ec2-user/online-chess-linux
+      
+#       - name: Print Environment Variables
+#         run: |
+#           echo "TODO"
+
+#       - name: 5. Connect to EC2 Linux  and service command
+#         run: |
+#           ssh -i "Web-App-Projects.pem" EC2_PUBLIC_DNS
+#           sudo systemctl daemon-reload
+#           sudo systemctl stop online-chess.service
+#           sudo systemctl stop nginx
+#           cd online-chess-linux/
+#           sudo systemctl restart online-chess.service
+#           sudo systemctl restart nginx

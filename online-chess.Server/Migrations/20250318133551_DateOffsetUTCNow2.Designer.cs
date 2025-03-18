@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using online_chess.Server.Persistence;
 
@@ -10,9 +11,11 @@ using online_chess.Server.Persistence;
 namespace online_chess.Server.Migrations
 {
     [DbContext(typeof(UserIdentityDbContext))]
-    partial class UserIdentityDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250318133551_DateOffsetUTCNow2")]
+    partial class DateOffsetUTCNow2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.0");

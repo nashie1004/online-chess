@@ -40,7 +40,7 @@ namespace online_chess.Server.Features.Game.Commands.DrawAgree
             if (!request.AgreeOnDraw)
             {
                 room.ChatMessages.Add(new Models.Play.Chat(){
-                    CreateDate = DateTime.Now,
+                    CreateDate = DateTimeOffset.Now,
                     CreatedByUser = "server",
                     Message = $"{request.IdentityUserName} declined the draw."
                 });

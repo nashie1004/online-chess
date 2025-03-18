@@ -93,7 +93,7 @@ namespace online_chess.Server.Service
         public CurrentGameInfo StartNewGame(GameRoom gameRoom, GameStartRequest request)
         {
             if (
-                gameRoom.GameStartedAt != DateTime.MinValue && 
+                gameRoom.GameStartedAt != DateTimeOffset.MinValue && 
                 (gameRoom.GamePlayStatus == GamePlayStatus.CreatorDisconnected || gameRoom.GamePlayStatus == GamePlayStatus.JoinerDisconnected)
             )
             {
@@ -128,19 +128,19 @@ namespace online_chess.Server.Service
                 (initialTime.TotalSeconds, initialTime.TotalSeconds)
             );
 
-            gameRoom.GameStartedAt = DateTime.Now;
+            gameRoom.GameStartedAt = DateTimeOffset.UtcNow;
             gameRoom.GamePlayStatus = GamePlayStatus.Ongoing;
             gameRoom.ChatMessages = new List<Chat>()
             {
                 new Chat()
                 {
-                    CreateDate = DateTime.Now
+                    CreateDate = DateTimeOffset.UtcNow
                     , CreatedByUser = "server"
                     , Message = $"{gameRoom.CreatedByUserInfo.UserName} has joined the game."
                 }
                 ,new Chat()
                 {
-                    CreateDate = DateTime.Now
+                    CreateDate = DateTimeOffset.UtcNow
                     , CreatedByUser = "server"
                     , Message = $"{gameRoom.JoinByUserInfo.UserName} has joined the game."
                 }
@@ -171,7 +171,7 @@ namespace online_chess.Server.Service
 
             onGoingGameRoom.ChatMessages.Add(new Chat()
             {
-                CreateDate = DateTime.Now
+                CreateDate = DateTimeOffset.UtcNow
                 ,CreatedByUser = "server"
                 ,Message = $"{request.IdentityUserName} reconnected."
             });
@@ -275,7 +275,7 @@ namespace online_chess.Server.Service
 
             await mainDbContext.GameHistories.AddAsync(new GameHistory(){
                 GameStartDate = room.GameStartedAt
-                , GameEndDate = DateTime.Now
+                , GameEndDate = DateTimeOffset.UtcNow
 
                 , PlayerOneId = creator.Id
                 , PlayerOneColor = room.CreatedByUserInfo.Color
@@ -300,7 +300,7 @@ namespace online_chess.Server.Service
             await mainDbContext.SaveChangesAsync();
 
             room.ChatMessages.Add(new Chat(){
-                CreateDate = DateTime.Now,
+                CreateDate = DateTimeOffset.UtcNow,
                 CreatedByUser = "server",
                 Message = finalMessage
             });

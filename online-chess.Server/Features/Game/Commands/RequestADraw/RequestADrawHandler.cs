@@ -47,7 +47,7 @@ namespace online_chess.Server.Features.Game.Commands.RequestADraw
             );
 
             room.ChatMessages.Add(new Models.Play.Chat(){
-                CreateDate = DateTime.Now,
+                CreateDate = DateTimeOffset.UtcNow,
                 CreatedByUser = "server",
                 Message = $"{request.IdentityUserName} offered a draw."
             });

@@ -12,7 +12,7 @@ namespace online_chess.Server.Models.Profile
         public bool IsColorWhite { get; set; }
         public GameType GameType { get; set; }
         public string OpponentName { get; set; }
-        public DateTime GameDate { get; set; }
+        public DateTimeOffset GameDate { get; set; }
         public string Remarks { get; set; }
         public string? ProfileImageUrl { get; set; }
     }

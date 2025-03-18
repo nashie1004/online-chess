@@ -38,7 +38,7 @@ namespace online_chess.Server.Features.Lobby.Commands.AddToQueue
             _gameRoomService.Add(roomKey, new GameQueue()
             {
                 GameKey = roomKey,
-                CreateDate = DateTime.Now,
+                CreateDate = DateTimeOffset.UtcNow,
                 GameType = request.GameType,
                 GamePlayStatus = GamePlayStatus.WaitingForPlayers,
                 CreatedByUserInfo = new Models.Play.PlayerInfo()

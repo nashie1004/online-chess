@@ -6,8 +6,8 @@ namespace online_chess.Server.Models.Entities
     public class GameHistory
     {
         public long GameHistoryId { get; set; }
-        public DateTime GameStartDate { get; set; }
-        public DateTime GameEndDate { get; set; }
+        public DateTimeOffset GameStartDate { get; set; }
+        public DateTimeOffset GameEndDate { get; set; }
 
         public long PlayerOneId { get; set; }
         public Color PlayerOneColor { get; set; }

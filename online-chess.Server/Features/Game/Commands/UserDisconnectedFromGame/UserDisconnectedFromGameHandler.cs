@@ -53,7 +53,7 @@ namespace online_chess.Server.Features.Game.Commands.UserDisconnectedFromGame
             }
 
             ongoingGameRoom.ChatMessages.Add(new Models.Play.Chat(){
-                CreateDate = DateTime.Now,
+                CreateDate = DateTimeOffset.UtcNow,
                 CreatedByUser = "server",
                 Message = $"{request.IdentityUserName} disconnected from the game."
             });

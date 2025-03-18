@@ -60,7 +60,7 @@ namespace online_chess.Server.Features.Lobby.Commands.JoinRoom
                 CreateDate = queue.CreateDate,
                 GameType = queue.GameType,
                 GamePlayStatus = GamePlayStatus.Ongoing,
-                GameStartedAt = DateTime.Now,
+                GameStartedAt = DateTimeOffset.UtcNow,
                 CreatedByUserInfo = queue.CreatedByUserInfo,
                 JoinByUserInfo = new Models.Play.PlayerInfo()
                 {

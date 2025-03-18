@@ -23,7 +23,7 @@ namespace online_chess.Server.Features.Game.Commands.AddMessageToRoom
             var room = _gameRoomService.GetOne(request.GameRoomKeyString);
             
             room?.ChatMessages.Add(new Models.Play.Chat(){
-                CreateDate = DateTime.Now,
+                CreateDate = DateTime.UtcNow,
                 CreatedByUser = request.IdentityUserName,
                 Message = request.Message
             });

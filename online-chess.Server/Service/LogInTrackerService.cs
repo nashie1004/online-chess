@@ -4,7 +4,7 @@ namespace online_chess.Server.Service
 {
     public class LogInTrackerService
     {
-        private static ConcurrentDictionary<string, DateTime> _authenticatedUsers = new();
+        private static ConcurrentDictionary<string, DateTimeOffset> _authenticatedUsers = new();
 
         public LogInTrackerService()
         {
@@ -13,17 +13,17 @@ namespace online_chess.Server.Service
 
         public bool Add(string identityUserName)
         {
-            return _authenticatedUsers.TryAdd(identityUserName, DateTime.Now);
+            return _authenticatedUsers.TryAdd(identityUserName, DateTimeOffset.UtcNow);
         }
 
         public bool Remove(string identityUserName)
         {
-            return _authenticatedUsers.TryRemove(identityUserName, out DateTime res);
+            return _authenticatedUsers.TryRemove(identityUserName, out DateTimeOffset res);
         }
 
         public bool AlreadyExists(string identityUserName) 
         {
-            return _authenticatedUsers.TryGetValue(identityUserName, out DateTime res);
+            return _authenticatedUsers.TryGetValue(identityUserName, out DateTimeOffset res);
         }
 
     }
