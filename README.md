@@ -4,7 +4,7 @@ A simple real time 2-player chess web application created with Phaser, React, Ty
 You can view a demo [here](https://online-chess.xyz) hosted on AWS EC2.
 
 <p align="center">
-    <img src="https://raw.githubusercontent.com/nashie1004/online-chess/refs/heads/master/online-chess.client/public/live-preview.gif" width="400" height="300" style="object-fit: cover;" alt="preview-img" />
+    <img src="https://raw.githubusercontent.com/nashie1004/online-chess/refs/heads/master/online-chess.client/public/live-preview.gif" width="480" height="219" style="object-fit: cover;" alt="preview-img" />
 </p>
 
 ## Installation (Local)
