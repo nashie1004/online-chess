@@ -32,7 +32,7 @@ export default function Chatbar() {
               {gameState.messages.map((item, idx) => {
                 return <tr key={idx}>
                   <td className={idx % 2 === 0 ? "stripe-td" : ""}>
-                    <b>{item.createdByUser}:</b> {item.message} - <small>{moment(item.createDate).fromNow()}</small>
+                    <b>{item.createdByUser}:</b> {item.message} - <small>{moment(item.createDate).local().fromNow()}</small>
                   </td>
                 </tr>
               })}

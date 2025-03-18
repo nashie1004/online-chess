@@ -79,7 +79,7 @@ export default function LobbyTable({
                         </td>
                         <td>{gameTypeDisplay(item.value.gameType)}</td>
                         <td>{colorOptionsDisplay(item.value.createdByUserInfo.color)}</td>
-                        <td>{moment(item.value.createDate).fromNow()}</td>
+                        <td>{moment(item.value.createDate).local().fromNow()}</td>
                     </tr>
                 })}
             </tbody>
@@ -131,7 +131,7 @@ export default function LobbyTable({
                         <p><b>Connection Id:</b> {selectedRoom.key}</p>
                         <p><b>Created By User:</b> {selectedRoom.value.createdByUserInfo.userName}</p>
                         <p><b>Game Type:</b> {gameTypeDisplay(selectedRoom.value.gameType)}</p>
-                        <p><b>Create Date Time:</b> {moment(selectedRoom.value.createDate).fromNow()}</p>
+                        <p><b>Create Date Time:</b> {moment(selectedRoom.value.createDate).local().fromNow()}</p>
                     </>}
                 </div>
                 <div className="m-footer">

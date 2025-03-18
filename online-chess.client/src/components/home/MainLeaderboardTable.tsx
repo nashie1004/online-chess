@@ -60,7 +60,7 @@ export default function MainLeaderboardTable(){
             <th className="col-1">
             <i className="bi bi-bar-chart-fill" style={{ color: "#FFFFFF",  }}></i>
             </th>
-            <th className="col-3">
+            <th className="col-4">
               <i className="bi bi-person-fill" style={{color: "#FFFFFF"}}></i> Players
             </th>
             <th className="col-1">
@@ -78,9 +78,9 @@ export default function MainLeaderboardTable(){
             <th className="col-2">
               <i className="bi bi-calendar2-fill" style={{color: "#FFFFFF"}}></i> Join Date 
             </th>
-            <th className="col-2">
+            {/* <th className="col-2">
               <i className="bi bi-calendar2-fill" style={{color: "#FFFFFF"}}></i> Last Game Date 
-            </th>
+            </th> */}
           </tr>
         </thead>
         <tbody>
@@ -120,10 +120,10 @@ export default function MainLeaderboardTable(){
                 <td className="table-win">{item.wins === 0 ? "-" : item.wins}</td>
                 <td className="table-lose">{item.loses === 0 ? "-" : item.loses}</td>
                 <td className="table-draw">{item.draws === 0 ? "-" : item.draws}</td>
-                <td>{moment(item.sinceDate).fromNow()}</td>
-                <td>{moment("1/1/2000").isBefore(moment(item.lastGameDate)) ? 
-              moment(item.lastGameDate).fromNow() : ""  
-              }</td>
+                <td>{moment(item.sinceDate).local().fromNow()}</td>
+                {/* <td>{moment("1/1/2000").local().isBefore(moment(item.lastGameDate).local()) ? 
+              moment(item.lastGameDate).local().fromNow() : ""  
+              }</td> */}
               </tr>
             })}
           </>}

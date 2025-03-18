@@ -91,9 +91,7 @@ export default function BlitzTable(){
 
               return <tr key={idx}>
                 <td>
-                  <div 
-                    className={rankColor}
-                  >
+                  <div className={rankColor}>
                     #{idx + 1}
                   </div>
                 </td>
@@ -101,7 +99,7 @@ export default function BlitzTable(){
                 <td className="table-win">{item.wins === 0 ? "0" : item.wins}</td>
                 <td className="table-lose">{item.loses === 0 ? "0" : item.loses}</td>
                 <td className="table-draw">{item.draws === 0 ? "0" : item.draws}</td>
-                <td>{moment(item.lastGameDate).fromNow()}</td>
+                <td>{moment(item.lastGameDate).local().fromNow()}</td>
               </tr>
             })}
           </>}

@@ -93,7 +93,7 @@ export default function ProfileTable(){
             <td>{gameStatusDisplay(item.gameStatus)}</td>
             <td>{item.isColorWhite ? "White" : "Black"}</td>
             <td>{gameTypeDisplay(item.gameType)}</td>
-            <td>{moment(item.gameDate).fromNow()}</td>
+            <td>{moment(item.gameDate).local().fromNow()}</td>
             <td>{item.remarks}</td>
           </tr>
         })}
