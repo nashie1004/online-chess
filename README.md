@@ -4,32 +4,29 @@ You can view a demo [here](https://online-chess.xyz) hosted on AWS EC2.
 
 ## Installation (Local)
 0. Remove the Google Analytics tag in `/online-chess.client/index.html`
-1. Update the `appsettings.json` AllowedOrigins value:
-```
-"AllowedOrigins": "https://localhost:5000"
-```
-2. Run the web app:
-```
+1. Run the web app:
+```bash
 cd online-chess.client 
 npm run dev # Should be running on https://localhost:5000/
 
+# new terminal
 cd online-chess.Server
 dotnet watch # Should be running on https://localhost:44332/
 ```
 
 ## Installation (Deployment)
-
-1. Update the `.env.production` file:
+0. Remove the Google Analytics tag in `/online-chess.client/index.html`
+1. Update the `/online-chess.client/.env.production` file:
 ```
 VITE_API_URL={{your-server}}
 ```
-2. Update the `appsettings.json` AllowedOrigins value:
+2. Update the `/online-chess.Server/appsettings.json` AllowedOrigins value:
 ```
 "AllowedOrigins": "{{your-server}}"
 ```
 3. Publish and start:
-```
-dotnet publish --self-contained false
+```bash
+dotnet publish --runtime linux-x64 --self-contained false # depends on your OS
 dotnet online-chess.Server.dll
 ```
 
@@ -39,7 +36,6 @@ All [board](https://github.com/lichess-org/lila/blob/master/public/images/board/
 ## Remaining Todos (By Priority)
 - [ ] auto renew SSL
 - [ ] add profile image -- encryption
-- [ ] fix datetime
 - [ ] bug on offer draw
 - [ ] fifty move rule check
 - [ ] show proper chess move notation
