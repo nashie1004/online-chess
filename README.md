@@ -1,6 +1,11 @@
+
 # Online-Chess
 A simple real time 2-player chess web application created with Phaser, React, Typescript, Bootstrap, ASP.NET Core SignalR and Identity, and SQLite. Uses .NET 9 and React 18.
 You can view a demo [here](https://online-chess.xyz) hosted on AWS EC2.
+
+<p align="center">
+    <img src="https://raw.githubusercontent.com/nashie1004/online-chess/refs/heads/master/online-chess.client/public/live-preview.gif" width="400" height="300" style="object-fit: cover;" alt="preview-img" />
+</p>
 
 ## Installation (Local)
 0. Remove the Google Analytics tag in `/online-chess.client/index.html`
@@ -41,11 +46,11 @@ All [board](https://github.com/lichess-org/lila/blob/master/public/images/board/
 - [ ] show proper chess move notation
 - [ ] proper elo
 - [ ] 3 fold repetition
+- [ ] queen side castling bug
 - [ ] responsive ui / resizeable board [Phaser](https://phaser.io/examples/v3.85.0/scalemanager/view/manually-resize)
 - [ ] some framer motion?, more sounds and some phaser effects
 - [ ] use redis
 - [ ] fix types
-- [ ] clean code
 - [ ] emoji to chatbox
 - [ ] google oauth
 - [ ] optimize other functions using nested loop, pass piece coordinates instead

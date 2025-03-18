@@ -29,8 +29,8 @@ export default function Register() {
     formState: { errors, isSubmitting }
   } = useForm<FormFields>({
     defaultValues: {
-      userName: "sup3rADMIN",
-      password: "sup3rADMIN@!!0_P@ssw0rd",
+      userName: "",
+      password: "",
     },
     resolver: zodResolver(schema)
   })

@@ -41,6 +41,13 @@ nav #page-title{
 nav .nav-link-active{
   color: var(--text-5) !important;
 }
+.form-footer .nav-link{
+  /* color: var(--text-2); */
+  text-decoration: none;
+}
+  .form-footer .nav-link:hover{
+  color: var(--text-1);
+}
 body{
   background-color: var(--bg-1)  !important;
 }
