@@ -126,9 +126,9 @@ export default function InitializerContext(
    * This is the actual initializer of our app
    */
   useEffect(() => {
-    const controller = new AbortController();
-    const signal = controller.signal;
-    
+
+    if (!initialize) return;
+
     async function init(){
       // 0. clear state
       setInitialize(false);
@@ -146,9 +146,7 @@ export default function InitializerContext(
 
     }
 
-    if (initialize){
-      init();
-    }
+    init();
 
     return () => {
       removeHandler(MAIN_PAGE_HANDLERS.ON_GET_USER_CONNECTION_ID);
@@ -157,7 +155,6 @@ export default function InitializerContext(
       removeHandler(MAIN_PAGE_HANDLERS.ON_HAS_A_GAME_IN_PROGRESS);
       removeHandler(MAIN_PAGE_HANDLERS.ON_GENERIC_ERROR);
       stopConnection();
-      controller.abort();
     }
   }, [initialize]);
 

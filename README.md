@@ -8,7 +8,6 @@ You can view a demo [here](https://online-chess.xyz) hosted on AWS EC2.
 </p>
 
 ## Installation (Local)
-0. Remove the Google Analytics tag in `/online-chess.client/index.html`
 1. Run the web app:
 ```bash
 cd online-chess.client 
@@ -20,7 +19,6 @@ dotnet watch # Should be running on https://localhost:44332/
 ```
 
 ## Installation (Deployment)
-0. Remove the Google Analytics tag in `/online-chess.client/index.html`
 1. Update the `/online-chess.client/.env.production` file:
 ```
 VITE_API_URL={{your-server}}
@@ -55,3 +53,4 @@ All [board](https://github.com/lichess-org/lila/blob/master/public/images/board/
 - [ ] google oauth
 - [ ] optimize other functions using nested loop, pass piece coordinates instead
 - [ ] lazy load 
+- [ ] lack of material resulting in a draw

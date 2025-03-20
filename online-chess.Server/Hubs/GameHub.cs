@@ -231,28 +231,6 @@ namespace online_chess.Server.Hubs
             });
         }
 
-        /*
-        [Authorize]
-        public async Task Checkmate()
-        {
-            await _mediator.Send(new CheckmateRequest()
-            {
-                UserConnectionId = Context.ConnectionId,
-                IdentityUserName = Context.User?.Identity?.Name,
-            });
-        }
-
-        [Authorize]
-        public async Task Stalemate()
-        {
-            await _mediator.Send(new StalemateRequest()
-            {
-                UserConnectionId = Context.ConnectionId,
-                IdentityUserName = Context.User?.Identity?.Name,
-            });
-        }
-        */
-
         [Authorize]
         public async Task UserDisconnectedFromGame()
         {

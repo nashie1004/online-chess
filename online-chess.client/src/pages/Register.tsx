@@ -69,7 +69,7 @@ export default function Register() {
             <h1 className="hstack justify-content-center">
               <i className="bi bi-star-fill pe-2" style={{color: "#FFEB3B"}}></i>
               <span>
-                ONLINE-CHESS.COM
+                ONLINE-CHESS.XYZ
               </span>
             </h1>
             <div className="form-body mt-4">

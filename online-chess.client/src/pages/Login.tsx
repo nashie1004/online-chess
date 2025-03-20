@@ -74,7 +74,7 @@ export default function Login() {
             <h1 className="hstack justify-content-center">
               <i className="bi bi-emoji-sunglasses-fill pe-2" style={{color: "#FFEB3B"}}></i>
               <span>
-                ONLINE-CHESS.COM
+                ONLINE-CHESS.XYZ
               </span>
             </h1>
             <div className="form-body mt-4">

@@ -141,12 +141,12 @@ ul.table-pagination{
   padding: 0;
   margin: 0;
   /* padding-top: 1rem; */
-  cursor: pointer;
   gap: .5rem;
   height: 35px;
   justify-content: left;
 }
 .table-pagination li{
+  cursor: pointer;
   background-color: var(--bg-1);
   list-style-type: none;
   background-color: var(--btn-2);
@@ -156,7 +156,7 @@ ul.table-pagination{
   align-items: center;
   border-radius: .35rem;
 }
-.table-pagination li:hover{
+.table-pagination li:hover:not(.page-no){
   opacity: .8;
 }
 .table-pagination .page-no{
@@ -164,6 +164,7 @@ ul.table-pagination{
   color: var(--text-2);
   padding-inline: 1rem;
   font-weight: 500;
+  cursor: default;
 }
 form {
   /* background-color: var(--bg-1) !important; */

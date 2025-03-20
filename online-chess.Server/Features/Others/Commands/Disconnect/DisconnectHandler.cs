@@ -87,15 +87,16 @@ namespace online_chess.Server.Features.Others.Commands.Disconnect
                     ongoingGameRoom.GamePlayStatus = GamePlayStatus.JoinerDisconnected;
                 }
 
-                ongoingGameRoom.ChatMessages.Add(new Models.Play.Chat(){
-                    CreateDate = DateTimeOffset.UtcNow,
-                    CreatedByUser = "server",
-                    Message = $"{request.IdentityUserName} disconnected from the game."
-                });
-
-                await _hubContext.Clients.Group(ongoingGameRoom.GameKey.ToString())
-                    .SendAsync(RoomMethods.onReceiveMessages, ongoingGameRoom.ChatMessages);
             }
+            
+            ongoingGameRoom.ChatMessages.Add(new Models.Play.Chat(){
+                CreateDate = DateTimeOffset.UtcNow,
+                CreatedByUser = "server",
+                Message = $"{request.IdentityUserName} disconnected from the game."
+            });
+
+            await _hubContext.Clients.Group(ongoingGameRoom.GameKey.ToString())
+                .SendAsync(RoomMethods.onReceiveMessages, ongoingGameRoom.ChatMessages);
 
             return Unit.Value;
         }

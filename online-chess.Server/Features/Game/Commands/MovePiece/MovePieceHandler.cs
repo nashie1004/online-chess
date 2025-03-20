@@ -142,12 +142,8 @@ namespace online_chess.Server.Features.Game.Commands.MovePiece
 
             var room = timerState.GameRoom;
             var creatorsTurn = timerState.CreatorsTurn;
-            var timer = _timerService.GetTimer(room.GameKey); 
+            var (creatorSecondsLeft, joinerSecondsLeft) = _timerService.GetTimer(room.GameKey); 
             var scope = timerState.ServiceScope;
-
-            // cancel previous timer and start a new timer
-            double creatorSecondsLeft = timer.Item1;
-            double joinerSecondsLeft = timer.Item2;
 
             var playerSecondsLeft = creatorsTurn ? creatorSecondsLeft : joinerSecondsLeft;
 
