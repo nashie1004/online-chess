@@ -53,14 +53,12 @@ namespace online_chess.Server.Features.Game.Commands.SetPromotionPreference
 
             playerInfoToUpdate.PawnPromotionPreference = request.UserPreference;
 
-            var retVal = new
-            {
-                playerName = playerInfoToUpdate.UserName,
-                preference = playerInfoToUpdate.PawnPromotionPreference
-            };
-
             await _hubContext.Clients.Group(request.GameRoomKeyString)
-                .SendAsync(RoomMethods.onSetPromotionPreference, retVal);
+                .SendAsync(RoomMethods.onSetPromotionPreference, new
+                {
+                    playerName = playerInfoToUpdate.UserName,
+                    preference = playerInfoToUpdate.PawnPromotionPreference
+                });
 
             return Unit.Value;
         }

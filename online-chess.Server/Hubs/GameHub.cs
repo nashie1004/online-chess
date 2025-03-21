@@ -20,8 +20,6 @@ using online_chess.Server.Features.Auth.Queries.GetGameHistory;
 using online_chess.Server.Features.Leaderboard.Queries.GetDefaultLeaderboard;
 using online_chess.Server.Features.Leaderboard.Queries.GetGameTypeList;
 using online_chess.Server.Features.Game.Queries.HasAGameInProgress;
-using online_chess.Server.Features.Game.Commands.Checkmate;
-using online_chess.Server.Features.Game.Commands.Stalemate;
 using online_chess.Server.Features.Game.Commands.UserDisconnectedFromGame;
 using online_chess.Server.Features.Others.Commands.Connect;
 using online_chess.Server.Features.Others.Commands.Disconnect;

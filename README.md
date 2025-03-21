@@ -54,3 +54,4 @@ All [board](https://github.com/lichess-org/lila/blob/master/public/images/board/
 - [ ] optimize other functions using nested loop, pass piece coordinates instead
 - [ ] lazy load 
 - [ ] lack of material resulting in a draw
+- [ ] en passant original square not movable by other piece

@@ -307,13 +307,12 @@ namespace online_chess.Server.Service
 
             await _hubContext.Clients.Group(room.GameKey.ToString()).SendAsync(RoomMethods.onReceiveMessages, room.ChatMessages);
             
-            var gameOverRetVal = new {
+            await _hubContext.Clients.Group(room.GameKey.ToString()).SendAsync(RoomMethods.onGameOver, new
+            {
                 finalMessage
-                , finalGameStatus
-                , creatorIdentityName = creator.UserName 
-            };
-            
-            await _hubContext.Clients.Group(room.GameKey.ToString()).SendAsync(RoomMethods.onGameOver, gameOverRetVal);
+                ,finalGameStatus
+                ,creatorIdentityName = creator.UserName
+            });
 
             room.TimerId?.Dispose();
 

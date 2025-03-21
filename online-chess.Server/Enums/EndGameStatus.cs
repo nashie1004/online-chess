@@ -14,6 +14,7 @@
         DrawByStalemate,
         DrawBothPlayerDisconnected,
         DrawBy50MoveRule,
-        DrawByThreeFoldRepetition        
+        DrawByThreeFoldRepetition,
+        DrawByInsufficientMaterial
     }
 }

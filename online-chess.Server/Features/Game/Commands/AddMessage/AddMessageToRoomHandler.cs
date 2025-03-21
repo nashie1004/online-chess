@@ -19,16 +19,20 @@ namespace online_chess.Server.Features.Game.Commands.AddMessageToRoom
 
         public async Task<Unit> Handle(AddMessageToRoomRequest request, CancellationToken cancellationToken)
         {
-            // not a valid guid
             var room = _gameRoomService.GetOne(request.GameRoomKeyString);
+
+            if (room == null || string.IsNullOrEmpty(request.IdentityUserName))
+            {
+                return Unit.Value;
+            }
             
-            room?.ChatMessages.Add(new Models.Play.Chat(){
-                CreateDate = DateTime.UtcNow,
+            room.ChatMessages.Add(new Models.Play.Chat(){
+                CreateDate = DateTimeOffset.UtcNow,
                 CreatedByUser = request.IdentityUserName,
                 Message = request.Message
             });
 
-            await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync(RoomMethods.onReceiveMessages, room?.ChatMessages);
+            await _hubContext.Clients.Group(request.GameRoomKeyString).SendAsync(RoomMethods.onReceiveMessages, room.ChatMessages);
 
             return Unit.Value;
         }

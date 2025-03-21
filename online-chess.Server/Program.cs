@@ -46,7 +46,7 @@ builder.Services.AddSingleton<UserConnectionService>();
 builder.Services.AddSingleton<TimerService>();
 builder.Services.AddSingleton<LogInTrackerService>();
 builder.Services.AddScoped<IFileStorageService, LocalFileStorageService>();
-//builder.Services.AddAWS // TODO: add aws s3 option
+//builder.Services.addaw// TODO: add aws s3 option
 builder.Services.Configure<FormOptions>(opt => {
     opt.MultipartBodyLengthLimit = 2 * 1024 * 1024; // 2mb
 });
