@@ -1,3 +1,4 @@
+using Amazon.S3;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
@@ -47,6 +48,7 @@ builder.Services.AddSingleton<TimerService>();
 builder.Services.AddSingleton<LogInTrackerService>();
 builder.Services.AddScoped<IFileStorageService, LocalFileStorageService>();
 //builder.Services.addaw// TODO: add aws s3 option
+builder.Services.AddAWSService<IAmazonS3>();
 builder.Services.Configure<FormOptions>(opt => {
     opt.MultipartBodyLengthLimit = 2 * 1024 * 1024; // 2mb
 });
