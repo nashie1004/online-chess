@@ -1,4 +1,5 @@
 ﻿using Amazon.S3;
+using Amazon.S3.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,36 +14,83 @@ namespace online_chess.Server.Controllers
 
         public S3FileUploadController(
             IAmazonS3 s3Client
-            , string bucketName
+            ,IConfiguration configuration
             )
         {
             _s3Client = s3Client;
-            _bucketName = bucketName;
+            _bucketName = configuration["S3:BucketName"] ?? "your-s3-bucket";
         }
 
 
         [HttpPost]
         [Route("upload")]
-        [RequestSizeLimit(2 * 1024 * 1024)]
-        public async Task<IActionResult> Upload([FromForm] IFormFile file)
+        //[RequestSizeLimit(2 * 1024 * 1024)]
+        public async Task<IActionResult> Upload(IFormFile file)
         {
-            if (file == null || file.Length <= 0)
+            try
             {
-                return BadRequest("File is empty");
+                if (file == null || file.Length <= 0)
+                {
+                    return BadRequest("File is empty");
+                }
+
+                var key = Guid.NewGuid().ToString();
+                using var stream = file.OpenReadStream();
+
+                var objectRequest = new PutObjectRequest
+                {
+                    BucketName = _bucketName,
+                    Key = $"profile-images/{key}",
+                    InputStream = stream,
+                    ContentType = file.ContentType,
+                    Metadata = 
+                    {
+                        ["fileName"] = file.FileName
+                    }
+                };
+
+                var response = await _s3Client.PutObjectAsync(objectRequest);
+
+                if (response.HttpStatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    return Ok(key);
+                }
+
+                return StatusCode(500, "Unable to upload file");
+            } 
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
             }
-
-            //_s3Client.
-
-            return Ok();
         }
 
 
         [HttpGet]
         [Route("get-file")]
-        public async Task<IActionResult> GetFile([FromQuery] string fileName)
+        public async Task<IActionResult> GetFile([FromQuery] string key)
         {
-            //_s3Client.dow
-            return Ok();
+            try
+            {
+                var objectRequest = new GetObjectRequest
+                {
+                    BucketName = _bucketName,
+                    Key = key
+                };
+            
+                var response = await _s3Client.GetObjectAsync(objectRequest);
+
+                if (response == null)
+                {
+                    return NotFound();
+                }
+
+                //return Ok(response);
+                return File(response.ResponseStream, response.Headers.ContentType);
+            } 
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
         }
 
         [HttpDelete]
