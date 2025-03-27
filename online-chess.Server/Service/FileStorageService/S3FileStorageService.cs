@@ -1,4 +1,7 @@
 ﻿using Amazon.S3;
+using Amazon.S3.Model;
+using Microsoft.AspNetCore.Identity;
+using online_chess.Server.Models.Entities;
 
 namespace online_chess.Server.Service.FileStorageService
 {
@@ -6,35 +9,134 @@ namespace online_chess.Server.Service.FileStorageService
     {
         private readonly IAmazonS3 _s3Client;
         private readonly string _bucketName;
-        private readonly string _region;
+        private readonly IServiceProvider _serviceProvider;
+        private readonly List<string> _validFormats = new List<string>() { ".jpg", ".jpeg", ".png", ".gif", ".svg" };
 
-        public S3FileStorageService(IAmazonS3 s3Client, IConfiguration configuration)
+        public S3FileStorageService(
+            IAmazonS3 s3Client
+            , IConfiguration configuration
+            , IServiceProvider serviceProvider
+        )
         {
             _s3Client = s3Client;
-            _bucketName = configuration["AWSS3:BucketName"] ?? string.Empty;
-            _region = configuration["AWSS3:Region"] ?? string.Empty;
+            _bucketName = configuration["S3:BucketName"] ?? "your-s3-bucket";
+            _serviceProvider = serviceProvider;
         }
 
-        public bool SaveFile(byte[] content, string fileName)
+        public async Task<(bool success, string errorMessage)> SaveFile(IFormFile file)
         {
-            /*
-            _s3Client.AbortMultipartUploadAsync(new AbortMultipartUploadRequest
+            try
+            {
+                if (file == null || file.Length <= 0)
+                {
+                    return (false, "File is empty");
+                }
+
+                if (file.Length > (5 * 1024 * 1024))
+                {
+                    return (false, "Max file size is 5mb");
+                }
+
+                string fileExtension = Path.GetExtension(file.FileName);
+
+                if (
+                    string.IsNullOrEmpty(fileExtension)
+                    || !_validFormats.Contains(fileExtension.ToLower())
+                    )
+                {
+                    return (false, "Valid file formats are " + string.Join(',', _validFormats));
+                }
+
+                var newGuid = Guid.NewGuid().ToString();
+                var key = $"profile-images/{newGuid}";
+                using var stream = file.OpenReadStream();
+
+                var objectRequest = new PutObjectRequest
+                {
+                    BucketName = _bucketName,
+                    Key = key,
+                    InputStream = stream,
+                    ContentType = file.ContentType,
+                    Metadata =
+                    {
+                        ["fileName"] = file.FileName
+                    }
+                };
+
+                var response = await _s3Client.PutObjectAsync(objectRequest);
+
+                if (response.HttpStatusCode != System.Net.HttpStatusCode.OK)
+                {
+                    return (false, $"Unable to upload file in S3.");
+                }
+
+                using (var scope = _serviceProvider.CreateScope())
+                {
+                    var identityDbContext = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+
+                    var userToUpdate = await identityDbContext.FindByNameAsync("IdentityUserNameHere");
+
+                    if (userToUpdate == null)
+                    {
+                        await _s3Client.DeleteObjectAsync(new DeleteObjectRequest
+                        {
+                            BucketName = _bucketName,
+                            Key = key
+                        });
+
+                        return (false, "No user found to save the profile image in.");
+                    }
+
+                    userToUpdate.ProfileImageUrl = key;
+
+                    await identityDbContext.UpdateAsync(userToUpdate);
+
+                    return (true, string.Empty);
+                }
+            }
+            catch (Exception e)
+            {
+                return (false, e.Message);
+            }
+        }
+
+        /**
+         * Returns true if delete is successful
+         */
+        public async Task<bool> RemoveFile(string key)
+        {
+            var res = await _s3Client.DeleteObjectAsync(new DeleteObjectRequest
             {
                 BucketName = _bucketName,
-                Key = fileName
+                Key = key
             });
-            */
-            throw new NotImplementedException();
+
+            return res.HttpStatusCode == System.Net.HttpStatusCode.OK;
         }
 
-        public bool RemoveFile(string fileName)
+        public async Task<(bool exists, Stream? content, string contentType)> GetFile(string key)
         {
-            throw new NotImplementedException();
-        }
+            try
+            {
+                var objectRequest = new GetObjectRequest
+                {
+                    BucketName = _bucketName,
+                    Key = key
+                };
 
-        public string GetFile(string fileName)
-        {
-            throw new NotImplementedException();
+                var response = await _s3Client.GetObjectAsync(objectRequest);
+
+                if (response == null)
+                {
+                    return (false, null, string.Empty);
+                }
+
+                return (true, response.ResponseStream, response.Headers.ContentType);
+            }
+            catch (Exception e)
+            {
+                return (false, null, string.Empty);
+            }
         }
     }
 }
