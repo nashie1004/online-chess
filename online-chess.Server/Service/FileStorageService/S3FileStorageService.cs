@@ -23,18 +23,18 @@ namespace online_chess.Server.Service.FileStorageService
             _serviceProvider = serviceProvider;
         }
 
-        public async Task<(bool success, string errorMessage)> SaveFile(IFormFile file)
+        public async Task<(bool success, string errorMessage, string key)> SaveFile(IFormFile file)
         {
             try
             {
                 if (file == null || file.Length <= 0)
                 {
-                    return (false, "File is empty");
+                    return (false, "File is empty", string.Empty);
                 }
 
                 if (file.Length > (5 * 1024 * 1024))
                 {
-                    return (false, "Max file size is 5mb");
+                    return (false, "Max file size is 5mb", string.Empty);
                 }
 
                 string fileExtension = Path.GetExtension(file.FileName);
@@ -44,7 +44,7 @@ namespace online_chess.Server.Service.FileStorageService
                     || !_validFormats.Contains(fileExtension.ToLower())
                     )
                 {
-                    return (false, "Valid file formats are " + string.Join(',', _validFormats));
+                    return (false, "Valid file formats are " + string.Join(',', _validFormats), string.Empty);
                 }
 
                 var newGuid = Guid.NewGuid().ToString();
@@ -67,7 +67,7 @@ namespace online_chess.Server.Service.FileStorageService
 
                 if (response.HttpStatusCode != System.Net.HttpStatusCode.OK)
                 {
-                    return (false, $"Unable to upload file in S3.");
+                    return (false, $"Unable to upload file in S3.", string.Empty);
                 }
 
                 using (var scope = _serviceProvider.CreateScope())
@@ -84,19 +84,19 @@ namespace online_chess.Server.Service.FileStorageService
                             Key = key
                         });
 
-                        return (false, "No user found to save the profile image in.");
+                        return (false, "No user found to save the profile image in.", string.Empty);
                     }
 
                     userToUpdate.ProfileImageUrl = key;
 
                     await identityDbContext.UpdateAsync(userToUpdate);
 
-                    return (true, string.Empty);
+                    return (true, string.Empty, key);
                 }
             }
             catch (Exception e)
             {
-                return (false, e.Message);
+                return (false, e.Message, string.Empty);
             }
         }
 
@@ -121,7 +121,7 @@ namespace online_chess.Server.Service.FileStorageService
                 var objectRequest = new GetObjectRequest
                 {
                     BucketName = _bucketName,
-                    Key = key
+                    Key = $"profile-images/{key}"
                 };
 
                 var response = await _s3Client.GetObjectAsync(objectRequest);

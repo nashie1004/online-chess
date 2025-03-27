@@ -20,11 +20,12 @@ namespace online_chess.Server.Controllers
         }
 
         [HttpGet("get-image")]
+        [ResponseCache(Duration = 60, Location = ResponseCacheLocation.Any, NoStore = false, VaryByQueryKeys = new string[] { "FileName" })]
         public async Task<IActionResult> GetImage([FromQuery] GetProfileImageRequest req)
         {
             var result = await _mediator.Send(req);
             if (result.NotFound) return NotFound();
-            return File(result.ImgInBytes, result.MimeType, result.FileName);
+            return File(result.Content, result.ContentMimeType);
         }
 
         // for testing purposes

@@ -39,7 +39,10 @@ builder.Services.AddIdentity<User, Role>()
 builder.Services.ConfigureApplicationCookie(cfg => {
     cfg.ExpireTimeSpan = TimeSpan.FromHours(3);
     cfg.SlidingExpiration = true;
+    cfg.Cookie.HttpOnly = true;
+    cfg.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 });
+//builder.Services.AddAuthentication().AddGoogle()
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<GameQueueService>();
@@ -48,6 +51,8 @@ builder.Services.AddSingleton<UserConnectionService>();
 builder.Services.AddSingleton<TimerService>();
 builder.Services.AddSingleton<LogInTrackerService>();
 builder.Services.AddScoped<IFileStorageService, LocalFileStorageService>();
+builder.Services.AddSingleton<S3FileStorageService>();
+builder.Services.AddResponseCaching();
 
 // Set up AWS
 var awsOptions = builder.Configuration.GetAWSOptions();
@@ -121,7 +126,9 @@ using (var scope = app.Services.CreateScope())
     identityCtx.Database.Migrate();
 }
 
+app.UseAuthentication();
 app.UseAuthorization();
+app.UseResponseCaching();
 app.MapControllers();
 
 app.UseDefaultFiles();

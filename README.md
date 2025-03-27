@@ -1,6 +1,6 @@
 
 # Online-Chess
-A simple real time 2-player chess web application created with Phaser, React, Typescript, Bootstrap, ASP.NET Core SignalR and Identity, and SQLite. Uses .NET 9 and React 18.
+A simple real time 2-player chess web application created with Phaser, React, Typescript, Bootstrap, ASP.NET Core SignalR and Identity, and SQLite. Other services used are NGINX, AWS EC2, and AWS S3. Uses .NET 9 and React 18.
 You can view a demo [here](https://online-chess.xyz) hosted on AWS EC2.
 
 <p align="center">
