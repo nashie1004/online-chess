@@ -2,6 +2,7 @@
 using Amazon.S3.Model;
 using Microsoft.AspNetCore.Identity;
 using online_chess.Server.Models.Entities;
+using System.Security.Claims;
 
 namespace online_chess.Server.Service.FileStorageService
 {
@@ -73,8 +74,10 @@ namespace online_chess.Server.Service.FileStorageService
                 using (var scope = _serviceProvider.CreateScope())
                 {
                     var identityDbContext = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+                    var accessor = scope.ServiceProvider.GetRequiredService<IHttpContextAccessor>();
+                    var userId = accessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
 
-                    var userToUpdate = await identityDbContext.FindByNameAsync("IdentityUserNameHere");
+                    var userToUpdate = await identityDbContext.FindByIdAsync(userId);
 
                     if (userToUpdate == null)
                     {
@@ -121,7 +124,7 @@ namespace online_chess.Server.Service.FileStorageService
                 var objectRequest = new GetObjectRequest
                 {
                     BucketName = _bucketName,
-                    Key = $"profile-images/{key}"
+                    Key = key
                 };
 
                 var response = await _s3Client.GetObjectAsync(objectRequest);
