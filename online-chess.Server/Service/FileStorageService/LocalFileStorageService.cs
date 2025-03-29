@@ -1,6 +1,9 @@
-﻿namespace online_chess.Server.Service.FileStorageService
+﻿
+using HeyRed.Mime;
+
+namespace online_chess.Server.Service.FileStorageService
 {
-    public class LocalFileStorageService //: IFileStorageService
+    public class LocalFileStorageService : IFileStorageService
     {
         private readonly string _uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "UploadedFiles/ProfileImages");
         private readonly List<string> _validFormats = new List<string>() { ".jpg", ".jpeg", ".png", ".gif", ".svg" };
@@ -10,7 +13,7 @@
             
         }
 
-        public async Task<(bool, string)> SaveFile(IFormFile file)
+        public async Task<(bool Success, string ErrorMessage, string Key)> SaveFile(IFormFile file)
         {
             try
             {
@@ -21,9 +24,9 @@
                     Directory.CreateDirectory(_uploadPath);
                 }
 
-                if (file.Length > (5 * 1024 * 1024))
+                if (file.Length > (2 * 1024 * 1024))
                 {
-                    return (false, "Max file size is 5mb");
+                    return (false, "Max file size is 2 mb", string.Empty);
                 }
 
                 if (
@@ -31,7 +34,7 @@
                     || !_validFormats.Contains(fileExtension.ToLower())
                     )
                 {
-                    return (false, "Valid file formats are " + string.Join(',', _validFormats));
+                    return (false, "Valid file formats are " + string.Join(',', _validFormats), string.Empty);
                 }
 
                 string fileName = Guid.NewGuid().ToString() + fileExtension;
@@ -41,11 +44,11 @@
                     await file.CopyToAsync(stream);
                 }
 
-                return (true, fileName);
+                return (true, string.Empty, fileName);
             } 
             catch (Exception e)
             {
-                return (false, e.Message);
+                return (false, e.Message, string.Empty);
             }
 
         }
@@ -64,18 +67,28 @@
             return true;
         }
 
-        public async Task<(bool exists, byte[] content, string mimeType)> GetFile(string fileName)
+        public async Task<(bool Exists, Stream? Content, string ContentType)> GetFile(string fileName)
         {
-            var filePath = Path.Combine(_uploadPath, fileName);
-
-            if (!File.Exists(filePath))
+            try
             {
-                return (false, Array.Empty<Byte>(), string.Empty);
+                var filePath = Path.Combine(_uploadPath, fileName);
+
+                if (!File.Exists(filePath))
+                {
+                    return (false, null, string.Empty);
+                }
+
+                //byte[] content = await File.ReadAllBytesAsync(filePath);
+
+                var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+                var contentType = MimeTypesMap.GetMimeType(fileName);
+
+                return (true, stream, contentType);
+            } 
+            catch (Exception e)
+            {
+                return (false, null, string.Empty);
             }
-
-            byte[] content = await File.ReadAllBytesAsync(filePath);
-
-            return (true, content, GetMimeTypeFromHeader(content));
         }
 
         private void EncryptFile()

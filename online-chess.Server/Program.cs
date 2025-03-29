@@ -50,36 +50,36 @@ builder.Services.AddSingleton<UserConnectionService>();
 builder.Services.AddSingleton<TimerService>();
 builder.Services.AddSingleton<LogInTrackerService>();
 
-// if you dont want to use S3, use LocalFileStorageService
-//builder.Services.AddScoped<IFileStorageService, LocalFileStorageService>();
-builder.Services.AddSingleton<IFileStorageService, S3FileStorageService>();
-
 builder.Services.AddResponseCaching();
 
-// Set up AWS
-var awsOptions = builder.Configuration.GetAWSOptions();
-awsOptions.Credentials = new BasicAWSCredentials(
-    builder.Configuration["AWS:AccessKeyId"], 
-    builder.Configuration["AWS:SecretAccessKey"]
-);
-awsOptions.Region = Amazon.RegionEndpoint.APSoutheast2;
+// file storage config
+bool.TryParse(builder.Configuration["UseS3"], out bool useS3);
 
-builder.Services.AddDefaultAWSOptions(awsOptions);
-builder.Services.AddAWSService<IAmazonS3>();
+if (!useS3){
+    // Set up local file storage
 
-//builder.Services.AddSingleton<IAmazonS3>(opt =>
-//{
-//    var config = new AmazonS3Config()
-//    {
-//        RegionEndpoint = Amazon.RegionEndpoint.APSoutheast2
-//    };
-//    return new AmazonS3Client(config);
-//});
+    builder.Services.AddScoped<IFileStorageService, LocalFileStorageService>();
+} 
+else {
+    // Set up AWS s3 storage
+    
+    builder.Services.AddSingleton<IFileStorageService, S3FileStorageService>();
+
+    var awsOptions = builder.Configuration.GetAWSOptions();
+    awsOptions.Credentials = new BasicAWSCredentials(
+        builder.Configuration["AWS:AccessKeyId"], 
+        builder.Configuration["AWS:SecretAccessKey"]
+    );
+    awsOptions.Region = Amazon.RegionEndpoint.APSoutheast2;
+
+    builder.Services.AddDefaultAWSOptions(awsOptions);
+    builder.Services.AddAWSService<IAmazonS3>();
+}
 
 
 //builder.Services.Configure<FormOptions>(opt => {
 //    opt.MultipartBodyLengthLimit = 2 * 1024 * 1024; // 2mb
-//});
+//});`
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 builder.Logging.AddDebug();

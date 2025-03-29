@@ -24,7 +24,12 @@ namespace online_chess.Server.Controllers
         public async Task<IActionResult> GetImage([FromQuery] GetProfileImageRequest req)
         {
             var result = await _mediator.Send(req);
-            if (result.NotFound) return NotFound();
+            
+            if (result.Content == null || result.NotFound || string.IsNullOrEmpty(result.ContentType))
+            {
+                return NotFound();
+            }
+
             return File(result.Content, result.ContentType);
         }
 

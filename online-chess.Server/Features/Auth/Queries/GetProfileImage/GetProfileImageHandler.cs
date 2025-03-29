@@ -21,10 +21,11 @@ namespace online_chess.Server.Features.Auth.Queries.GetProfileImage
             try
             {
                 var result = await _fileStorageService.GetFile(request.FileName);
+                
+                retVal.NotFound = !result.Exists;
 
                 if (!result.Exists || result.ContentType == null)
                 {
-                    retVal.NotFound = true;
                     return retVal;
                 }
 

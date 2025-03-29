@@ -9,14 +9,19 @@ namespace online_chess.Server.Features.Auth.Commands.Register
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signManager;
+        private readonly string _defaultProfileImageKey;
 
         public RegisterHandler(
-            UserManager<User> userManager,
-            SignInManager<User> signInManager
+            UserManager<User> userManager
+            , SignInManager<User> signInManager
+            , IConfiguration configuration
             )
         {
             _userManager = userManager;
             _signManager = signInManager;
+
+            bool.TryParse(configuration["UseS3"], out bool useS3);
+            _defaultProfileImageKey = useS3 ? "profile-images/DefaultProfileImage.jpg" : "DefaultProfileImage.jpg";
         }
 
         public async Task<RegisterResponse> Handle(RegisterRequest request, CancellationToken cancellationToken)
@@ -28,7 +33,7 @@ namespace online_chess.Server.Features.Auth.Commands.Register
                 var user = new User()
                 {
                     UserName = request.Username,
-                    ProfileImageUrl = "profile-images/DefaultProfileImage.jpg"
+                    ProfileImageUrl = _defaultProfileImageKey
                 };
 
                 var result = await _userManager.CreateAsync(user, request.Password);

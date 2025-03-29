@@ -20,7 +20,7 @@ namespace online_chess.Server.Service.FileStorageService
         )
         {
             _s3Client = s3Client;
-            _bucketName = configuration["S3:BucketName"] ?? "your-s3-bucket";
+            _bucketName = configuration["AWS:S3:BucketName"] ?? "your-s3-bucket";
             _serviceProvider = serviceProvider;
         }
 
