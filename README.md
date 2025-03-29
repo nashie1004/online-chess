@@ -7,9 +7,9 @@ A simple real time 2-player chess web application created with Phaser, React, Ty
 You can view a demo [here](https://online-chess.xyz).
 
 ## Installation (Local)
-1. Update the `/online-chess.Server/appsettings.json` depending if you want to use AWS S3 or local service for file storage:
+1. Update the `UseNGINX`, `UseS3` and AWS credentials on `/online-chess.Server/appsettings.json` depending on your preference. Set the `UseS3` to false if you want to use the local file storage service or true if you want to use S3.
 ```json
-"AllowedOrigins": "https://localhost:5000", /* Make sure this is pointed to our react app on port 5000 */
+"AllowedOrigins": "https://localhost:5000", 
 "UseNGINX": false,
 "UseS3": false,
 "AWS": {
@@ -32,9 +32,9 @@ dotnet watch # Should be running on https://localhost:44332/
 ```
 
 ## Installation (Deployment)
-1. Update the `/online-chess.Server/appsettings.json` depending if you want to use NGINX and AWS S3:
+1. Update the `AllowedOrigins`, `UseNGINX`, `UseS3` and AWS credentials on `/online-chess.Server/appsettings.json` depending on your preference:
 ```json
-"AllowedOrigins": "your-server" /* https://localhost:5000 for example */
+"AllowedOrigins": "https://localhost:5000"
 "UseNGINX": true,
 "UseS3": true,
 "AWS": {
