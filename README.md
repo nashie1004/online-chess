@@ -1,14 +1,27 @@
 
 # Online-Chess
-A simple real time 2-player chess web application created with Phaser, React, Typescript, Bootstrap, ASP.NET Core SignalR and Identity, and SQLite. Uses .NET 9 and React 18.
+A simple real time 2-player chess web application created with Phaser, React, Typescript, Bootstrap, ASP.NET Core SignalR and Identity, and SQLite. Other services used are NGINX, AWS EC2, and AWS S3. Uses .NET 9 and React 18.
 You can view a demo [here](https://online-chess.xyz) hosted on AWS EC2.
 
 <p align="center">
-    <img src="https://raw.githubusercontent.com/nashie1004/online-chess/refs/heads/master/online-chess.client/public/live-preview.gif" width="480" height="219" style="object-fit: cover;" alt="preview-img" />
+    <img src="https://raw.githubusercontent.com/nashie1004/online-chess/refs/heads/master/online-chess.client/public/live-preview-larger.png" width="1280" height="720" style="object-fit: cover;" alt="preview-img" />
 </p>
 
 ## Installation (Local)
-1. Run the web app:
+1. Update the `/online-chess.Server/appsettings.json` depending if you want to use NGINX and AWS S3:
+```json
+"UseNGINX": false,
+"UseS3": false,
+"AWS": {
+    "AccessKeyId": "your-value",
+    "SecretAccessKey": "your-value",
+    "Region": "ap-southeast-2",
+    "S3": {
+        "BucketName": "your-value"
+    }
+}
+```
+2. Run the web app:
 ```bash
 cd online-chess.client 
 npm run dev # Should be running on https://localhost:5000/
@@ -19,15 +32,28 @@ dotnet watch # Should be running on https://localhost:44332/
 ```
 
 ## Installation (Deployment)
-1. Update the `/online-chess.client/.env.production` file:
+1. Update the `/online-chess.Server/appsettings.json` depending if you want to use AWS S3 or local for file storage:
+```json
+"UseNGINX": true,
+"UseS3": true,
+"AWS": {
+    "AccessKeyId": "your-value",
+    "SecretAccessKey": "your-value",
+    "Region": "ap-southeast-2",
+    "S3": {
+        "BucketName": "your-value"
+    }
+}
+```
+2. Update the `/online-chess.client/.env.production` file:
 ```
 VITE_API_URL={{your-server}}
 ```
-2. Update the `/online-chess.Server/appsettings.json` AllowedOrigins value:
+3. Update the `/online-chess.Server/appsettings.json` AllowedOrigins value:
 ```
 "AllowedOrigins": "{{your-server}}"
 ```
-3. Publish and start:
+4. Publish and start:
 ```bash
 dotnet publish --runtime linux-x64 --self-contained false # depends on your OS
 dotnet online-chess.Server.dll
@@ -38,7 +64,6 @@ All [board](https://github.com/lichess-org/lila/blob/master/public/images/board/
 
 ## Remaining Todos (By Priority)
 - [ ] auto renew SSL
-- [ ] add profile image -- encryption
 - [ ] bug on offer draw
 - [ ] fifty move rule check
 - [ ] show proper chess move notation

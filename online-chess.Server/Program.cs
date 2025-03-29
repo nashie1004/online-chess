@@ -1,4 +1,5 @@
-using Microsoft.AspNetCore.Http.Features;
+using Amazon.Runtime;
+using Amazon.S3;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -37,7 +38,10 @@ builder.Services.AddIdentity<User, Role>()
 builder.Services.ConfigureApplicationCookie(cfg => {
     cfg.ExpireTimeSpan = TimeSpan.FromHours(3);
     cfg.SlidingExpiration = true;
+    cfg.Cookie.HttpOnly = true;
+    cfg.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 });
+//builder.Services.AddAuthentication().AddGoogle()
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<GameQueueService>();
@@ -45,21 +49,45 @@ builder.Services.AddSingleton<GameRoomService>();
 builder.Services.AddSingleton<UserConnectionService>();
 builder.Services.AddSingleton<TimerService>();
 builder.Services.AddSingleton<LogInTrackerService>();
-builder.Services.AddScoped<IFileStorageService, LocalFileStorageService>();
-//builder.Services.addaw// TODO: add aws s3 option
-builder.Services.Configure<FormOptions>(opt => {
-    opt.MultipartBodyLengthLimit = 2 * 1024 * 1024; // 2mb
-});
+
+builder.Services.AddResponseCaching();
+
+// file storage config
+bool.TryParse(builder.Configuration["UseS3"], out bool useS3);
+
+if (!useS3){
+    // Set up local file storage
+
+    builder.Services.AddScoped<IFileStorageService, LocalFileStorageService>();
+} 
+else {
+    // Set up AWS s3 storage
+    
+    builder.Services.AddSingleton<IFileStorageService, S3FileStorageService>();
+
+    var awsOptions = builder.Configuration.GetAWSOptions();
+    awsOptions.Credentials = new BasicAWSCredentials(
+        builder.Configuration["AWS:AccessKeyId"], 
+        builder.Configuration["AWS:SecretAccessKey"]
+    );
+    awsOptions.Region = Amazon.RegionEndpoint.APSoutheast2;
+
+    builder.Services.AddDefaultAWSOptions(awsOptions);
+    builder.Services.AddAWSService<IAmazonS3>();
+}
+
+
+//builder.Services.Configure<FormOptions>(opt => {
+//    opt.MultipartBodyLengthLimit = 2 * 1024 * 1024; // 2mb
+//});`
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 builder.Logging.AddDebug();
 
-var allowedOrigins = builder.Configuration["AllowedOrigins"];
-
 builder.Services.AddCors(opt =>
 {
     opt.AddPolicy("ReactApp", policy => policy
-    .WithOrigins(allowedOrigins)
+    .WithOrigins(builder.Configuration["AllowedOrigins"])
     .AllowAnyMethod()
     .AllowAnyHeader()
     .AllowCredentials());
@@ -98,7 +126,9 @@ using (var scope = app.Services.CreateScope())
     identityCtx.Database.Migrate();
 }
 
+app.UseAuthentication();
 app.UseAuthorization();
+app.UseResponseCaching();
 app.MapControllers();
 
 app.UseDefaultFiles();
