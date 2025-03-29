@@ -38,7 +38,6 @@ All [board](https://github.com/lichess-org/lila/blob/master/public/images/board/
 
 ## Remaining Todos (By Priority)
 - [ ] auto renew SSL
-- [ ] add profile image -- encryption
 - [ ] bug on offer draw
 - [ ] fifty move rule check
 - [ ] show proper chess move notation

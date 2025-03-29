@@ -1,6 +1,5 @@
 using Amazon.Runtime;
 using Amazon.S3;
-using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -50,8 +49,11 @@ builder.Services.AddSingleton<GameRoomService>();
 builder.Services.AddSingleton<UserConnectionService>();
 builder.Services.AddSingleton<TimerService>();
 builder.Services.AddSingleton<LogInTrackerService>();
-builder.Services.AddScoped<IFileStorageService, LocalFileStorageService>();
-builder.Services.AddSingleton<S3FileStorageService>();
+
+// if you dont want to use S3, use LocalFileStorageService
+//builder.Services.AddScoped<IFileStorageService, LocalFileStorageService>();
+builder.Services.AddSingleton<IFileStorageService, S3FileStorageService>();
+
 builder.Services.AddResponseCaching();
 
 // Set up AWS
@@ -82,12 +84,10 @@ builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 builder.Logging.AddDebug();
 
-var allowedOrigins = builder.Configuration["AllowedOrigins"];
-
 builder.Services.AddCors(opt =>
 {
     opt.AddPolicy("ReactApp", policy => policy
-    .WithOrigins(allowedOrigins)
+    .WithOrigins(builder.Configuration["AllowedOrigins"])
     .AllowAnyMethod()
     .AllowAnyHeader()
     .AllowCredentials());

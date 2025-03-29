@@ -7,19 +7,16 @@ namespace online_chess.Server.Features.Auth.Commands.UploadProfileImage
 {
     public class UploadProfileImageHandler : IRequestHandler<UploadProfileImageRequest, UploadProfileImageResponse>
     {
-        //private readonly IFileStorageService _fileStorageService;
-        private readonly S3FileStorageService _s3FileStorageService;
         private readonly UserManager<User> _userManager;
+        private readonly IFileStorageService _fileStorageService;
 
         public UploadProfileImageHandler(
-            //IFileStorageService fileStorageService
             UserManager<User> userManager
-            , S3FileStorageService s3FileStorageService
+            , IFileStorageService fileStorageService
             )
         {
-            //_fileStorageService = fileStorageService;
             _userManager = userManager;
-            _s3FileStorageService = s3FileStorageService;
+            _fileStorageService = fileStorageService;
         }
 
         public async Task<UploadProfileImageResponse> Handle(UploadProfileImageRequest request, CancellationToken cancellationToken)
@@ -40,19 +37,18 @@ namespace online_chess.Server.Features.Auth.Commands.UploadProfileImage
                 //    var prevImgRemoved = _fileStorageService.RemoveFile(user.ProfileImageUrl);
                 //}
 
-                //var result = await _fileStorageService.SaveFile(request.ProfileImageFile);
-                var result = await _s3FileStorageService.SaveFile(request.ProfileImageFile);
+                var result = await _fileStorageService.SaveFile(request.ProfileImageFile);
 
-                if (!result.success)
+                if (!result.Success)
                 {
-                    retVal.ValidationErrors.Add(result.errorMessage);
+                    retVal.ValidationErrors.Add(result.ErrorMessage);
                     return retVal;
                 }
 
-                user.ProfileImageUrl = result.key;
+                user.ProfileImageUrl = result.Key;
                 await _userManager.UpdateAsync(user);
 
-                retVal.ProfileImageUrl = result.key;
+                retVal.ProfileImageUrl = result.Key;
             }
             catch (Exception ex)
             {

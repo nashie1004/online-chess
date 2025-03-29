@@ -1,6 +1,6 @@
 ﻿namespace online_chess.Server.Service.FileStorageService
 {
-    public class LocalFileStorageService : IFileStorageService
+    public class LocalFileStorageService //: IFileStorageService
     {
         private readonly string _uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "UploadedFiles/ProfileImages");
         private readonly List<string> _validFormats = new List<string>() { ".jpg", ".jpeg", ".png", ".gif", ".svg" };

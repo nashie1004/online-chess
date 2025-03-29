@@ -25,7 +25,7 @@ namespace online_chess.Server.Controllers
         {
             var result = await _mediator.Send(req);
             if (result.NotFound) return NotFound();
-            return File(result.Content, result.ContentMimeType);
+            return File(result.Content, result.ContentType);
         }
 
         // for testing purposes

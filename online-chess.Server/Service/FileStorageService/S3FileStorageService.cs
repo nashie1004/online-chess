@@ -6,7 +6,7 @@ using System.Security.Claims;
 
 namespace online_chess.Server.Service.FileStorageService
 {
-    public class S3FileStorageService //: IFileStorageService
+    public class S3FileStorageService : IFileStorageService
     {
         private readonly IAmazonS3 _s3Client;
         private readonly string _bucketName;
@@ -24,7 +24,7 @@ namespace online_chess.Server.Service.FileStorageService
             _serviceProvider = serviceProvider;
         }
 
-        public async Task<(bool success, string errorMessage, string key)> SaveFile(IFormFile file)
+        public async Task<(bool Success, string ErrorMessage, string Key)> SaveFile(IFormFile file)
         {
             try
             {
@@ -33,9 +33,9 @@ namespace online_chess.Server.Service.FileStorageService
                     return (false, "File is empty", string.Empty);
                 }
 
-                if (file.Length > (5 * 1024 * 1024))
+                if (file.Length > (2 * 1024 * 1024))
                 {
-                    return (false, "Max file size is 5mb", string.Empty);
+                    return (false, "Max file size is 2 mb", string.Empty);
                 }
 
                 string fileExtension = Path.GetExtension(file.FileName);
@@ -117,7 +117,7 @@ namespace online_chess.Server.Service.FileStorageService
             return res.HttpStatusCode == System.Net.HttpStatusCode.OK;
         }
 
-        public async Task<(bool exists, Stream? content, string contentType)> GetFile(string key)
+        public async Task<(bool Exists, Stream? Content, string ContentType)> GetFile(string key)
         {
             try
             {

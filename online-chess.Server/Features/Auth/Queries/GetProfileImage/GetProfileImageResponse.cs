@@ -5,8 +5,7 @@ namespace online_chess.Server.Features.Auth.Queries.GetProfileImage
     public class GetProfileImageResponse : BaseResponse
     {
         public bool NotFound { get; set; } = false;
-        //public byte[] ImgInBytes { get; set; }
         public Stream? Content { get; set; }
-        public string ContentMimeType { get; set; }
+        public string ContentType { get; set; }
     }
 }
