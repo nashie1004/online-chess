@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="https://raw.githubusercontent.com/nashie1004/online-chess/refs/heads/master/online-chess.client/public/live-preview-800.png" width="770" height="400" style="object-fit: cover !important" alt="preview-img" />
+    <img src="https://raw.githubusercontent.com/nashie1004/online-chess/refs/heads/master/online-chess.client/public/live-preview-800.png"  style="object-fit: cover !important" alt="preview-img" />
 </p>
 
 # Online-Chess
