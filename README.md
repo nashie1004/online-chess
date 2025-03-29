@@ -4,11 +4,12 @@
 
 # Online-Chess
 A simple real time 2-player chess web application created with Phaser, React, Typescript, Bootstrap, ASP.NET Core SignalR and Identity, and SQLite. Other services used are NGINX, AWS EC2, and AWS S3. Uses .NET 9 and React 18.
-You can view a demo [here](https://online-chess.xyz) hosted on AWS EC2.
+You can view a demo [here](https://online-chess.xyz).
 
 ## Installation (Local)
 1. Update the `/online-chess.Server/appsettings.json` depending if you want to use AWS S3 or local service for file storage:
 ```json
+"AllowedOrigins": "https://localhost:5000", /* Make sure this is pointed to our react app on port 5000 */
 "UseNGINX": false,
 "UseS3": false,
 "AWS": {
@@ -33,6 +34,7 @@ dotnet watch # Should be running on https://localhost:44332/
 ## Installation (Deployment)
 1. Update the `/online-chess.Server/appsettings.json` depending if you want to use NGINX and AWS S3:
 ```json
+"AllowedOrigins": "your-server" /* https://localhost:5000 for example */
 "UseNGINX": true,
 "UseS3": true,
 "AWS": {
@@ -48,11 +50,7 @@ dotnet watch # Should be running on https://localhost:44332/
 ```
 VITE_API_URL={{your-server}}
 ```
-3. Update the `/online-chess.Server/appsettings.json` AllowedOrigins value:
-```
-"AllowedOrigins": "{{your-server}}"
-```
-4. Publish and start:
+3. Publish and start:
 ```bash
 dotnet publish --runtime linux-x64 --self-contained false # depends on your OS
 dotnet online-chess.Server.dll
