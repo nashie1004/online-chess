@@ -18,16 +18,19 @@ namespace online_chess.Server.Service
         private readonly TimerService _timerService;
         private readonly IHubContext<GameHub> _hubContext;
         private readonly UserConnectionService _userConnectionService;
+        private readonly ILogger<GameRoomService> _logger;
 
         public GameRoomService(
             TimerService timerService
             , IHubContext<GameHub> hubContext
             , UserConnectionService userConnectionService
+            , ILogger<GameRoomService> logger
             )
         {
             _timerService = timerService;
             _hubContext = hubContext;
             _userConnectionService = userConnectionService;
+            _logger = logger;
         }
 
         public void Add(Guid roomIdKey, GameRoom GameRoom)
@@ -100,6 +103,9 @@ namespace online_chess.Server.Service
                 return ReconnectToGame(gameRoom, request); // initialize game only once
             }
 
+            _logger.LogInformation("Starting New Game, key: {key}, {creator} vs {joiner}"
+                , gameRoom.GameKey, gameRoom.CreatedByUserInfo.UserName, gameRoom.JoinByUserInfo.UserName);
+
             TimeSpan initialTime;
 
             switch (gameRoom.GameType)
@@ -167,6 +173,9 @@ namespace online_chess.Server.Service
 
         public CurrentGameInfo ReconnectToGame(GameRoom onGoingGameRoom, GameStartRequest request)
         {
+            _logger.LogInformation("Reconnect Game, key: {key}, {creator} vs {joiner}"
+                , onGoingGameRoom.GameKey, onGoingGameRoom.CreatedByUserInfo.UserName, onGoingGameRoom.JoinByUserInfo.UserName);
+
             onGoingGameRoom.GamePlayStatus = GamePlayStatus.Ongoing;
 
             onGoingGameRoom.ChatMessages.Add(new Chat()
@@ -218,6 +227,10 @@ namespace online_chess.Server.Service
             var joiner = await identityDbContext.FindByNameAsync(room.JoinByUserInfo.UserName);
 
             if (creator == null || joiner == null) return;
+
+            _logger.LogInformation("End Game, key: {key}, {creator} vs {joiner}"
+                , room.GameKey, room.CreatedByUserInfo.UserName, room.JoinByUserInfo.UserName);
+
 
             long winnerPlayerId = 0;
             string finalMessage = string.Empty;

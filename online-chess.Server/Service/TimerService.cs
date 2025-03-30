@@ -6,9 +6,18 @@ namespace online_chess.Server.Service;
 public class TimerService
 {
     private readonly ConcurrentDictionary<Guid, (double, double)> _timer = new();
+    private readonly ILogger<TimerService> _logger;
+    
+    public TimerService(
+        ILogger<TimerService> logger
+    )
+    {
+        _logger = logger;
+    }
 
     public void InitializeTimer(Guid gameRoomKey, (double, double) playerTimers)
     {
+        _logger.LogInformation("New timer {key}", gameRoomKey);
         _timer.TryAdd(gameRoomKey, playerTimers);
     }
 
@@ -17,6 +26,7 @@ public class TimerService
     }
     
     public bool RemoveTimer(Guid gameRoomKey){
+        _logger.LogInformation("Remove timer {key}", gameRoomKey);
         return _timer.TryRemove(gameRoomKey, out (double, double) _);
     }
 

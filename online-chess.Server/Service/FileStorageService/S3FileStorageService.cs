@@ -1,7 +1,6 @@
 ﻿using Amazon.S3;
 using Amazon.S3.Model;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Logging;
 using online_chess.Server.Models.Entities;
 using System.Security.Claims;
 
@@ -70,7 +69,8 @@ namespace online_chess.Server.Service.FileStorageService
 
                 var response = await _s3Client.PutObjectAsync(objectRequest);
 
-                _logger.LogInformation("S3 Upload/SaveFile key: {key}, response: {@response}", key, response);
+                _logger.LogInformation("S3 Upload/SaveFile key: {key}, status: {status}, eTag: {eTag}, requestId: {requestId}"
+                    , key, response.HttpStatusCode, response.ETag, response.ResponseMetadata.RequestId);
 
                 if (response.HttpStatusCode != System.Net.HttpStatusCode.OK)
                 {
@@ -92,7 +92,8 @@ namespace online_chess.Server.Service.FileStorageService
                             BucketName = _bucketName,
                             Key = key
                         });
-
+                        
+                        _logger.LogError("No user found to save the profile image in. UserId: {userId}", userId);
                         return (false, "No user found to save the profile image in.", string.Empty);
                     }
 
@@ -105,6 +106,8 @@ namespace online_chess.Server.Service.FileStorageService
             }
             catch (Exception e)
             {
+                _logger.LogError("S3 SaveFile Error - FileName: {key}, Message: {e}", file.FileName, e.Message);
+
                 return (false, e.Message, string.Empty);
             }
         }
@@ -114,15 +117,16 @@ namespace online_chess.Server.Service.FileStorageService
          */
         public async Task<bool> RemoveFile(string key)
         {
-            var res = await _s3Client.DeleteObjectAsync(new DeleteObjectRequest
+            var response = await _s3Client.DeleteObjectAsync(new DeleteObjectRequest
             {
                 BucketName = _bucketName,
                 Key = key
             });
 
-            _logger.LogInformation("S3 RemoveFile key: {key}, response: {@res}", key, res);
+            _logger.LogInformation("S3 Remove key: {key}, status: {status}, requestId: {requestId}"
+                , key, response.HttpStatusCode, response.ResponseMetadata.RequestId);
 
-            return res.HttpStatusCode == System.Net.HttpStatusCode.OK;
+            return response.HttpStatusCode == System.Net.HttpStatusCode.OK;
         }
 
         public async Task<(bool Exists, Stream? Content, string ContentType)> GetFile(string key)
@@ -135,7 +139,8 @@ namespace online_chess.Server.Service.FileStorageService
                     Key = key
                 });
 
-                _logger.LogInformation("S3 GetFile key: {key}, response: {@response}", key, response);
+                _logger.LogInformation("S3 GetFile key: {key}, status: {status}, eTag: {eTag}, requestId: {requestId}"
+                    , key, response.HttpStatusCode, response.ETag, response.ResponseMetadata.RequestId);
 
                 if (response == null)
                 {
@@ -146,7 +151,7 @@ namespace online_chess.Server.Service.FileStorageService
             }
             catch (Exception e)
             {
-                _logger.LogError("S3 GetFile Error key: {key}, exception: {@e}", key, e);
+                _logger.LogError("S3 GetFile Error - Key: {key}, Message: {e}", key, e.Message);
 
                 return (false, null, string.Empty);
             }
