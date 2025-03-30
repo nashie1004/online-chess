@@ -10,6 +10,7 @@ using online_chess.Server.Models.Entities;
 using online_chess.Server.Persistence;
 using online_chess.Server.Service;
 using online_chess.Server.Service.FileStorageService;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,7 +43,10 @@ builder.Services.ConfigureApplicationCookie(cfg => {
     cfg.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 });
 //builder.Services.AddAuthentication().AddGoogle()
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
+builder.Services.AddMediatR(cfg => {
+    cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
+    // cfg.AddBehavior()
+});
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<GameQueueService>();
 builder.Services.AddSingleton<GameRoomService>();
@@ -58,7 +62,7 @@ bool.TryParse(builder.Configuration["UseS3"], out bool useS3);
 if (!useS3){
     // Set up local file storage
 
-    builder.Services.AddScoped<IFileStorageService, LocalFileStorageService>();
+    builder.Services.AddSingleton<IFileStorageService, LocalFileStorageService>();
 } 
 else {
     // Set up AWS s3 storage
@@ -76,13 +80,17 @@ else {
     builder.Services.AddAWSService<IAmazonS3>();
 }
 
+builder.Host.UseSerilog((ctx, config) => {
+    config.ReadFrom.Configuration(ctx.Configuration);
+});
 
-//builder.Services.Configure<FormOptions>(opt => {
-//    opt.MultipartBodyLengthLimit = 2 * 1024 * 1024; // 2mb
-//});`
-builder.Logging.ClearProviders();
-builder.Logging.AddConsole();
-builder.Logging.AddDebug();
+// builder.Services.AddLogging(loggingBuilder => {
+//     loggingBuilder.AddSerilog(Log.Logger);
+// });
+
+// builder.Logging.ClearProviders();
+// builder.Logging.AddConsole();
+// builder.Logging.AddDebug();
 
 builder.Services.AddCors(opt =>
 {
@@ -94,6 +102,8 @@ builder.Services.AddCors(opt =>
 });
 
 var app = builder.Build();
+
+//app.UseSerilogRequestLogging();
 
 bool.TryParse(builder.Configuration["UseNGINX"], out bool useNGINX);
 

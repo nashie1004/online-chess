@@ -1,6 +1,7 @@
 ﻿using Amazon.S3;
 using Amazon.S3.Model;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 using online_chess.Server.Models.Entities;
 using System.Security.Claims;
 
@@ -12,16 +13,19 @@ namespace online_chess.Server.Service.FileStorageService
         private readonly string _bucketName;
         private readonly IServiceProvider _serviceProvider;
         private readonly List<string> _validFormats = new List<string>() { ".jpg", ".jpeg", ".png", ".gif", ".svg" };
+        private readonly ILogger<S3FileStorageService> _logger;
 
         public S3FileStorageService(
             IAmazonS3 s3Client
             , IConfiguration configuration
             , IServiceProvider serviceProvider
+            , ILogger<S3FileStorageService> logger
         )
         {
             _s3Client = s3Client;
             _bucketName = configuration["AWS:S3:BucketName"] ?? "your-s3-bucket";
             _serviceProvider = serviceProvider;
+            _logger = logger;
         }
 
         public async Task<(bool Success, string ErrorMessage, string Key)> SaveFile(IFormFile file)
@@ -65,6 +69,8 @@ namespace online_chess.Server.Service.FileStorageService
                 };
 
                 var response = await _s3Client.PutObjectAsync(objectRequest);
+
+                _logger.LogInformation("S3 Upload/SaveFile key: {key}, response: {@response}", key, response);
 
                 if (response.HttpStatusCode != System.Net.HttpStatusCode.OK)
                 {
@@ -114,6 +120,8 @@ namespace online_chess.Server.Service.FileStorageService
                 Key = key
             });
 
+            _logger.LogInformation("S3 RemoveFile key: {key}, response: {@res}", key, res);
+
             return res.HttpStatusCode == System.Net.HttpStatusCode.OK;
         }
 
@@ -121,13 +129,13 @@ namespace online_chess.Server.Service.FileStorageService
         {
             try
             {
-                var objectRequest = new GetObjectRequest
+                var response = await _s3Client.GetObjectAsync(new GetObjectRequest
                 {
                     BucketName = _bucketName,
                     Key = key
-                };
+                });
 
-                var response = await _s3Client.GetObjectAsync(objectRequest);
+                _logger.LogInformation("S3 GetFile key: {key}, response: {@response}", key, response);
 
                 if (response == null)
                 {
@@ -138,6 +146,8 @@ namespace online_chess.Server.Service.FileStorageService
             }
             catch (Exception e)
             {
+                _logger.LogError("S3 GetFile Error key: {key}, exception: {@e}", key, e);
+
                 return (false, null, string.Empty);
             }
         }

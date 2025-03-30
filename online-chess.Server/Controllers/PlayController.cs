@@ -13,10 +13,15 @@ namespace online_chess.Server.Controllers
     public class PlayController : ControllerBase
     {
         private readonly IMediator _mediator;
+        private readonly ILogger<PlayController> _logger;
 
-        public PlayController(IMediator mediator)
+        public PlayController(
+            IMediator mediator
+            , ILogger<PlayController> logger
+            )
         {
             _mediator = mediator;
+            _logger = logger;   
         }
 
         [HttpGet("get-image")]
@@ -37,6 +42,8 @@ namespace online_chess.Server.Controllers
         [HttpGet("ping-server")]
         public async Task<IActionResult> PingServer()
         {
+            _logger.LogInformation("Ping server okay.");
+
             return Ok("Ping server okay.");
         }
 
